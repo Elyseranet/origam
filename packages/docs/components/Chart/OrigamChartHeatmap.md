@@ -102,6 +102,8 @@ const activityData = days.flatMap((day) =>
 
 ## Behaviour notes
 
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 608 × 368 canvas. The plot fills the container width and height, the geometry is recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until the box is measured (SSR, first paint) the 608 × 368 (plus the legend row when inline) fallback is used, so hydration is unchanged. Give the chart a `height` / `aspectRatio` to change the box ratio.
+
 **Single-series only.** The component reads `series[0]` exclusively. Extra series are ignored.
 
 **Category ordering.** Pass `xCategories` and `yCategories` to lock axis order (e.g. weekday order). Without them, unique values are sorted ascending (alphabetically for strings, numerically for numeric strings).
@@ -116,7 +118,7 @@ const activityData = days.flatMap((day) =>
 
 **Gradient legend.** The legend is an inline SVG `<linearGradient>` bar rendered inside the same SVG element. It does not use the `OrigamChartLegend` component (which is designed for categorical series).
 
-**Accessibility.** Each cell is a focusable `<rect>` with `role="button"` and an `aria-label` carrying the `x × y: value` string. Keyboard users can Tab through cells and activate them with Enter or Space. The SVG carries a `<title>` and `<desc>`.
+**Accessibility.** Each cell is a focusable `<rect>` with `role="button"` and an `aria-label` carrying the `x × y: value` string. The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. `ArrowUp` / `ArrowDown` move between rows. `Enter` or `Space` activates a cell. The SVG carries a `<title>` and `<desc>`.
 
 **Animation.** Cells fade in on mount via a CSS keyframe animation. Skipped when `animated=false` or `prefers-reduced-motion: reduce`.
 

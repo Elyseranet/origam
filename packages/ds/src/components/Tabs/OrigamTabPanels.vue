@@ -7,12 +7,10 @@
 			:class="panelsClasses"
 			:style="panelsStyles"
 	>
-		<origam-defaults-provider :defaults="slotDefaults">
-			<slot
-					name="default"
-					v-bind="slotProps"
-			/>
-		</origam-defaults-provider>
+		<slot
+				name="default"
+				v-bind="slotProps"
+		/>
 	</component>
 </template>
 
@@ -22,11 +20,8 @@
 >
 	import { computed, provide, ref, shallowRef, StyleValue, watch } from 'vue'
 
-	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
-
 	import { useGroup } from '../../composables/Commons/group.composable'
 	import { useGroupSiblingLink } from '../../composables/Commons/groupSiblingLink.composable'
-	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
@@ -37,7 +32,6 @@
 		ORIGAM_TAB_PANELS_CTX_KEY
 	} from '../../consts/Tabs/tabs.const'
 
-	import { omitUndefined } from '../../utils/Commons/commons.util'
 
 	import vTouch from '../../directives/Touch/touch.directive'
 
@@ -136,16 +130,6 @@
 		prev,
 		selected,
 		items: items.value
-	}))
-
-	// Forward ONLY what the consumer actually passed — see #263. `transition`
-	// resolves from the theme baseline today, so nothing junk leaks through in
-	// practice, but the guard keeps every forwarder on one single shape.
-	const wasPropPassed = usePassedProps(props)
-	const slotDefaults = computed(() => ({
-		'origam-tab-panel': omitUndefined({
-			transition: wasPropPassed('transition') ? props.transition : undefined
-		})
 	}))
 
 	/*********************************************************

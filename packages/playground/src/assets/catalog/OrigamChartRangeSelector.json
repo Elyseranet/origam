@@ -1,0 +1,66 @@
+{
+  "name": "OrigamChartRangeSelector",
+  "tag": "origam-chart-range-selector",
+  "family": "Chart",
+  "label": "ChartRangeSelector",
+  "props": [
+    {
+      "name": "buttons",
+      "label": "buttons",
+      "tsType": "IChartRangeSelectorButton[]",
+      "runtimeType": "Array",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Buttons to render, in order.",
+      "source": "types"
+    },
+    {
+      "name": "activeIndex",
+      "label": "activeIndex",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": -1,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Zero-based index of the currently active button. `-1` = none selected.",
+      "source": "types"
+    },
+    {
+      "name": "dataLength",
+      "label": "dataLength",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 0,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Total category count — the window each button computes against.",
+      "source": "types"
+    },
+    {
+      "name": "ariaLabel",
+      "label": "ariaLabel",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.chart.range_selector.aria_label",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nariaLabel",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "select",
+      "label": "select",
+      "payloadType": "[index: number, start: number, end: number]",
+      "source": "types"
+    }
+  ],
+  "slots": [],
+  "snippets": [],
+  "requiresParent": false
+}

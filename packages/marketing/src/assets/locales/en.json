@@ -260,6 +260,7 @@
         "search_page_wireframe": "Design wireframe & component previews",
         "search_page_theming": "Visual theme builder — customise design tokens",
         "search_page_why_origam": "Design decisions and philosophy",
+        "search_page_stability": "Version numbers, release cadence and deprecation policy",
         "star_count": "4.2k",
         "theme": "Theme",
         "theme_active": "Theme: {label}",
@@ -371,10 +372,7 @@
                 "render_failed": "This component raised an error while rendering with these props:",
                 "reason": {
                     "needs_parent": "This is an internal sub-part: it is injected by its parent component and cannot render on its own. See the parent component page for a live example.",
-                    "portal": "This component teleports its surface to the end of <body> once activated, so it never renders inside this preview box. Use the props panel and the generated snippet, then try it in your own page.",
-                    "runtime_data": "This component requires runtime data its parent owns (a DOM element, a controller object, or a File), which a static preview cannot provide.",
-                    "media_source": "This component requires a media source (audio or video URL). The marketing site ships no sample media, so the preview stays empty on purpose.",
-                    "layout_only": "This component renders no visible surface of its own: it only pushes its siblings apart inside a flex container."
+                    "portal": "This component teleports its surface to the end of <body> once activated, so it never renders inside this preview box. Use the props panel and the generated snippet, then try it in your own page."
                 }
             },
             "examples": {
@@ -439,6 +437,217 @@
                 "experimental": "experimental",
                 "deprecated": "deprecated"
             }
+        },
+        "playground": {
+            "snippet": {
+                "preview_label": "Preview",
+                "chart": {
+                    "series_revenue": "Revenue",
+                    "series_costs": "Costs",
+                    "month_jan": "Jan",
+                    "month_feb": "Feb",
+                    "month_mar": "Mar",
+                    "month_apr": "Apr",
+                    "month_may": "May",
+                    "month_jun": "Jun",
+                    "series_progress": "Progress"
+                },
+                "common": {
+                    "one": "One",
+                    "two": "Two",
+                    "three": "Three",
+                    "left": "Left",
+                    "right": "Right",
+                    "middle": "Middle",
+                    "center": "Center"
+                },
+                "transition": {
+                    "translated": "Translated content",
+                    "sliding": "Sliding content",
+                    "expanding": "Expanding content",
+                    "snack": "Snack content",
+                    "transitioned": "Transitioned content",
+                    "fading": "Fading content",
+                    "rotating": "Rotating content",
+                    "client_only": "Client-only content"
+                },
+                "data_table": {
+                    "person_ada": "Ada Lovelace",
+                    "role_owner": "Owner",
+                    "header_name": "Name",
+                    "header_role": "Role",
+                    "header_seats": "Seats",
+                    "person_alan": "Alan Turing",
+                    "role_admin": "Admin",
+                    "person_grace": "Grace Hopper",
+                    "role_member": "Member"
+                },
+                "btn": {
+                    "text": "Button"
+                },
+                "card": {
+                    "text": "Card content"
+                },
+                "chip": {
+                    "text": "Chip"
+                },
+                "alert": {
+                    "text": "A short alert message."
+                },
+                "text_field": {
+                    "label": "Label",
+                    "value": "Value"
+                },
+                "textarea_field": {
+                    "label": "Message",
+                    "value": "A few lines of text."
+                },
+                "number_field": {
+                    "label": "Amount"
+                },
+                "password_field": {
+                    "label": "Password"
+                },
+                "select": {
+                    "label": "Pick one"
+                },
+                "checkbox": {
+                    "label": "Checkbox"
+                },
+                "switch": {
+                    "label": "Switch"
+                },
+                "radio": {
+                    "label": "Radio"
+                },
+                "title": {
+                    "text": "The quick brown fox"
+                },
+                "badge": {
+                    "text": "Inbox"
+                },
+                "blockquote": {
+                    "text": "Design is not just what it looks like. Design is how it works."
+                },
+                "breadcrumb": {
+                    "home": "Home",
+                    "library": "Library",
+                    "data": "Data"
+                },
+                "chip_group": {
+                    "design": "Design",
+                    "code": "Code",
+                    "ship": "Ship"
+                },
+                "selection_control_group": {
+                    "email": "Email",
+                    "sms": "SMS"
+                },
+                "expansion_panels": {
+                    "first_title": "First panel",
+                    "first_text": "The content of the first panel.",
+                    "second_title": "Second panel",
+                    "second_text": "The content of the second panel."
+                },
+                "form": {
+                    "email": "Email",
+                    "submit": "Submit"
+                },
+                "list": {
+                    "inbox": "Inbox",
+                    "starred": "Starred",
+                    "archive": "Archive"
+                },
+                "list_group": {
+                    "title": "Reports",
+                    "weekly": "Weekly",
+                    "monthly": "Monthly"
+                },
+                "tab_panels": {
+                    "panel_one": "Panel one"
+                },
+                "responsive": {
+                    "text": "Responsive box"
+                },
+                "lazy": {
+                    "text": "Lazily mounted content"
+                },
+                "watermark": {
+                    "text": "Protected content"
+                },
+                "theme_provider": {
+                    "text": "Themed button"
+                },
+                "defaults_provider": {
+                    "text": "Button with defaults"
+                },
+                "clipboard": {
+                    "text": "Copy the install command"
+                },
+                "img": {
+                    "alt": "Sample image"
+                },
+                "data_text": {
+                    "text": "A short data value"
+                },
+                "data_title": {
+                    "text": "A data title"
+                },
+                "data_list": {
+                    "plan": "Plan",
+                    "pro": "Pro",
+                    "seats": "Seats"
+                },
+                "inline_edit": {
+                    "value": "Click to edit"
+                },
+                "text_mask": {
+                    "text": "Gradient text"
+                },
+                "bracket": {
+                    "semis": "Semi-finals",
+                    "final": "Final"
+                },
+                "chart_range_selector": {
+                    "one_month": "1M",
+                    "six_months": "6M",
+                    "one_year": "1Y"
+                },
+                "tab": {
+                    "text": "Tab one"
+                },
+                "dialog": {
+                    "title": "Example dialog"
+                },
+                "dialog_confirmation": {
+                    "title": "Delete item?"
+                },
+                "tooltip": {
+                    "text": "Tooltip content"
+                },
+                "overlay": {
+                    "text": "Overlay content"
+                },
+                "snackbar": {
+                    "text": "Saved successfully."
+                },
+                "carousel": {
+                    "slide_one": "Slide one",
+                    "slide_two": "Slide two"
+                },
+                "parallax": {
+                    "layer": "Parallax layer",
+                    "element": "Parallax element"
+                }
+            },
+            "fallback_slot_text": "Content",
+            "theme_origam": "Origam",
+            "theme_label": "Preview theme",
+            "rendered_by_parent": "This sub-part is rendered by its parent: the preview shows {parent}, with this part inside it. Theme it from the Theme Builder, or edit the parent here.",
+            "mode_light": "Light",
+            "mode_dark": "Dark",
+            "mode_auto": "Auto",
+            "mode_label": "Preview mode"
         }
     },
     "composables": {
@@ -805,7 +1014,9 @@
             "size_value": "<50kb",
             "size_label": "Tree-shakable",
             "license_value": "MIT",
-            "license_label": "Open source"
+            "license_label": "Open source",
+            "npm_downloads_label": "npm downloads / week",
+            "github_stars_label": "GitHub stars"
         },
         "features": {
             "eyebrow": "WHAT'S INSIDE",
@@ -839,13 +1050,10 @@
             }
         },
         "playground": {
-            "eyebrow": "LIVE PLAYGROUND",
-            "title": "Try before you ship.",
+            "eyebrow": "CODE EXAMPLE",
+            "title": "A few lines, real components.",
             "file": "App.vue",
-            "caption": "The Vue 3 design system that just works. Try a component live.",
-            "preview_title": "Hello Origam",
-            "preview_text": "The Vue 3 design system that just works. Try a component live.",
-            "preview_cta": "Get started"
+            "caption": "The preview renders the code shown on the left."
         },
         "showcase": {
             "eyebrow": "SHOWCASE",
@@ -1000,6 +1208,7 @@
             "description": "Explore the full component catalogue, browse interactive stories, or dive into the source on GitHub.",
             "cta_components": "Browse components",
             "cta_github": "View on GitHub",
+            "cta_stability": "Stability and versioning",
             "actions_label": "Explore origam"
         }
     },
@@ -1087,6 +1296,7 @@
         "changelog": "Changelog",
         "github": "GitHub",
         "why_origam": "Why origam?",
+        "stability": "Stability",
         "roadmap": "Roadmap",
         "installation": "Installation",
         "wireframe": "Wireframe",
@@ -1438,6 +1648,50 @@
             "empty_cta": "Browse the components"
         }
     },
+    "stability": {
+        "meta": {
+            "title": "Stability and versioning · origam design system",
+            "description": "What the 2.x version number of origam means, why it releases often, how breaking changes are announced and what 3.0.0 will be."
+        },
+        "hero": {
+            "badge": "Versioning policy",
+            "title": "Stability and versioning",
+            "lead": "A high version number and frequent releases do not mean origam breaks often. This page says what the number means, how releases are cut and where changes are written down."
+        },
+        "sections": {
+            "number": {
+                "title": "What the 2.x number means",
+                "p1": "The 2.x number is historical. In practice origam is a pre-1.0 project that carries a 2.x label.",
+                "p2": "Below 3.0.0, the minor and patch numbers are bookkeeping, not a compatibility contract."
+            },
+            "cadence": {
+                "title": "Why releases are frequent",
+                "p1": "Every merged change to the published package gets its own patch release. Changes are not held back to be batched into a weekly or monthly release, so the patch number climbs quickly.",
+                "p2": "A patch is a bug fix. A minor is a medium feature with limited impact on existing usage. Changes that do not touch the published package, such as this site, the documentation, the tests or the tooling, produce no release at all."
+            },
+            "breaking": {
+                "title": "How breaking changes ship",
+                "p1": "Until 3.0.0, a breaking change can ship in a minor release. It is then documented explicitly and honestly in the CHANGELOG.",
+                "p2": "The CHANGELOG is where to look before upgrading across a minor version.",
+                "cta": "Read the changelog"
+            },
+            "major": {
+                "title": "What 3.0.0 will be",
+                "p1": "3.0.0 is reserved for splitting the package into modules. It will be the first announced major breaking release.",
+                "p2": "Nothing else ships under that number: not a batch of bug fixes, not a dependency upgrade. This page gives no date for it.",
+                "cta": "See the roadmap"
+            },
+            "deprecation": {
+                "title": "Deprecation policy",
+                "p1": "There is no long deprecation cycle. At the current stage of the project the clean break is preferred to a compatibility layer: a deprecated API is removed as soon as someone gets to it, in a minor release, and the removal is written in the CHANGELOG.",
+                "p2": "Deprecations that were announced for the next major are not held back until 3.0.0. This is a rule for the current stage of the project, not a permanent guarantee."
+            },
+            "limits": {
+                "title": "What this page does not promise",
+                "p1": "This page describes how versions are numbered and announced. origam publishes no long-term-support line, no support window and no guaranteed response time."
+            }
+        }
+    },
     "support": {
         "meta": {
             "title": "Support origam · Vue 3 design system",
@@ -1640,8 +1894,7 @@
             "label": "Components",
             "search": "Search component…",
             "no_result": "No component matches “{query}”.",
-            "total": "{count} components",
-            "previewable": "Live preview available"
+            "total": "{count} components"
         },
         "props": {
             "legend": "Default props",

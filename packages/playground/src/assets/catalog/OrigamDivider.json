@@ -1,0 +1,292 @@
+{
+  "name": "OrigamDivider",
+  "tag": "origam-divider",
+  "family": "Divider",
+  "label": "Divider",
+  "props": [
+    {
+      "name": "inset",
+      "label": "inset",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "length",
+      "label": "length",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "thickness",
+      "label": "thickness",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "bgColor",
+      "label": "bgColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "margin",
+      "label": "margin",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--marged` class.",
+      "source": "types"
+    },
+    {
+      "name": "marginTop",
+      "label": "marginTop",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginBlock` for the top edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginLeft",
+      "label": "marginLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginInline` for the left edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginBottom",
+      "label": "marginBottom",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginBlock` for the bottom edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginRight",
+      "label": "marginRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginInline` for the right edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginBlock",
+      "label": "marginBlock",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`.",
+      "source": "types"
+    },
+    {
+      "name": "marginInline",
+      "label": "marginInline",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`.",
+      "source": "types"
+    },
+    {
+      "name": "marginInlineStart",
+      "label": "marginInlineStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nLogical per-side margin — rung 3 (issue #1013)",
+      "source": "types"
+    },
+    {
+      "name": "marginInlineEnd",
+      "label": "marginInlineEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "marginBlockStart",
+      "label": "marginBlockStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "marginBlockEnd",
+      "label": "marginBlockEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "direction",
+      "label": "direction",
+      "tsType": "\"horizontal\" | \"vertical\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "horizontal",
+      "hasFactoryDefault": false,
+      "options": [
+        "horizontal",
+        "vertical"
+      ],
+      "control": "select",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [],
+  "snippets": [],
+  "requiresParent": false
+}

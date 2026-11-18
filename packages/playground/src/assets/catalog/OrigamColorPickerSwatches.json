@@ -1,0 +1,169 @@
+{
+  "name": "OrigamColorPickerSwatches",
+  "tag": "origam-color-picker-swatches",
+  "family": "ColorPicker",
+  "label": "ColorPickerSwatches",
+  "props": [
+    {
+      "name": "colorHsv",
+      "label": "colorHsv",
+      "tsType": "THSVA | null | undefined",
+      "runtimeType": [
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "swatches",
+      "label": "swatches",
+      "tsType": "TColorType[][] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "height",
+      "label": "height",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "maxHeight",
+      "label": "maxHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "defaultValue": 150,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "maxWidth",
+      "label": "maxWidth",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "minHeight",
+      "label": "minHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "minWidth",
+      "label": "minWidth",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "width",
+      "label": "width",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "update:colorHsv",
+      "label": "update:colorHsv",
+      "payloadType": "[value: THSVA]",
+      "source": "types"
+    }
+  ],
+  "slots": [],
+  "snippets": [],
+  "requiresParent": false
+}

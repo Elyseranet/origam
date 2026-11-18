@@ -55,7 +55,7 @@ const budgetTree: Array<IChartSunburstDatum> = [
 |---|---|---|---|
 | `title` | `string` | `undefined` | Optional title above the chart. |
 | `subtitle` | `string` | `undefined` | Optional subtitle below the title. |
-| `height` | `number \| string` | `400` | Chart height. A plain number is `px`. Ignored when `aspectRatio` is set. |
+| `height` | `number \| string` | — | Optional cap on the chart height (the chart is square: height = width, capped by this value). A plain number is `px`. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `innerRadius` | `number` | `0.15` | Proportion of the overall radius reserved for the centre hole. `0` = full pie. `0.4` = deep donut. |
 | `ringPadding` | `number` | `1` | Radial gap in SVG pixels between consecutive depth rings. |
@@ -110,6 +110,8 @@ Pass `series[0].data` as `Array<IChartSunburstDatum>`.
 
 ## Behaviour notes
 
+**Responsive 1:1 drawing surface (#1324).** The SVG `viewBox` is a square: its width follows the measured width of the container (`useChartSize`, a `ResizeObserver`) and its height equals that width, so the circle is never squashed. Text, strokes and markers keep their real pixel size instead of being scaled with a fixed canvas. `height` is now an optional cap: it has no default any more, and when set the side of the square is `min(container width, available height)`. Until the box is measured (SSR, first paint) the 400 × 400 fallback is used, so hydration is unchanged.
+
 **Depth cap.** A maximum of 4 depth levels are rendered. Nodes deeper than 4 are silently ignored.
 
 **Value inference.** If an internal node omits `value`, it is computed as the sum of its children's resolved values recursively. Leaf nodes with no `value` contribute `0`.
@@ -122,7 +124,7 @@ Pass `series[0].data` as `Array<IChartSunburstDatum>`.
 
 **Empty state.** When `series` is empty or every root is hidden, the `#empty` slot is rendered.
 
-**Accessibility.** Each arc is a focusable `<path>` with `role="button"` and an `aria-label` in the form `"Root > Branch: value"`. Keyboard users can Tab through arcs and activate with Enter or Space. The SVG carries a `<title>` and `<desc>`.
+**Accessibility.** Each arc is a focusable `<path>` with `role="button"` and an `aria-label` in the form `"Root > Branch: value"`. The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. Arrow keys follow the DOM order: the order in which the arcs are rendered (the order of the computed layout), not the geometric neighbour. `Enter` or `Space` activates an arc. The SVG carries a `<title>` and `<desc>`.
 
 **Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.sunburst.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key.
 

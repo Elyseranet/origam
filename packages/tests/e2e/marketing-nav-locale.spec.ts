@@ -20,7 +20,7 @@
  * localiser casserait deux liens qui marchent.
  *
  * Mesuré sur le build de production AVANT correction, clic réel depuis
- * `/fr/roadmap` : 15 liens internes sur 15 atterrissaient en `lang=en-US`
+ * `/fr/roadmap` : 16 liens internes sur 16 atterrissaient en `lang=en-US`
  * avec un h1 anglais, et `.primary-nav__link--active` ne matchait aucun
  * élément. Chaque test ci-dessous échoue sur cet état.
  */
@@ -103,14 +103,14 @@ async function collectHeaderLinks (page: Page): Promise<INavAnchor[]> {
 }
 
 test.describe('Barre de navigation — localisation des liens (#809)', () => {
-    test('sur une page FR, les 15 liens internes portent le préfixe /fr', async ({ page }) => {
+    test('sur une page FR, les 16 liens internes portent le préfixe /fr', async ({ page }) => {
         await gotoHydrated(page, '/fr/roadmap')
 
         const links = await collectHeaderLinks(page)
         const internal = links.filter(l => !EXTERNAL_ITEMS.includes(l.where))
 
-        // 1 marque + 1 thématisation + 3 + 2 + 8 = 15 routes Nuxt.
-        expect(internal).toHaveLength(15)
+        // 1 marque + 1 thématisation + 4 + 2 + 8 = 16 routes Nuxt.
+        expect(internal).toHaveLength(16)
 
         // `localePath('/')` rend `/fr` (sans barre finale) — d'où le `/fr` nu.
         const unprefixed = internal.filter(l => l.href !== '/fr' && !l.href?.startsWith('/fr/'))

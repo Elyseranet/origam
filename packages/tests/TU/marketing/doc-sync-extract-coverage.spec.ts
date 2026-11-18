@@ -4,8 +4,8 @@
  *  @description
  *  `docs:sync` is routinely described as "the design system is the source of
  *  truth for the catalogue". It is true of half the catalogue.
- *  `DOMAINS` (`scripts/lib/extract.mjs:33`) lists four directories; `DOC_KINDS`
- *  (`server/db/db.const.mjs`) lists eight families. The gap is written down in
+ *  `DOMAINS` (`scripts/extract.mjs:33`) lists four directories; `DOC_KINDS`
+ *  (`src/consts/db.const.ts`) lists eight families. The gap is written down in
  *  one README paragraph and nowhere else — nothing says it at runtime, and it
  *  is the direct source of the "the dump is not a source" confusion recorded on
  *  issue #362.
@@ -37,16 +37,17 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
 import {
-    DOMAINS, SLUG_STYLE, TS_DOMAINS, createProgram, extractFile, listSourceFiles, toSlug,
-} from '../../../marketing/scripts/lib/extract.mjs'
-import { extractComponents } from '../../../marketing/scripts/lib/extract-vue.mjs'
-import { DOC_KINDS } from '../../../marketing/server/db/db.const.mjs'
+    createProgram, extractFile, listSourceFiles, toSlug,
+} from '../../../marketing/scripts/extract.mjs'
+import { DOMAINS, SLUG_STYLE, TS_DOMAINS } from '../../../marketing/src/consts/doc-extract.const'
+import { extractComponents } from '../../../marketing/scripts/extract-vue.mjs'
+import { DOC_KINDS } from '../../../marketing/src/consts/db.const'
 
 /** The same TypeScript the extractor loads — used only by the negative control. */
 const ts = createRequire(import.meta.url)('typescript')
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..')
-const SEED_DIR = resolve(REPO_ROOT, 'packages/marketing/server/db/seed')
+const SEED_DIR = resolve(REPO_ROOT, 'packages/marketing/src/assets/seed')
 
 /** An `export { X as Y }` re-export — the shape the extractor cannot see. */
 const ALIASED_REEXPORT = /export\s*\{\s*([A-Za-z0-9_$]+)\s+as\s+([A-Za-z0-9_$]+)\s*\}/g

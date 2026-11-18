@@ -14,7 +14,7 @@ import type { TInfiniteScrollSide } from '../../types/InfiniteScroll/infinite-sc
  ********************************************************/
 export interface IInfiniteScrollIntersectProps extends ICommonsComponentProps {
     side?: TInfiniteScrollSide
-    rootRef: HTMLElement
+    rootRef?: HTMLElement
     margin?: string
 }
 

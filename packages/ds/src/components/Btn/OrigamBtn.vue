@@ -550,15 +550,25 @@
 		// Btn roots computed `display: block` with a `display: flex` parent,
 		// and the single Btn inside a `<p>` computed `inline` at 984px wide.
 		//
-		// `inline-block` is the value the rest of this rule already assumed —
-		// `vertical-align: middle` right below only has meaning on an
-		// inline-level box. It is also the safest: inside a flex/grid parent it
-		// blockifies to `block`, i.e. byte-for-byte today's computed value, so
-		// no existing layout moves. `&--block` still overrides it with `flex`.
-		display: inline-block;
-		// #1094 — inoperant tant que la racine est `inline-block` ; prend effet
-		// sur `&--block` (`display: flex`), ou `height: auto` + `min-height`
-		// laisseraient sinon le contenu colle en haut.
+		// The root must stay INLINE-LEVEL (#933) — `vertical-align: middle` right
+		// below only has meaning on an inline-level box, and a Btn in a `<p>`
+		// must shrink to its content. Inside a flex/grid parent it blockifies to
+		// `flex`; `&--block` declares `flex` explicitly.
+		//
+		// ⛔ #1168 — it is `inline-flex`, not `inline-block`. Since #1094 the
+		// height is `auto` + `min-height`, and `__loader`'s `height: 100%` no
+		// longer resolves against an auto height: on an `<a>` (`href` / `to`) the
+		// label sat at the TOP of the box — 12 px of content glued under the top
+		// edge of a 28 px button (published 2.29.1 → 2.32.1). A `<button>` hid
+		// it, because the UA centres a button's content on its own. A flex root
+		// centres `__loader` with `align-items: center` below, on every tag.
+		//
+		// `inline-flex` rather than `inline-grid`, measured: the ripple directive
+		// appends an in-flow `origam-ripple__container` to this root while the
+		// pointer is down. A grid root gives it an implicit row that takes half
+		// the free height, and the label jumps 4 px on every press; a flex row
+		// leaves the label where it is.
+		display: inline-flex;
 		align-items: center;
 
 		position: var(--origam-btn---position, relative);
@@ -582,7 +592,7 @@
 		// plus que `padding-inline`, sans quoi leur shorthand `padding: 0 …`
 		// remettrait ce bloc a zero.
 		padding-block: var(--origam-btn---padding-block, 0);
-		padding-inline: calc(16px + var(--origam-btn---density-padding-x, 0px));
+		padding-inline: calc(16px + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 
 		width: var(--origam-btn---width, auto);
 		min-width: calc(var(--origam-btn---min-width, 64px) + var(--origam-btn---density, 0px));
@@ -628,7 +638,7 @@
 		// → `light.css`/`dark.css`), always defined (`0` at rest), so the
 		// `var()` fallback never falls through to the btn's own value —
 		// measured, see the #391/#530 root-vs-token audit
-		// (`docs/mesures/`): on every conflict of this shape checked in a
+		// (supprimé du dépôt, #1346 — historique git): on every conflict of this shape checked in a
 		// real browser, the globally-registered token wins, never the
 		// component-local declaration. So the STANDALONE default below
 		// reads the BTN's OWN var directly (no group fallback) — this is
@@ -677,7 +687,7 @@
 			--origam-btn---height: var(--origam-btn---height-xs, 20px);
 			--origam-btn---font-size: 0.625rem;
 			--origam-btn---min-width: 36px;
-			padding-inline: calc(var(--origam-btn---padding-xs, 8px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-xs, 8px) + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 16px;
@@ -688,7 +698,7 @@
 			--origam-btn---height: var(--origam-btn---height-sm, 28px);
 			--origam-btn---font-size: 0.75rem;
 			--origam-btn---min-width: 50px;
-			padding-inline: calc(var(--origam-btn---padding-sm, 12px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-sm, 12px) + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 20px;
@@ -696,7 +706,7 @@
 		}
 
 		&--size-default {
-			padding-inline: calc(var(--origam-btn---padding-md, 16px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-md, 16px) + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 24px;
@@ -707,7 +717,7 @@
 			--origam-btn---height: var(--origam-btn---height-lg, 44px);
 			--origam-btn---font-size: 1rem;
 			--origam-btn---min-width: 78px;
-			padding-inline: calc(var(--origam-btn---padding-lg, 20px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-lg, 20px) + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 28px;
@@ -718,7 +728,7 @@
 			--origam-btn---height: var(--origam-btn---height-xl, 52px);
 			--origam-btn---font-size: 1.125rem;
 			--origam-btn---min-width: 92px;
-			padding-inline: calc(var(--origam-btn---padding-xl, 24px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-xl, 24px) + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 32px;
@@ -875,8 +885,15 @@
 		}
 
 		&--variant-text {
-			background-color: transparent !important;
+			background-color: transparent;
 			box-shadow: none;
+
+			// #1222 — active fill is opt-in: `-background-color-text-active` is
+			// NOT declared in the sheets (like `-background-color-active` on
+			// outlined), so the default render stays transparent.
+			&#{$this}--active {
+				background-color: var(--origam-btn---background-color-text-active, transparent);
+			}
 		}
 
 		&--variant-elevated {
@@ -912,6 +929,7 @@
 		}
 
 		&--variant-outlined {
+			--origam-btn---border-compensation: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
 			background-color: transparent !important;
 			border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
 			border-style: solid;
@@ -981,6 +999,7 @@
 		// survol : changement de rendu, pas correction. Ils restent dormants —
 		// meme arbitrage.
 		&--variant-ghost {
+			--origam-btn---border-compensation: var(--origam-btn---border-width-ghost, var(--origam-border__width---thin));
 			background-color: var(
 				--origam-btn---background-color-ghost,
 				color-mix(in srgb, currentColor 12%, transparent)
@@ -1143,35 +1162,35 @@
 				--origam-btn---height: 56px;
 				font-size: 0.625rem;
 				min-width: 56px;
-				padding-inline: calc(12px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(12px + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 			}
 
 			&#{$this}--size-small {
 				--origam-btn---height: 64px;
 				font-size: 0.75rem;
 				min-width: 64px;
-				padding-inline: calc(14px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(14px + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 			}
 
 			&#{$this}--size-default {
 				--origam-btn---height: 72px;
 				font-size: 0.875rem;
 				min-width: 72px;
-				padding-inline: calc(16px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(16px + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 			}
 
 			&#{$this}--size-large {
 				--origam-btn---height: 80px;
 				font-size: 1rem;
 				min-width: 80px;
-				padding-inline: calc(18px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(18px + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 			}
 
 			&#{$this}--size-x-large {
 				--origam-btn---height: 88px;
 				font-size: 1.125rem;
 				min-width: 88px;
-				padding-inline: calc(20px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(20px + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 			}
 
 			&#{$this}--density-comfortable {
@@ -1194,7 +1213,7 @@
 		&--wrap {
 			#{$this}__content {
 				white-space: normal;
-				text-align: center;
+				text-align: var(--origam-btn__content---text-align, center);
 			}
 		}
 
@@ -1269,7 +1288,7 @@
 
 		&__content {
 			grid-area: content;
-			justify-content: center;
+			justify-content: var(--origam-btn__content---justify-content, center);
 			white-space: nowrap;
 
 			margin-inline-start: var(--origam-btn__content---margin-inline-start);

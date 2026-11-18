@@ -58,7 +58,6 @@ Dockerfile*
 # Long-form docs not needed in the image
 ROADMAP.md
 CLAUDE.md
-CLAUDE_CODE_BRIEF.md
 # NOTE: CHANGELOG.md is consumed at build-time by
 # packages/marketing/scripts/parse-changelog.mjs (generates
 # .generated/changelog.json which Nitro imports during prerender).

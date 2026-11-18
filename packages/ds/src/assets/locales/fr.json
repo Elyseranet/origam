@@ -54,7 +54,8 @@
     "date_picker_controls": {
       "prev": "Précédent",
       "next": "Suivant",
-      "toggle_year": "Basculer la sélection de l'année"
+      "choose_month": "Choisir le mois, actuellement {0}",
+      "choose_year": "Choisir l'année, actuellement {0}"
     },
     "no_data_text": "Aucune donnée disponible",
     "bracket": {
@@ -174,6 +175,11 @@
       "scroller_aria_label": "Bloc de code, zone défilante",
       "scroller_aria_label_filename": "{filename}, bloc de code, zone défilante",
       "scroller_aria_label_lang": "Bloc de code {lang}, zone défilante"
+    },
+    "code_group": {
+      "tabs_aria_label": "Variantes du code",
+      "scroller_aria_label": "{label}, bloc de code {position} sur {total}, zone défilante",
+      "scroller_aria_label_group": "{group}, {label}, bloc de code {position} sur {total}, zone défilante"
     },
     "qr_code": {
       "aria_label": "QR code pour {value}"

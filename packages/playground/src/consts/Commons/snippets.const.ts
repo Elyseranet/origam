@@ -21,9 +21,9 @@ import type { TTranslate } from '../../types/Commons/translate.type'
  *   - `OrigamTab`       → `ORIGAM_TABS_KEY`         (`OrigamTab.vue`)
  *   - `OrigamTabPanel`  → `ORIGAM_TAB_PANELS_KEY`   (`OrigamTabPanel.vue:78`)
  *   - `OrigamWindowItem`→ `ORIGAM_WINDOW_GROUP_KEY` (`OrigamWindowItem.vue:88`)
- * The same three are listed `REASON_NEEDS_PARENT` / `parentEnvelope` by
- * `packages/marketing/src/consts/component-preview.const.ts`, measured in a
- * real browser (#728). Key = the child, value = the parent it needs.
+ * The same three were listed `REASON_NEEDS_PARENT` / `parentEnvelope` by
+ * `packages/marketing`'s former preview adapters (now its snippets,
+ * `consts/playground-snippets.const.ts`), measured in a real browser (#728). Key = the child, value = the parent it needs.
  *
  * @description
  * ⛔ Extend this table only with a component whose setup you have read. A

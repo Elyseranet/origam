@@ -1,0 +1,43 @@
+{
+  "name": "OrigamTransition",
+  "tag": "origam-transition",
+  "family": "Transition",
+  "label": "Transition",
+  "props": [
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "transition",
+      "label": "transition",
+      "tsType": "string | boolean | TTransitionProps | undefined",
+      "runtimeType": [
+        "Boolean",
+        "String",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

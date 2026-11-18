@@ -310,7 +310,7 @@
 import { ref, computed, watch } from 'vue'
 import { MDI_ICONS } from 'origam/enums'
 import { useT } from '~/composables/useT'
-import { useAdminReference } from '~/composables/useAdminReference'
+import { useAdminEntry, useAdminReference } from '~/composables/useAdminReference'
 import type { IAdminPatch } from '~/interfaces/admin.interface'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
@@ -327,10 +327,7 @@ useSeoMeta({
     robots: 'noindex,nofollow',
 })
 
-const { data: entry, status } = await useFetch<Record<string, any>>(
-    () => `/api/reference/${kind.value}/${slug.value}`,
-    { key: () => `admin-doc:${kind.value}:${slug.value}` },
-)
+const { data: entry, status } = await useAdminEntry(kind, slug)
 
 const form = ref<IAdminPatch>({
     category: null,

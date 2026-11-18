@@ -37,11 +37,12 @@
 					ref="svgRef"
 					class="origam-chart-pyramid__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
-					role="img"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-pyramid-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -60,7 +61,8 @@
 							:d="slice.d"
 							:fill="slice.color"
 							:data-cy="`origam-chart-pyramid-slice-${ slice.index }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="sliceAriaLabel(slice)"
 							@click="onSliceActivate(slice, $event)"
@@ -156,6 +158,7 @@
 		lang="ts"
 		setup
 >
+	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -166,7 +169,9 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -243,8 +248,8 @@
 	 * Static SVG box — the component always paints into
 	 * a fixed 600 × 400 coordinate space; CSS scales it.
 	 ********************************************************/
-	const SVG_WIDTH = 600
-	const SVG_HEIGHT = 400
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.pyramid)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const PADDING = { top: 20, right: 120, bottom: 20, left: 20 }
 	const LABEL_FITS_INSIDE_MIN_HEIGHT = 18
 	const LABEL_FITS_INSIDE_MIN_WIDTH = 90
@@ -340,9 +345,9 @@
 		const total = values.reduce((s, v) => s + (Number.isFinite(v) && v >= 0 ? v : 0), 0) || 1e-9
 
 		const x0 = PADDING.left
-		const x1 = SVG_WIDTH - PADDING.right
+		const x1 = svgWidth.value - PADDING.right
 		const y0 = PADDING.top
-		const y1 = SVG_HEIGHT - PADDING.bottom
+		const y1 = svgHeight.value - PADDING.bottom
 		const cx = (x0 + x1) / 2
 		const plotW = x1 - x0
 		const totalH = y1 - y0
@@ -484,7 +489,6 @@
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

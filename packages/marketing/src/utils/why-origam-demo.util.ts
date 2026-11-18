@@ -1,8 +1,7 @@
 import type { IOrigamTheme } from 'origam/interfaces'
 
 import { WHY_DEMO_COMPONENT_KEYS } from '~/consts/why-origam-demo.const'
-
-type TPropsBlock = Record<string, unknown>
+import type { TPropsBlock } from '~/types/why-origam-demo.type'
 
 /**
  * Serialise one prop value the way it is WRITTEN in a theme file — single

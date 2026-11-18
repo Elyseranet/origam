@@ -1,0 +1,1 @@
+export const VUE_DEVTOOLS_PLUGINS_KEY = '__VUE_DEVTOOLS_PLUGINS__' as const

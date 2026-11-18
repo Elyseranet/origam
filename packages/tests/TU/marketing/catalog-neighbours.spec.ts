@@ -13,7 +13,7 @@ import {
     neighboursIn,
     orderCatalogSequence,
     orderSiblings
-} from '../../../marketing/server/utils/catalog-neighbours'
+} from '../../../marketing/src/utils/catalog-neighbours.util'
 
 import type { ICatalogSequenceRow } from '../../../marketing/src/interfaces/catalog-neighbours.interface'
 

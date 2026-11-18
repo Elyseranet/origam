@@ -1,0 +1,60 @@
+{
+  "name": "OrigamThemeProvider",
+  "tag": "origam-theme-provider",
+  "family": "ThemeProvider",
+  "label": "ThemeProvider",
+  "props": [
+    {
+      "name": "theme",
+      "label": "theme",
+      "tsType": "TTheme | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "auto",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Theme (brand) to apply to this sub-tree. Children that read CSS vars\nresolve them against this `data-theme` instead of the document root.\n\nUse `'auto'` to defer to the closest ancestor (no `data-theme`\nattribute is rendered).",
+      "source": "types"
+    },
+    {
+      "name": "mode",
+      "label": "mode",
+      "tsType": "\"auto\" | \"light\" | \"dark\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "auto",
+      "hasFactoryDefault": false,
+      "options": [
+        "auto",
+        "light",
+        "dark"
+      ],
+      "control": "select",
+      "description": "Color mode to force on this sub-tree, applied as `data-mode`.\nOrthogonal to `theme`: a branded sub-tree can be pinned to light\nor dark independently of the document mode.\n\nUse `'auto'` to defer to the closest ancestor (no `data-mode`\nattribute is rendered).",
+      "source": "types"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "HTML tag for the wrapper. Default `div`. Use `section`/`article`/etc.\nwhen the wrapper carries semantic meaning.",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

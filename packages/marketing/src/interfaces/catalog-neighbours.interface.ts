@@ -56,3 +56,9 @@ export interface ICatalogRelatedGroupView {
     toggleLabel: string
     toggleIcon: string
 }
+
+export interface IResolvedTarget {
+    kind: string
+    slug: string
+    name: string
+}

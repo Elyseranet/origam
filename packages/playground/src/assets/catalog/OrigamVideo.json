@@ -1,0 +1,1330 @@
+{
+  "name": "OrigamVideo",
+  "tag": "origam-video",
+  "family": "Video",
+  "label": "Video",
+  "props": [
+    {
+      "name": "src",
+      "label": "src",
+      "tsType": "string | IVideoSource[]",
+      "runtimeType": [
+        "String",
+        "Array"
+      ],
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Media URL — either a single string for `<video src>`, or an array\nof `<source>` descriptors when multiple formats are provided. The\nbrowser walks the list top-down and picks the first source whose\n`type` it can decode; pass the most preferred codec first.",
+      "source": "types"
+    },
+    {
+      "name": "poster",
+      "label": "poster",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Image rendered before playback starts. Maps to the native\n`poster` attribute when the `#poster` slot is not used.",
+      "source": "types"
+    },
+    {
+      "name": "tracks",
+      "label": "tracks",
+      "tsType": "IVideoTrack[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "description": "Captions / subtitles / chapter tracks attached to the player.\nEmpty array (the default) renders no `<track>` element.",
+      "source": "types"
+    },
+    {
+      "name": "autoplay",
+      "label": "autoplay",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Starts playback as soon as `loadedmetadata` fires. Browsers\nusually require `muted` to be true alongside `autoplay`; the\ncomponent forces `muted=true` when the user passes `autoplay`\nwithout an explicit `muted` value.\n\n**Accessibility:** `autoplay` is suppressed when the user has\nrequested reduced motion (`prefers-reduced-motion: reduce`).",
+      "source": "types"
+    },
+    {
+      "name": "muted",
+      "label": "muted",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Starts the player muted. Setting `muted=true` together with\n`autoplay=true` is required for most browsers to allow\nunattended playback.",
+      "source": "types"
+    },
+    {
+      "name": "loop",
+      "label": "loop",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Loops playback. The player restarts at `0` when `ended` fires.",
+      "source": "types"
+    },
+    {
+      "name": "controls",
+      "label": "controls",
+      "tsType": "\"none\" | \"custom\" | \"native\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "custom",
+      "hasFactoryDefault": false,
+      "options": [
+        "none",
+        "custom",
+        "native"
+      ],
+      "control": "select",
+      "description": "Which control surface to render. `'custom'` paints the in-house\ntoolbar; `'native'` exposes the browser's built-in `controls`\nattribute; `'none'` renders neither so the consumer can drive\nplayback through the `#controls` slot or programmatically.",
+      "source": "types"
+    },
+    {
+      "name": "playsInline",
+      "label": "playsInline",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Mirrors the native `playsinline` attribute. Required on iOS to\nkeep the player inside the page (otherwise iOS hijacks the\nplayback into the system video viewer). Defaults to `true`\nbecause that's the in-page UX we want 99 % of the time.",
+      "source": "types"
+    },
+    {
+      "name": "preload",
+      "label": "preload",
+      "tsType": "\"none\" | \"metadata\" | \"auto\" | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "metadata",
+      "hasFactoryDefault": false,
+      "options": [
+        "none",
+        "metadata",
+        "auto"
+      ],
+      "control": "select",
+      "description": "Buffering hint. `'metadata'` (default) loads just enough to\ncompute the duration; `'none'` defers everything until the user\npresses play; `'auto'` lets the browser pre-buffer as much as it\nwants.",
+      "source": "types"
+    },
+    {
+      "name": "aspectRatio",
+      "label": "aspectRatio",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "16/9",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "CSS `aspect-ratio` value applied to the wrapper. Accepts the\npresets (`'16/9'`, `'4/3'`, `'1/1'`, `'21/9'`, `'9/16'`) or any\nraw value (`'2 / 1'`, `'1.85'`, …). The wrapper enforces the\nratio via `aspect-ratio` so the player never re-flows the page\nafter metadata loads.",
+      "source": "types"
+    },
+    {
+      "name": "crossorigin",
+      "label": "crossorigin",
+      "tsType": "TCrossOrigin | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "",
+        "anonymous",
+        "use-credentials"
+      ],
+      "control": "select",
+      "description": "Mirrors the native `crossorigin` attribute. Required when the\nmedia or its tracks are served from a CORS-enabled origin and\nthe consumer needs canvas / WebAudio access to the decoded\nframes. Affects how cookies are sent on the request.",
+      "source": "alias"
+    },
+    {
+      "name": "disablePictureInPicture",
+      "label": "disablePictureInPicture",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Disables the picture-in-picture button (and the matching\nkeyboard shortcut). Useful for content where PIP would defeat\nthe experience (e.g. a synced multi-player layout).",
+      "source": "types"
+    },
+    {
+      "name": "skipSeconds",
+      "label": "skipSeconds",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 30,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Seconds skipped by the ±skip buttons and by the double-tap\ngesture on touch devices. Pass `0` to hide the skip buttons.",
+      "source": "types"
+    },
+    {
+      "name": "showCenterControls",
+      "label": "showCenterControls",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Show the centered ±skip buttons + play/pause overlay on hover\n(and always while paused). When `false`, only the bottom\ntoolbar handles play/pause.",
+      "source": "types"
+    },
+    {
+      "name": "playbackRates",
+      "label": "playbackRates",
+      "tsType": "readonly number[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "description": "Available playback rates exposed via the config menu.",
+      "source": "types"
+    },
+    {
+      "name": "playbackRate",
+      "label": "playbackRate",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 1,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Initial playback rate. The runtime value is exposed via the\n`update:playbackRate` emit and the `playbackRate` scoped-slot\nbinding.",
+      "source": "types"
+    },
+    {
+      "name": "inset",
+      "label": "inset",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Layout mode for the bottom toolbar :\n  - `true` — controls overlaid on the video bottom edge,\n    auto-hide while playing once the cursor leaves.\n  - `false` — controls always painted, no auto-hide.",
+      "source": "types"
+    },
+    {
+      "name": "allowRemotePlayback",
+      "label": "allowRemotePlayback",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Enable the cast / AirPlay button (Remote Playback API). The\nbutton only renders when the browser exposes the API AND at\nleast one cast-capable device is detected. No 3rd-party plugin.",
+      "source": "types"
+    },
+    {
+      "name": "doubleTapToSkip",
+      "label": "doubleTapToSkip",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Enable double-tap gestures on touch devices: tap-tap on the\nleft half = skip backward by `skipSeconds`, on the right half =\nskip forward.",
+      "source": "types"
+    },
+    {
+      "name": "downloadable",
+      "label": "downloadable",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Adds a \"Download\" row to the settings (cog) menu that lets the\nviewer download the currently-playing video file. The browser's\nstandard download dialog opens — no analytics, no XHR, no server\ncall. Works on every modern browser (uses the native `download`\nattribute on a hidden `<a>` element).\n\nSet to `false` (default) to hide the row, e.g. for licensed\ncontent that must stay streamed.",
+      "source": "types"
+    },
+    {
+      "name": "downloadFilename",
+      "label": "downloadFilename",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Override the downloaded file name. Defaults to the trailing\nsegment of the source URL. Useful when the URL is opaque\n(e.g. signed-S3 with a hash basename) and you want the file\nto land in the user's Downloads folder with a clean name.",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "bgColor",
+      "label": "bgColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "height",
+      "label": "height",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "maxHeight",
+      "label": "maxHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "maxWidth",
+      "label": "maxWidth",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "minHeight",
+      "label": "minHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "minWidth",
+      "label": "minWidth",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "width",
+      "label": "width",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "rounded",
+      "label": "rounded",
+      "tsType": "string | number | boolean | null | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Corner-radius selector. Three modes:\n - **named variant** (`'small' | 'default' | 'large' | …`,\n   cf. `ROUNDED` enum) → emits `--rounded-{name}` class so the\n   component's SCSS can pick the right token rung.\n - **boolean `true`** (or empty string `''`) → emits the legacy\n   `--rounded` class for components that only have a single rounded\n   state (e.g. `OrigamBtn` defaulting to `radius.2xl`).\n - **CSS value** (`'4px'`, `'4px 0 4px 0'`, `100`) → emits inline\n   `border-radius` declarations via `useRounded.roundedStyles`.",
+      "source": "types"
+    },
+    {
+      "name": "roundedTopRight",
+      "label": "roundedTopRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Top-right corner only. Takes the same vocabulary as `rounded`\n(`8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`), minus `shaped` /\n`shaped-invert` which are asymmetric by definition.",
+      "source": "types"
+    },
+    {
+      "name": "roundedTopLeft",
+      "label": "roundedTopLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Top-left corner only. Same vocabulary as `roundedTopRight`.",
+      "source": "types"
+    },
+    {
+      "name": "roundedBottomLeft",
+      "label": "roundedBottomLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Bottom-left corner only. Same vocabulary as `roundedTopRight`.",
+      "source": "types"
+    },
+    {
+      "name": "roundedBottomRight",
+      "label": "roundedBottomRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Bottom-right corner only. Same vocabulary as `roundedTopRight`.",
+      "source": "types"
+    },
+    {
+      "name": "roundedStartStart",
+      "label": "roundedStartStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nLogical per-corner radius — rung 2 (issue #1013)",
+      "source": "types"
+    },
+    {
+      "name": "roundedStartEnd",
+      "label": "roundedStartEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "roundedEndStart",
+      "label": "roundedEndStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "roundedEndEnd",
+      "label": "roundedEndEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "border",
+      "label": "border",
+      "tsType": "string | number | boolean | TDirectionBoth[] | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String",
+        "Array"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderTop",
+      "label": "borderTop",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderLeft",
+      "label": "borderLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderBottom",
+      "label": "borderBottom",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderRight",
+      "label": "borderRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderBlock",
+      "label": "borderBlock",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Logical-axis shorthand for the block-start + block-end edges (top +\nbottom in the default horizontal-tb writing mode). Resolves to the\nnative CSS `border-block-{width,style,color}` properties — same\nvalue grammar as `borderTop` / `borderRight` / `borderBottom` /\n`borderLeft` (boolean opt-in, bare width number, or a free-form\n`\"width style color\"` string). Precedence: beats the global `border`\nshorthand for the edges it targets, but a physical `borderTop` /\n`borderBottom` still wins over it for that specific edge — see\n`useBorder` JSDoc for the full precedence table.",
+      "source": "types"
+    },
+    {
+      "name": "borderInline",
+      "label": "borderInline",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Logical-axis shorthand for the inline-start + inline-end edges (left\n+ right in LTR). Same grammar and precedence rules as `borderBlock`,\nmapped onto `border-inline-{width,style,color}`.",
+      "source": "types"
+    },
+    {
+      "name": "borderInlineStart",
+      "label": "borderInlineStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderInlineStart",
+      "source": "types"
+    },
+    {
+      "name": "borderInlineEnd",
+      "label": "borderInlineEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderInlineEnd",
+      "source": "types"
+    },
+    {
+      "name": "borderBlockStart",
+      "label": "borderBlockStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderBlockStart",
+      "source": "types"
+    },
+    {
+      "name": "borderBlockEnd",
+      "label": "borderBlockEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderBlockEnd",
+      "source": "types"
+    },
+    {
+      "name": "borderColor",
+      "label": "borderColor",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderStyle",
+      "label": "borderStyle",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderTopColor",
+      "label": "borderTopColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Per-side color override (issue #215). Additive: absent by default,\nno behaviour change for existing consumers.\n\nPrecedence (specific > global): `borderTopColor` wins over any\ncolor implied by `borderTop` (e.g. `borderTop=\"2px dashed red\"`),\nwhich itself wins over the global `borderColor` / `border` shorthand\nfor the top side. See `useBorder` JSDoc for the full precedence\ntable.\n\nAccepts a {@link TColor} (semantic intent, raw CSS color, or falsy\nto opt out) — same input family as `color` / `bgColor`. Gradients\nare NOT supported on border colors (CSS `border-color` has no\ngradient form) and are silently ignored.",
+      "source": "types"
+    },
+    {
+      "name": "borderRightColor",
+      "label": "borderRightColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderBottomColor",
+      "label": "borderBottomColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderLeftColor",
+      "label": "borderLeftColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderInlineStartColor",
+      "label": "borderInlineStartColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderInlineStartColor",
+      "source": "types"
+    },
+    {
+      "name": "borderInlineEndColor",
+      "label": "borderInlineEndColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderInlineEndColor",
+      "source": "types"
+    },
+    {
+      "name": "borderBlockStartColor",
+      "label": "borderBlockStartColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderBlockStartColor",
+      "source": "types"
+    },
+    {
+      "name": "borderBlockEndColor",
+      "label": "borderBlockEndColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderBlockEndColor",
+      "source": "types"
+    },
+    {
+      "name": "margin",
+      "label": "margin",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--marged` class.",
+      "source": "types"
+    },
+    {
+      "name": "marginTop",
+      "label": "marginTop",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginBlock` for the top edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginLeft",
+      "label": "marginLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginInline` for the left edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginBottom",
+      "label": "marginBottom",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginBlock` for the bottom edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginRight",
+      "label": "marginRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginInline` for the right edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginBlock",
+      "label": "marginBlock",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`.",
+      "source": "types"
+    },
+    {
+      "name": "marginInline",
+      "label": "marginInline",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`.",
+      "source": "types"
+    },
+    {
+      "name": "marginInlineStart",
+      "label": "marginInlineStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nLogical per-side margin — rung 3 (issue #1013)",
+      "source": "types"
+    },
+    {
+      "name": "marginInlineEnd",
+      "label": "marginInlineEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "marginBlockStart",
+      "label": "marginBlockStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "marginBlockEnd",
+      "label": "marginBlockEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "padding",
+      "label": "padding",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--padded` class.",
+      "source": "types"
+    },
+    {
+      "name": "paddingTop",
+      "label": "paddingTop",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingBlock` for the top edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingLeft",
+      "label": "paddingLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingInline` for the left edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingBottom",
+      "label": "paddingBottom",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingBlock` for the bottom edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingRight",
+      "label": "paddingRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingInline` for the right edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingBlock",
+      "label": "paddingBlock",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`.",
+      "source": "types"
+    },
+    {
+      "name": "paddingInline",
+      "label": "paddingInline",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`.",
+      "source": "types"
+    },
+    {
+      "name": "paddingInlineStart",
+      "label": "paddingInlineStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nLogical per-side padding — rung 3 (issue #1013)",
+      "source": "types"
+    },
+    {
+      "name": "paddingInlineEnd",
+      "label": "paddingInlineEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "paddingBlockStart",
+      "label": "paddingBlockStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "paddingBlockEnd",
+      "label": "paddingBlockEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "elevation",
+      "label": "elevation",
+      "tsType": "TElevation | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "fontSize",
+      "label": "fontSize",
+      "tsType": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl",
+        "4xl",
+        "5xl"
+      ],
+      "control": "select",
+      "description": "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "error",
+      "label": "error",
+      "payloadType": "[err: Error | MediaError]",
+      "source": "types"
+    },
+    {
+      "name": "play",
+      "label": "play",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "pause",
+      "label": "pause",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "ended",
+      "label": "ended",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "timeupdate",
+      "label": "timeupdate",
+      "payloadType": "[currentTime: number]",
+      "source": "types"
+    },
+    {
+      "name": "volumechange",
+      "label": "volumechange",
+      "payloadType": "[volume: number]",
+      "source": "types"
+    },
+    {
+      "name": "loadedmetadata",
+      "label": "loadedmetadata",
+      "payloadType": "[payload: { duration: number; }]",
+      "source": "types"
+    },
+    {
+      "name": "update:playbackRate",
+      "label": "update:playbackRate",
+      "payloadType": "[rate: number]",
+      "source": "types"
+    },
+    {
+      "name": "download",
+      "label": "download",
+      "payloadType": "[url: string]",
+      "source": "types"
+    },
+    {
+      "name": "quality-change",
+      "label": "quality-change",
+      "payloadType": "[quality: string]",
+      "source": "types"
+    },
+    {
+      "name": "enterfullscreen",
+      "label": "enterfullscreen",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "exitfullscreen",
+      "label": "exitfullscreen",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "enterpip",
+      "label": "enterpip",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "exitpip",
+      "label": "exitpip",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "skip",
+      "label": "skip",
+      "payloadType": "[seconds: number]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "controls",
+      "label": "controls",
+      "slotPropsType": "IVideoScopedSlotBindings",
+      "description": "Full toolbar replacement. Receives the runtime state + the\nimperative methods. When omitted, the component renders its\nbuilt-in toolbar (play/pause + scrubber + time + volume +\ncaptions + PIP + fullscreen).",
+      "source": "types"
+    },
+    {
+      "name": "poster",
+      "label": "poster",
+      "slotPropsType": "any",
+      "description": "Overlay rendered while playback has not yet started\n(`currentTime === 0 && paused`). When omitted, the component\npaints the `poster` image as a `background-image` on the\n`<video>` element via the native attribute.",
+      "source": "types"
+    },
+    {
+      "name": "loading",
+      "label": "loading",
+      "slotPropsType": "any",
+      "description": "Overlay rendered while the media is loading.",
+      "source": "types"
+    },
+    {
+      "name": "error",
+      "label": "error",
+      "slotPropsType": "{ error: Error | MediaError; }",
+      "description": "Overlay rendered when an error occurred.",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

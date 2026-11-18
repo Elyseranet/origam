@@ -1,17 +1,19 @@
 <template>
-	<div
+	<component
+			:is="tag"
 			:id="id"
 			:class="responsiveClasses"
 			:style="responsiveStyles"
 	>
 		<slot name="additional"/>
-		<div
+		<component
+				:is="tag"
 				v-if="slots.default"
 				:class="responsiveContentClasses"
 		>
 			<slot name="default"/>
-		</div>
-	</div>
+		</component>
+	</component>
 </template>
 
 <script
@@ -40,7 +42,9 @@
 	 * @description
 	 * Props and filterProps for the Responsive component.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IResponsiveProps>(), {})
+	const props = withDefaults(defineProps<IResponsiveProps>(), {
+		tag: 'div'
+	})
 
 	defineEmits<IResponsiveEmits>()
 

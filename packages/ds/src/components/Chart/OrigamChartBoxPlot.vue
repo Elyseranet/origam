@@ -37,11 +37,12 @@
 					ref="svgRef"
 					class="origam-chart-box-plot__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
-					role="img"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-box-plot-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -119,7 +120,8 @@
 							class="origam-chart__box"
 							:class="{ 'origam-chart__box--active': hoveredIndex === box.index }"
 							:data-cy="`origam-chart-box-group-${ box.index }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="boxAriaLabel(box)"
 							@click="onBoxActivate(box, $event)"
@@ -253,6 +255,7 @@
 		lang="ts"
 		setup
 >
+	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -263,7 +266,9 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -348,15 +353,15 @@
 	/*********************************************************
 	 * Static SVG box — fixed coordinate space, CSS scales it.
 	 ********************************************************/
-	const SVG_WIDTH = 600
-	const SVG_HEIGHT = 400
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.boxPlot)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const PADDING = { top: 20, right: 20, bottom: 40, left: 52 }
 
 	const PLOT = {
 		get left () { return PADDING.left },
-		get right () { return SVG_WIDTH - PADDING.right },
+		get right () { return svgWidth.value - PADDING.right },
 		get top () { return PADDING.top },
-		get bottom () { return SVG_HEIGHT - PADDING.bottom }
+		get bottom () { return svgHeight.value - PADDING.bottom }
 	}
 
 	/*********************************************************
@@ -581,7 +586,6 @@
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

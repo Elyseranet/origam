@@ -32,7 +32,9 @@
 			<origam-date-picker-controls
 					ref="origamDatePickerControlsRef"
 					:text="controlsText"
+					:year-text="controlsYearText"
 					v-bind="{...datePickerControlsProps, ...disabledControlers}"
+					:view-mode="viewMode"
 					@click:next="handleClickNext"
 					@click:prev="handleClickPrev"
 					@click:month="handleClickMonth"
@@ -61,7 +63,7 @@
 							:max="maxDate"
 							:min="minDate"
 							v-bind="{ ...datePickerYearsProps }"
-							@update:year="handleUpdateMonth"
+							@update:year="handleUpdateYear"
 					/>
 				</template>
 
@@ -171,7 +173,7 @@
 			(v) => props.multiple || props.range ? v : v[0]
 	)
 
-	const viewMode = useVModel(props, 'viewMode')
+	const viewMode = useVModel(props, 'viewMode', DATE_MODE.MONTH)
 
 	const viewModeIsMonth = computed(() => {
 		return viewMode.value === DATE_MODE.MONTH
@@ -239,10 +241,10 @@
 	})
 
 	/*********************************************************
-	 * monthAndYearText / controlsText (#700)
+	 * monthText / controlsText / controlsYearText (#700, #1365)
 	 *
 	 * @description
-	 * `monthAndYearText` used to be called `text`, which MASKED the
+	 * The derived month label used to be called `text`, which MASKED the
 	 * `text` prop. `IDatePickerProps` reaches `text?: string` through
 	 * `Omit<IDatePickerControlsProps, 'active'>` — the `Omit` drops
 	 * `active`, NOT `text` — so the prop is genuinely declared and a
@@ -279,18 +281,23 @@
 	 * and reinstate a different variant of the same defect (the derived
 	 * month/year label would never be rendered again).
 	 ********************************************************/
-	const monthAndYearText = computed(() => {
+	const displayedDate = computed(() => {
 		let date = adapter.date()
 
 		date = adapter.setDate(date, 1)
 		date = adapter.setMonth(date, month.value)
-		date = adapter.setYear(date, year.value)
 
-		return adapter.format(date, 'monthAndYear')
+		return adapter.setYear(date, year.value)
 	})
 
+	const monthText = computed(() => adapter.format(displayedDate.value, 'month'))
+	const displayedYearText = computed(() => adapter.format(displayedDate.value, 'year'))
+
 	const controlsText = computed(() => {
-		return props.text || monthAndYearText.value
+		return props.text || monthText.value
+	})
+	const controlsYearText = computed(() => {
+		return props.yearText || displayedYearText.value
 	})
 
 	const headerTransition = computed(() => {
@@ -315,6 +322,7 @@
 	 *
 	 * @description
 	 * Computes which navigation controls should be disabled based on min/max constraints.
+	 * prev/next shift the day grid, so they are disabled on the months/years grids.
 	 ********************************************************/
 
 	const disabledControlers = computed(() => {
@@ -327,7 +335,7 @@
 			disabledPrev: props.disabledPrev
 		}
 
-		if (viewModeIsMonth.value) {
+		if (!viewModeIsMonth.value) {
 			targets.disabledNext = true
 			targets.disabledPrev = true
 		} else {
@@ -413,7 +421,7 @@
 		emits('update:month', value)
 	}
 	const handleUpdateYear = (value: number) => {
-		if (viewModeIsYears.value) handleClickYear()
+		if (viewModeIsYears.value) viewMode.value = DATE_MODE.MONTHS
 
 		emits('update:year', value)
 	}
@@ -471,7 +479,7 @@
 		// in IDatePickerProps.
 		return origamDatePickerControlsRef.value?.filterProps(
 			props as unknown as IDatePickerControlsProps,
-			['class', 'style', 'id', 'text', 'disabled']
+			['class', 'style', 'id', 'text', 'yearText', 'viewMode', 'disabled']
 		)
 	})
 	const datePickerHeaderProps = computed(() => {
@@ -548,14 +556,6 @@
 
 		&--show-week {
 			width: var(--origam-date-picker--show-week---width);
-		}
-
-		&--year {
-			:deep(.origam-date-picker-controls) {
-				.origam-date-picker-controls__mode-btn {
-					transform: rotate(180deg);
-				}
-			}
 		}
 
 		&__title {

@@ -4,13 +4,13 @@
 			ref="origamTextFieldRef"
 			v-model:focused="isFocused"
 			v-model:model-value="search"
-			:aria-label="t(accessibleLabel)"
+			:aria-label="label ? t(label) : undefined"
 			:class="selectClasses"
 			:counter-value="counterValue"
 			:dirty="isDirty"
 			:placeholder="placeholder"
 			:style="selectStyles"
-			:title="t(accessibleLabel)"
+			:title="label ? t(label) : undefined"
 			:validation-value="effectiveValidationValue"
 			v-bind="{ ...textFieldProps, ...comboboxAriaAttrs }"
 			@blur="handleBlur"
@@ -300,7 +300,7 @@
 	import { useFilter } from '../../composables/Commons/filters.composable'
 	import { useItems } from '../../composables/Commons/items.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
+	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
 	import { useScrolling } from '../../composables/Commons/scrolling.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
@@ -309,6 +309,7 @@
 
 	import { IN_BROWSER } from '../../consts/Commons/commons.const'
 	import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
+	import { MENU_WRAPPER_ARIA_RESET } from '../../consts/Menu/menu.const'
 
 	import { BLOCK } from '../../enums/Commons/anchor.enum'
 	import { DENSITY } from '../../enums/Commons/density.enum'
@@ -569,6 +570,19 @@
 
 		return {
 			...consumerProps,
+			/*********************************************************
+			 * Menu activator ARIA — #1247
+			 *
+			 * @description
+			 * `activator="parent"` is the role-less `.origam-field` wrapper: OrigamMenu's
+			 * default aria-haspopup/expanded/owns are illegal there (aria-allowed-attr).
+			 * The combobox ARIA lives on the <input> (`comboboxAriaAttrs`); `undefined`
+			 * suppresses the defaults.
+			 ********************************************************/
+			activatorProps: {
+				...MENU_WRAPPER_ARIA_RESET,
+				...(consumerProps.activatorProps ?? {})
+			},
 			contentProps: {
 				...consumerContentProps,
 				// The consumer's own style is listed last so it still wins —
@@ -600,7 +614,7 @@
 			role: 'combobox',
 			'aria-haspopup': 'listbox',
 			'aria-expanded': menu.value ? 'true' : 'false',
-			'aria-controls': menu.value ? listboxId : undefined,
+			'aria-controls': listboxId,
 			'aria-autocomplete': props.autocomplete ? 'list' : undefined,
 			'aria-activedescendant': activeDescendant
 		}
@@ -1226,7 +1240,7 @@
 	 ********************************************************/
 
 	const textFieldProps = computed(() => {
-		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'counterValue', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
+		return filterPropsOf(OrigamTextField, props, ['class', 'id', 'style', 'counterValue', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
 	})
 
 	// The dropdown rows must sit on the same height rung as the control, so the
@@ -1246,35 +1260,15 @@
 		return isDirty.value || (!isFocused.value && props.label && !props.persistentPlaceholder) ? undefined : props.placeholder
 	})
 	/*********************************************************
-	 * toggleLabel / accessibleLabel (#622)
+	 * Accessible name (#622, #1251)
 	 *
 	 * @description
-	 * This was previously named `label`, a bare `const` that SHADOWED the
-	 * `label` PROP (`IFieldProps.label`) inside this `<script setup>`
-	 * block. The template's `:aria-label="t(label)"` / `:title="t(label)"`
-	 * therefore always resolved to this toggle wording, never to the
-	 * field's own label — every `<origam-select>` announced "Open"/"Close"
-	 * to assistive tech regardless of its `label` prop. Renamed so the
-	 * identifier can no longer mask `props.label`.
-	 *
-	 * @description
-	 * `<origam-field>` already renders a real `<label for>` (OrigamField ->
-	 * OrigamLabel, `for: id.value` / `text: props.label`, see `labelProps`
-	 * in `OrigamField.vue`) linked to this very `<input>` via its `id`, so
-	 * `props.label` is ALREADY the input's accessible name whenever it is
-	 * set. `accessibleLabel` keeps `aria-label` / `title` consistent with
-	 * that native label instead of re-introducing a second,
-	 * independently-maintained source of truth for the same text — it
-	 * falls back to `toggleLabel` only for a labelless/`singleLine`
-	 * select, the one case where `<origam-field>` renders no `<label for>`
-	 * at all and the toggle wording is the only accessible name available.
+	 * `aria-label` / `title` mirror `props.label` only. Without a `label`
+	 * prop NOTHING is emitted: the name then comes from an external
+	 * `<label for>` / the consumer's `aria-labelledby`, which an `aria-label`
+	 * would override (it ranks above `<label for>` in the name computation).
+	 * The open/close wording stays on the toggle button, not on the input.
 	 ********************************************************/
-	const toggleLabel = computed(() => {
-		return menu.value ? props.closeText : props.openText
-	})
-	const accessibleLabel = computed(() => {
-		return props.label || toggleLabel.value
-	})
 
 	/*********************************************************
 	 * Class & Style

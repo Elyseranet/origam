@@ -95,7 +95,7 @@ import { OrigamChartMap } from '@origam/ds'
 | Name | Type | Default | Description |
 |---|---|---|---|
 | `mode` | `TChartMapMode` | `'choropleth'` | Rendering mode. `'choropleth'` or `'flight-routes'`. |
-| `height` | `number \| string` | `360` | Chart height in px. Ignored when `aspectRatio` is set. |
+| `height` | `number \| string` | — | Optional cap on the chart height in px (the map is 2:1). Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand — overrides `height`. |
 | `title` | `string` | `undefined` | Optional title above the chart. Replaceable via `#title` slot. |
 | `subtitle` | `string` | `undefined` | Optional subtitle below the title. |
@@ -165,10 +165,12 @@ Countries included in the simplified map (35 total):
 
 ## Behaviour notes
 
+**Responsive 2:1 drawing surface (#1324).** The SVG `viewBox` follows the measured width of the container (`useChartSize`, a `ResizeObserver`) and its height is half that width, so the geography is never distorted. Countries are re-projected to the measured box, and legend text and strokes keep their real pixel size. `height` is an optional cap: when set, the width is reduced to keep the 2:1 ratio. Until the box is measured (SSR, first paint) the 1000 × 500 fallback is used, so hydration is unchanged.
+
 - **SVG-only** — no canvas fallback, no external map library.
 - **Projection** — simplified Mercator on a fixed 1000×500 coordinate space. Shapes are recognisable approximations, not GIS-accurate.
 - **Choropleth colour interpolation** — uses `color-mix(in srgb, …)`. Requires a browser with `color-mix()` support (Baseline 2023). Falls back to the start colour in unsupported environments.
-- **Keyboard navigation** — choropleth countries with data and route arcs are keyboard-focusable (`tabindex="0"`, Enter/Space activate `point-click`). Countries without data are `tabindex="-1"`.
+- **Keyboard navigation** — choropleth countries with data and route arcs are keyboard-focusable (one roving tab stop, arrows move between them, Enter/Space activate `point-click` — see the `OrigamChart` page). Countries without data are not focusable. Arrow keys follow the DOM order: countries with data first (in map order), then the route arcs (in `routes` order) — not the geographic neighbour.
 - **Animation** — `prefers-reduced-motion: reduce` disables all animations automatically.
 - **Route curvature edge cases** — at `routeCurvature=0` the arc degenerates to a straight line. At values above `0.6` the perpendicular offset may push the control point outside the SVG viewport on short inter-country chords; `0.3`–`0.4` is the recommended range.
 - **`colorScheme` has no effect** (#426). It's inherited from `IChartBaseProps` and stays on the public API for consistency across chart types, but colour is a continuous gradient in choropleth mode (`colorRange`) or a single `lineColor` in flight-routes mode — neither has a per-series identity a rotating discrete palette could drive. Passing it logs `[origam] <OrigamChartMap> prop "colorScheme" has no effect on this component: …` once to the console in dev builds (silent in production). Neither wiring a fake behaviour nor removing the prop was on the table — see the #426 decision.

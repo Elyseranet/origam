@@ -25,7 +25,8 @@ import {
     GLOBAL_SEARCH_ALL_FAMILY,
     GLOBAL_SEARCH_RESULT_CAP,
     GLOBAL_SEARCH_STATIC_PAGES,
-    GLOBAL_SEARCH_STATIC_PAGE_HREFS
+    GLOBAL_SEARCH_STATIC_PAGE_HREFS,
+    TEASER_PER_FAMILY
 } from '~/consts/global-search.const'
 import { CATALOG_FAMILIES } from '~/consts/catalog-family.const'
 import type { IGlobalSearchEntry } from '~/interfaces/global-search.interface'
@@ -33,9 +34,6 @@ import type { TGlobalSearchFamily } from '~/types/global-search.type'
 import { useReferenceCatalog } from '~/composables/useApiReference'
 import { useT } from '~/composables/useT'
 import { buildFamilyCommands, buildStaticPageCommands, globalSearchFamilyHref, searchCommands } from '~/utils/global-search.util'
-
-/** Lignes par famille quand la requête est vide et que toutes les familles sont visibles. */
-const TEASER_PER_FAMILY = 5
 
 export function useGlobalSearch () {
     const { locale } = useI18n()

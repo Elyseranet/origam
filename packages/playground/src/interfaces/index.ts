@@ -1,3 +1,4 @@
+export type * from './Catalog/catalog-index-entry.interface'
 export type * from './Catalog/component-definition.interface'
 export type * from './Catalog/component-snippet.interface'
 export type * from './Catalog/event-definition.interface'

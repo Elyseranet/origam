@@ -235,3 +235,13 @@ child element, whereas `--` would designate a state variant. Copying a
 | `--origam-data-list__kv---value-line-height` | Value line height                    |
 | `--origam-data-list__kv---gap-key-value`     | Column gap between key and value     |
 | `--origam-data-list__kv---value-inline-gap`  | Gap between inline value items (chips, …) |
+| `--origam-data-list__kv---row-columns` | Row `grid-template-columns` (default: key-width + `1fr`) |
+| `--origam-data-list__kv---row-gap` | Row gap between key and value when stacked |
+| `--origam-data-list__kv---row-padding-inline` | Row inline padding |
+| `--origam-data-list__kv---row-radius` | Row border radius |
+| `--origam-data-list__kv---row-background` | Row background |
+| `--origam-data-list__kv---row-border-width` | Width of the row divider (default `1px`) |
+| `--origam-data-list__kv---key-letter-spacing` | Key letter spacing |
+| `--origam-data-list__kv---key-text-transform` | Key text transform |
+| `--origam-data-list__kv---value-font-weight` | Value font weight |
+| `--origam-data-list__kv---value-font-variant-numeric` | Value `font-variant-numeric` |

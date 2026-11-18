@@ -1,0 +1,116 @@
+{
+  "name": "OrigamParallaxLayer",
+  "tag": "origam-parallax-layer",
+  "family": "Parallax",
+  "label": "ParallaxLayer",
+  "props": [
+    {
+      "name": "speed",
+      "label": "speed",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 1,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Parallax speed multiplier for this layer.\n - `0`   → fixed (no movement, sticks to host)\n - `0.5` → half the scroll speed (background — far)\n - `1`   → moves with the scroll (neutral)\n - `>1`  → faster than the scroll (foreground — near)\n\nNegative values reverse the direction.",
+      "source": "types"
+    },
+    {
+      "name": "offsetX",
+      "label": "offsetX",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 0,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Static X-axis offset (px) applied on top of the parallax translation.\nUseful to nudge a layer without changing its speed.",
+      "source": "types"
+    },
+    {
+      "name": "offsetY",
+      "label": "offsetY",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 0,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Static Y-axis offset (px) applied on top of the parallax translation.",
+      "source": "types"
+    },
+    {
+      "name": "zIndex",
+      "label": "zIndex",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Optional `z-index` override. By default layers stack in document order.",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

@@ -3,16 +3,16 @@
 			:id="id"
 			ref="origamTextFieldRef"
 			v-model:focused="isFocused"
-			:aria-label="t(accessibleLabel)"
+			:aria-label="label ? t(label) : undefined"
 			:class="datePickerFieldClasses"
 			:counter-value="counterValue"
 			:dirty="isDirty"
 			:placeholder="placeholder"
 			:style="datePickerFieldStyles"
-			:title="t(accessibleLabel)"
+			:title="label ? t(label) : undefined"
 			:validation-value="effectiveValidationValue"
 
-			v-bind="{ ...textFieldProps }"
+			v-bind="{ ...textFieldProps, ...comboboxAriaAttrs }"
 			@blur="handleBlur"
 			@change="handleChange"
 			@click:clear="handleClear"
@@ -187,13 +187,14 @@
 
 	import { useDate } from '../../composables/Commons/date.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
+	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
 	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
 	import { useTextColor } from '../../composables/Commons/textColor.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
+	import { MENU_WRAPPER_ARIA_RESET } from '../../consts/Menu/menu.const'
 
 	import { BLOCK } from '../../enums/Commons/anchor.enum'
 	import { DENSITY } from '../../enums/Commons/density.enum'
@@ -431,6 +432,12 @@
 		'--origam-date-picker-month__day---font-size': fontSize
 	}))
 
+	const comboboxAriaAttrs = computed(() => ({
+		role: 'combobox',
+		'aria-haspopup': 'dialog',
+		'aria-expanded': menu.value ? 'true' : 'false'
+	}))
+
 	const menuProps = computed(() => {
 		const consumerContentProps = (props.menuProps?.contentProps ?? {}) as Record<string, any>
 
@@ -449,17 +456,13 @@
 				 * calendar dialog.
 				 *
 				 * @description
-				 * `role: 'combobox'` is ALSO required here: `activator="parent"`
-				 * (below) lands these ARIA attrs on the `.origam-field` wrapper
-				 * `<div>`, which carries no role by default — `aria-allowed-attr`
-				 * rejects `aria-expanded` on an element whose role doesn't
-				 * support it. Same fix, same rationale as
-				 * `OrigamSelect.comboboxAriaAttrs` (`role` MUST sit on the same
-				 * element as `aria-haspopup`/`aria-expanded`).
+				 * #1308 — role + `aria-haspopup`/`aria-expanded` live on the <input>
+				 * (`comboboxAriaAttrs`), as in `OrigamSelect` (#1247).
+				 * `activator="parent"` is the role-less `.origam-field` wrapper, so the
+				 * menu's default ARIA is neutralised there.
 				 ********************************************************/
-				role: 'combobox',
-				...(props.menuProps?.activatorProps || {}),
-				'aria-haspopup': 'dialog'
+				...MENU_WRAPPER_ARIA_RESET,
+				...(props.menuProps?.activatorProps || {})
 			},
 			contentProps: {
 				...consumerContentProps,
@@ -559,7 +562,7 @@
 	 * Forwarded props
 	 ********************************************************/
 	const textFieldProps = computed(() => {
-		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
+		return filterPropsOf(OrigamTextField, props, ['class', 'id', 'style', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
 	})
 
 	const datePickerProps = computed(() => {
@@ -619,38 +622,15 @@
 		return isDirty.value || (!isFocused.value && props.label && !props.persistentPlaceholder) ? undefined : props.placeholder
 	})
 	/*********************************************************
-	 * toggleLabel / accessibleLabel (#666)
+	 * Accessible name (#666, #1251)
 	 *
 	 * @description
-	 * This was previously named `label`, a bare `const` that SHADOWED the
-	 * `label` PROP (`IDatePickerFieldProps` -> `ITextFieldProps` ->
-	 * `IFieldProps.label`, `field.interface.ts:43`) inside this
-	 * `<script setup>` block. The template's `:aria-label="t(label)"` /
-	 * `:title="t(label)"` therefore always resolved to this toggle
-	 * wording, never to the field's own label — every
-	 * `<origam-date-picker-field>` announced "Open"/"Close" to assistive
-	 * tech regardless of its `label` prop. Renamed so the identifier can
-	 * no longer mask `props.label`. Same defect and same correction as
-	 * `OrigamSelect` (#622 / PR #656).
-	 *
-	 * @description
-	 * `<origam-field>` already renders a real `<label for>` (OrigamField ->
-	 * OrigamLabel, `for: id.value` / `text: props.label`) linked to this
-	 * very `<input>` via its `id`, so `props.label` is ALREADY the input's
-	 * accessible name whenever it is set. `accessibleLabel` keeps
-	 * `aria-label` / `title` consistent with that native label instead of
-	 * re-introducing a second, independently-maintained source of truth
-	 * for the same text — it falls back to `toggleLabel` only for a
-	 * labelless field, the one case where `<origam-field>` renders no
-	 * `<label for>` at all and the toggle wording is the only accessible
-	 * name available.
+	 * `aria-label` / `title` mirror `props.label` only. Without a `label`
+	 * prop NOTHING is emitted: the name then comes from an external
+	 * `<label for>` / the consumer's `aria-labelledby`, which an `aria-label`
+	 * would override (it ranks above `<label for>` in the name computation).
+	 * The open/close wording stays on the toggle button, not on the input.
 	 ********************************************************/
-	const toggleLabel = computed(() => {
-		return menu.value ? props.closeText : props.openText
-	})
-	const accessibleLabel = computed(() => {
-		return props.label || toggleLabel.value
-	})
 	const closeOnSelect = computed(() => {
 		return props.closeOnSelect && !(props.multiple || props.range)
 	})

@@ -52,7 +52,7 @@ const series: Array<IChartSeries> = [
 |---|---|---|---|
 | `type` | `TChartPolarKind` | `'pie'` | Polar primitive: `'pie'` or `'donut'`. |
 | `donutHoleSize` | `number` | `0.6` | Inner-radius proportion for `donut`. `0` collapses to a pie; `1` produces a zero-thickness ring. Ignored when `type='pie'`. |
-| `height` | `number \| string` | `360` | Chart height. A plain number is `px`; any CSS length is accepted. Ignored when `aspectRatio` is set. |
+| `height` | `number \| string` | — | Optional cap on the chart height (the chart is square: height = width, capped by this value). A plain number is `px`; any CSS length is accepted. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `colorScheme` | `Array<TIntent \| string>` | 8-intent cycle | Palette cycling by slice index. A series-level `color` overrides the palette for all slices of that series. |
 | `title` | `string` | `undefined` | Optional title above the chart. |
@@ -100,6 +100,8 @@ const series: Array<IChartSeries> = [
 
 ## Behaviour notes
 
+**Responsive 1:1 drawing surface (#1324).** The SVG `viewBox` is a square: its width follows the measured width of the container (`useChartSize`, a `ResizeObserver`) and its height equals that width, so the circle is never squashed. Text, strokes and markers keep their real pixel size instead of being scaled with a fixed canvas. `height` is now an optional cap: it has no default any more, and when set the side of the square is `min(container width, available height)`. Until the box is measured (SSR, first paint) the 360 × 360 fallback is used, so hydration is unchanged.
+
 **Single-series architecture.** Pie and donut charts are single-series by definition. `series[0]` is the active series; all other entries in the `series` array are silently ignored. Each number in `series[0].data` becomes one slice. Slice colours cycle through `colorScheme` by data index: `data[0]` gets `colorScheme[0]`, `data[1]` gets `colorScheme[1]`, and so on. Setting `series[0].color` to an intent or CSS value overrides the entire palette and tints all slices with that single colour.
 
 **Negative and zero values.** Slices where `data[i] <= 0` are skipped entirely. The percentage label in the default tooltip is computed against the sum of all positive values.
@@ -116,7 +118,7 @@ const series: Array<IChartSeries> = [
 
 **SSR.** A placeholder `<div>` with the correct dimensions is emitted server-side; the SVG mounts on `onMounted`.
 
-**Keyboard.** Each slice is `tabindex="0"` with an `aria-label` of `"{series name} — {category}: {value}"`. `Enter` / `Space` fire `point-click`. Legend entries also support keyboard toggle.
+**Keyboard.** The slices are one roving tab stop (see the `OrigamChart` page); each has an `aria-label` of `"{series name} — {category}: {value}"`. `Enter` / `Space` fire `point-click`. Legend entries also support keyboard toggle.
 
 ## Examples
 

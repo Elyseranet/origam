@@ -71,7 +71,7 @@ seed se lancent depuis une machine ayant le repo, **pointée sur la base Coolify
 ```bash
 # depuis packages/marketing, avec DATABASE_URL de l'env cible :
 DATABASE_URL=postgres://user:pass@HOST:5432/db pnpm -F @origam/marketing db:migrate     # crée les 14 tables
-DATABASE_URL=postgres://user:pass@HOST:5432/db pnpm -F @origam/marketing docs:seed       # remplit depuis server/db/seed/*.json (1734 entrées)
+DATABASE_URL=postgres://user:pass@HOST:5432/db pnpm -F @origam/marketing docs:seed       # remplit depuis src/assets/seed/*.json (1734 entrées)
 DATABASE_URL=postgres://user:pass@HOST:5432/db pnpm -F @origam/marketing docs:sync        # applique l'extension [SRC] depuis la source DS
 ```
 

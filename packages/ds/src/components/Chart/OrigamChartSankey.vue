@@ -37,11 +37,12 @@
 					ref="svgRef"
 					class="origam-chart-sankey__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
-					role="img"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-sankey-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -64,7 +65,8 @@
 								stroke: 'none'
 							}"
 							:data-cy="`origam-chart-sankey-link-${ link.index }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="linkAriaLabel(link)"
 							@click="onLinkActivate(link, $event)"
@@ -87,7 +89,8 @@
 							ry="2"
 							:style="{ fill: node.color }"
 							:data-cy="`origam-chart-sankey-node-${ node.name }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="`${ node.name }: ${ node.formatted }`"
 							@click="onNodeActivate(node, $event)"
@@ -169,6 +172,7 @@
 		lang="ts"
 		setup
 >
+	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -185,7 +189,9 @@
 
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -269,8 +275,8 @@
 	 * Static SVG box — always paints into 600 × 400 coordinate
 	 * space; CSS scales it.
 	 ********************************************************/
-	const SVG_WIDTH = 600
-	const SVG_HEIGHT = 400
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.sankey)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const PADDING = { top: 20, right: 100, bottom: 20, left: 100 }
 
 	/*********************************************************
@@ -411,9 +417,9 @@
 		}
 
 		const plotLeft = PADDING.left
-		const plotRight = SVG_WIDTH - PADDING.right
+		const plotRight = svgWidth.value - PADDING.right
 		const plotTop = PADDING.top
-		const plotBottom = SVG_HEIGHT - PADDING.bottom
+		const plotBottom = svgHeight.value - PADDING.bottom
 		const plotWidth = plotRight - plotLeft
 		const plotHeight = plotBottom - plotTop
 
@@ -708,7 +714,6 @@
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredNodeName = ref<string | null>(null)
 	const hoveredLinkIndex = ref<number | null>(null)

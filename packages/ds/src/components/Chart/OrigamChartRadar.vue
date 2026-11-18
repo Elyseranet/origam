@@ -38,10 +38,11 @@
 					class="origam-chart-radar__svg origam-chart__svg"
 					:class="svgClasses"
 					:viewBox="viewBox"
-					role="img"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-radar-svg"
+					@keydown="onChartKeydown"
 			>
 				<title>{{ svgTitle }}</title>
 				<desc>{{ svgDesc }}</desc>
@@ -98,7 +99,9 @@
 								:cy="path.circle!.cy"
 								:r="path.circle!.r"
 								:fill="path.color"
-								tabindex="0"
+								tabindex="-1"
+								data-chart-point
+								:data-chart-series="path.seriesIndex"
 								role="button"
 								:aria-label="pointAriaLabel(path)"
 								:data-cy="`origam-chart-point-${ path.seriesIndex }-${ path.dataIndex }`"
@@ -145,15 +148,17 @@
 		lang="ts"
 		setup
 >
+	import { CHART_ASPECT_RATIO, CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
-		ref,
 		type StyleValue
 	} from 'vue'
 
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useChart } from '../../composables/Chart/chart.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -187,7 +192,6 @@
 
 	const props = withDefaults(defineProps<IChartRadarProps>(), {
 		categories: () => [],
-		height: 300,
 		title: undefined,
 		subtitle: undefined,
 		showLegend: true,
@@ -228,12 +232,11 @@
 	)
 	const chartAnimationStyle = useChartAnimationStyle(props)
 
-	const SVG_WIDTH = 600
-	const SVG_HEIGHT = 360
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.radar, { aspectRatio: CHART_ASPECT_RATIO.radial })
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const PADDING_RADAR = { top: 20, right: 20, bottom: 20, left: 20 }
 	const RADAR_RINGS = [0.25, 0.5, 0.75, 1]
 
-	const svgRef = ref<SVGSVGElement | null>(null)
 
 	const chart = useChart({
 		type: () => 'radar',
@@ -245,8 +248,8 @@
 		smoothing: () => 'none',
 		yMin: () => undefined,
 		yMax: () => undefined,
-		width: () => SVG_WIDTH,
-		height: () => SVG_HEIGHT,
+		width: () => svgWidth.value,
+		height: () => svgHeight.value,
 		padding: () => PADDING_RADAR
 	})
 

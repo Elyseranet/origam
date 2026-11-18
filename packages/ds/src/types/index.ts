@@ -44,6 +44,7 @@ export * from './ClientOnly/client-only.type'
 export * from './Clipboard/clipboard.type'
 
 export * from './Code/code.type'
+export * from './CodeGroup/code-group.type'
 
 export * from './ColorPicker/color-picker.type'
 export * from './ColorPicker/color-picker-canvas.type'
@@ -119,11 +120,9 @@ export * from './DataList/data-title.type'
 export * from './DataTable/data-table.type'
 export * from './DataTable/data-table-column-cell.type'
 export * from './DataTable/data-table-footer.type'
-export * from './DataTable/data-table-group-header-row.type'
 export * from './DataTable/data-table-header-cell.type'
 export * from './DataTable/data-table-headers.type'
 export * from './DataTable/data-table-headers-cell.type'
-export * from './DataTable/data-table-headers-cell-mobile.type'
 export * from './DataTable/data-table-row.type'
 export * from './DataTable/data-table-rows.type'
 
@@ -199,9 +198,7 @@ export * from './Layout/layout.type'
 export * from './Lazy/lazy.type'
 
 export * from './List/list.type'
-export * from './List/list-children.type'
 export * from './List/list-group.type'
-export * from './List/list-group-activator.type'
 export * from './List/list-item.type'
 export * from './List/list-subheader.type'
 
@@ -302,7 +299,6 @@ export * from './Transition/translate-picker.type'
 export * from './Transition/reverse-translate-picker.type'
 
 export * from './VirtualScroll/virtual-scroll.type'
-export * from './VirtualScroll/virtual-scroll-item.type'
 
 export * from './Tabs/tab.type'
 export * from './Tabs/tabs.type'

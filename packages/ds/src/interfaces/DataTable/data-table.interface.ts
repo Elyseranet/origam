@@ -46,7 +46,7 @@ import type { IDataTableRowProps } from './data-table-row.interface'
 import type { IFiltersProps } from '../Commons/filters.interface'
 import type { ITableProps } from '../Table/table.interface'
 
-export interface IDataTableProps extends ITableProps, IDataTableRowProps, IDataTableExpandProps, IDataTableGroupProps, IDataTableHeaderProps, IDataTableItemsProps, IDataTableSelectProps, IDataTableSortProps, IDataTableHeadersProps, IDataTablePaginationProps, IFiltersProps, IDataTableFooterProps {
+export interface IDataTableProps extends ITableProps, Omit<IDataTableRowProps, 'item'>,IDataTableExpandProps, IDataTableGroupProps, IDataTableHeaderProps, IDataTableItemsProps, IDataTableSelectProps, IDataTableSortProps, IDataTableHeadersProps, IDataTablePaginationProps, IFiltersProps, IDataTableFooterProps {
     hideDefaultBody?: boolean
     hideDefaultFooter?: boolean
     hideDefaultHeader?: boolean

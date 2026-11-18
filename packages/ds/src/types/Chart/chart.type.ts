@@ -58,3 +58,12 @@ export type TOrigamChart = InstanceType<typeof OrigamChart>
  * interchangeable and neither replaces the other.
  */
 export type TPathPoint = [number, number]
+
+/*********************************************************
+ * TChartRovingAction
+ *
+ * @description
+ * Movement requested by a navigation key inside a chart (roving tabindex,
+ * #1333): previous / next point, previous / next series, first / last point.
+ ********************************************************/
+export type TChartRovingAction = 'next' | 'previous' | 'nextSeries' | 'previousSeries' | 'first' | 'last'

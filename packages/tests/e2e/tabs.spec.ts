@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { selectHstOption } from './_support/histoire-controls'
+
 /**
  * RECIPE — Pattern canonique (réf. btn.spec.ts).
  *
@@ -679,5 +681,71 @@ test.describe('OrigamTabs', () => {
                 expect(focused, `apres ${key} : focus=${focused}, aria-selected=${selected}`).toBe(selected)
             }
         })
+    })
+})
+
+/**
+ * #1253 — en variante `pills`, `color` n'atteignait pas l'onglet actif (fige
+ * sur action.primary). Mesure navigateur : un `var()` n'est jamais resolu sous
+ * jsdom (CLAUDE.md racine, #398). Le fond transitionne (0.2 s) : on attend
+ * avant de lire, en deux temps (selection du controle puis lecture).
+ */
+test.describe('OrigamTabs pills — color sur l\'onglet actif (#1253)', () => {
+    test.setTimeout(60000)
+
+    const activeBg = async (page: Page) => {
+        await page.waitForTimeout(700)
+        return page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-tab--active').first()
+            .evaluate(el => getComputedStyle(el).backgroundColor)
+    }
+
+    test('sans color le rendu reste primary ; success et danger donnent chacun un fond distinct', async ({ page }) => {
+        await page.goto('/stories/story/components-stories-tabs-origamtabs-story-vue')
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Design', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        await selectHstOption(page, 'Variant', 'Pills')
+        const base = await activeBg(page)
+        await selectHstOption(page, 'Color', 'Success')
+        const success = await activeBg(page)
+        await selectHstOption(page, 'Color', 'Danger')
+        const danger = await activeBg(page)
+
+        expect(new Set([base, success, danger]).size, JSON.stringify([base, success, danger])).toBe(3)
+    })
+})
+
+test.describe('OrigamTab — line-height thémable (#1252)', () => {
+    test.setTimeout(60000)
+
+    const measure = async (page: Page) => {
+        await page.waitForTimeout(700)
+        return page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-tab').first()
+            .evaluate(el => { const cs = getComputedStyle(el); return { lh: parseFloat(cs.lineHeight), fs: parseFloat(cs.fontSize) } })
+    }
+
+    const open = async (page: Page) => {
+        await page.goto(variantUrl(0))
+        await page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-tab').first().waitFor()
+    }
+
+    test('sans jeton posé par le thème, line-height reste 1 × font-size', async ({ page }) => {
+        await open(page)
+        const { lh, fs } = await measure(page)
+        expect(lh).toBe(fs)
+    })
+
+    test('--origam-tabs__item---line-height: 1.55 posé par le thème donne 1.55 × font-size', async ({ page }) => {
+        await page.addInitScript(() => {
+            document.addEventListener('DOMContentLoaded', () => {
+                const s = document.createElement('style')
+                s.textContent = ':root:root:root{--origam-tabs__item---line-height:1.55}'
+                document.head.appendChild(s)
+            })
+        })
+        await open(page)
+        const { lh, fs } = await measure(page)
+        expect(lh).toBeCloseTo(fs * 1.55, 1)
     })
 })

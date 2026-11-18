@@ -27,11 +27,10 @@ import { expect, test } from '@playwright/test'
  *
  * ## Comportement spécifique à Badge
  *
- *   1. `modelValue: true` active `useActive(props, 'modelValue')`, ce qui émet
- *      `origam-badge--active` sur le root wrapper. Tant que le badge est actif,
- *      `useStateEffect` retourne `colorClasses=[]` et passe par `colorStyles` à
- *      la place → PAS de classe utilitaire `origam--bg-*` sur la pill quand
- *      modelValue=true. Assert via `getComputedStyle` plutôt que via classe.
+ *   1. `modelValue` est la VISIBILITE : `useStateFlag(props, 'modelValue')` n'emet
+ *      que le marqueur `origam-badge--active` sur le root wrapper. Il n'alimente
+ *      PLUS `useStateEffect` (#1307) : la pill peint `bg` au repos, pas `bgActive`.
+ *      Assert via `getComputedStyle` plutot que via classe utilitaire.
  *
  *   2. La couleur du token primary résout en `color(srgb …)` (P3 wide-gamut)
  *      dans Chrome 111+, pas en `rgb(…)`. On assert donc "non transparent" /

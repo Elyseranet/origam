@@ -37,11 +37,12 @@
 					ref="svgRef"
 					class="origam-chart-polar-bar__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_SIZE } ${ SVG_SIZE }`"
-					role="img"
+					:viewBox="`0 0 ${ svgWidth } ${ svgWidth }`"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-polar-bar-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -50,7 +51,7 @@
 
 				<g
 						class="origam-chart__series"
-						:transform="`translate(${ CENTER }, ${ CENTER })`"
+						:transform="`translate(${ svgWidth / 2 }, ${ svgWidth / 2 })`"
 						data-cy="origam-chart-polar-bar-series"
 				>
 					<path
@@ -61,7 +62,8 @@
 							:d="wedge.d"
 							:style="{ fill: wedge.color }"
 							:data-cy="`origam-chart-polar-bar-wedge-${ wedge.index }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="wedgeAriaLabel(wedge)"
 							@click="onWedgeActivate(wedge, $event)"
@@ -157,6 +159,7 @@
 		lang="ts"
 		setup
 >
+	import { CHART_ASPECT_RATIO, CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -168,7 +171,9 @@
 
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -214,7 +219,6 @@
 
 	const props = withDefaults(defineProps<IChartPolarBarProps>(), {
 		categories: () => [],
-		height: 400,
 		title: undefined,
 		subtitle: undefined,
 		innerRadius: 0.1,
@@ -270,8 +274,9 @@
 	 * is translated to the centre so all geometry uses origin-centred
 	 * polar coordinates.
 	 ********************************************************/
-	const SVG_SIZE = 400
-	const CENTER = SVG_SIZE / 2
+	const { resizeRef: svgRef, width: svgWidth } = useChartSize(CHART_SIZE_FALLBACK.polarBar, { aspectRatio: CHART_ASPECT_RATIO.radial })
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
+	const center = computed(() => svgWidth.value / 2)
 
 	/** Radial clearance between outermost wedge and the SVG edge for labels. */
 	const LABEL_RADIAL_OFFSET = 14
@@ -383,7 +388,7 @@
 			? props.maxValue
 			: Math.max(...values.filter((v) => Number.isFinite(v) && v >= 0), 1e-9)
 
-		const totalR = CENTER - LABEL_RADIAL_OFFSET - 20
+		const totalR = center.value - LABEL_RADIAL_OFFSET - 20
 		const innerR = totalR * Math.max(0, Math.min(0.99, props.innerRadius))
 
 		const totalAngularSpace = 2 * Math.PI - count * props.gap
@@ -477,7 +482,6 @@
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

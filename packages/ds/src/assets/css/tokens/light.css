@@ -206,6 +206,8 @@
   --origam-btn---density: 0px;
   --origam-btn---width: auto;
   --origam-btn---min-width: 64px;
+  --origam-btn__content---justify-content: center;
+  --origam-btn__content---text-align: center;
   --origam-btn---max-width: 100%;
   --origam-btn---height: var(--origam-btn---height-md, 36px);
   --origam-btn---max-height: 100%;
@@ -238,9 +240,11 @@
   --origam-btn---box-shadow-elevated: var(--origam-shadow---md);
   --origam-btn---background-color-tonal: var(--origam-color__surface---overlay);
   --origam-btn---background-color-tonal-active: var(--origam-color__surface---raised);
+  --origam-btn---background-color-text-active: transparent;
   --origam-btn---box-shadow-tonal-active: var(--origam-shadow---xs);
   --origam-btn---border-width-outlined: var(--origam-border__width---thin);
   --origam-btn---border-width-ghost: var(--origam-border__width---thin);
+  --origam-btn---border-compensation: 0px;
   --origam-btn---backdrop-filter-ghost: blur(8px);
   --origam-btn---transition-duration: var(--origam-motion__duration---slow);
   --origam-btn---transition-easing: var(--origam-motion__easing---standard);
@@ -1046,6 +1050,7 @@
   --origam-confirm-wrapper---horizontal-gap: 1em;
   --origam-confirm-wrapper--error---color: var(--origam-color__feedback--danger---fgSubtle);
   --origam-field---padding-start: var(--origam-space---4);
+  --origam-field---corner-clearance: initial;
   --origam-field---padding-end: var(--origam-space---4);
   --origam-field---padding-top: var(--origam-space---2);
   --origam-field---padding-bottom: 6px;
@@ -1059,6 +1064,8 @@
   --origam-field---border-opacity-outlined: 0.38;
   --origam-field---background-color: rgba(0, 0, 0, 0);
   --origam-field---color: var(--origam-color__text---primary);
+  --origam-field---placeholder-color: currentColor;
+  --origam-field---placeholder-opacity: 0.5;
   --origam-field---backdrop-filter: none;
   --origam-field---opacity-disabled: var(--origam-opacity---50);
   --origam-field---transition-duration: var(--origam-motion__duration---normal);
@@ -1600,6 +1607,8 @@
   --origam-table__header-cell---background-color: var(--origam-color__surface---overlay);
   --origam-table__header-cell---color: var(--origam-color__text---primary);
   --origam-table__header-cell---font-weight: var(--origam-font__weight---semibold);
+  --origam-table__header-cell---letter-spacing: initial;
+  --origam-table__header-cell---text-transform: initial;
   --origam-table__header-cell---padding-block: var(--origam-space---3);
   --origam-table__header-cell---padding-inline: var(--origam-space---4);
   --origam-table__header-cell---border-bottom-color: var(--origam-color__border---default);
@@ -1612,7 +1621,9 @@
   --origam-table__cell---padding-block: var(--origam-space---3);
   --origam-table__cell---padding-inline: var(--origam-space---4);
   --origam-table__cell---border-color: var(--origam-color__border---subtle);
+  --origam-table__cell---border-bottom-width: var(--origam-table__cell---border-width);
   --origam-table__cell---border-width: var(--origam-border__width---thin);
+  --origam-table__cell---border-top-width: var(--origam-border__width---0);
   --origam-table__row---hover-background-color: var(--origam-color__surface---sunken);
   --origam-virtual-scroll---item-height: 48px;
   --origam-virtual-scroll---scroll-padding: var(--origam-space---0);
@@ -1629,6 +1640,7 @@
   --origam-breadcrumb---padding-block: var(--origam-space---2);
   --origam-breadcrumb---padding-inline: var(--origam-space---2);
   --origam-breadcrumb---font-size: var(--origam-font__size---md);
+  --origam-breadcrumb---line-height: 1.6;
   --origam-breadcrumb---background: rgba(0, 0, 0, 0);
   --origam-breadcrumb---color: var(--origam-color__text---primary);
   --origam-breadcrumb---border-color: currentColor;
@@ -1792,6 +1804,9 @@
   --origam-list-item---pointer-events: none;
   --origam-list-item---user-select: none;
   --origam-list-item---opacity: var(--origam-opacity---60);
+  --origam-list-item---overlay-opacity-active: 0.12;
+  --origam-list-item---overlay-opacity-hover: 0.08;
+  --origam-list-item---overlay-opacity-active-hover: 0.16;
   --origam-list-item---cursor: pointer;
   --origam-list__item---overlay-opacity: var(--origam-opacity---0);
   --origam-list__item---overlay-background-color: currentColor;
@@ -1904,6 +1919,7 @@
   --origam-expansion-panel__header---border-radius: inherit;
   --origam-expansion-panel__header---hover-overlay-opacity: var(--origam-opacity---0);
   --origam-expansion-panel__header---focus-overlay-opacity: var(--origam-opacity---12);
+  --origam-expansion-panel__header---overlay-opacity-hover: 0.04;
   --origam-expansion-panel__header__wrapper---padding-block: var(--origam-space---4);
   --origam-expansion-panel__header__wrapper---padding-inline: var(--origam-space---6);
   --origam-expansion-panel__header__wrapper---display: flex;
@@ -1975,6 +1991,16 @@
   --origam-data-list__kv---value-line-height: var(--origam-font__lineHeight---normal);
   --origam-data-list__kv---gap-key-value: var(--origam-space---4);
   --origam-data-list__kv---value-inline-gap: var(--origam-space---2);
+  --origam-data-list__kv---row-columns: initial;
+  --origam-data-list__kv---row-gap: initial;
+  --origam-data-list__kv---row-padding-inline: initial;
+  --origam-data-list__kv---row-radius: initial;
+  --origam-data-list__kv---row-background: initial;
+  --origam-data-list__kv---row-border-width: initial;
+  --origam-data-list__kv---key-letter-spacing: initial;
+  --origam-data-list__kv---key-text-transform: initial;
+  --origam-data-list__kv---value-font-weight: initial;
+  --origam-data-list__kv---value-font-variant-numeric: initial;
   --origam-carousel---aspect-ratio: auto;
   --origam-carousel---position: relative;
   --origam-carousel---overflow: hidden;
@@ -2517,6 +2543,7 @@
   --origam-tabs__item---font-size: var(--origam-font__size---sm);
   --origam-tabs__item---font-weight: var(--origam-font__weight---medium);
   --origam-tabs__item---letter-spacing: var(--origam-font__letterSpacing---wide);
+  --origam-tabs__item---line-height: var(--origam-font__lineHeight---none);
   --origam-tabs__item---text-transform: none;
   --origam-tabs__item---border-radius: var(--origam-radius---none);
   --origam-tabs__item---border-width: var(--origam-border__width---0);

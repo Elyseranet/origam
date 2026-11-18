@@ -37,11 +37,12 @@
 					ref="svgRef"
 					class="origam-chart-bullet__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
-					role="img"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-bullet-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -79,7 +80,8 @@
 								:height="barH(bullet)"
 								:style="{ fill: bullet.barFill }"
 								:data-cy="`origam-chart-bullet-bar-${ bullet.index }`"
-								tabindex="0"
+								tabindex="-1"
+								data-chart-point
 								role="button"
 								:aria-label="bulletAriaLabel(bullet)"
 								@click="onBulletActivate(bullet, $event)"
@@ -115,7 +117,7 @@
 								v-else
 								class="origam-chart__bullet-label"
 								:x="bullet.slotX + bullet.slotW / 2"
-								:y="SVG_HEIGHT - PADDING.bottom + LABEL_GAP"
+								:y="svgHeight - PADDING.bottom + LABEL_GAP"
 								text-anchor="middle"
 								dominant-baseline="hanging"
 								:data-cy="`origam-chart-bullet-label-${ bullet.index }`"
@@ -217,6 +219,7 @@
 		lang="ts"
 		setup
 >
+	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -227,7 +230,9 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -307,8 +312,8 @@
 	/*********************************************************
 	 * Static SVG coordinate space — CSS scales to fit.
 	 ********************************************************/
-	const SVG_WIDTH = 600
-	const SVG_HEIGHT = 400
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.bullet)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 
 	const AXIS_TICK_COUNT = 5
 	const TARGET_TICK_FRACTION = 0.7
@@ -321,8 +326,8 @@
 		: { top: 24, right: 24, bottom: 48, left: 40 }
 	)
 
-	const plotW = computed(() => SVG_WIDTH - PADDING.value.left - PADDING.value.right)
-	const plotH = computed(() => SVG_HEIGHT - PADDING.value.top - PADDING.value.bottom)
+	const plotW = computed(() => svgWidth.value - PADDING.value.left - PADDING.value.right)
+	const plotH = computed(() => svgHeight.value - PADDING.value.top - PADDING.value.bottom)
 
 	/*********************************************************
 	 * Colour resolution helpers
@@ -580,7 +585,6 @@
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

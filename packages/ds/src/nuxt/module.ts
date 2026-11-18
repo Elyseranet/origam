@@ -63,7 +63,9 @@ const DEFAULTS: Required<IOrigamNuxtModuleOptions> = {
     cookieMaxAge: 60 * 60 * 24 * 365,
     autoImport: true,
     includeUtilities: true,
-    prefix: 'Origam'
+    prefix: 'Origam',
+    locale: {},
+    icons: {}
 }
 
 const SCALAR_DEFAULTS = {
@@ -211,7 +213,9 @@ const origamNuxtModule: NuxtModule<IOrigamNuxtModuleOptions, IOrigamNuxtModuleOp
             defaultMode,
             cookieName,
             modeCookieName,
-            cookieMaxAge
+            cookieMaxAge,
+            locale: options.locale,
+            icons: options.icons
         }
     }
 })

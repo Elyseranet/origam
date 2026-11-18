@@ -17,6 +17,7 @@ import type {
 } from '~/interfaces/theme-builder.interface'
 import type { IOrigamTheme } from 'origam/interfaces'
 import type { TMode } from 'origam/types'
+import type { TPropValue } from '@origam/playground/types'
 
 /**
  * useThemeBuilder — engine for the /theming visual theme builder.
@@ -202,28 +203,24 @@ export function useThemeBuilder () {
         clearStorage()
     }
 
-    /** Props passed to the live `<component :is>` for a given slug. */
-    const previewProps = (slug: string): Record<string, unknown> => {
+    /**
+     * Preview-only CALL-SITE props for a given slug — never serialised.
+     *
+     * Since lot E (#1145) the theme being built reaches the preview the way the
+     * exported theme reaches an app: its `components` block (`state.defaults`)
+     * wraps the pane in `<origam-defaults-provider>` (`ThemeBuilderPreview`).
+     * What remains here is the one showcase default: a component exposing a
+     * `variant` select renders `outlined`, so preset/token changes (borders,
+     * colours) are visible out of the box — unless the theme sets a variant.
+     */
+    const previewProps = (slug: string): Record<string, TPropValue> => {
         const entry = entries.value.find(e => e.slug === slug)
-        if (!entry) return {}
-        const out: Record<string, unknown> = { ...(entry.previewAdapter.previewProps ?? {}) }
-        for (const ctrl of entry.controls) {
-            const value = propValue(slug, ctrl.prop)
-            if (value === '' || value === false || value === undefined) continue
-            out[ctrl.prop] = value
-        }
-        // Preview-only default: any component exposing a `variant` prop renders
-        // with `outlined` so preset/token changes (borders, colours) are visible
-        // out of the box — unless the user explicitly picked another variant.
-        // Never serialised (previewProps only).
+        if (!entry || isPropEdited(slug, 'variant')) return {}
         const variantCtrl = entry.controls.find(
             c => c.prop === 'variant' && c.kind === 'select' && (c.options?.length ?? 0) > 0
         )
-        if (variantCtrl && !isPropEdited(slug, 'variant')) {
-            const outlined = variantCtrl.options?.find(o => o.value === 'outlined')
-            if (outlined) out.variant = outlined.value
-        }
-        return out
+        const outlined = variantCtrl?.options?.find(o => o.value === 'outlined')
+        return outlined ? { variant: outlined.value } : {}
     }
 
     /**
@@ -244,11 +241,6 @@ export function useThemeBuilder () {
             if (value !== undefined) out[cssVar] = value
         }
         return out
-    }
-
-    const slotText = (slug: string): string => {
-        const entry = entries.value.find(e => e.slug === slug)
-        return entry?.previewAdapter.slotText ?? ''
     }
 
     /** Number of overridden props across all modes + both cssVars sets. */
@@ -602,7 +594,6 @@ export function useThemeBuilder () {
         setToken,
         previewProps,
         previewStyle,
-        slotText,
         isPropEdited,
         isTokenEdited,
         componentEditCount,

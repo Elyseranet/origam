@@ -6,14 +6,14 @@ import { eventLogItems, fillHstNumber, openEventsTab, selectHstOption } from './
  * OrigamChartMap — Playwright spec.
  *
  * Asserts:
- *  - The SVG renders with role="img", title and desc.
+ *  - The SVG renders with role="group", title and desc.
  *  - Choropleth mode: country `<path>` elements are present and have
  *    non-empty `d` attributes.
  *  - Countries with data receive a `--has-data` modifier class.
  *  - Flight-routes mode: `<path>` route elements render.
  *  - Route arcs have a non-empty `d` attribute starting with `M`.
  *  - The empty state slot renders when `series` is empty.
- *  - ARIA attributes (role="figure", role="img", title, desc) are present.
+ *  - ARIA attributes (role="figure", role="group", title, desc) are present.
  *
  * The story restructuring (canonical Design/State/Functional/Events/Slots
  * layout, see root CLAUDE.md) removed the side-by-side "map-mode-
@@ -48,12 +48,12 @@ test.describe('OrigamChartMap — Default (choropleth)', () => {
         await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
-    test('SVG carries role=img, title and desc', async ({ page }) => {
+    test('SVG carries role=group, title and desc', async ({ page }) => {
         await openVariant(page, MAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator('[data-cy="map-playground-chart"] svg').first()
         await expect(svg).toBeVisible()
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         await expect(svg.locator('title')).toHaveCount(1)
         await expect(svg.locator('desc')).toHaveCount(1)
     })

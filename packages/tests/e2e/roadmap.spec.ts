@@ -339,7 +339,7 @@ test.describe('roadmap — DS-first', () => {
      *
      * ⛔ Le job CI `test-e2e-marketing` n'a NI service postgres NI variables
      * `NUXT_DB_*`, donc `/api/reference/component` y répond 503 « Database is
-     * not configured » (mesuré : `packages/marketing/server/utils/db.ts:32`).
+     * not configured » (mesuré : `packages/marketing/src/utils/db.util.ts:32`).
      * Le cache nitro qui masque cela en local vit dans le worktree
      * (`packages/marketing/.nuxt/cache/nitro/handlers/reference-catalog/`), donc
      * un checkout CI neuf n'en a pas. La branche est choisie sur le STATUT RÉEL

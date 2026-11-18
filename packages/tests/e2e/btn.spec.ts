@@ -62,7 +62,8 @@ import { expect, test } from '@playwright/test'
  *    14  → Prop — border (VRT matrix)   → voir btn-border.spec.ts (#391)
  *    15  → Prop — wrap                   → voir btn-wrap-height.spec.ts (#1093)
  *    16  → Prop — block (flex column) → voir btn-block-flex.spec.ts (#1095)
- *    17  → Default (playground)
+ *    17  → Layout — vertical centring (matrix) → voir btn-vertical-center.spec.ts (#1168)
+ *    18  → Default (playground)
  *
  *   ⚠️  Les titres StoryGroup visibles dans les #controls (Color, Sizing, Shape…)
  *   sont des fieldsets DANS la sidebar — PAS des Variants séparés. Ne pas les cibler.
@@ -424,13 +425,13 @@ test.describe('OrigamBtn', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT — playground (index 17)                                      //
+    // DEFAULT — playground (index 18)                                      //
     // init: { color: 'primary', text: 'Button' }                          //
     // ------------------------------------------------------------------ //
 
     test.describe('Default (playground)', () => {
         test('renders a btn with color=primary and text "Button"', async ({ page }) => {
-            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -439,7 +440,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('is a native <button> element by default (tag=button)', async ({ page }) => {
-            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -556,7 +557,8 @@ test.describe('OrigamBtn', () => {
             expect(ruleCheck, 'variant-outlined rule must have background-color: transparent !important').toBe(true)
         })
 
-        test('--variant-text: background-color declaration is transparent !important (stylesheet inspection)', async ({ page }) => {
+        // #1222 — plus de `!important` : l'etat actif doit pouvoir peindre (btn-text-active.spec.ts).
+        test('--variant-text: background-color declaration is transparent, NOT !important (stylesheet inspection)', async ({ page }) => {
             await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
@@ -569,7 +571,7 @@ test.describe('OrigamBtn', () => {
                             if (rule.selectorText && el.matches(rule.selectorText)) {
                                 const bg = rule.style?.getPropertyValue('background-color')
                                 const priority = rule.style?.getPropertyPriority('background-color')
-                                if (bg === 'transparent' && priority === 'important') {
+                                if (bg === 'transparent' && priority === '') {
                                     return true
                                 }
                             }
@@ -578,7 +580,7 @@ test.describe('OrigamBtn', () => {
                 }
                 return false
             })
-            expect(ruleCheck, 'variant-text rule must have background-color: transparent !important').toBe(true)
+            expect(ruleCheck, 'variant-text rule must have background-color: transparent without !important').toBe(true)
         })
     })
 })

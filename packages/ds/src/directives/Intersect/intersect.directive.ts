@@ -1,10 +1,12 @@
 import { SUPPORTS_INTERSECTION } from '../../consts/Commons/commons.const'
 import type { IIntersectDirectiveBinding, IIntersectHtmlElement } from '../../interfaces/Commons/intersect.interface'
-import { unmountIntersect } from '../../utils/Commons/intersect.util'
+import { unmountIntersect, warnIntersectTupleBinding } from '../../utils/Commons/intersect.util'
 
 export const Intersect = {
     mounted (el: IIntersectHtmlElement, binding: IIntersectDirectiveBinding) {
         if (!SUPPORTS_INTERSECTION) return
+
+        warnIntersectTupleBinding(el, binding.value)
 
         /*********************************************************
          * ⛔ `handler` et `modifiers` sont relus a CHAQUE intersection,

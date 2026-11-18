@@ -81,7 +81,8 @@
 					alt: 'Functional demo',
 					aspectRatio: 16 / 9,
 					eager: true,
-					cover: true
+					cover: true,
+					tag: 'span'
 				})"
 		>
 			<template #default="{ state }">
@@ -99,6 +100,7 @@
 							:sizes="state.sizes || undefined"
 							:src="state.src"
 							:srcset="state.srcset || undefined"
+							:tag="state.tag"
 							style="max-width: 240px;"
 					/>
 					Texte après.
@@ -117,6 +119,9 @@
 				</StoryGroup>
 				<StoryGroup title="Layout">
 					<HstSelect v-model="state.aspectRatio" title="Aspect Ratio" :options="ASPECT_RATIO_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Markup">
+					<HstSelect v-model="state.tag" title="Tag" :options="IMG_TAG_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Attributes">
 					<HstCheckbox v-model="state.draggable"     title="Draggable"/>
@@ -311,7 +316,23 @@
 			</template>
 		</Variant>
 
-				<Variant
+		<Variant title="Prop — tag (inside a paragraph)">
+			<p data-cy="img-tag-paragraph" style="max-width: 640px;">
+				Before
+				<origam-img
+						alt="Inline demo"
+						data-cy="img-tag-span"
+						eager
+						src="https://picsum.photos/seed/origam-img-tag/640/360"
+						tag="span"
+						:aspect-ratio="16 / 9"
+						style="max-width: 240px;"
+				/>
+				after.
+			</p>
+		</Variant>
+
+		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IImgProps>>({
 					src: 'https://picsum.photos/seed/origam-img-playground/640/360',
@@ -349,6 +370,7 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.eager" title="Eager"/>
+					<HstSelect   v-model="state.tag"   title="Tag" :options="IMG_TAG_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -362,7 +384,7 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamImg } from '@origam/components'
-	import type { IImgProps } from '@origam/interfaces'
+	import type { IImgProps, IOptions } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -373,6 +395,11 @@
 		COLOR_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
+
+	const IMG_TAG_OPTIONS: Array<IOptions<string>> = [
+		{ label: 'div', value: 'div' },
+		{ label: 'span', value: 'span' },
+	]
 </script>
 
 <docs lang="md" src="@docs/components/Img/OrigamImg.md"/>

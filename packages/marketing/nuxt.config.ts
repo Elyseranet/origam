@@ -1,6 +1,7 @@
 import { resolve } from 'node:path'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { createRequire } from 'node:module'
 
 import { MARKETING_DEFAULTS } from './src/consts/marketing.const'
 import { I18N_LOCALES, I18N_COOKIE_KEY } from './src/consts/i18n.const'
@@ -22,7 +23,7 @@ import { origamTheme as origamBaseline } from '../ds/src/themes/origam.theme'
 // Single source of truth for the displayed version: the published `origam`
 // package version. Read at build time so badges/translations never need a
 // manual edit on release — bump packages/ds/package.json and it flows here.
-const DS_VERSION = JSON.parse(
+const dsVersion = JSON.parse(
     readFileSync(fileURLToPath(new URL('../ds/package.json', import.meta.url)), 'utf-8')
 ).version as string
 
@@ -34,7 +35,8 @@ export default defineNuxtConfig({
     // Project convention (cf. CLAUDE.md) — srcDir is `src/`, not Nuxt 4's
     // default `app/`. Internal structure (app.vue, layouts, pages, …) is
     // unchanged, only the root folder name.
-    srcDir: 'src/',
+    srcDir: 'src',
+    serverDir: 'src/server',
 
     // Production build only needs runnable output, not source maps. Nuxt emits
     // SERVER source maps by default in prod (~570 .mjs.map / ~67 MB here); rollup
@@ -142,6 +144,11 @@ export default defineNuxtConfig({
         disallow: ['/admin']
     },
 
+    // @nuxtjs/seo 6 bundles nuxt-ai-ready and nuxt-skew-protection, enabled by default.
+    // Neither existed before the upgrade: keep the site behaviour unchanged.
+    aiReady: false,
+    skewProtection: false,
+
     components: [
         { path: '~/components', pathPrefix: false }
     ],
@@ -177,7 +184,7 @@ export default defineNuxtConfig({
         public: {
             githubRepo: process.env.NUXT_PUBLIC_GITHUB_REPO ?? MARKETING_DEFAULTS.githubRepo,
             npmPkg: process.env.NUXT_PUBLIC_NPM_PKG ?? MARKETING_DEFAULTS.npmPkg,
-            npmVersion: process.env.NUXT_PUBLIC_NPM_VERSION ?? DS_VERSION,
+            npmVersion: process.env.NUXT_PUBLIC_NPM_VERSION ?? dsVersion,
             siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? MARKETING_DEFAULTS.siteUrl,
             donateUrl: process.env.NUXT_PUBLIC_DONATE_URL ?? MARKETING_DEFAULTS.donateUrl
         }
@@ -240,6 +247,12 @@ export default defineNuxtConfig({
     },
 
     nitro: {
+        // TypeORM loads `pg` through a dynamic require() that Nitro's tracer
+        // cannot follow: without this, `pg` is absent from
+        // .output/server/node_modules and every DB read fails (#1166).
+        externals: {
+            traceInclude: [createRequire(import.meta.url).resolve('pg')]
+        },
         esbuild: {
             options: {
                 tsconfigRaw: {
@@ -252,7 +265,11 @@ export default defineNuxtConfig({
         serverAssets: [
             {
                 baseName: 'db-seed',
-                dir: fileURLToPath(new URL('./server/db/seed', import.meta.url))
+                dir: fileURLToPath(new URL('./src/assets/seed', import.meta.url))
+            },
+            {
+                baseName: 'sql',
+                dir: fileURLToPath(new URL('./src/assets/sql', import.meta.url))
             }
         ]
     },
@@ -280,8 +297,6 @@ export default defineNuxtConfig({
     vite: {
         optimizeDeps: {
             include: [
-                '@vue/repl',
-                '@vue/repl/codemirror-editor',
                 'shiki',
                 'qrcode-generator',
                 '@vue/devtools-kit'

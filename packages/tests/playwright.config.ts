@@ -15,6 +15,22 @@ const REPO_ROOT = resolve(__dirname, '..', '..')
  */
 const GREEN_SPECS = [
     'btn.spec.ts',
+    // #1328 — verte 21/21 apres bascule du temoin inverse ; A/B : rouge (12px) sans `:where(&)`, E2E_STATIC=1, chromium, port isole.
+    'chart-pareto.spec.ts',
+    // #1304 — inscrite apres verification A/B (rouge sur le parent, vert avec le correctif), E2E_STATIC=1, chromium.
+    'btn-content-align.spec.ts',
+    // #1317 — verifiee verte avant inscription (E2E_STATIC=1, chromium, port isole).
+    'chart-cartesian-responsive-width.spec.ts',
+    // #1325 — rouge sur le parent (4 paires d'etiquettes X qui se touchent a 320px), verte avec la decimation ; A/B, E2E_STATIC=1, chromium, port isole.
+    'chart-cartesian-axis-label-decimation.spec.ts',
+    // #1324 — verifiee verte avant inscription : 34/34 (E2E_STATIC=1, chromium, port isole) ;
+    // A/B : 34/34 rouges sur `origin/develop` (viewBox fige), stories reconstruites des deux cotes.
+    'chart-responsive-size.spec.ts',
+    // #1222 — verifiee verte et stable avant inscription : 10/10 (--repeat-each=5, E2E_STATIC=1, chromium, port isole).
+    'btn-text-active.spec.ts',
+    // #1179 — verifiee verte et stable avant inscription : 9/9 puis 45/45 sous
+    // `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
+    'code-group.spec.ts',
     'controls-loading-no-skeleton.spec.ts',
     'chip.spec.ts',
     // #957 — verifiee verte et stable avant inscription : 6/6 puis 30/30 sous
@@ -47,9 +63,15 @@ const GREEN_SPECS = [
     // est-elle verte aujourd'hui ? » — une spec verte et NON gardee est un
     // filet perdu, pas une dette a enregistrer.
     'utility-cascade-padding-margin-950.spec.ts',
+    // #1230 — jeton d'opacite de l'overlay actif de OrigamListItem ; rouge a HEAD~1.
+    'list-item-overlay-opacity.spec.ts',
+    // #1244 — jetons d'opacite de survol (ListItem, ExpansionPanelHeader) ; rouge a HEAD~1.
+    'overlay-opacity-hover-1244.spec.ts',
     'card.spec.ts',
     'avatar.spec.ts',
     'alert.spec.ts',
+    // #1307 — verte avant inscription (Chromium, E2E_STATIC=1, port isole) ; rouge sur le parent.
+    'alert-rest-state.spec.ts',
     'badge.spec.ts',
     'checkbox.spec.ts',
     'switch.spec.ts',
@@ -119,8 +141,15 @@ const GREEN_SPECS = [
     'date-picker-field-typing.spec.ts',
     'theme-provider.spec.ts',
     'textarea-richtext.spec.ts',
+    // #1267 — tokens kv de DataList : defauts inchanges + effet mesure par token.
+    'data-list-kv-tokens.spec.ts',
+    // #1245 - jetons typo des en-tetes Table/DataTable : defauts inchanges + effet.
+    'table-header-typography-tokens.spec.ts',
     'defaults-provider.spec.ts',
     'field-height.spec.ts',
+    // #1266 — jetons de couleur / opacité du placeholder de Field. Verte
+    // chromium, E2E_STATIC=1, port isolé ; rouge sur le parent.
+    'field-placeholder-token.spec.ts',
     // wave 7 — contrôles de story pour les 16 props directionnelles câblées
     // en 249ac7d1. Vérifiée verte sur chromium + firefox + webkit.
     'directional-story-controls.spec.ts',
@@ -300,10 +329,18 @@ const GREEN_SPECS = [
     // Rejouée contre `origin/develop` : les 4 tests « [rouge avant] » rougissent,
     // les 2 témoins restent verts des deux côtés.
     'btn-wrap-height.spec.ts',
+    // #1261 — verifiee verte et stable avant inscription : 5/5 sous `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
+    'btn-outlined-box.spec.ts',
     // wave 15 — #1095. `block` ne grandit plus sur l'axe principal d'un parent flex
     // en colonne (`flex: 0 0 auto` + `width: 100%`). Rejouee contre `origin/develop` :
     // les 4 tests « [rouge avant] » rougissent, les 4 temoins restent verts.
     'btn-block-flex.spec.ts',
+    // #1168 — le libellé d'un `<a class="origam-btn">` était collé en haut de la
+    // boîte depuis #1094 (`height: auto` + `min-height`, racine `inline-block`).
+    // Rejouée contre le commit parent : les 2 tests « [rouge avant] » rougissent
+    // (35 `<a>` décentrés de 4 à 21 px), les 3 témoins restent verts des deux
+    // côtés. `E2E_STATIC=1`, chromium, port isolé.
+    'btn-vertical-center.spec.ts',
     // wave 15 — #934. Même raison. `.origam-list--nav` et
     // `.origam-list-item--nav` déclaraient `--origam-*---padding-inline`, un
     // nom que RIEN ne lit : les règles de base consomment les longhands
@@ -344,6 +381,13 @@ const GREEN_SPECS = [
     // `E2E_STATIC=1`, chromium, `--workers=1`, retries 0, port isolé 6042,
     // load average 2,8 → 4,5.
     'chart-token-channels-591.spec.ts',
+    // #1318 / #1153 — le `<svg>` d'un chart à points focusables est
+    // `role="group"`, jamais `img` (axe nested-interactive, WCAG 4.1.2).
+    'chart-nested-interactive.spec.ts',
+    // #1333 — un seul arret de Tab par chart (roving tabindex) sur les 20 charts a points
+    // focusables. Verte 21/21 ; ROUGE 21/21 sur le parent (A/B, rebuild), E2E_STATIC=1,
+    // chromium, port isole.
+    'chart-roving-tabindex.spec.ts',
     // #594 / #595 — C2 : les 51 canaux de thème ouverts sur Audio, Chip,
     // Switch, SliderField et Field résolvent bien à `:root`, chaque valeur
     // déclarée rend EXACTEMENT ce que rendait le repli littéral qu'elle

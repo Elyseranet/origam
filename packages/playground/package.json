@@ -16,14 +16,16 @@
     "./enums": "./src/enums/index.ts",
     "./interfaces": "./src/interfaces/index.ts",
     "./types": "./src/types/index.ts",
-    "./utils": "./src/utils/index.ts"
+    "./utils": "./src/utils/index.ts",
+    "./catalog": "./src/utils/Commons/catalog.util.ts"
   },
   "scripts": {
     "meta:runtime": "node scripts/extract-runtime-metadata.mjs",
     "meta:unions": "node scripts/extract-literal-unions.mjs",
     "meta:aliases": "node scripts/resolve-type-aliases.mjs",
     "meta:report": "node scripts/report-metadata-coverage.mjs",
-    "meta:host-seed": "node scripts/generate-host-seed.mjs",
+    "meta:catalog": "node scripts/generate-catalog.mjs",
+    "meta:catalog:check": "node scripts/generate-catalog.mjs --check",
     "type-check": "vue-tsc --noEmit -p tsconfig.json",
     "dev": "vite --config vite.host.config.ts"
   },

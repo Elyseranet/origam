@@ -5,7 +5,7 @@ import { eventLogItems, openEventsTab, selectHstOption } from './_support/histoi
 /**
  * OrigamChart — runtime probes for the chart type matrix, the
  * legend toggle pipeline, the click → point-click emit, and the
- * ARIA pattern (role="img" + title + desc). The chart paints a SVG
+ * ARIA pattern (role="group" + title + desc). The chart paints a SVG
  * tree so we lean heavily on locator counts (`<path>` / `<rect>` /
  * `<circle>`) rather than CSS-class assertions.
  *
@@ -55,12 +55,12 @@ test.describe('OrigamChart — Default (root + ARIA)', () => {
         await expect(host).toHaveAttribute('aria-label', /sales/i)
     })
 
-    test('SVG carries role=img + title + desc for screen readers', async ({ page }) => {
+    test('SVG carries role=group + title + desc for screen readers', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator('[data-cy~="origam-chart--line"] svg').first()
         await expect(svg).toBeVisible()
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         const title = svg.locator('title')
         const desc = svg.locator('desc')
         await expect(title).toHaveCount(1)

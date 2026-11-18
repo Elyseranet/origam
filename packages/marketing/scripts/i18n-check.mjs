@@ -71,62 +71,17 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parse as parseSFC } from '@vue/compiler-sfc'
 import { parse as parseTemplate, NodeTypes } from '@vue/compiler-dom'
+import { I18N_LOCALE_CODES } from '../src/consts/i18n-codes.const.ts'
+import { TRANSLATABLE_ATTRS, DYNAMIC_KEY_ALLOWLIST, DB_BACKED_KEY_FIELDS_NOTE } from '../src/consts/i18n-check.const.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const MARKETING_ROOT = path.resolve(__dirname, '..')
-const SRC_DIR = path.join(MARKETING_ROOT, 'src')
-const LOCALES_DIR = path.join(SRC_DIR, 'assets', 'locales')
-const LOCALE_CODES = ['en', 'fr']
+const marketingRoot = path.resolve(__dirname, '..')
+const srcDir = path.join(marketingRoot, 'src')
+const localesDir = path.join(srcDir, 'assets', 'locales')
 
-const ARGS = process.argv.slice(2)
-const JSON_OUTPUT = ARGS.includes('--json')
-const STRICT_WARNINGS = ARGS.includes('--strict-warnings')
-
-// Attributes that carry genuinely user-facing text when static. Everything
-// else (class, id, tag, href, item-title, data-cy, role, …) is layout/wiring,
-// not copy — deliberately NOT included, or every config-string prop in the
-// codebase (e.g. `item-title="title"` telling <origam-select> which field to
-// read) would false-positive.
-const TRANSLATABLE_ATTRS = new Set(['aria-label', 'title', 'placeholder', 'alt'])
-
-// Channel C — explicit allowlist for keys built via template-literal
-// interpolation the static scan can't resolve from the call site. Each entry
-// documents exactly where it comes from so a future reader can re-verify it
-// against the source rather than trusting this list blindly.
-const DYNAMIC_KEY_ALLOWLIST = [
-    // src/pages/changelog.vue:36-45 — `t(`changelog.type.${type}`, ...)`,
-    // `type` ranges over the literal keys of the local `fallbacks` map.
-    'changelog.type.unreleased',
-    'changelog.type.major',
-    'changelog.type.minor',
-    'changelog.type.patch',
-    // src/pages/changelog.vue:47-56 — `t(`changelog.highlight.${type}`, ...)`
-    'changelog.highlight.added',
-    'changelog.highlight.changed',
-    'changelog.highlight.fixed',
-    'changelog.highlight.deprecated',
-    // src/pages/why-origam.vue + src/components/WhyOrigamThemeDemo.vue —
-    // `t(`why_origam.demo.identity_${entry.key}`, ...)`, `entry.key` ranges
-    // over the 8 brand identities in `WHY_DEMO_THEMES` (why-origam-demo.const.ts).
-    'why_origam.demo.identity_origam',
-    'why_origam.demo.identity_apple',
-    'why_origam.demo.identity_cartoon',
-    'why_origam.demo.identity_ecom',
-    'why_origam.demo.identity_editorial',
-    'why_origam.demo.identity_geek',
-    'why_origam.demo.identity_glass',
-    'why_origam.demo.identity_material'
-]
-
-// Fields whose translation is resolved at runtime from the database (doc
-// reference tables), not from any static string in this repo — see
-// `server/utils/reference-mappers.ts` (`descriptionKey: row.description_key`).
-// Static extraction cannot enumerate these; documented here so check 1 does
-// not misreport them, rather than silently missing them without explanation.
-const DB_BACKED_KEY_FIELDS_NOTE =
-    'descriptionKey/descriptionFallback on components|directives|types|enums|interfaces|consts|composables|utils ' +
-    'catalog pages are populated from server/db (reference-mappers.ts) at runtime, not from static literals in src/. ' +
-    'Out of scope for static extraction by design.'
+const argv = process.argv.slice(2)
+const jsonOutput = argv.includes('--json')
+const strictWarnings = argv.includes('--strict-warnings')
 
 function listFiles(dir, extensions, out = []) {
     if (!fs.existsSync(dir)) return out
@@ -160,7 +115,7 @@ function flatten(obj, prefix = '', out = {}) {
 
 function loadLocaleMessages(code) {
     const file = `${code}.json`
-    const filePath = path.join(LOCALES_DIR, file)
+    const filePath = path.join(localesDir, file)
 
     if (!fs.existsSync(filePath)) {
         return { merged: {}, file: null }
@@ -224,7 +179,7 @@ function addRef(refs, key, filePath, line, channel) {
         refs.set(key, [])
     }
 
-    refs.get(key).push({ file: path.relative(MARKETING_ROOT, filePath), line, channel })
+    refs.get(key).push({ file: path.relative(marketingRoot, filePath), line, channel })
 }
 
 // ---------------------------------------------------------------------------
@@ -251,7 +206,7 @@ function checkHardcodedStrings(vueFiles) {
             ;({ descriptor } = parseSFC(source, { filename: filePath }))
         } catch (e) {
             violations.push({
-                file: path.relative(MARKETING_ROOT, filePath),
+                file: path.relative(marketingRoot, filePath),
                 line: 0,
                 kind: 'parse-error',
                 detail: e.message
@@ -269,7 +224,7 @@ function checkHardcodedStrings(vueFiles) {
             ast = parseTemplate(templateContent, { comments: true })
         } catch (e) {
             violations.push({
-                file: path.relative(MARKETING_ROOT, filePath),
+                file: path.relative(marketingRoot, filePath),
                 line: 0,
                 kind: 'parse-error',
                 detail: e.message
@@ -289,7 +244,7 @@ function checkHardcodedStrings(vueFiles) {
                         const absoluteOffset = templateStartOffset + prop.loc.start.offset
 
                         violations.push({
-                            file: path.relative(MARKETING_ROOT, filePath),
+                            file: path.relative(marketingRoot, filePath),
                             line: lineAt(source, absoluteOffset),
                             kind: 'static-attribute',
                             detail: `${node.tag} ${prop.name}="${prop.value.content}"`
@@ -302,7 +257,7 @@ function checkHardcodedStrings(vueFiles) {
                 const absoluteOffset = templateStartOffset + node.loc.start.offset
 
                 violations.push({
-                    file: path.relative(MARKETING_ROOT, filePath),
+                    file: path.relative(marketingRoot, filePath),
                     line: lineAt(source, absoluteOffset),
                     kind: 'static-text',
                     detail: JSON.stringify(node.content.trim().slice(0, 80))
@@ -349,8 +304,8 @@ function checkUnescapedAt(flatKeys, code) {
 }
 
 function main() {
-    const vueFiles = listFiles(SRC_DIR, ['.vue'])
-    const tsFiles = listFiles(SRC_DIR, ['.ts'])
+    const vueFiles = listFiles(srcDir, ['.vue'])
+    const tsFiles = listFiles(srcDir, ['.ts'])
     const allSourceFiles = [...vueFiles, ...tsFiles]
 
     // -------- extraction (channels A + B) --------
@@ -372,7 +327,7 @@ function main() {
     // -------- load locales --------
     const locales = {}
 
-    for (const code of LOCALE_CODES) {
+    for (const code of I18N_LOCALE_CODES) {
         const { merged, file } = loadLocaleMessages(code)
 
         locales[code] = { merged, file, flat: flatten(merged) }
@@ -381,7 +336,7 @@ function main() {
     // -------- check 1: referenced but undefined --------
     const missingByLocale = {}
 
-    for (const code of LOCALE_CODES) {
+    for (const code of I18N_LOCALE_CODES) {
         const flat = locales[code].flat
         const missing = []
 
@@ -395,7 +350,7 @@ function main() {
     }
 
     // -------- check 2: EN/FR parity (leaf keys + placeholders) --------
-    const [baseCode, compareCode] = LOCALE_CODES
+    const [baseCode, compareCode] = I18N_LOCALE_CODES
     const baseFlat = locales[baseCode].flat
     const compareFlat = locales[compareCode].flat
     const baseKeys = new Set(Object.keys(baseFlat))
@@ -430,7 +385,7 @@ function main() {
     const referencedKeys = new Set(refs.keys())
     const deadKeys = {}
 
-    for (const code of LOCALE_CODES) {
+    for (const code of I18N_LOCALE_CODES) {
         deadKeys[code] = Object.keys(locales[code].flat)
             .filter((k) => !referencedKeys.has(k))
             .sort()
@@ -439,7 +394,7 @@ function main() {
     const snakeCaseIssues = {}
     const unescapedAt = []
 
-    for (const code of LOCALE_CODES) {
+    for (const code of I18N_LOCALE_CODES) {
         snakeCaseIssues[code] = checkSnakeCase(locales[code].flat)
         unescapedAt.push(...checkUnescapedAt(locales[code].flat, code))
     }
@@ -450,12 +405,12 @@ function main() {
         summary: {
             referencedKeysTotal: refs.size,
             channelBReferencedKeys: [...refs.values()].filter((sites) => sites.some((s) => s.channel === 'B')).length,
-            localeFiles: Object.fromEntries(LOCALE_CODES.map((c) => [c, locales[c].file])),
-            missingKeysByLocale: Object.fromEntries(LOCALE_CODES.map((c) => [c, missingByLocale[c].length])),
+            localeFiles: Object.fromEntries(I18N_LOCALE_CODES.map((c) => [c, locales[c].file])),
+            missingKeysByLocale: Object.fromEntries(I18N_LOCALE_CODES.map((c) => [c, missingByLocale[c].length])),
             parityGaps: parityGapCount,
             hardcodedStringViolations: hardcodedViolations.length,
-            deadKeysByLocale: Object.fromEntries(LOCALE_CODES.map((c) => [c, deadKeys[c].length])),
-            snakeCaseIssuesByLocale: Object.fromEntries(LOCALE_CODES.map((c) => [c, snakeCaseIssues[c].length])),
+            deadKeysByLocale: Object.fromEntries(I18N_LOCALE_CODES.map((c) => [c, deadKeys[c].length])),
+            snakeCaseIssuesByLocale: Object.fromEntries(I18N_LOCALE_CODES.map((c) => [c, snakeCaseIssues[c].length])),
             unescapedAtCount: unescapedAt.length
         },
         check1_missingKeys: missingByLocale,
@@ -472,7 +427,7 @@ function main() {
         }
     }
 
-    if (JSON_OUTPUT) {
+    if (jsonOutput) {
         console.log(JSON.stringify(report, null, 2))
     } else {
         printHumanReport(report)
@@ -483,7 +438,7 @@ function main() {
 
     if (blockingFailure) {
         process.exitCode = 1
-    } else if (STRICT_WARNINGS && warningFailure) {
+    } else if (strictWarnings && warningFailure) {
         process.exitCode = 1
     } else {
         process.exitCode = 0

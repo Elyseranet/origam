@@ -1,0 +1,72 @@
+{
+  "name": "OrigamAudioWaveform",
+  "tag": "origam-audio-waveform",
+  "family": "Audio",
+  "label": "AudioWaveform",
+  "props": [
+    {
+      "name": "peaks",
+      "label": "peaks",
+      "tsType": "readonly number[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "progress",
+      "label": "progress",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 0,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    }
+  ],
+  "events": [],
+  "slots": [],
+  "snippets": [],
+  "requiresParent": false
+}

@@ -161,6 +161,24 @@ const MARKETING_GREEN_SPECS = [
     // + `docs:seed` SEULS, la provision exacte du job CI.
     'marketing-reference-row-list.spec.ts',
 
+    // #1145 — /components/{slug} et /theming rendent par le moteur du
+    // playground. Mesure d'admission : contrôle positif 10/10 ROUGES contre le
+    // parent `7c3f0b1fb` (ancien `ComponentLivePreview`), 50/50 en
+    // `--repeat-each=5 --retries=0`, serveur de dev isolé sur un port à nous.
+    'marketing-playground-host.spec.ts',
+
+    // #1217 — la home ne defile jamais en horizontal (375/768/1024/1280, EN+FR).
+    // Mesure d'admission : voir la PR (A/B contre le parent).
+    'marketing-home-no-overflow.spec.ts',
+
+    // #1229 — aucun aperçu de /theming ne s'effondre à 0 px de large.
+    'marketing-theming-preview-width.spec.ts',
+
+    // #1292 — en Split, chaque overlay se rend dans SON canvas, avec le mode du
+    // pane. Rouge 10/10 sur le parent, vert 10/10 apres ; 12/12 en
+    // `--repeat-each=6` sur command-palette + contextual-menu.
+    'marketing-theming-split-overlay-attach.spec.ts',
+
     // #1172 — encart « même sujet » en index de lignes, repli au-delà de 12.
     // Mesure d'admission : voir la PR (A/B rouge sur le parent, repeat-each).
     'marketing-catalog-related-families.spec.ts'

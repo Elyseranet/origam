@@ -1,5 +1,6 @@
 import { INTENT } from '../../enums/Commons/intent.enum'
 
+import type { TChartRovingAction } from '../../types/Chart/chart.type'
 import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
@@ -268,3 +269,128 @@ export const CHART_SCATTER_MAX_RADIUS = 36
  * base 1.
  ********************************************************/
 export const CHART_SLICE_LABEL_PREFIX = 'Slice'
+
+/*********************************************************
+ * CHART_SVG_ROLE
+ *
+ * @description
+ * Role of the root `<svg>` of every chart whose data points are focusable
+ * (`role="button"`, one roving tab stop per chart, #1333). It is `group`, never `img`: an `img`
+ * renders its subtree presentational, so a screen reader announces only the
+ * picture while the keyboard stops on each point (axe `nested-interactive`,
+ * WCAG 4.1.2, #1318 and #1153).
+ * A named `group` keeps the accessible name (`aria-label`) and lets the
+ * focusable points be announced.
+ ********************************************************/
+export const CHART_SVG_ROLE = 'group'
+
+/*********************************************************
+ * CHART_POINT_ATTR
+ *
+ * @description
+ * Boolean data attribute carried by every focusable data point of a chart
+ * (`role="button"`). It is what `useChartRoving` selects: the other
+ * `role="button"` of a chart (the zoom-reset control) keep their own tab
+ * stop (#1333).
+ ********************************************************/
+export const CHART_POINT_ATTR = 'data-chart-point'
+
+/*********************************************************
+ * CHART_POINT_SELECTOR
+ *
+ * @description
+ * CSS selector matching the focusable data points of a chart.
+ ********************************************************/
+export const CHART_POINT_SELECTOR = `[${ CHART_POINT_ATTR }]`
+
+/*********************************************************
+ * CHART_SERIES_ATTR
+ *
+ * @description
+ * Optional data attribute naming the series (or row) a point belongs to.
+ * ArrowUp / ArrowDown move between these groups at the same position.
+ * Points without it form a single series, for which the vertical arrows
+ * behave like ArrowLeft / ArrowRight (the listbox / radio-group pattern),
+ * so a vertical key is never dead.
+ ********************************************************/
+export const CHART_SERIES_ATTR = 'data-chart-series'
+
+/*********************************************************
+ * CHART_ROVING_KEY_ACTIONS
+ *
+ * @description
+ * Keyboard model of the single tab stop of a chart (#1333):
+ * Left/Right = previous/next point, Up/Down = previous/next series,
+ * Home/End = first/last point. Enter and Space stay handled by each point
+ * (same emit as a click); Tab is left to the browser and exits the chart.
+ ********************************************************/
+export const CHART_ROVING_KEY_ACTIONS: Readonly<Record<string, TChartRovingAction>> = {
+    ArrowRight: 'next',
+    ArrowLeft: 'previous',
+    ArrowDown: 'nextSeries',
+    ArrowUp: 'previousSeries',
+    Home: 'first',
+    End: 'last'
+}
+
+/*********************************************************
+ * CHART_AXIS_LABEL_CHAR_WIDTH / CHART_AXIS_LABEL_MIN_GAP — décimation (#1325)
+ *
+ * @description
+ * Repli (SSR, avant mesure) pour la largeur d'une étiquette de l'axe X (px par caractère,
+ * pour la police 0.75rem par défaut, taillée sur le glyphe large) et
+ * espace minimal exigé entre deux étiquettes voisines. Servent à calculer
+ * le pas de décimation « une étiquette sur N ». Après montage la largeur est mesurée :
+ * la largeur par caractère ne sert plus qu'au premier rendu (l'écart reste utilisé), où un
+ * `--origam-chart__axis-label---font-size` très supérieur au défaut peut sous-estimer.
+ ********************************************************/
+export const CHART_AXIS_LABEL_CHAR_WIDTH = 8
+export const CHART_AXIS_LABEL_MIN_GAP = 8
+
+/*********************************************************
+ * CHART_SIZE_FALLBACK (#1324)
+ *
+ * @description
+ * Taille de la surface de dessin d'un chart tant que rien n'est mesure
+ * (SSR, avant montage, boite nulle) : c'est l'ancien `viewBox` fige,
+ * conserve comme repli pour que le premier rendu serveur et client
+ * restent identiques. Une fois la boite du conteneur mesuree
+ * (`useChartSize`), ces valeurs ne servent plus.
+ * Les charts a rapport impose (`CHART_ASPECT_RATIO`) gardent un repli
+ * a ce meme rapport.
+ ********************************************************/
+export const CHART_SIZE_FALLBACK = {
+    boxPlot: { width: 600, height: 400 },
+    bullet: { width: 600, height: 400 },
+    candlestick: { width: 600, height: 400 },
+    pareto: { width: 640, height: 400 },
+    pictorial: { width: 600, height: 400 },
+    pyramid: { width: 600, height: 400 },
+    sankey: { width: 600, height: 400 },
+    streamgraph: { width: 700, height: 420 },
+    treemap: { width: 600, height: 400 },
+    variwide: { width: 600, height: 400 },
+    wordCloud: { width: 800, height: 500 },
+    gauge: { width: 360, height: 280 },
+    map: { width: 1000, height: 500 },
+    sparkline: { width: 120, height: 30 },
+    polar: { width: 360, height: 360 },
+    polarBar: { width: 400, height: 400 },
+    radar: { width: 360, height: 360 },
+    sunburst: { width: 400, height: 400 }
+} as const
+
+/*********************************************************
+ * CHART_ASPECT_RATIO (#1324)
+ *
+ * @description
+ * Rapport hauteur / largeur impose a la surface de dessin des charts
+ * dont la geometrie ne se deforme pas (`useChartSize`, option
+ * `aspectRatio`). `radial` : cercle, 1:1. `gauge` : demi-anneau, rapport
+ * historique 280 / 360. `map` : planisphere 2:1.
+ ********************************************************/
+export const CHART_ASPECT_RATIO = {
+    radial: 1,
+    gauge: 280 / 360,
+    map: 0.5
+} as const

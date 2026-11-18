@@ -8,7 +8,7 @@
  *     --config=playwright.marketing.config.ts \
  *     home-playground.spec.ts
  *
- * v5-phase1 rework: le @vue/repl REPL live-editor a été remplacé par un split
+ * v5-phase1 rework: le REPL live-editor (supprimé) avait été remplacé par un split
  * statique OrigamCode (gauche, data-cy="playground-code") | preview card (droite,
  * data-cy="playground-preview"). Les boutons SHARE / OPEN et le
  * data-cy="playground-repl" ont été supprimés intentionnellement.
@@ -33,12 +33,12 @@ test.describe('HomePlayground section', () => {
 
     test('eyebrow text is present', async ({ page }) => {
         const eyebrow = page.locator('section#playground .home-playground__eyebrow')
-        await expect(eyebrow).toContainText('LIVE PLAYGROUND')
+        await expect(eyebrow).toContainText('CODE EXAMPLE')
     })
 
     test('h2 title is present', async ({ page }) => {
         const title = page.locator('section#playground h2')
-        await expect(title).toContainText('Try before you ship.')
+        await expect(title).toContainText('A few lines, real components.')
     })
 
     test('toolbar shows file tab (App.vue) — no SHARE/OPEN buttons', async ({ page }) => {
@@ -67,7 +67,7 @@ test.describe('HomePlayground section', () => {
     })
 
     test('caption figcaption is present', async ({ page }) => {
-        const caption = page.locator('section#playground figcaption')
+        const caption = page.locator('section#playground .home-playground__caption')
         await expect(caption).toBeVisible()
         await expect(caption).not.toBeEmpty()
     })

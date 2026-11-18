@@ -1,0 +1,178 @@
+{
+  "name": "OrigamTabPanels",
+  "tag": "origam-tab-panels",
+  "family": "Tabs",
+  "label": "TabPanels",
+  "props": [
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "transition",
+      "label": "transition",
+      "tsType": "string | false | undefined",
+      "runtimeType": [
+        "String",
+        "Boolean"
+      ],
+      "required": false,
+      "defaultValue": "fade",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "swipeable",
+      "label": "swipeable",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "direction",
+      "label": "direction",
+      "tsType": "\"horizontal\" | \"vertical\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "horizontal",
+      "hasFactoryDefault": false,
+      "options": [
+        "horizontal",
+        "vertical"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "modelValue",
+      "label": "modelValue",
+      "tsType": "any",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "multiple",
+      "label": "multiple",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "mandatory",
+      "label": "mandatory",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "max",
+      "label": "max",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "source": "types"
+    },
+    {
+      "name": "selectedClass",
+      "label": "selectedClass",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam-tab-panel--active",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "update:modelValue",
+      "label": "update:modelValue",
+      "payloadType": "[event: any]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "ITabPanelsSlotProps",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

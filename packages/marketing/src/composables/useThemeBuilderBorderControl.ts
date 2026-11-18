@@ -2,6 +2,7 @@ import { computed, ref, watch, type ComputedRef, type Ref } from 'vue'
 
 import {
     THEME_BUILDER_BORDER_NAMED_WIDTHS,
+    THEME_BUILDER_BORDER_SIDE_PROP,
     THEME_BUILDER_CUSTOM_VALUE
 } from '~/consts/theme-builder-controls.const'
 import type { IThemeBuilderBorderSideValues } from '~/interfaces/theme-builder.interface'
@@ -126,16 +127,9 @@ export function useThemeBuilderBorderControl (
         emitWidth('border', px)
     }
 
-    const SIDE_PROP: Record<TThemeBuilderBorderSide, 'borderTop' | 'borderRight' | 'borderBottom' | 'borderLeft'> = {
-        top: 'borderTop',
-        right: 'borderRight',
-        bottom: 'borderBottom',
-        left: 'borderLeft'
-    }
-
     const setSideWidth = (side: TThemeBuilderBorderSide, px: number): void => {
         sideWidths.value = { ...sideWidths.value, [side]: px }
-        emitWidth(SIDE_PROP[side], px)
+        emitWidth(THEME_BUILDER_BORDER_SIDE_PROP[side], px)
     }
 
     const toggleWidthLinked = (): void => {

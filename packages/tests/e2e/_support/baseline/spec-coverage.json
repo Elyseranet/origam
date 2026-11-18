@@ -39,7 +39,6 @@
     "chart-heatmap.spec.ts",
     "chart-honeycomb.spec.ts",
     "chart-map.spec.ts",
-    "chart-pareto.spec.ts",
     "chart-pictorial.spec.ts",
     "chart-polar-bar.spec.ts",
     "chart-pyramid.spec.ts",

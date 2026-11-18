@@ -18,6 +18,568 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.38.1',
+        date: '2026-11-17',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2381.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2381.h1', textFallback: 'nuxt 4.6.4, avis pnpm audit (#1366)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.38.0',
+        date: '2026-11-16',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2380.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2380.h1', textFallback: 'DatePicker : sélection d\'année, flèches ‹ › et sélecteur mois/année (#1365)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.42',
+        date: '2026-11-11',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23742.summary',
+        summaryFallback: '1 change. See the full changelog for detail.',
+        highlights: [
+            { type: 'changed', textKey: 'changelog.versions.v23742.h1', textFallback: 'nettoyage du dépôt (#1346)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.41',
+        date: '2026-11-11',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23741.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23741.h1', textFallback: 'main.css commité en retard sur le SCSS, et garde contre la dérive (#1342)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.40',
+        date: '2026-11-05',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23740.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23740.h1', textFallback: 'Charts : un seul arrêt de tabulation par chart, navigation aux flèches (#1333)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.39',
+        date: '2026-11-05',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23739.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23739.h1', textFallback: 'OrigamChartCartesian : les étiquettes de l\'axe X ne se chevauchent plus sur un chart étroit (#1325)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.38',
+        date: '2026-11-05',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23738.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23738.h1', textFallback: 'Charts : la surface de dessin suit la taille du conteneur sur 19 charts (#1324)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.37',
+        date: '2026-11-04',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23737.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23737.h1', textFallback: 'OrigamChartCartesian : la surface de dessin suit la largeur réelle du conteneur (#1317)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.36',
+        date: '2026-11-04',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23736.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23736.h1', textFallback: 'Charts : le <svg> porte role="group" au lieu de role="img" (#1318, #1153)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.35',
+        date: '2026-11-04',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23735.summary',
+        summaryFallback: '1 addition and 1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23735.h1', textFallback: 'OrigamAlert / OrigamBadge : la visibilité n\'est plus lue comme un état hover/active au repos (#1307)' },
+            { type: 'added', textKey: 'changelog.versions.v23735.h2', textFallback: 'OrigamBtn : jetons d\'alignement du contenu (#1304)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.34',
+        date: '2026-11-04',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23734.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23734.h1', textFallback: 'origam/nuxt : le cookie de marque est validé contre les thèmes installés (#1120)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.33',
+        date: '2026-11-03',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23733.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v23733.h1', textFallback: 'OrigamTable : jetons de typographie des en-têtes (#1245)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.32',
+        date: '2026-11-03',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23732.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v23732.h1', textFallback: 'OrigamTab : hauteur de ligne réglable (prop lineHeight + jeton) (#1252)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.31',
+        date: '2026-11-03',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23731.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v23731.h1', textFallback: 'OrigamBreadcrumb : jeton de hauteur de ligne (#1265)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.30',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23730.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23730.h1', textFallback: 'OrigamColorPickerField, OrigamDatePickerField : le rôle combobox passe du wrapper à l\'<input> (#1308)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.29',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23729.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23729.h1', textFallback: 'OrigamTable : le côté du séparateur de ligne est thémable (#1262)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.28',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23728.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23728.h1', textFallback: 'OrigamDataList : la ligne kv, sa clé et sa valeur sont thémables (#1267)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.27',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23727.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23727.h1', textFallback: 'OrigamField : --origam-field---corner-clearance est thémable (#1254)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.26',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23726.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23726.h1', textFallback: 'OrigamInfiniteScrollIntersect : rootRef est optionnel (#1295)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.25',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23725.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23725.h1', textFallback: 'champs : le role n\'est plus posé deux fois (wrapper + input) (#1247)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.24',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23724.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23724.h1', textFallback: 'opacités d\'overlay au survol réglables par jeton (#1244)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.23',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23723.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23723.h1', textFallback: 'OrigamDataTable : la prop items accepte les objets du consommateur (#1250)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.22',
+        date: '2026-11-01',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23722.summary',
+        summaryFallback: '1 change. See the full changelog for detail.',
+        highlights: [
+            { type: 'changed', textKey: 'changelog.versions.v23722.h1', textFallback: '5 sous-parties internes sortent des catalogues (#1287)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.21',
+        date: '2026-10-29',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23721.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23721.h1', textFallback: 'OrigamListItem : un élément-lien garde son rôle de lien (#1249)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.20',
+        date: '2026-10-28',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23720.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23720.h1', textFallback: 'OrigamBtn outlined et ghost : le filet ne s\'ajoute plus à la largeur (#1261)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.19',
+        date: '2026-10-28',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23719.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23719.h1', textFallback: 'OrigamTabs variante pills : la prop color colore l\'onglet actif (#1253)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.18',
+        date: '2026-10-28',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23718.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23718.h1', textFallback: 'champs : la couleur et l\'opacité du placeholder sont réglables par jeton (#1266)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.17',
+        date: '2026-10-28',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23717.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23717.h1', textFallback: 'OrigamDataTable n\'hérite plus d\'une prop item requise (#1246, #1154)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.16',
+        date: '2026-10-28',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23716.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23716.h1', textFallback: 'OrigamSelect, OrigamColorPickerField, OrigamDatePickerField : plus de nom « Ouvrir » qui écrase un <label for> externe (#1251)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.15',
+        date: '2026-10-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23715.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v23715.h1', textFallback: 'slot de police display (#1212)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.14',
+        date: '2026-10-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23714.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23714.h1', textFallback: 'OrigamSelect : aria-controls présent sur le combobox menu fermé, donc aussi en SSR (#1225)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.13',
+        date: '2026-10-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23713.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v23713.h1', textFallback: 'origam/nuxt : option icons (defaultSet, aliases) (#1228)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.12',
+        date: '2026-10-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23712.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23712.h1', textFallback: 'OrigamListItem : l\'opacité de l\'overlay actif est lue par jeton (#1230)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.11',
+        date: '2026-10-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23711.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23711.h1', textFallback: 'thème : une clé de components.global n\'avertit plus sur les composants qui ne la déclarent pas (#1227)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.10',
+        date: '2026-10-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23710.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23710.h1', textFallback: 'OrigamBtn variante text : l\'état actif peut peindre un fond (#1222)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.9',
+        date: '2026-10-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2379.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2379.h1', textFallback: 'champs de saisie : isActive et isFocused ne fuient plus en attributs HTML sur l\'<input> (#1224)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.8',
+        date: '2026-10-21',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2378.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2378.h1', textFallback: 'origam/utils se charge de nouveau en Node pur (#1208)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.7',
+        date: '2026-10-21',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2377.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2377.h1', textFallback: 'champs de saisie : id et props relayées différents entre le rendu serveur et le client (#1226)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.6',
+        date: '2026-10-21',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2376.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2376.h1', textFallback: 'OrigamDrawer sans attach : contenu absent du rendu serveur et hydratation en erreur (#1223)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.5',
+        date: '2026-10-21',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2375.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2375.h1', textFallback: 'OrigamTabPanels ne relaie plus transition à OrigamTabPanel (#1207)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.4',
+        date: '2026-10-20',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2374.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2374.h1', textFallback: 'OrigamCode : une ligne vide tombait à 0 px et un numéro fantôme suivait le saut de ligne final (#1216)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.3',
+        date: '2026-10-19',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2373.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2373.h1', textFallback: 'v-intersect lié avec le tuple withDirectives : handler jamais appelé (#1205)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.2',
+        date: '2026-10-19',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2372.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2372.h1', textFallback: 'OrigamImg sous SSR : écart d\'hydratation aspect-ratio, et image montée côté client jamais chargée (#1192)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.1',
+        date: '2026-10-19',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2371.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2371.h1', textFallback: 'OrigamImg / OrigamResponsive : prop tag, <img> visible en SSR, fondu en rendu client seul (#1182)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.0',
+        date: '2026-10-19',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2370.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2370.h1', textFallback: 'module Nuxt : options locale transmises à createOrigam (#1181)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.36.0',
+        date: '2026-10-19',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2360.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2360.h1', textFallback: 'OrigamCodeGroup : groupe de code à onglets (npm / pnpm / yarn) en une seule surface (#1179)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.35.1',
+        date: '2026-10-19',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2351.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2351.h1', textFallback: 'OrigamCode : un 2e bloc monté pendant un import de shiki en échec restait vide (#1189)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.35.0',
+        date: '2026-10-19',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2350.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2350.h1', textFallback: 'OrigamCode : lang ouvert, createOrigam({ code: { langs } }) (#1180)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.34.0',
+        date: '2026-10-19',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2340.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2340.h1', textFallback: 'OrigamCommandPalette : prop filter pour afficher des résultats classés en externe (#1184)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.33.0',
+        date: '2026-10-18',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2330.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2330.h1', textFallback: 'OrigamCommandPalette : icônes de recherche et de chargement personnalisables (#1183)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.32.2',
+        date: '2026-10-17',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2322.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2322.h1', textFallback: 'OrigamBtn : libellé collé en haut au lieu d\'être centré (#1168)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.32.1',
         date: '2026-10-16',
         type: 'patch',

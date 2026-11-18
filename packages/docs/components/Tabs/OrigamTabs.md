@@ -106,7 +106,7 @@ On touch devices, enable horizontal swipe between panels with
 | `centered`    | `boolean`                  | `false`        | Centers the tablist in its container. |
 | `mandatory`   | `boolean`                  | `true`         | Forbids the empty selection (ARIA-recommended). |
 | `disabled`    | `boolean`                  | `false`        | Disables the entire tablist.          |
-| `color`       | `TIntent`                  | —              | Forwarded as a default to every child `<OrigamTab>`; does **not** paint the tablist itself. |
+| `color`       | `TIntent`                  | —              | Forwarded as a default to every child `<OrigamTab>`; does **not** paint the tablist itself. In the `pills` variant it sets the active tab's background and text (`action.{intent}.bg` / `.fg`); unset keeps `action.primary`. The `--origam-tabs__item--pills--active---*` tokens remain the fallback hook when no `color` is given. |
 | `bgColor`     | `TIntent \| string`        | —              | Paints the tablist surface. An intent resolves to `--origam-color__{base}---bg` and auto-pairs its contrast foreground; a raw CSS colour is emitted verbatim. |
 | `rounded`     | `TRounded`                 | —              | Corner-radius rung (`IRoundedProps`).  |
 | `tag`         | `string`                   | `'div'`        | Element rendered as the tablist root.  |
@@ -132,10 +132,8 @@ On touch devices, enable horizontal swipe between panels with
 | `fontSize`    | `TFontSize`     | —       | Font size token override (`xs` · `sm` · `md` · `lg` · `xl` · …). Maps to `--origam-tabs__item---font-size`. |
 | `fontWeight`  | `TFontWeight`   | —       | Font weight token override (`regular` · `medium` · `semibold` · `bold` · …). Maps to `--origam-tabs__item---font-weight`. |
 | `letterSpacing` | `TLetterSpacing` | —   | Letter-spacing token override (`tight` · `normal` · `wide` · `wider` · `widest`). Maps to `--origam-tabs__item---letter-spacing`. |
+| `lineHeight` | `TLineHeight` | —   | Line-height token override (`none` · `tight` · `snug` · `normal` · …). Maps to `--origam-tabs__item---line-height` (default `none` = `1`). |
 
-`lineHeight` is deliberately **not** part of the surface: the tab SCSS
-hard-codes `line-height: 1` with no CSS-variable hook, so the prop would have
-had nothing to write to.
 
 ### `<OrigamTabPanels>`
 

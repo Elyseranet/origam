@@ -37,11 +37,12 @@
 					ref="svgRef"
 					class="origam-chart-pareto__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
-					role="img"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-pareto-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -189,7 +190,8 @@
 							rx="2"
 							ry="2"
 							:style="{ fill: bar.color }"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="barAriaLabel(bar)"
 							:data-cy="`origam-chart-pareto-bar-${ bar.index }`"
@@ -296,6 +298,7 @@
 		lang="ts"
 		setup
 >
+	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -306,7 +309,9 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -392,8 +397,8 @@
 	 * CSS scales it to the container.
 	 * Right padding is wider to accommodate the right Y-axis.
 	 ********************************************************/
-	const SVG_WIDTH = 640
-	const SVG_HEIGHT = 400
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.pareto)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const TICK_SIZE = 4
 
 	const PLOT = {
@@ -403,8 +408,8 @@
 		left: 52
 	}
 
-	const plotWidth = SVG_WIDTH - PLOT.left - PLOT.right
-	const plotHeight = SVG_HEIGHT - PLOT.top - PLOT.bottom
+	const plotWidth = computed(() => svgWidth.value - PLOT.left - PLOT.right)
+	const plotHeight = computed(() => svgHeight.value - PLOT.top - PLOT.bottom)
 
 	/*********************************************************
 	 * Color resolution
@@ -491,14 +496,14 @@
 
 	const scaleY = (value: number): number => {
 		const fraction = value / yMax.value
-		return PLOT.top + plotHeight * (1 - fraction)
+		return PLOT.top + plotHeight.value * (1 - fraction)
 	}
 
 	/*********************************************************
 	 * Y scale — right axis (cumulative %)
 	 ********************************************************/
 	const scaleYCumulative = (fraction: number): number => {
-		return PLOT.top + plotHeight * (1 - fraction)
+		return PLOT.top + plotHeight.value * (1 - fraction)
 	}
 
 	/*********************************************************
@@ -539,7 +544,7 @@
 		if (!items.length) return []
 
 		const count = items.length
-		const totalBarSpace = plotWidth - props.barGap * Math.max(0, count - 1)
+		const totalBarSpace = plotWidth.value - props.barGap * Math.max(0, count - 1)
 		const barWidth = Math.max(1, totalBarSpace / count)
 		const baseline = scaleY(0)
 
@@ -646,7 +651,6 @@
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

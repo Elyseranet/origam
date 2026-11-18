@@ -18,6 +18,585 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.38.1] - 2026-11-17
+
+### Security — nuxt 4.6.4, avis `pnpm audit` (#1366)
+
+- `nuxt` (marketing), `@nuxt/kit` et `@nuxt/schema` (devDependencies du paquet) relevés à **^4.6.4** : les 9 avis nuxt disparaissent (GHSA-mjrq-cffv-q4qc, GHSA-r99w-jh2x-3mg9, GHSA-hf59-9xwc-2g4p, GHSA-96x6-fvhx-49hg, GHSA-r9jc-w898-3fv6, GHSA-f3x9-2chm-73c8).
+- `@nuxt/cli` 4.0.1 → 4.0.3 : avec nuxt 4.6.4, `nuxt dev` s'arrêtait au démarrage (`options.hostname.toLowerCase is not a function`).
+- Dérogation datée pour picomatch GHSA-fc5q-39xc-vjpf (high, aucun correctif publié), revue le 2026-12-17 — #1370, `docs/security-waivers.md`.
+- Aucun changement de code dans le paquet publié : seul le manifeste (`devDependencies`) bouge.
+- **Vérifié** : `pnpm audit` exit 0 (contrôle positif fait), `test:unit:run` exit 0, builds DS et marketing exit 0. CI de la PR #1369 : 23/23 checks verts.
+
+## [2.38.0] - 2026-11-16
+
+### Fixed — DatePicker : sélection d'année, flèches ‹ › et sélecteur mois/année (#1365)
+
+- **Choisir une année ne faisait rien** : la grille des années appelait le handler des mois. Le parcours est désormais année → mois → jour.
+- **Flèches ‹ › désactivées sur la grille des jours** après un passage par les mois ou les années : `viewMode` n'avait pas de défaut et la condition était inversée. `viewMode` vaut `month` par défaut ; les flèches sont actives sur la grille des jours et désactivées sur les grilles mois/années.
+- **UI** : deux boutons `[Mois ▾] [Année ▾]` remplacent le libellé « Mois Année » + flèche isolée. Le chevron du bouton ouvert pivote (coupé sous `prefers-reduced-motion`) ; chaque bouton porte `aria-expanded` et un `aria-label` explicite.
+
+#### ⚠️ Ruptures (mineure, projet pré-1.0)
+
+- `OrigamDatePickerControls` / `OrigamDatePicker` : `text` ne contient plus que le **mois** (« June », plus « June 2024 ») ; nouvelle prop **`yearText`** pour l'année.
+- Classe `origam-date-picker-controls__mode-btn` renommée **`__year-btn`**.
+- Clé i18n `origam.date_picker_controls.toggle_year` remplacée par **`choose_month`** et **`choose_year`**.
+- La prop `viewMode` des controls est désormais câblée (pilote `aria-expanded` et le chevron) et n'émet plus d'avertissement.
+
+- **Vérifié** : Vitest complet exit 0 (7952 passés), e2e `date-picker.spec.ts` 12/12, `guards` 33/33, type-check exit 0. CI de la PR #1367 : 23/23 checks verts.
+- Dérogation approuvée : `pnpm audit` porte 5 moderate préexistantes (nuxt 4.6.1), sans lien — remédiation #1366.
+
+## [2.37.42] - 2026-11-11
+
+### Changed — nettoyage du dépôt (#1346)
+
+Suppression des fichiers parasites : `docs/mesures/` (dumps de mesures), les audits `docs/audit-*.md`, `docs/reclassification-tokens-dormants-550.md`, `docs/inspection-classeur-methodo.md`, `docs/POINT-DE-REPRISE.md`, `.design-sync/`, `.impeccable/`, `tmp-824-census.txt`, `MONOREPO_PROPOSAL.md` et `CLAUDE_CODE_BRIEF.md`. `packages/stories`, `packages/docs`, `docker/`, `docs/security-waivers.md` et `docs/work-priorities.md` sont conservés.
+
+- Dans le paquet publié, seuls deux commentaires changent (`OrigamBtn.vue`, `transition.interface.ts`) : ils pointaient vers `docs/mesures/`. Aucun changement de comportement.
+- **Vérifié** : `guards` 33/33, `guards:self` 27/27, lint et `test:unit:run` exit 0. CI de la PR #1352 : 23/23 checks verts.
+
+## [2.37.41] - 2026-11-11
+
+### Fixed — `main.css` commité en retard sur le SCSS, et garde contre la dérive (#1342)
+
+La copie commitée de `packages/ds/src/assets/css/main.css` n'était plus à jour par rapport à `main.scss`. Il lui manquait 5 jetons, chacun dans les 3 blocs (light, dark, `prefers-color-scheme`) : `--origam-btn__content---justify-content`, `--origam-btn__content---text-align`, `--origam-table__header-cell---letter-spacing`, `--origam-table__header-cell---text-transform` et `--origam-tabs__item---line-height`.
+
+- `main.css` a été régénéré avec `pnpm -F origam styles:build`. Comparaison au niveau des déclarations : 9333 → 9348, **0 retirée, 15 ajoutées**.
+- Nouveau garde `main-css-fresh` (garde 33). Il recompile `main.scss` avec les options de `styles:build` et exige l'identité octet pour octet avec `main.css`. Il est branché dans `run-all.mjs`, donc dans le job CI `architecture-guards`.
+- Le paquet npm n'était pas affecté : `build` régénère `main.css` avant `unbuild`. Le défaut ne touchait que la copie du dépôt.
+- **Vérifié** : `guards` 33/33 et `guards:self` 27/27, exit 0. Test A/B : une déclaration retirée → le garde sort en exit 1 ; après régénération → exit 0. CI de la PR #1345 : 23/23 checks verts.
+
+## [2.37.40] - 2026-11-05
+
+### Fixed — Charts : un seul arrêt de tabulation par chart, navigation aux flèches (#1333)
+
+Chaque point focusable d'un chart était un arrêt de tabulation. Mesuré sur develop, cela donnait entre 3 et 1825 arrêts selon le chart et la Variant (Cartésien jusqu'à 1825, Heatmap 168). Il fallait autant de frappes de Tab pour quitter le chart.
+
+- Pattern **roving tabindex** sur les 20 charts à points `role="button"` : un seul point est à `tabindex="0"` (le dernier point actif, sinon le premier), tous les autres sont à `-1`.
+- Touches :
+
+| Touche | Action |
+|---|---|
+| ← / → | point précédent / suivant de la série |
+| ↑ / ↓ | série précédente / suivante, à la même position (bornée) ; à série unique, même effet que ← / → |
+| Home / End | premier / dernier point |
+| Entrée / Espace | active le point (émission inchangée) |
+| Tab | sort du chart en une frappe |
+
+- Treemap, Sunburst, Sankey, Map, Honeycomb et WordCloud suivent l'ordre du DOM. Pour Sankey, ce sont les liens puis les nœuds. Cet ordre est documenté sur chaque chart.
+- Nouveau composable `useChartRoving` (`composables/Chart/chart-roving.composable.ts`), interface `IChartRoving`, type `TChartRovingAction`, consts `CHART_POINT_ATTR`, `CHART_POINT_SELECTOR`, `CHART_SERIES_ATTR` et `CHART_ROVING_KEY_ACTIONS`.
+- Le bouton de réinitialisation du zoom du cartésien garde son propre arrêt de tabulation.
+- **Vérifié** : la spec `chart-roving-tabindex.spec.ts`, inscrite dans `GREEN_SPECS`, compte 1 arrêt par chart, ainsi que flèches, Home/End et Entrée/Espace, sur toutes les Variants. Elle est rouge 21/21 sur le parent et verte avec le correctif. `chart-nested-interactive` reste verte (axe : 0 `nested-interactive`). `e2e/chart*` : 401 passés (PR #1337).
+- **Limites** : pas d'inversion des flèches en RTL. Avant l'hydratation SSR, les points n'ont pas d'arrêt de tabulation.
+
+## [2.37.39] - 2026-11-05
+
+### Fixed — `OrigamChartCartesian` : les étiquettes de l'axe X ne se chevauchent plus sur un chart étroit (#1325)
+
+Depuis 2.37.37, le cartésien suit la largeur de son conteneur. Sur un chart étroit, les graduations se resserrent et les étiquettes se chevauchaient : à 320 px, 4 paires sur 12 étiquettes.
+
+- **Décimation** : une étiquette sur N reste affichée. N est calculé à partir de la largeur du plus long label et de l'écart minimal (`CHART_AXIS_LABEL_MIN_GAP`) rapportés au plus petit pas entre graduations. Le texte reste horizontal et entier.
+- **Largeur mesurée** : après le montage, la largeur réelle des labels est mesurée (`getComputedTextLength`). En SSR et avant la mesure, une estimation (`CHART_AXIS_LABEL_CHAR_WIDTH`) sert de repli, ce qui garde un markup initial identique côté serveur et côté client. La mesure suit la police réelle, y compris une taille surchargée par un thème.
+- Les labels écartés restent dans le DOM avec `visibility="hidden"` et `aria-hidden`. Chaque point garde la catégorie et la valeur dans son nom accessible.
+- La logique vit dans `utils/Chart/chart-axis-label.util.ts` (`measureWidestAxisLabel`, `decimateAxisTicks`). L'interface `IChartAxisLabelSlot` est ajoutée.
+- **Vérifié** par la spec `chart-cartesian-axis-label-decimation.spec.ts`, inscrite dans `GREEN_SPECS` :
+  - à 320 px, elle est rouge sur le parent (4 intersections) et verte avec le correctif (0 intersection, 6 étiquettes sur 12) ;
+  - le cas « police d'axe grossie à 1.5rem » est rouge avec l'estimation seule (1 intersection) et vert avec la mesure ;
+  - 600 et 960 px sont inchangés ;
+  - un TU SSR passe sans warning (PR #1335).
+- **Limite** : un changement de taille de police seul, à l'exécution, ne déclenche pas de nouvelle mesure. Elle est relancée quand les graduations ou `xAxisFormat` changent.
+
+## [2.37.38] - 2026-11-05
+
+### Fixed — Charts : la surface de dessin suit la taille du conteneur sur 19 charts (#1324)
+
+Suite de #1317 : `useChartSize` est désormais branché sur 19 charts. Son option `aspectRatio` (hauteur / largeur) remplace le mode carré.
+
+- **Rectangulaires**, sur la boîte mesurée : BoxPlot, Bullet, Candlestick, Heatmap, Pareto, Pictorial, Pyramid, Sankey, Streamgraph, Treemap, Variwide, WordCloud.
+- **1:1** : Polar, Radar, PolarBar, Sunburst.
+- **Gauge**, ratio du demi-anneau : 280/360.
+- **Map** en 2:1. La projection Mercator est recalculée dans la boîte mesurée, donc la géographie n'est jamais déformée.
+- **Sparkline** : le `viewBox` mesuré remplace `preserveAspectRatio="none"`. Les marqueurs restent ronds et les traits gardent leur épaisseur réelle en px.
+- **Honeycomb** n'est pas branché, par conception : `tileSize` pilote sa taille intrinsèque.
+- **⚠ Changement de rendu** : Gauge, Map et les charts radiaux n'ont plus de `height` par défaut, qui devient un plafond optionnel. Sans `height`, un radial forme un carré de la largeur du conteneur. WordCloud adapte `minFontSize` et `maxFontSize` à la boîte mesurée ; sans cela, 2 mots sur 20 disparaissaient.
+- **Constantes** : `CHART_ASPECT_RATIO` et `CHART_SIZE_FALLBACK`, dans `consts/Chart/chart.const.ts`.
+- **Vérifié** : la spec `chart-responsive-size.spec.ts` (39 tests, inscrite dans `GREEN_SPECS`) est rouge 39/39 sur le parent et verte avec le correctif. Mesures sur le parent : Gauge, svg 456×242 pour un viewBox de 360×280 ; Sparkline, marqueur de 20×5 puis 27,5×5 px. `e2e/chart*` : 376 passés, aucun échec (PR #1336).
+
+## [2.37.37] - 2026-11-04
+
+### Fixed — `OrigamChartCartesian` : la surface de dessin suit la largeur réelle du conteneur (#1317)
+
+Le `viewBox` était figé à une taille fixe : le chart s'étirait sans recalculer ses axes ni ses marges.
+
+- Nouveau composable `useChartSize` (`composables/Chart/chart-size.composable.ts`), construit sur `useResizeObserver` : il mesure le `<svg>` et recalcule le `viewBox`. En SSR et avant la première mesure, il retombe sur 600×360.
+- `useResizeObserver` et `IResizeState` deviennent génériques (`<T extends Element = HTMLElement>`) pour observer un `SVGSVGElement`. Le défaut est inchangé pour les autres appelants.
+- Seul le chart cartésien est branché. Les textes et les traits s'expriment désormais en px réels (documenté). Les autres charts sont suivis dans #1324.
+- Vérifié : la spec `chart-cartesian-responsive-width.spec.ts`, inscrite dans `GREEN_SPECS`, est rouge sur le parent (écarts de `viewBox` de 229 px et de 36 px) et verte avec le correctif. Le TU SSR passe sans warning (PR #1323).
+- Hors périmètre : le chevauchement des étiquettes d'axe à faible largeur, suivi dans #1325.
+
+## [2.37.36] - 2026-11-04
+
+### Fixed — Charts : le `<svg>` porte `role="group"` au lieu de `role="img"` (#1318, #1153)
+
+`role="img"` rend ses descendants présentationnels. Or les points des charts sont des `role="button"` focusables : axe signalait `nested-interactive`, et un lecteur d'écran pouvait ne jamais annoncer ces points.
+
+- Nouvelle constante `CHART_SVG_ROLE = 'group'` (`consts/Chart/chart.const.ts`), appliquée au `<svg>` racine des 20 charts qui ont des points focusables. `OrigamChartGauge` garde `role="img"`, car il n'a aucun point focusable.
+- Le nom accessible (`aria-labelledby`) et la navigation clavier (Tab par point, Entrée / Espace) sont inchangés.
+- Vérifié : nouvelle spec `chart-nested-interactive.spec.ts`, inscrite dans `GREEN_SPECS`, qui balaie 22 stories × 4 Variants. Rouge sur le parent pour 21 stories sur 22, Gauge étant la seule verte ; vert pour les 22 avec le correctif. axe donne 0 `nested-interactive`. TU Chart 537/537 (PR #1326).
+- Limite : un chart reste un arrêt de tabulation par point (de 52 à 504 arrêts). L'ergonomie clavier au niveau du chart n'est pas traitée ici.
+
+## [2.37.35] - 2026-11-04
+
+### Fixed — `OrigamAlert` / `OrigamBadge` : la visibilité n'est plus lue comme un état hover/active au repos (#1307)
+
+`OrigamAlert` avait `hover` à `true` par défaut et passait `modelValue` (la visibilité) à `useStateEffect` comme état actif : au repos, le fond utilisait donc `bgHover` / `bgActive`. `OrigamBadge` avait le même câblage `modelValue` → active.
+
+- Alert : `hover` vaut désormais `false` par défaut, et la visibilité n'émet plus ni classe `--active` ni effet.
+- Badge : la classe marqueur `--active` est conservée, mais elle ne pilote plus l'effet de couleur.
+- Vérifié : la spec e2e `alert-rest-state.spec.ts` est rouge sur le parent (classes `--hover --active` au repos) et verte avec le correctif (PR #1320). Pour Badge, la règle `bgActive` a été mesurée sur le parent, mais son A/B n'a pas été rejoué.
+
+### Added — `OrigamBtn` : jetons d'alignement du contenu (#1304)
+
+- `--origam-btn__content---justify-content` et `--origam-btn__content---text-align`, déclarés à `center` (light, dark, bloc media, jumeaux SCSS, `tokens.type.ts`). Le rendu par défaut est inchangé.
+- Vérifié : la spec `btn-content-align.spec.ts` est rouge sur le parent et verte avec le correctif ; les baselines VRT Btn sont inchangées en CI (PR #1322).
+
+> Exception à la règle « un ticket = un patch » : #1307 et #1304 ont été mergés à la suite avant le bump, ils sortent donc ensemble dans cette version.
+
+## [2.37.34] - 2026-11-04
+
+### Security — `origam/nuxt` : le cookie de marque est validé contre les thèmes installés (#1120)
+
+Le plugin serveur (`resolveServerTheme`) et le plugin client utilisaient la valeur brute du cookie de marque. Elle aboutissait dans `<html data-theme>` et servait de clé de lookup, si bien qu'un cookie arbitraire passait tel quel.
+
+- Nouvel util partagé `knownBrand(value, themes)` (`utils/Commons/apply-theme.util.ts`) : il renvoie la valeur seulement si elle vaut `auto` ou le `name` d'un thème installé. La comparaison se fait par parcours `some` de la liste, sans lookup de propriété ; sinon il renvoie `null`.
+- Les plugins serveur et client se replient sur `defaultTheme` quand le cookie (ou l'attribut DOM, côté client) n'est pas reconnu.
+- Vérifié : le TU `1120-known-brand.util.spec.ts` couvre un nom installé, `auto`, `"><script>…`, `__proto__`, `constructor`, `toString`, un nom inconnu, la chaîne vide, null et undefined (PR #1319). Les plugins eux-mêmes ne sont pas testés avec un cookie hostile, car ils importent `#app`.
+
+## [2.37.33] - 2026-11-03
+
+### Added — `OrigamTable` : jetons de typographie des en-têtes (#1245)
+
+Rien ne permettait de régler la casse (`text-transform`) ni l'interlettrage (`letter-spacing`) des en-têtes seuls. `ITableProps` ne reprend que `fontSize` et `fontWeight`.
+
+- Deux jetons, `--origam-table__header-cell---letter-spacing` et `--origam-table__header-cell---text-transform`, déclarés à `initial` dans light, dark (bloc explicite et bloc media), les jumeaux SCSS et `tokens.type.ts`. Ils sont lus par `:deep(th)` avec un repli sur `inherit` : le rendu par défaut ne change pas. DataTable en hérite sans code propre.
+- Pas de prop de typographie d'en-tête (le ticket la disait facultative).
+- Vérifié : e2e `table-header-typography-tokens.spec.ts` sur Table et DataTable. Par défaut, `normal` / `none` ; avec les jetons, `3px` / `uppercase`. Rouge sur le parent, vert après. TU Table et DataTable : 92/92 (PR #1316).
+
+## [2.37.32] - 2026-11-03
+
+### Added — `OrigamTab` : hauteur de ligne réglable (prop `lineHeight` + jeton) (#1252)
+
+`line-height: 1` était codé en dur sur `.origam-tab`.
+
+- Nouveau jeton `--origam-tabs__item---line-height`. Sa valeur par défaut, `var(--origam-font__lineHeight---none)`, vaut 1 : le rendu par défaut ne change pas. Il est déclaré dans light, dark (bloc explicite et bloc media), les jumeaux SCSS et `tokens.type.ts`.
+- `ITabProps` gagne `lineHeight` (`Pick<ITypographyProps>`), que `useTypography` écrit déjà sur ce jeton : on règle d'abord par la prop. La doc et la story (contrôle Line Height dans la Variant Design) sont à jour. La note « lineHeight volontairement absent », qui ne tenait qu'à l'absence de hook CSS, est retirée.
+- Vérifié : e2e `tabs.spec.ts`. Par défaut, la hauteur de ligne vaut 1 × font-size ; avec le jeton à 1.55, elle vaut 1.55 × font-size. Rouge sur le parent, vert après. TU Tabs 79/79 (PR #1315).
+
+## [2.37.31] - 2026-11-03
+
+### Added — `OrigamBreadcrumb` : jeton de hauteur de ligne (#1265)
+
+La hauteur de ligne `1.6` était codée en dur sur `.origam-breadcrumb__items`.
+
+- Nouveau jeton `--origam-breadcrumb---line-height`, déclaré à `1.6` (light, dark, bloc media, jumeaux SCSS, `tokens.type.ts`). Le composant le lit avec `1.6` en repli, donc le rendu par défaut est inchangé.
+- La prop `ITypographyProps.lineHeight` n'a pas été réutilisée : son échelle `--origam-font__lineHeight---*` n'a pas de palier à 1.6, et le défaut aurait changé.
+- Vérifié : e2e `breadcrumb.spec.ts`. Par défaut, la hauteur vaut taille de police × 1.6 ; avec le jeton à 1.55, elle passe à environ 19.84 px. Rouge sur le parent, vert après. TU Breadcrumb 40/40 (PR #1314).
+
+## [2.37.30] - 2026-11-02
+
+### Fixed — `OrigamColorPickerField`, `OrigamDatePickerField` : le rôle combobox passe du wrapper à l'`<input>` (#1308)
+
+Les deux pickers passaient `role: 'combobox'` dans les `activatorProps` de leur menu. Le rôle atterrissait donc sur le wrapper `.origam-field` et non sur l'`<input>` : c'est le défaut que #1247 avait déjà corrigé sur Select.
+
+- Nouvelle constante partagée `MENU_WRAPPER_ARIA_RESET` (`consts/Menu/menu.const.ts`) : elle neutralise sur le wrapper `aria-haspopup`, `aria-expanded` et `aria-owns`. `OrigamSelect` l'utilise à la place de sa copie inline.
+- Les deux pickers posent désormais `role="combobox"`, `aria-haspopup="dialog"` et `aria-expanded` sur l'`<input>`.
+- Vérifié : le TU `picker-field-wrapper-role.spec.ts` (zéro violation axe, un seul combobox, l'`<input>`) est rouge sur le parent (combobox sur un `DIV`) et vert après. Les a11y composants sont verts en Chromium pour les deux pickers fermés (PR #1312).
+- Non vérifié : l'état ouvert des pickers dans un vrai navigateur.
+
+## [2.37.29] - 2026-11-02
+
+### Fixed — `OrigamTable` : le côté du séparateur de ligne est thémable (#1262)
+
+Le séparateur de ligne était un `border-bottom` codé en dur sur les `td` : un thème ne pouvait pas le déplacer en haut de la ligne.
+
+- Deux jetons : `--origam-table__cell---border-top-width` (par défaut `border__width---0`) et `--origam-table__cell---border-bottom-width` (par défaut `var(--origam-table__cell---border-width)`). Le rendu par défaut ne change pas. Un thème pose `top: 1px` / `bottom: 0` pour placer le filet en haut. La couleur et le style ne changent pas.
+- Une propriété personnalisée CSS ne peut pas désigner un côté de bordure : le `border-side: top|bottom` demandé est donc remplacé par cette paire de jetons.
+- Limite connue : le jeton du bas reprend `--origam-table__cell---border-width` par défaut. Un thème qui ne surchargerait que cette largeur dans une sous-arborescence pourrait laisser le filet du bas à la valeur de la racine.
+- Vérifié : e2e `table.spec.ts`. Par défaut, top 0 et bottom 1px ; avec les jetons posés, top 1px et bottom 0. Rouge sur le parent, vert après. TU Table et DataTable 92/92 (PR #1309).
+
+## [2.37.28] - 2026-11-02
+
+### Fixed — `OrigamDataList` : la ligne `kv`, sa clé et sa valeur sont thémables (#1267)
+
+La ligne `kv` codait en dur son filet (`1px solid`) et sa grille à deux colonnes, et n'offrait aucun réglage d'écart vertical, de padding, de rayon ni de fond. La clé et la valeur n'avaient aucun réglage typographique.
+
+- 10 jetons `--origam-data-list__kv---{row-columns, row-gap, row-padding-inline, row-radius, row-background, row-border-width, key-letter-spacing, key-text-transform, value-font-weight, value-font-variant-numeric}`, déclarés à `initial` (light, dark, bloc media, jumeaux SCSS, `tokens.type.ts`).
+- Les replis SCSS gardent le rendu actuel, et `row-columns` se replie sur `var(--key-width, 160px) 1fr`, ce qui laisse `key-width` fonctionner.
+- Ce sont des jetons et non des props : les props Commons s'appliquent au `<dl>` racine, pas à la ligne, à la clé ni à la valeur.
+- Vérifié : e2e `data-list-kv-tokens.spec.ts`, avec des valeurs par défaut inchangées et l'effet de chaque jeton mesuré. Rouge sur le parent, vert après. `data-list.spec.ts` reste à 20/20 (PR #1311).
+
+## [2.37.27] - 2026-11-02
+
+### Fixed — `OrigamField` : `--origam-field---corner-clearance` est thémable (#1254)
+
+`OrigamField` posait `--origam-field---corner-clearance` sur l'élément. Un thème ne pouvait donc pas régler le dégagement des coins, en particulier sur un champ pilule.
+
+- Le composant lit maintenant le jeton, avec repli sur `var(--field-corner-default)` : `min(radius, height)`, calculé pour chaque instance. Le contour `__outline--start` utilise le même repli.
+- Le jeton est déclaré à `initial` dans light et dark (bloc explicite et bloc media), dans les jumeaux SCSS et dans `tokens.type.ts`. Sans thème, on retombe donc sur le calcul de l'instance et le rendu par défaut ne change pas. `OrigamOtpInputField` continue de poser `0px`.
+- Vérifié : e2e `field-corner-clearance.spec.ts` (Chromium, Histoire statique). Le nouveau cas « jeton posé » est rouge sur le parent et vert après ; les cas défaut et OTP restent verts (PR #1310).
+
+## [2.37.26] - 2026-11-02
+
+### Fixed — `OrigamInfiniteScrollIntersect` : `rootRef` est optionnel (#1295)
+
+`rootRef` était déclaré requis. Pourtant le composant fonctionne sans lui : son `IntersectionObserver` est alors créé sans `root` et observe le viewport. Un usage légitime déclenchait donc le warn Vue « Missing required prop ».
+
+- `rootRef?: HTMLElement` dans l'interface. La doc du composant, qui n'était qu'un stub, a maintenant un tableau des props qui précise le repli sur le viewport. `OrigamInfiniteScroll` passe toujours son `rootRef`.
+- Vérifié : le TU (montage sans `rootRef`, aucun warn, `root` reste `undefined`) est rouge sur le parent et vert après ; TU InfiniteScroll 19/19 (PR #1298).
+
+## [2.37.25] - 2026-11-02
+
+### Fixed — champs : le `role` n'est plus posé deux fois (wrapper + input) (#1247)
+
+`OrigamTextField` posait `:role="role"` sur le wrapper `origam-field` en plus de l'`<input>`. Pour un Select, le wrapper portait donc `role="combobox"` sans `aria-expanded` ni `aria-controls`, ce qu'axe signale par `aria-required-attr`.
+
+- Le `role` n'est plus posé que sur l'`<input>`. `OrigamPasswordField`, qui ne le posait que sur le wrapper, le pose désormais sur l'input.
+- `OrigamSelect` neutralise sur le wrapper les attributs ARIA par défaut de son menu (`aria-haspopup`, `aria-expanded`, `aria-owns`). Une fois le rôle retiré du wrapper, axe les signalait (`aria-allowed-attr`) dans DataTable, via son sélecteur « items per page », et dans le playground. L'ARIA combobox reste sur l'input.
+- Vérifié :
+  - `select-aria-controls.spec.ts` : zéro violation axe et un seul `combobox`, posé sur l'input. Rouge sur le parent, vert après.
+  - Suites a11y composants 228/228, e2e playground 73/73 et TU des champs (273) au vert (PR #1297).
+- Suivi : `OrigamColorPickerField` et `OrigamDatePickerField` posent encore le rôle sur le wrapper (#1308).
+
+## [2.37.24] - 2026-11-02
+
+### Fixed — opacités d'overlay au survol réglables par jeton (#1244)
+
+Deux opacités de survol étaient encore codées en dur : `0.08` sur une ligne-lien d'`OrigamListItem`, et `0.04` sur l'en-tête d'`OrigamExpansionPanelHeader`.
+
+- Deux jetons, nommés comme ceux d'`OrigamBtn` et de #1230 :
+  - `--origam-list-item---overlay-opacity-hover` (`0.08`) ;
+  - `--origam-expansion-panel__header---overlay-opacity-hover` (`0.04`).
+  Ils sont déclarés dans light et dark (bloc explicite et bloc media), dans les jumeaux SCSS, dans `tokens.type.ts` et dans `main.css`. Le rendu par défaut ne change pas.
+- Vérifié : l'e2e `overlay-opacity-hover-1244.spec.ts` (Histoire statique) passe 4/4 avec le correctif ; sur le parent, les 2 cas « jeton posé » sont rouges et les 2 cas « défaut inchangé » restent verts (PR #1300).
+- Toujours codées en dur, hors périmètre : `0.16` et `0.24` sur l'en-tête focusable actif d'`OrigamExpansionPanelHeader`.
+
+## [2.37.23] - 2026-11-02
+
+### Fixed — `OrigamDataTable` : la prop `items` accepte les objets du consommateur (#1250)
+
+`items` était typée `IDataTableItem[]`, c'est-à-dire la ligne interne normalisée. Passer ses propres objets (`[{ name: 'A' }]`, `IRow[]`) produisait donc une erreur TypeScript (TS2353 / TS2322).
+
+- `IDataTableItemsProps.items` et `IDataTableHeaderProps.items` passent en `Array<any>`, comme `Commons/item.interface` (choix du propriétaire, plutôt qu'un composant générique). `itemValue` peut valoir `true`, si bien qu'un élément n'est pas forcément un objet.
+- `IDataTableItem` reste le type de la ligne interne exposée aux slots et aux événements.
+- Vérifié : sonde vue-tsc, 2 erreurs sur le parent et 0 après ; type-check DS à 0 ; TU DataTable et Table 92/92 (PR #1299). Aucun test de types permanent : le dépôt n'a pas d'infrastructure pour en écrire.
+
+## [2.37.22] - 2026-11-01
+
+### Changed — 5 sous-parties internes sortent des catalogues (#1287)
+
+`OrigamListGroupActivator`, `OrigamVirtualScrollItem`, `OrigamDataTableGroupHeaderRow`, `OrigamDataTableHeadersCellMobile` et `OrigamListChildren` ne s'affichent qu'à l'intérieur de leur parent. Sur `/theming`, elles apparaissaient donc comme « indisponibles ».
+
+- Les 5 noms rejoignent `INTERNAL_COMPONENTS`. Le catalogue du playground, la doc marketing et `/theming` passent de 220 à 215 composants (arbitrage du propriétaire).
+- Les 5 composants restent **exportés** et rendus par leurs parents. Leurs types `TOrigamXxx` sont regroupés dans le fichier de type du parent (`list.type.ts`, `data-table.type.ts`, `virtual-scroll.type.ts`) et restent exportés sous le même nom.
+- Vérifié :
+  - TU `TU/marketing` + List, VirtualScroll et DataTable : 363 passés.
+  - Guards 32/32.
+  - `/theming` mesuré à 215 composants (PR #1289).
+
+## [2.37.21] - 2026-10-29
+
+### Fixed — `OrigamListItem` : un élément-lien garde son rôle de lien (#1249)
+
+Dans une liste, `OrigamListItem` posait le rôle publié par la liste (`listitem`) sur sa racine, quelle que soit la balise rendue. Un élément rendu en `<a href>` recevait donc `role="listitem"` et perdait son rôle implicite `link`.
+
+- En mode liste, un élément-lien rend désormais `<div role="listitem"><a …></a></div>` (arbitrage du propriétaire). Le `<a>` reste la ligne visuelle : il garde les classes, les styles, le ripple, le tabindex, les handlers, l'état actif et les `$attrs`. Seul le rôle passe au conteneur. Hors lien (`option`, `@click` seul, `disabled`), le DOM reste plat, sans changement.
+- Le conteneur est un composant **interne** non exporté, `components/List/OrigamListItemWrapper.vue`. C'est une fonction de rendu, seul moyen de renvoyer l'enfant sans racine ajoutée, et c'est une dérogation à `<script setup>` validée.
+- Nouvelle liste unique `INTERNAL_COMPONENTS` (`consts/Commons/commons.const.ts`). Le catalogue du playground, la sync de la doc marketing, le test de couverture du catalogue et les gardes qui énumèrent les composants l'utilisent pour exclure les composants internes.
+- Vérifié :
+  - TU `OrigamList.roles.spec.ts` : rôle du `<a>`, liste `list` avec N `listitem`, axe-core sans violation. 3 rouges sur le parent, 20/20 après.
+  - Les e2e de liste, menu, select et drawer sont verts. La garde `variant-pins` ne relève aucun désaccord (PR #1273).
+
+## [2.37.20] - 2026-10-28
+
+### Fixed — `OrigamBtn` outlined et ghost : le filet ne s'ajoute plus à la largeur (#1261)
+
+La bordure d'un bouton `outlined` (et `ghost`) s'ajoutait au `padding-inline`, identique pour toutes les variantes. Ces boutons étaient donc plus larges qu'un `flat` de même taille, de 2 × la largeur du filet : +2 px mesurés sur les 5 tailles avec le filet par défaut.
+
+- Nouveau jeton interne `--origam-btn---border-compensation`, à `0px` par défaut. Les blocs de variante `outlined` et `ghost` existants le fixent à la largeur de leur filet, et chaque `padding-inline` de taille le soustrait. Pas de `!important`, aucun nouveau sélecteur `--variant-*`.
+- **Rupture assumée** (arbitrage du propriétaire) : les boutons outlined et ghost déjà livrés rétrécissent de 2 × le filet et retrouvent la largeur de `flat`. Les baselines VRT `btn-variant-outlined` et `btn-variant-ghost` sont régénérées en Docker ; les 5 autres variantes sont inchangées.
+- La prop `border` posée sur les autres variantes n'est pas compensée (hors périmètre).
+- Vérifié : e2e `btn-outlined-box.spec.ts`, sur 5 tailles avec le filet par défaut puis avec un filet de 2 px. Rouge sur le parent (+2 px), vert après. TU Btn 59/59 (PR #1275).
+
+## [2.37.19] - 2026-10-28
+
+### Fixed — `OrigamTabs` variante `pills` : la prop `color` colore l'onglet actif (#1253)
+
+L'onglet actif d'un `OrigamTabs` `variant="pills"` restait figé sur `action.primary`, quelle que soit la `color` passée. La cause : `OrigamTab` ne déclarait aucune prop `color`. Le transfert en props aurait de plus violé l'invariant « un parent ne transmet pas une prop que le consommateur n'a pas passée ».
+
+- `ITabProps` étend `IColorProps`.
+- `OrigamTabs` fournit sa `color` par `provide` (clé `ORIGAM_TABS_COLOR_KEY`, `consts/Tabs/tabs.const.ts`). `OrigamTab` la lit de façon réactive et pose les jetons existants `--origam-tabs__item--pills--active---background-color` / `---color` pour une intention. Sans `color`, le rendu ne change pas. Aucune prop n'est injectée sur les onglets.
+- Quand `color` est passée, elle l'emporte sur ces mêmes jetons posés par un thème (la prop prime). Seules les intentions sont prises en charge.
+- Vérifié :
+  - e2e `tabs.spec.ts` : pills avec base / success / danger donne 3 fonds actifs distincts, alors que les 3 valaient `rgb(124,58,237)` avant le correctif ;
+  - TU `tabs-pills-color.spec.ts` : la couleur est suivie aussi quand `color` passe d'`undefined` à une valeur ;
+  - `forwarded-defaults.spec.ts` est inchangé et vert ;
+  - le ratchet vue-tsc marketing tient son plancher (PR #1272).
+
+## [2.37.18] - 2026-10-28
+
+### Fixed — champs : la couleur et l'opacité du placeholder sont réglables par jeton (#1266)
+
+`OrigamField.vue` figeait `::placeholder` à `color: currentColor; opacity: 0.5`, à l'état normal comme au focus. Aucun thème ne pouvait donc le régler.
+
+- Deux jetons : `--origam-field---placeholder-color` (`currentColor`) et `--origam-field---placeholder-opacity` (`0.5`). Ils sont déclarés dans `light.css`, dans `dark.css` (bloc explicite et bloc media), dans leurs jumeaux SCSS et dans `tokens.type.ts`, et `main.css` est régénéré. Le rendu par défaut ne change pas.
+- Vérifié :
+  - e2e `field-placeholder-token.spec.ts` (Chromium, Histoire statique) : avec les jetons posés, il est rouge sur le parent (reçu `rgb(109, 40, 217)`) et vert après le correctif ; le rendu par défaut est inchangé avant comme après.
+  - Garde `token-twins` verte (PR #1271).
+
+## [2.37.17] - 2026-10-28
+
+### Fixed — `OrigamDataTable` n'hérite plus d'une prop `item` requise (#1246, #1154)
+
+`IDataTableProps` étendait `IDataTableRowProps`, qui déclare `item` comme prop requise. Résultat : la table elle-même réclamait une prop `item` qu'elle n'utilise pas, et Vue avertissait `Missing required prop: "item"` à chaque rendu.
+
+- `IDataTableProps` étend maintenant `Omit<IDataTableRowProps, 'item'>`. `OrigamDataTableRow` garde son `item` requis, et `cellProps` reste typé sur la table.
+- Le catalogue du playground perd la prop `item` sur `OrigamDataTable`.
+- Vérifié : le TU `data-table-no-required-item-prop.spec.ts` échoue sur le parent (2 sur 2) et passe après le correctif ; TU DataTable et Table : 92/92 ; type-check exit 0 (PR #1269).
+
+## [2.37.16] - 2026-10-28
+
+### Fixed — `OrigamSelect`, `OrigamColorPickerField`, `OrigamDatePickerField` : plus de nom « Ouvrir » qui écrase un `<label for>` externe (#1251)
+
+Sans prop `label`, ces trois champs posaient `aria-label` et `title` au libellé de leur bouton d'ouverture (« Ouvrir ») sur l'`<input>`. Or un `aria-label` passe avant un `<label for>` dans le calcul du nom accessible : un champ nommé par un libellé externe était donc annoncé « Ouvrir ».
+
+- Sans `label`, plus aucun `aria-label` ni `title` n'est posé sur l'input. Avec `label`, rien ne change.
+- Rupture assumée, arbitrée par le propriétaire : un champ qui n'a ni `label` ni `<label for>` n'a plus de nom accessible. axe le signale, ce qui alerte quand le libellé a été oublié. Les tests #622/#665/#666, qui figeaient l'ancien repli, ont été réécrits.
+- Vérifié : le TU `select-external-label.spec.ts` couvre les 3 composants. Il contrôle le nom accessible calculé (« Pays ») et passe axe (`label`, `aria-input-field-name`) ; il est rouge sur le parent (3/6) et vert après (6/6) (PR #1270).
+
+## [2.37.15] - 2026-10-22
+
+### Added — slot de police `display` (#1212)
+
+`FONT_FAMILY` n'offrait que `sans`, `mono` et `serif` : aucun slot ne permettait à un thème de distinguer une police d'affichage, pour les grands titres par exemple.
+
+- `FONT_FAMILY.DISPLAY` et `TFontFamily` incluent maintenant `display`.
+- Le jeton `--origam-font__family---display`, déclaré dans `primitive.css` et `_primitive.scss`, vaut par défaut `var(--origam-font__family---sans)`. Le rendu ne change donc pas.
+- `fontFamily="display"` fonctionne sur tout composant qui expose `fontFamily`. Côté thème, il se règle via `vars.typo.family.display` ou par composant (`'origam-title': { fontFamily: 'display' }`).
+- Opt-in par thème, sur arbitrage du propriétaire : aucun composant ne l'utilise d'office.
+- Vérifié : TU `font-family-display.spec.ts` 5/5, dont 3 rouges sur le parent ; `enum-derived-types.spec.ts` mis à jour (PR #1242).
+
+## [2.37.14] - 2026-10-22
+
+### Fixed — `OrigamSelect` : `aria-controls` présent sur le combobox menu fermé, donc aussi en SSR (#1225)
+
+Le combobox (`<input role="combobox">`) ne recevait `aria-controls` que lorsque le menu était ouvert (`menu.value ? listboxId : undefined`), puisque la listbox est téléportée et rendue à la demande. Or WAI-ARIA 1.2 rend cette propriété **requise** pour le rôle `combobox`. Le HTML serveur et le combobox fermé ne la portaient donc jamais.
+
+- `aria-controls` vaut maintenant toujours l'id de la listbox. Le DOM ne change pas : quand le menu est fermé, l'IDREF vise un élément pas encore rendu, ce qu'axe-core ne signale pas lorsque `aria-expanded="false"`.
+- Vérifié : TU `select-aria-controls.spec.ts`.
+  - SSR + hydratation, menu fermé : `aria-controls` et `aria-expanded="false"` présents ; rouge sur le parent (`null`), vert après.
+  - Menu ouvert : l'id correspond au `role="listbox"` du DOM.
+  - axe sur l'input : aucune violation.
+  - L'assertion #622, qui figeait l'ancien comportement, a été inversée (PR #1248).
+- Suivi : le wrapper `origam-field` porte lui aussi `role="combobox"` (rôle dupliqué) sans les propriétés requises (#1247).
+
+## [2.37.13] - 2026-10-22
+
+### Added — `origam/nuxt` : option `icons` (`defaultSet`, `aliases`) (#1228)
+
+Le module Nuxt ne transmettait pas l'option `icons` de `createOrigam()`. Une application Nuxt devait écrire un plugin manuel pour changer le jeu d'icônes par défaut ou déclarer des alias.
+
+- `IOrigamNuxtModuleOptions.icons` accepte `{ defaultSet?, aliases? }` (type `TNuxtIconOptions`, sous-ensemble sérialisable de `TIconOptions` qui réutilise `TIcon`). Le module la place dans `runtimeConfig.public.origam`, et les plugins client et serveur la passent à `createOrigam`.
+- Non relayés : `sets` et les alias qui sont des composants. Ils contiennent des fonctions de rendu, que la config Nuxt ne peut pas sérialiser. Ils demandent toujours un plugin manuel.
+- Doc : ligne `icons` dans `integrations/nuxt.md`.
+- Vérifié : le TU `TU/nuxt/nuxt-icons.spec.ts` passe à 5/5. Avec l'alias `$info`, `OrigamIcon` rend la bonne classe ; sans l'option, rien ne change. Le test de câblage échoue quand on le retire du plugin (PR #1241).
+
+## [2.37.12] - 2026-10-22
+
+### Fixed — `OrigamListItem` : l'opacité de l'overlay actif est lue par jeton (#1230)
+
+L'overlay d'un élément de liste actif utilisait des opacités codées en dur : `0.12` au repos et `0.16` au survol. Contrairement à `OrigamBtn`, aucun thème ne pouvait les régler.
+
+- Deux jetons, nommés comme ceux d'`OrigamBtn` : `--origam-list-item---overlay-opacity-active` (`0.12`) et `--origam-list-item---overlay-opacity-active-hover` (`0.16`). Ils sont déclarés dans `light.css`, dans `dark.css` (bloc explicite et bloc media), dans leurs jumeaux SCSS et dans `tokens.type.ts`.
+- Le rendu par défaut ne change pas. Un jeton à `0` supprime le voile.
+- Vérifié : le e2e `list-item-overlay-opacity.spec.ts` (Histoire statique) est rouge sur le parent pour le cas « jeton à 0 » et vert après. Le cas « défaut inchangé » est vert des deux côtés (PR #1243).
+- Suivi : l'opacité au survol simple (`0.08`) et celle de l'en-tête de `OrigamExpansionPanel` (`0.04`) sont encore codées en dur (#1244).
+
+## [2.37.11] - 2026-10-22
+
+### Fixed — thème : une clé de `components.global` n'avertit plus sur les composants qui ne la déclarent pas (#1227)
+
+`installThemePropsResolver` ajoutait les clés `global` aux clés ciblées de chaque instance, puis `warnUnsupportedProp` avertissait pour toute clé que le composant ne déclarait pas. Une clé `global` comme `density` déclenchait donc un avertissement de dev sur chaque composant sans cette prop, y compris les composants Nuxt, Vue Router et ceux de l'application.
+
+- L'avertissement n'est émis que si la clé est nommée pour CE composant, par le thème ou par un `OrigamDefaultsProvider`. Une clé `global` s'applique là où la prop existe et reste silencieuse ailleurs.
+- L'avertissement légitime de #515 est conservé : une clé nommée pour un composant précis qui ne la déclare pas avertit toujours.
+- Une clé de preset de variant qu'un composant ne déclarerait pas n'avertit plus non plus. Le typage `TVariantPresets` refuse déjà ce cas à la compilation.
+- Vérifié : 2 tests ajoutés à `theme-props-resolver.spec.ts`. Le cas `global` est rouge sur le parent et vert après, et le cas #515 reste vert. `TU/origam` est vert (PR #1240).
+
+## [2.37.10] - 2026-10-22
+
+### Fixed — `OrigamBtn` variante `text` : l'état actif peut peindre un fond (#1222)
+
+`OrigamBtn.vue` déclarait `&--variant-text { background-color: transparent !important }`, sans règle pour l'état actif. Un bouton `text` actif restait donc transparent, quel que soit le jeton ou le style que le consommateur posait dessus.
+
+- Le `!important` est retiré. L'entrée correspondante de la baseline `no-variant-css` est supprimée.
+- `.origam-btn--variant-text.origam-btn--active` lit maintenant le nouveau jeton `--origam-btn---background-color-text-active`. Ce jeton est déclaré à `transparent` dans `light.css`, `dark.css` (bloc explicite et bloc media), leurs jumeaux SCSS et `tokens.type.ts`. Le rendu par défaut ne change pas.
+- Effet de bord assumé : un `bg-color` personnalisé (style inline) sur un Btn `text` peint désormais, alors que le `!important` l'écrasait jusqu'ici.
+- Vérifié : e2e `btn-text-active.spec.ts` (Chromium, Histoire statique), rouge sur le parent (actif `rgba(0,0,0,0)` au lieu de la valeur du jeton) et vert après ; `btn.spec.ts` 31/31 (PR #1237).
+
+## [2.37.9] - 2026-10-22
+
+### Fixed — champs de saisie : `isActive` et `isFocused` ne fuient plus en attributs HTML sur l'`<input>` (#1224)
+
+`OrigamField` transmet `isActive` et `isFocused` dans les props de son slot. `OrigamTextField`, `OrigamTextareaField`, `OrigamPasswordField` et `OrigamFileField` faisaient `v-bind="{...fieldSlotProps, ...inputAttrs}"` sur le contrôle natif. Vue rendait donc les attributs non standard `isactive` et `isfocused` sur l'`<input>`, côté serveur comme côté client.
+
+- Les deux clés sont retirées de ce qui est lié au contrôle natif. Elles restent exposées au slot `default` du composant.
+- Le slot d'`origam-field` est inchangé.
+- Vérifié : le TU `field-input-state-leak.spec.ts` est rouge sur le parent pour les 5 champs et vert après le fix. Les suites de champs sont vertes (PR #1233).
+
+## [2.37.8] - 2026-10-21
+
+### Fixed — `origam/utils` se charge de nouveau en Node pur (#1208)
+
+Depuis 2.36.0, `utils/CodeGroup/code-group.util.ts` importait `OrigamCode.vue`. Le barrel `origam/utils` ne pouvait donc plus être chargé sans loader Vue (scripts Node, configs, tests). Un second chemin du même défaut passait par `types/Icon/icon.type.ts`, qui importait `OrigamIcon.vue` en valeur alors qu'il n'en utilisait que le type.
+
+- `ICodeGroupResolveOptions` reçoit le composant de code (`codeComponent`) au lieu de l'importer : c'est `OrigamCodeGroup.vue` qui le passe.
+- `icon.type.ts` passe en `import type`.
+- Vérifié : le TU `utils-barrel-no-sfc-1208.spec.ts` parcourt le graphe d'imports de `utils/index.ts` et refuse tout `.vue`. Il est rouge sur le parent et vert après. `import('dist/src/utils/index.js')` réussit sous Node 24 (PR #1235).
+
+## [2.37.7] - 2026-10-21
+
+### Fixed — champs de saisie : id et props relayées différents entre le rendu serveur et le client (#1226)
+
+`OrigamTextField`, `OrigamSelect`, `OrigamTextareaField`, `OrigamPasswordField` et `OrigamFileField` relayaient leurs props via une ref de template (`childRef.value?.filterProps(…)`). Or cette ref vaut `undefined` au rendu serveur et pendant l'hydratation. L'`id` de l'`<input>`, `aria-describedby`, `density` et `rounded` n'arrivaient donc qu'après le montage, sans avertissement d'hydratation.
+
+- Nouveau `filterPropsOf(Component, props, excludes)` (`composables/Commons/props.composable.ts`) : il lit les noms de props dans la définition statique du composant, sans ref.
+- Appliqué aux 5 champs, ainsi qu'à `OrigamColorPickerField`, `OrigamDatePickerField` et `OrigamNumberField`, pour que `rules` et `validationValue` arrivent ensemble au premier rendu.
+- Vérifié : TU `field-ssr-relay.spec.ts` (`renderToString` puis hydratation), 4/4 rouges sur le parent, verts après ; suite TU complète verte (PR #1234).
+- Suivi : une trentaine d'autres composants relaient encore par ref (#1239).
+
+## [2.37.6] - 2026-10-21
+
+### Fixed — `OrigamDrawer` sans `attach` : contenu absent du rendu serveur et hydratation en erreur (#1223)
+
+Sans `attach`, le tiroir téléportait son contenu dès le rendu serveur. Le HTML serveur ne contenait donc pas ce contenu, et l'hydratation tombait en mismatch : erreur 500 sous Nuxt. Un tiroir `permanent` sans `modelValue` était aussi inactif côté serveur et actif côté client, parce que `onBeforeMount` ne tourne pas en SSR.
+
+- Le contenu reste rendu en ligne jusqu'à l'hydratation (`useHydration()`, comme `OrigamOverlay`), puis il est téléporté.
+- `onServerPrefetch` initialise l'état actif côté serveur.
+- Vérifié : TU `drawer-ssr-hydration.spec.ts` (`renderToString` puis hydratation), rouge sur le parent, vert après ; TU Drawer 35/35 (PR #1236).
+- Non couvert : la branche avec `attach` explicite (#1238) et un e2e Nuxt réel.
+
+## [2.37.5] - 2026-10-21
+
+### Fixed — `OrigamTabPanels` ne relaie plus `transition` à `OrigamTabPanel` (#1207)
+
+`OrigamTabPanels` enveloppait son slot dans un `<origam-defaults-provider>` qui poussait `transition` à `origam-tab-panel`, qui ne déclare pas cette prop et lit déjà la transition depuis le contexte des panneaux. Le résolveur de props de thème émettait donc un avertissement de dev à chaque `OrigamCodeGroup`.
+
+- Le provider et son `slotDefaults` sont retirés ; la transition continue de passer par le contexte.
+- Vérifié : TU `tab-panels-transition-no-warn.spec.ts` rouge sur le parent, vert après (PR #1232).
+
+## [2.37.4] - 2026-10-20
+
+### Fixed — `OrigamCode` : une ligne vide tombait à 0 px et un numéro fantôme suivait le saut de ligne final (#1216)
+
+Avec `line-numbers`, la rangée d'une ligne vide avait `min-height: var(--origam-code---line-height)`, or ce token vaut `1.6` sans unité : la déclaration était invalide et la rangée vide mesurait 0 px, son numéro se superposant à celui de la ligne suivante.
+
+- La rangée prend désormais `min-height: 1lh`, la hauteur de ligne calculée.
+- Le dernier `<span class="line"></span>` vide que shiki émet après le saut de ligne final n'est plus compté : plus de rangée ni de numéro en trop.
+- Vérifié : spec e2e rouge sur le parent, verte après ; TU Code + CodeGroup 49/49 (PR #1219).
+
+## [2.37.3] - 2026-10-19
+
+### Fixed — `v-intersect` lié avec le tuple `withDirectives` : handler jamais appelé (#1205)
+
+`OrigamLazy`, `OrigamTextField`, `OrigamTextareaField` et `OrigamPasswordField` passaient à `v-intersect` le tuple `[{ handler, options }, null, ['once']]` comme valeur. La directive lit `.handler` / `.options` sur la valeur : sur un tableau, elle obtient `undefined`. Aucune intersection n'appelait donc le handler, `once` n'était jamais lu et les `options` n'atteignaient pas l'`IntersectionObserver`.
+
+- **`OrigamLazy`** : le contenu ne s'affichait jamais à l'intersection, et les `options` du consommateur (ex. `rootMargin`) étaient ignorées. C'est corrigé ; mesuré dans Chromium.
+- **Champs texte, textarea et mot de passe** : l'appel JS de `focus()` sur intersection (autofocus) n'avait jamais lieu. Dans Chromium, l'attribut natif `autofocus` masquait le défaut. Safari et Firefox n'ont pas été mesurés.
+- Liaison désormais en `v-intersect.once="{ handler, options }"`.
+- La directive émet un `console.warn` en mode dev (une fois par balise) quand on lui lie un tableau.
+
+## [2.37.2] - 2026-10-19
+
+### Fixed — `OrigamImg` sous SSR : écart d'hydratation `aspect-ratio`, et image montée côté client jamais chargée (#1192)
+
+- **Écart d'hydratation** : sans prop `aspect-ratio`, `useAspectRatio` prend le ratio de la fenêtre (`innerWidth / innerHeight`), une valeur inconnue du serveur. Il était appliqué dès le premier rendu client d'une instance hydratée, d'où un `Hydration style mismatch`. Une instance qui hydrate l'applique désormais après `onMounted`. Une instance montée côté client l'applique tout de suite, comme avant. Un `aspect-ratio` explicite est inchangé.
+- **Image montée côté client jamais chargée** : `v-intersect` était lié avec le tuple `withDirectives` comme valeur. La directive lisait `.handler` sur un tableau, si bien que l'intersection ne déclenchait jamais le chargement. L'`<img>` restait en `display:none` + `loading="lazy"`, que Chromium ne charge pas. La directive est désormais liée en `v-intersect.once="{ handler, options }"`, et l'`<img>` passe en `loading="eager"` dès que son chargement est demandé.
+- La même forme de liaison subsiste dans d'autres composants : suivi en #1205.
+
+## [2.37.1] - 2026-10-19
+
+### Fixed — `OrigamImg` / `OrigamResponsive` : prop `tag`, `<img>` visible en SSR, fondu en rendu client seul (#1182)
+
+Un `<origam-img>` placé dans un `<p>` (contenu prose) produisait un `<div>` invalide dans un paragraphe, que le parseur HTML expulse : DOM serveur et client divergeaient. Et l'`<img>` était servie en `display:none` jusqu'au `load` côté client, donc invisible tant que le JS n'avait pas tourné.
+
+- **Nouvelle prop `tag`** (défaut `'div'`) sur `OrigamResponsive` et `OrigamImg` (transmise au Responsive et aux conteneurs placeholder / error / gradient). `tag="span"` garde un DOM valide dans un `<p>`.
+- **`<img>` visible dans le HTML serveur** : elle n'est plus masquée avant le `load`.
+- **Fondu conservé uniquement au montage client** (navigation SPA, `v-if` après hydratation). Une image hydratée depuis le HTML serveur s'affiche sans fondu et sans clignotement.
+- ⚠️ Changement de rendu assumé : en rendu serveur puis hydratation, l'image n'apparaît plus en fondu.
+
+## [2.37.0] - 2026-10-19
+
+### Added — module Nuxt : options `locale` transmises à `createOrigam` (#1181)
+
+- Le module accepte `origam: { locale: { locale, fallbackLocale, messages } }` (même forme que `createOrigam({ locale })`, type `ILocaleOptions`). Les options transitent par `runtimeConfig.public.origam.locale` et sont passées à l'identique par les plugins client et serveur : pas d'écart d'hydratation.
+- Avant, les deux plugins appelaient `createOrigam({ themes, ssr: true })` sans locale : sous Nuxt, `useLocale().current` valait toujours `en`, et les libellés intégrés (noms accessibles des blocs de code, palette de commandes…) restaient en anglais sur un site ja/ko/zh.
+- `messages` est fusionné avec les locales intégrées `en` et `fr` : un site peut fournir `ja` complet ou surcharger quelques clés `fr`. `fallbackLocale` et `messages` deviennent optionnels dans `ILocaleOptions`.
+- Doc : section « Ajouter une langue (gabarit de traduction) » dans le guide i18n ; la liste des clés est `origam/assets/locales/en.json`.
+
+## [2.36.0] - 2026-10-19
+
+### Added — `OrigamCodeGroup` : groupe de code à onglets (npm / pnpm / yarn) en une seule surface (#1179)
+
+- Nouveau composant `OrigamCodeGroup`, qui réunit `OrigamTabs` et `OrigamCode` : une seule surface (bordure, rayon et élévation portés par le groupe, blocs internes aplatis et sans en-tête), un seul bouton copier qui copie le code de l'onglet actif (slot `copy` pour le remplacer), `v-model` sur l'onglet actif.
+- Deux formes : prop `items` (`{ label, code, lang?, filename?, value? }`) ou slot avec des `<origam-code>` enfants ; le libellé de l'onglet vient de `label`, sinon de `filename`, sinon de la position.
+- Chaque zone défilante porte un nom accessible distinct (`{groupe}, {onglet}, code block {n} of {total}, scrollable region`, clés `origam.code_group.*` en `en` et `fr`) : plus de `landmark-unique` axe entre panneaux. Donner un `label` à chaque groupe quand plusieurs se trouvent sur une même page.
+- `OrigamCode` gagne `hideHeader`, `flat` et `scrollerAriaLabel`, utilisables seuls.
+- Aucun nouveau token : le groupe lit `--origam-code---*`, donc un thème qui restyle `OrigamCode` restyle aussi le groupe.
+
+## [2.35.1] - 2026-10-19
+
+### Fixed — `OrigamCode` : un 2e bloc monté pendant un import de `shiki` en échec restait vide (#1189)
+
+Quand `shiki` n'est pas résolvable, deux `<origam-code>` montés dans le même tick : le premier s'affichait en texte brut, le second restait **vide** (zone défilante de hauteur 0) avec un rejet de promesse non capturé. `loadHighlighter()` ne renvoyait la promesse munie de son repli qu'au premier appelant ; un appelant concurrent recevait la promesse brute, qui rejetait, et `rebuild()` n'avait qu'un `try/finally`.
+
+- `loadHighlighter()` renvoie désormais la même promesse, déjà munie de son repli (`null` → code brut), à tous les appelants.
+- `rebuild()` capture en plus un éventuel rejet et peint le code en clair : aucun bloc ne reste vide.
+- Prouvé par `packages/tests/TU/components/Code/OrigamCode-concurrent-load-failure.spec.ts` (rouge sur le parent, vert après).
+
+## [2.35.0] - 2026-10-19
+
+### Added — `OrigamCode` : `lang` ouvert, `createOrigam({ code: { langs } })` (#1180)
+
+- `lang` n'est plus limité aux 14 grammaires de `SUPPORTED_LANGS` quand un `code.highlighter` est fourni : la valeur est transmise telle quelle au highlighter, qui sait seul ce qu'il peut servir. S'il échoue, le bloc retombe sur `plaintext` (le `try/catch` existant autour de `codeToHtml`), avec un avertissement dev-only, une fois par langage. Avant, `resolveLang()` repliait tout `lang` inconnu sur `plaintext` avant de consulter le highlighter, donc `dockerfile` ne pouvait jamais être servi.
+- Nouvelle option `createOrigam({ code: { langs } })` : liste passée à `createHighlighter` (défaut : `SUPPORTED_LANGS`). Avec le highlighter intégré, un `lang` présent dans `langs` est accepté.
+- Typage : la prop `lang` devient `TCodeLangOpen` (`TCodeLang | (string & {})`), l'autocomplétion des 14 valeurs est conservée. `TCodeLang` reste la liste fermée.
+
+## [2.34.0] - 2026-10-19
+
+### Added — `OrigamCommandPalette` : prop `filter` pour afficher des résultats classés en externe (#1184)
+
+- Nouvelle prop `filter` : `true` (défaut, comportement inchangé : correspondance floue intégrée et tri par score), `false` (les `commands` sont affichées telles quelles, dans l'ordre fourni) ou une fonction `(commands, query) => commands` dont le résultat est affiché dans son ordre.
+- Destinée à la recherche serveur ou plein texte alimentée par l'événement `query` : un résultat trouvé dans le corps d'un document n'est plus masqué parce que la requête n'est pas une sous-séquence de son libellé, et le classement du moteur est conservé.
+- Avec `filter=false` ou une fonction, une liste `commands` vide reste vide : elle ne retombe plus sur le registre `useCommand()` (le repli est conservé avec `filter=true`).
+
+## [2.33.0] - 2026-10-18
+
+### Added — `OrigamCommandPalette` : icônes de recherche et de chargement personnalisables (#1183)
+
+- Nouvelles props `searchIcon` et `loadingIcon`, typées `TIcon` (id mdi, chemin SVG ou composant). Défauts inchangés : `mdi:mdi-magnify` et `mdi:mdi-loading`.
+- Nouveaux slots `search-icon` et `loading`, prioritaires sur les props.
+- Une application qui fournit un SVG n'a plus besoin de la police `@mdi/font` pour ces deux glyphes : aucun élément `.mdi-magnify` / `.mdi-loading` n'est rendu (prouvé par `packages/tests/e2e/command-palette.spec.ts`).
+
+## [2.32.2] - 2026-10-17
+
+### Fixed — `OrigamBtn` : libellé collé en haut au lieu d'être centré (#1168)
+
+Régression publiée de 2.29.1 à 2.32.1, introduite par #1094. La hauteur du bouton est devenue `height: auto` + `min-height`, et le `height: 100%` de la grille interne `.origam-btn__loader` ne se résolvait plus contre une hauteur automatique. La racine était `inline-block`, donc son `align-items: center` restait sans effet. Résultat : un bouton rendu en `<a>` (`href` / `to`) affichait son contenu d'une ligne collé en haut de la boîte. Mesuré en Chromium : écart de 4 à 21 px entre le centre du contenu et le centre du bouton, 35 boutons `<a>` d'une ligne décentrés sur les 40 de la matrice. Les 5 autres avaient une hauteur fixe (`icon`, prop `height`), étaient en `block` (déjà en flex), ou avaient un contenu aussi haut que le minimum (x-small compact). Un `<button>` natif masquait le défaut, puisque le navigateur centre lui-même son contenu.
+
+- La racine passe de `inline-block` à `inline-flex`, et son `align-items: center` prend enfin effet. Elle reste de niveau inline (#933). Dans un parent flex ou grid, elle est blockifiée en `flex` au lieu de `block`. `block` (`display: flex`, #1095) et `wrap` (le bouton grandit avec son contenu, #1094) sont inchangés.
+- `inline-flex` plutôt que `inline-grid`, d'après la mesure : la directive ripple ajoute un `origam-ripple__container` dans le flux pendant l'appui. Avec une racine en grille, ce conteneur prend une rangée implicite et le libellé saute de 4 px à chaque clic.
+- Effet de bord mesuré : les boutons perdent environ 1 px de largeur (0,9 à 1,6 px). Ce pixel venait du `letter-spacing` ajouté après la grille interne quand elle était posée dans une ligne inline. Le libellé est maintenant à égale distance des deux bords (12 px / 12 px au lieu de 13,1 px / 12 px). Aucune hauteur ne change.
+
 ## [2.32.1] - 2026-10-16
 
 ### Fixed — trois avertissements console en dev (#1152)

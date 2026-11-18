@@ -97,6 +97,8 @@ import { OrigamChartPictorial } from '@origam/ds'
 
 ## Behaviour notes
 
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 600 × 400 canvas. The plot fills the container width and height, the geometry is recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until the box is measured (SSR, first paint) the 600 × 400 fallback is used, so hydration is unchanged. Give the chart a `height` / `aspectRatio` to change the box ratio.
+
 **Icon geometry.** The SVG uses `<defs><symbol id="origam-chart-pictorial-icon">` + `<use href="…">` references to avoid path duplication. One `<symbol>` is emitted regardless of how many icons render.
 
 **Slots per column.** `slotsPerColumn = Math.ceil(maxValue / iconsPerUnit)` — this is the background capacity that all columns share. Every column paints exactly `slotsPerColumn` background icons, then overlays `Math.round(value / iconsPerUnit)` filled icons on top.
@@ -113,7 +115,7 @@ import { OrigamChartPictorial } from '@origam/ds'
 
 **Empty state.** Rendered when `series` is empty, contains no data, or every series is hidden via legend toggle.
 
-**Accessibility.** Each column `<g>` has `role="button"`, `tabindex="0"`, and an `aria-label` carrying `"Category: value (N of M icons)"`. Keyboard users Tab through columns and activate with Enter or Space. The SVG carries `<title>` and `<desc>` for screen-reader context.
+**Accessibility.** Each column `<g>` has `role="button"`, `tabindex="0"`, and an `aria-label` carrying `"Category: value (N of M icons)"`. The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. `Enter` or `Space` activates a column. The SVG carries `<title>` and `<desc>` for screen-reader context.
 
 **Animation.** Icons fade in on mount. Skipped when `animated=false` or `prefers-reduced-motion: reduce` is active.
 

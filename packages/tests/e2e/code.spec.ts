@@ -8,13 +8,15 @@ import { expect, test } from '@playwright/test'
  * ## Variants (index → title)
  *   0 → Design                               init: { lang: 'ts', …, filename: 'design.ts', line-numbers }
  *   1 → Functional                           init: { lang: 'ts', lineNumbers: true, copyable: true, filename: 'App.ts' }
- *   2 → Functional - No filename (lang badge header)   (no filename → lang badge)
- *   3 → Functional - Compact (install pill)  init: { lang: 'bash', prompt: '$', copyable: true }
- *   4 → Events - copy
- *   5 → Slots - Default
- *   6 → Slots - Header
- *   7 → Slots - Footer
- *   8 → Default                              playground init: { lang: 'ts', lineNumbers: true, highlightLines: '2', copyable: true, filename: 'App.ts' }
+ *   2 → Functional - Open lang (outside the bundled set)   (#1180, init: { lang: 'dockerfile' })
+ *   3 → Functional - No filename (lang badge header)   (no filename → lang badge)
+ *   4 → Functional - Compact (install pill)  init: { lang: 'bash', prompt: '$', copyable: true }
+ *   5 → Functional - Empty lines (#1216)  blank rows + trailing newline, lineNumbers
+ *   6 → Events - copy
+ *   7 → Slots - Default
+ *   8 → Slots - Header
+ *   9 → Slots - Footer
+ *   10 → Default                              playground init: { lang: 'ts', lineNumbers: true, highlightLines: '2', copyable: true, filename: 'App.ts' }
  *
  * ## BEM root
  *   .origam-code  (rendered as <figure> by default, tag prop overridable)
@@ -212,13 +214,13 @@ test.describe('OrigamCode', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // FUNCTIONAL - No filename (index 2)                                  //
+    // FUNCTIONAL - No filename (index 3)                                  //
     // lang badge replaces filename in the header                          //
     // ------------------------------------------------------------------ //
 
     test.describe('Functional - No filename (lang badge header)', () => {
         test('lang badge is rendered when no filename', async ({ page }) => {
-            await gotoVariant(page, 2)
+            await gotoVariant(page, 3)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -228,7 +230,7 @@ test.describe('OrigamCode', () => {
         })
 
         test('copy button lives in header when no filename (copyable=true)', async ({ page }) => {
-            await gotoVariant(page, 2)
+            await gotoVariant(page, 3)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -238,20 +240,20 @@ test.describe('OrigamCode', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // FUNCTIONAL - Compact (index 3)                                      //
+    // FUNCTIONAL - Compact (index 4)                                      //
     // init: { lang: 'bash', prompt: '$', copyable: true }                //
     // ------------------------------------------------------------------ //
 
     test.describe('Functional - Compact (install pill)', () => {
         test('compact renders origam-code--compact modifier', async ({ page }) => {
-            await gotoVariant(page, 3)
+            await gotoVariant(page, 4)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code--compact').first()
             await expect(code).toBeVisible({ timeout: 12000 })
         })
 
         test('compact is inline-flex (single-line pill layout)', async ({ page }) => {
-            await gotoVariant(page, 3)
+            await gotoVariant(page, 4)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code--compact').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -260,7 +262,7 @@ test.describe('OrigamCode', () => {
         })
 
         test('compact preserves <figure> semantics', async ({ page }) => {
-            await gotoVariant(page, 3)
+            await gotoVariant(page, 4)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code--compact').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -269,7 +271,7 @@ test.describe('OrigamCode', () => {
         })
 
         test('compact has no header element', async ({ page }) => {
-            await gotoVariant(page, 3)
+            await gotoVariant(page, 4)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code--compact').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -277,7 +279,7 @@ test.describe('OrigamCode', () => {
         })
 
         test('prompt prefix renders as aria-hidden', async ({ page }) => {
-            await gotoVariant(page, 3)
+            await gotoVariant(page, 4)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code--compact').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -287,7 +289,7 @@ test.describe('OrigamCode', () => {
         })
 
         test('prompt is positioned before the code in document order', async ({ page }) => {
-            await gotoVariant(page, 3)
+            await gotoVariant(page, 4)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code--compact').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -301,7 +303,7 @@ test.describe('OrigamCode', () => {
         })
 
         test('compact copy is an icon button (not labeled "Copy")', async ({ page }) => {
-            await gotoVariant(page, 3)
+            await gotoVariant(page, 4)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code--compact').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -312,7 +314,7 @@ test.describe('OrigamCode', () => {
 
         test('compact copy button writes only the code (prompt excluded) to clipboard', async ({ page, context }) => {
             await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-            await gotoVariant(page, 3)
+            await gotoVariant(page, 4)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code--compact').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -343,12 +345,12 @@ test.describe('OrigamCode', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // EVENTS - copy (index 4)                                             //
+    // EVENTS - copy (index 5)                                             //
     // ------------------------------------------------------------------ //
 
     test.describe('Events - copy', () => {
         test('copy button is visible and has accessible aria-label', async ({ page }) => {
-            await gotoVariant(page, 4)
+            await gotoVariant(page, 6)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -359,7 +361,7 @@ test.describe('OrigamCode', () => {
 
         test('clicking copy toggles aria-label to "copied" feedback', async ({ page, context }) => {
             await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-            await gotoVariant(page, 4)
+            await gotoVariant(page, 6)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -385,12 +387,12 @@ test.describe('OrigamCode', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // SLOTS - Default (index 5)                                           //
+    // SLOTS - Default (index 6)                                           //
     // ------------------------------------------------------------------ //
 
     test.describe('Slots - Default', () => {
         test('default slot renders the code block (figure + pre + code)', async ({ page }) => {
-            await gotoVariant(page, 5)
+            await gotoVariant(page, 7)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -398,7 +400,7 @@ test.describe('OrigamCode', () => {
         })
 
         test('default slot variant has no footer element', async ({ page }) => {
-            await gotoVariant(page, 5)
+            await gotoVariant(page, 7)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -407,12 +409,12 @@ test.describe('OrigamCode', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // SLOTS - Header (index 6)                                            //
+    // SLOTS - Header (index 7)                                            //
     // ------------------------------------------------------------------ //
 
     test.describe('Slots - Header', () => {
         test('custom header slot content is rendered inside the header zone', async ({ page }) => {
-            await gotoVariant(page, 6)
+            await gotoVariant(page, 8)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -425,12 +427,12 @@ test.describe('OrigamCode', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // SLOTS - Footer (index 7)                                            //
+    // SLOTS - Footer (index 8)                                            //
     // ------------------------------------------------------------------ //
 
     test.describe('Slots - Footer', () => {
         test('footer slot renders as a <footer> element with class origam-code__footer', async ({ page }) => {
-            await gotoVariant(page, 7)
+            await gotoVariant(page, 9)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -441,7 +443,7 @@ test.describe('OrigamCode', () => {
         })
 
         test('footer slot content is rendered inside the footer element', async ({ page }) => {
-            await gotoVariant(page, 7)
+            await gotoVariant(page, 9)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -451,21 +453,21 @@ test.describe('OrigamCode', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT playground (index 8)                                        //
+    // DEFAULT playground (index 9)                                        //
     // init: { lang: 'ts', lineNumbers: true, highlightLines: '2',        //
     //          copyable: true, filename: 'App.ts' }                       //
     // ------------------------------------------------------------------ //
 
     test.describe('Default (playground)', () => {
         test('renders the code root', async ({ page }) => {
-            await gotoVariant(page, 8)
+            await gotoVariant(page, 10)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code').first()
             await expect(code).toBeVisible({ timeout: 12000 })
         })
 
         test('highlightLines="2" → row 2 carries origam-code__row--highlighted', async ({ page }) => {
-            await gotoVariant(page, 8)
+            await gotoVariant(page, 10)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             // Wait for shiki to paint the rows first.
             await expect(sandbox.locator('.origam-code__row').first()).toBeVisible({ timeout: 16000 })
@@ -478,7 +480,7 @@ test.describe('OrigamCode', () => {
 
         test('copy button writes the playground snippet to clipboard', async ({ page, context }) => {
             await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-            await gotoVariant(page, 8)
+            await gotoVariant(page, 10)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const code = sandbox.locator('.origam-code').first()
             await expect(code).toBeVisible({ timeout: 12000 })
@@ -509,7 +511,7 @@ test.describe('OrigamCode', () => {
         })
 
         test('dual-theme shiki — no bare color: inline style (only --shiki-* vars)', async ({ page }) => {
-            await gotoVariant(page, 8)
+            await gotoVariant(page, 10)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-code__row').first()).toBeVisible({ timeout: 16000 })
             const code = sandbox.locator('.origam-code__code').first()
@@ -524,7 +526,7 @@ test.describe('OrigamCode', () => {
         })
 
         test('theme switch light→dark changes token span computed colour (CSS cascade, no JS re-render)', async ({ page }) => {
-            await gotoVariant(page, 8)
+            await gotoVariant(page, 10)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-code__row').first()).toBeVisible({ timeout: 16000 })
 
@@ -660,7 +662,7 @@ test.describe('OrigamCode', () => {
         })
 
         test('Slots - Header (vue) — tag-name colour clears 4.5:1 in light AND dark', async ({ page }) => {
-            await gotoVariant(page, 6)
+            await gotoVariant(page, 8)
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-code__row').first()).toBeVisible({ timeout: 16000 })
 
@@ -681,5 +683,33 @@ test.describe('OrigamCode', () => {
                 expect(c.ratio, `DARK ${c.fg} on ${c.bg} (sample "${c.sample}") = ${c.ratio}:1`).toBeGreaterThanOrEqual(4.5)
             }
         })
+    })
+})
+
+// -------------------------------------------------------------------- //
+// #1216 — a blank source line keeps a full row.                         //
+// Variant 5 = "Functional - Empty lines (#1216)".                       //
+//                                                                       //
+// shiki emits an empty line as `<span class="line"></span>` (a non-empty //
+// string, so the `&nbsp;` fallback never fires) and the Histoire bundle  //
+// has no shiki, so the row is emptied by hand to reproduce exactly that  //
+// markup. The trailing-newline half is a unit test (TU/components/Code/  //
+// OrigamCode-empty-lines.spec.ts), where the real shiki loads.           //
+// -------------------------------------------------------------------- //
+test.describe('OrigamCode — empty lines (#1216)', () => {
+    test.setTimeout(45000)
+
+    test('an empty row keeps the height of a filled row', async ({ page }) => {
+        await gotoVariant(page, 5)
+        const sandbox = page.frameLocator('iframe').first()
+        const rows = sandbox.locator('[data-cy="code-empty-lines"] .origam-code__row')
+        await expect(rows.first()).toBeVisible({ timeout: 15000 })
+        const heights = await rows.evaluateAll(els => {
+            els[3].innerHTML = '' // the blank source line, as shiki paints it
+            return els.map(el => el.getBoundingClientRect().height)
+        })
+        expect(heights).toHaveLength(7)
+        expect(heights[3]).toBeGreaterThan(10)
+        expect(heights[3]).toBe(heights[0])
     })
 })

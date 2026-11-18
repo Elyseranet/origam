@@ -7,7 +7,7 @@ import type { IOrigamTheme } from 'origam/interfaces'
 // config-load and runtime, mirroring the `origam/* → ../ds/src` aliases.
 import { origamDarkTheme as baseDark, origamLightTheme as baseLight } from '../../../ds/src/themes/origam.theme'
 
-import { ORIGAM_COMPONENT_RESET_DARK, ORIGAM_COMPONENT_RESET_LIGHT } from './origam-reset.generated'
+import { ORIGAM_COMPONENT_RESET_DARK, ORIGAM_COMPONENT_RESET_LIGHT } from '../consts/origam-reset.const'
 
 /**
  * Origam — NAMED reset theme for the /theming playground.
@@ -18,7 +18,7 @@ import { ORIGAM_COMPONENT_RESET_DARK, ORIGAM_COMPONENT_RESET_LIGHT } from './ori
  * with `name: 'origam'` so the DS emits a `[data-theme="origam"]` block (the DS
  * baseline is ROOT-scoped and never matches a nested `data-theme`).
  *
- * Why the generated `cssVars` reset (origam-reset.generated.ts):
+ * Why the generated `cssVars` reset (origam-reset.const.ts):
  * A `[data-theme="origam"]` SUB-TREE (the preview provider) only re-declares the
  * vars IT lists. Component-level vars (`--origam-btn---*`, `--origam-card---*`, …)
  * that a brand (or a DS-registered theme block) defines at the document root

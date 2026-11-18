@@ -28,7 +28,38 @@ list is a policy breach in itself.
 Keep this list short by preference: a waiver is the fallback for what cannot be
 fixed, not a way to close a ticket.
 
-### GHSA-86w9-cpqp-85rv (`node-forge`), GHSA-vfj7-8cjw-p6xm (`braces`), GHSA-hp3w-g68c-fv3c (`sprintf-js`)
+### GHSA-fc5q-39xc-vjpf (`picomatch`)
+
+- **Granted**: 2026-11-17, by the maintainer (Arnaud Prioul), explicitly
+- **Review date**: 2026-12-17
+- **Remediation ticket**: #1370 (found while closing #1366, PR #1369)
+- **Why a waiver**: no patched version is published (`patched_versions: <0.0.0`).
+  Re-checked with `npm view picomatch versions` on 2026-11-17: 4.0.7 is the
+  latest release and `vulnerable_versions` is `<=4.0.7`.
+
+| advisory | severity | module | chain |
+|---|---|---|---|
+| GHSA-fc5q-39xc-vjpf | high | `picomatch <=4.0.7` (ReDoS through single-branch repeated extglobs) | 18 408 audit paths. Tooling: `eslint-plugin-vue`, `typescript-eslint`, `lint-staged`, `vite`, `vitest`, `unbuild`, `histoire`, `vitepress`. Runtime chain: `nuxt@4.6.4`, `@nuxtjs/seo`, `@nuxtjs/i18n`, `typeorm` (`tinyglobby` / `fdir` > `picomatch`) |
+
+- **Reachability** (assessment, not a proof): unlike the entries above, the
+  module **is shipped** in `packages/marketing/.output/server`
+  (`picomatch`, `tinyglobby`, `fdir` in its `node_modules`). The only runtime
+  importer found in the server bundle is
+  `typeorm/util/DirectoryExportedClassesLoader.js`, which globs the entity /
+  migration patterns of the `DataSource` configuration — server config, never
+  user input. `vue-router` only declares it (traced `package.json`). The
+  published `origam` package carries no occurrence (`packages/ds/dist`: 0).
+  A ReDoS needs an attacker-controlled pattern; none was found.
+- **Exit**: as soon as a patched `picomatch` is published, force it with an
+  override, drop the `ignoreGhsas` entry and re-run `pnpm audit` with a
+  positive control (re-pin the vulnerable version, see the advisory return).
+
+### GHSA-vfj7-8cjw-p6xm (`braces`), GHSA-hp3w-g68c-fv3c (`sprintf-js`)
+
+> **GHSA-86w9-cpqp-85rv (`node-forge`) : LEVÉE le 2026-11-01** (#1301). `node-forge` 1.4.1 est publié
+> et corrige l'avis (`vulnerable_versions: <=1.4.0`, vérifié via l'API npm bulk advisories) ;
+> l'override `node-forge@1: ^1.4.2` résout 1.4.2. Entrée retirée de `ignoreGhsas`. Les lignes
+> ci-dessous qui la mentionnent sont conservées pour l'historique.
 
 - **Granted**: 2026-10-13, by the maintainer (Arnaud Prioul), explicitly
 - **Review date**: 2026-11-13
@@ -52,6 +83,50 @@ fixed, not a way to close a ticket.
   the stories package (dev).
 - **Exit**: drop the matching `ignoreGhsas` entry as soon as a patched version
   is published or the chain no longer resolves the module.
+
+### GHSA-g3hv-75wg-m249 (`minimatch`), GHSA-3g3m-2fjr-6pw4 (`glob`)
+
+- **Granted**: 2026-11-01, by the maintainer (Arnaud Prioul), explicitly
+- **Review date**: 2027-02-01
+- **Remediation ticket**: #1301
+- **Why a waiver**: severity **moderate**. No fix exists in the major line in use:
+  fixes are published only in `minimatch >=11.0.1` and `glob >=14.0.2`. Every
+  consumer's latest release still declares the old major, so there is no consumer
+  version to move to (checked with `npm view` on 2026-11-01). A cross-major
+  override was not retained: unmeasured risk on lint, nitropack build and tests.
+
+| module | versions | pulled by (latest version, range it declares) |
+|---|---|---|
+| `minimatch` | 10.2.6 | `eslint` 10.14 (`^10.2.6`), `@eslint/config-array` 0.23.5 (`^10.2.4`), `@typescript-eslint/typescript-estree` 8.72 (`^10.2.2`), `glob@13` |
+| `minimatch` | 9.0.9 | `glob@10.5.0`, `editorconfig` (latest 3.0.2, `~10.2.4`) |
+| `minimatch` | 5.1.9 | `readdir-glob` (latest 3.0.0, `^10.2.2`) |
+| `glob` | 13.0.6 | `@vercel/nft` 1.11.0 (`^13`) |
+| `glob` | 10.5.0 | `archiver-utils` 5.0.2 (`^10`), `js-beautify` (latest 2.0.3, `^13.0.6`) |
+
+- **Reachability** (assessment, not a proof): lint, build (nitropack) and test
+  tooling only. Absent from the published `origam` tarball (its dependencies are
+  `@mdi/font` and `qrcode-generator`) and absent from
+  `packages/marketing/.output/server/node_modules` after a build. Patterns come
+  from configuration, not end users.
+- **Exit**: drop both entries as soon as eslint, `@typescript-eslint`,
+  `@vercel/nft`, `archiver-utils` and `js-beautify` publish a version accepting
+  the new major, or the chain no longer resolves the modules.
+
+### GHSA-gcqx-w48m-w2h4 (`deepmerge`)
+
+- **Granted**: 2026-10-28, by the maintainer (Arnaud Prioul), explicitly
+- **Review date**: 2027-01-28
+- **Remediation ticket**: #1277
+- **Why a waiver**: severity **low**. No patched version is published
+  (`patched_versions: <0.0.0`, `deepmerge >=4.2.0 <=4.3.1`: `mergeObject()` allows
+  prototype poisoning). `deepmerge@4.3.1` is the latest 4.x, and
+  `@rollup/plugin-node-resolve@16.0.3` (latest) still depends on `^4.2.2`.
+- **Chain**: `@rollup/plugin-node-resolve@16.0.3 > deepmerge@4.3.1`, reached through
+  `unbuild` (`packages/ds` devDependency) and `nuxt > @nuxt/nitro-server > nitropack`.
+- **Reachability** (assessment, not a proof): build tooling only, absent from the
+  published `origam` tarball; the inputs are build configuration, not end-user data.
+- **Exit**: drop the `ignoreGhsas` entry as soon as a patched `deepmerge` is
+  published or `@rollup/plugin-node-resolve` stops depending on it.
 
 ### Related: `patches/@nuxt__devtools@3.4.2.patch` (not a waiver)
 

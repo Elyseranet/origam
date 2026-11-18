@@ -124,79 +124,21 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { MAX_HIGHLIGHTS, MAX_TEXT, MIN_TEXT, MAX_SUMMARY, MIN_SUMMARY, SECTION_TYPE, SKIP_SECTIONS, SKIP_PREFIXES, BREAKING_RE, VERSION_RE } from '../src/consts/changelog-generator.const.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const REPO_ROOT = path.resolve(__dirname, '..', '..', '..')
-const SOURCE_FILE = path.join(REPO_ROOT, 'CHANGELOG.md')
-const OUT_FILE = path.join(
-    REPO_ROOT, 'packages', 'marketing', 'src', 'consts', 'changelog-versions.const.ts'
+const repoRoot = path.resolve(__dirname, '..', '..', '..')
+const sourceFile = path.join(repoRoot, 'CHANGELOG.md')
+const outFile = path.join(
+    repoRoot, 'packages', 'marketing', 'src', 'consts', 'changelog-versions.const.ts'
 )
-const CURATED_FILE = path.join(
-    REPO_ROOT, 'packages', 'marketing', 'src', 'consts', 'changelog-curated.const.ts'
+const curatedFile = path.join(
+    repoRoot, 'packages', 'marketing', 'src', 'consts', 'changelog-curated.const.ts'
 )
 
-const ARGS = process.argv.slice(2)
-const CHECK = ARGS.includes('--check')
-const VERBOSE = ARGS.includes('--verbose')
-
-/** Highlights shown per release card. The 9 curated entries use 2..6. */
-const MAX_HIGHLIGHTS = 6
-/**
- * Character budget for one extracted string. The 9 curated entries measure
- * 44..128 for a highlight and 58..182 for a summary; staying close keeps the
- * card's visual rhythm. MIN_* pulls in a second sentence when the first one
- * is a stub ("Hotfix.").
- */
-const MAX_TEXT = 150
-const MIN_TEXT = 40
-const MAX_SUMMARY = 190
-const MIN_SUMMARY = 60
-
-/**
- * Keep-a-Changelog section vocabulary → IChangelogHighlight['type'].
- * TChangelogHighlightType only has 4 members; `Removed` and `Security` are
- * folded onto the nearest one rather than inventing a type the page cannot
- * colour or icon.
- */
-const SECTION_TYPE = {
-    added: 'added',
-    changed: 'changed',
-    fixed: 'fixed',
-    deprecated: 'deprecated',
-    removed: 'deprecated',
-    security: 'fixed'
-}
-
-/**
- * Section families that are NOT release highlights. Matched on the part of
- * the title before any ` — `, lowercased. Exhaustive as of 2.18.0; an
- * unknown title aborts the run (see classifySection).
- */
-const SKIP_SECTIONS = [
-    'internal',
-    'tooling',
-    'documentation',
-    'known issues',
-    'known limits',
-    'notes for consumers',
-    'outstanding',
-    'deep import paths are not a supported api',
-    /*
-     * 2.18.0 — la note rétrospective qui recense les 9 ruptures entrées par
-     * des versions mineures. C'est de la prose éditoriale, pas un fait de
-     * release : les ruptures elles-mêmes remontent déjà en highlights depuis
-     * leurs propres sections `### ⚠️ BREAKING` de la 2.17.0 et de la 2.18.0,
-     * et les faire remonter une seconde fois par cette note les compterait
-     * deux fois sur la carte de version.
-     */
-    '⛔ note rétrospective'
-]
-
-/** Section titles that are prose prefixes rather than a vocabulary word. */
-const SKIP_PREFIXES = ['migrating from']
-
-/** A `### ⚠️ BREAKING — …` section. Its title is the highlight. */
-const BREAKING_RE = /^\s*(?:⚠️|:warning:)\s*BREAKING\b/i
+const argv = process.argv.slice(2)
+const checkFlag = argv.includes('--check')
+const verboseFlag = argv.includes('--verbose')
 
 // ---------------------------------------------------------------------------
 // Markdown → plain text
@@ -268,9 +210,6 @@ function firstSentence (text, cap, min = 0) {
 // Parsing
 // ---------------------------------------------------------------------------
 
-/** `## [2.17.1] - 2026-09-14` / `## [2.12.1] — 2026-07-31` / `## [Unreleased]` */
-const VERSION_RE = /^##\s+\[([^\]]+)\]\s*(?:[-–—]\s*(\d{4}-\d{2}-\d{2}))?\s*$/
-
 /**
  * Split CHANGELOG.md into version blocks, each with its lead paragraph and
  * its `###` sections (title + top-level bullets).
@@ -285,7 +224,7 @@ function parseChangelog (md) {
     })
 
     if (!heads.length) {
-        throw new Error(`No "## [version]" heading found in ${SOURCE_FILE}`)
+        throw new Error(`No "## [version]" heading found in ${sourceFile}`)
     }
 
     return heads.map((head, i) => {
@@ -450,8 +389,8 @@ function pickHighlights (buckets, cap) {
  * instead of silently matching nothing.
  */
 function loadCurated () {
-    if (!fs.existsSync(CURATED_FILE)) return []
-    const src = fs.readFileSync(CURATED_FILE, 'utf-8')
+    if (!fs.existsSync(curatedFile)) return []
+    const src = fs.readFileSync(curatedFile, 'utf-8')
     const body = src
         .replace(/^\s*import\s[\s\S]*?$/m, '')
         .replace(/export const CHANGELOG_CURATED\s*:\s*[A-Za-z]+\[\]\s*=/, 'return')
@@ -460,7 +399,7 @@ function loadCurated () {
         if (!Array.isArray(value)) throw new Error('CHANGELOG_CURATED is not an array')
         return value
     } catch (e) {
-        throw new Error(`Cannot read ${path.relative(REPO_ROOT, CURATED_FILE)}: ${e.message}`)
+        throw new Error(`Cannot read ${path.relative(repoRoot, curatedFile)}: ${e.message}`)
     }
 }
 
@@ -655,12 +594,12 @@ ${body.join(',\n')}
 // ---------------------------------------------------------------------------
 
 async function run () {
-    if (!fs.existsSync(SOURCE_FILE)) {
-        console.error(`[generate-changelog] source not found: ${SOURCE_FILE}`)
+    if (!fs.existsSync(sourceFile)) {
+        console.error(`[generate-changelog] source not found: ${sourceFile}`)
         process.exit(2)
     }
 
-    const md = fs.readFileSync(SOURCE_FILE, 'utf-8')
+    const md = fs.readFileSync(sourceFile, 'utf-8')
     const blocks = parseChangelog(md)
     const curated = loadCurated()
     const entries = buildEntries(blocks, curated)
@@ -668,14 +607,14 @@ async function run () {
 
     const released = entries.filter(e => e.type !== 'unreleased')
     const nCurated = entries.filter(e => e.curated).length
-    console.log(`[generate-changelog] source     : ${path.relative(REPO_ROOT, SOURCE_FILE)}`)
+    console.log(`[generate-changelog] source     : ${path.relative(repoRoot, sourceFile)}`)
     console.log(`[generate-changelog] entries    : ${entries.length} (${released.length} released + ${entries.length - released.length} unreleased)`)
     console.log(`[generate-changelog] newest     : ${released[0] ? `${released[0].version} (${released[0].date})` : 'n/a'}`)
     console.log(`[generate-changelog] oldest     : ${released.length ? `${released[released.length - 1].version} (${released[released.length - 1].date})` : 'n/a'}`)
     console.log(`[generate-changelog] highlights : ${entries.reduce((n, e) => n + e.highlights.length, 0)} (cap ${MAX_HIGHLIGHTS}/version)`)
     console.log(`[generate-changelog] content    : ${nCurated} curated (hand-written, translated) + ${entries.length - nCurated} extracted from CHANGELOG.md`)
 
-    if (VERBOSE) {
+    if (verboseFlag) {
         console.log('')
         for (const e of entries) {
             console.log(`  ${e.version.padEnd(11)} ${String(e.date).padEnd(11)} ${e.type.padEnd(10)} ${e.highlights.length} highlights  [${e.keyBase}]`)
@@ -686,12 +625,12 @@ async function run () {
 
     const norm = s => s.replace(/\r\n/g, '\n').replace(/[ \t]+\n/g, '\n').trim()
 
-    if (CHECK) {
-        if (!fs.existsSync(OUT_FILE)) {
+    if (checkFlag) {
+        if (!fs.existsSync(outFile)) {
             console.log('\n[generate-changelog] --check: file DOES NOT EXIST (would be created).')
             process.exit(1)
         }
-        const existing = fs.readFileSync(OUT_FILE, 'utf-8')
+        const existing = fs.readFileSync(outFile, 'utf-8')
         if (norm(existing) === norm(output)) {
             console.log('\n[generate-changelog] --check: file is UP TO DATE.')
             return
@@ -702,8 +641,8 @@ async function run () {
         process.exit(1)
     }
 
-    fs.writeFileSync(OUT_FILE, output, 'utf-8')
-    console.log(`\n[generate-changelog] Written → ${path.relative(REPO_ROOT, OUT_FILE)}`)
+    fs.writeFileSync(outFile, output, 'utf-8')
+    console.log(`\n[generate-changelog] Written → ${path.relative(repoRoot, outFile)}`)
 }
 
 run().catch(e => { console.error(e.message || e); process.exit(2) })

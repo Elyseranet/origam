@@ -75,6 +75,27 @@ the inner sizer enforces the ratio.
 </template>
 ```
 
+## Tag (#1182)
+
+The root and the `__content` wrapper are `<div>` by default. A `<div>` is not
+valid inside a `<p>` (the HTML parser closes the paragraph before it, which
+also surfaces as a hydration mismatch with SSR). Pass `tag="span"` to render
+both as `<span>`; the layout is unchanged because `display` comes from
+`--origam-responsive---display` (`flex`), not from the element. The slot
+content must itself be phrasing content in that case.
+
+```vue
+<template>
+    <p>
+        Before
+        <OrigamResponsive tag="span" aspect-ratio="16/9" :max-width="200">
+            <span>content</span>
+        </OrigamResponsive>
+        after.
+    </p>
+</template>
+```
+
 ## Slots
 
 | Slot | Slot props | Description |
@@ -97,15 +118,17 @@ the inner sizer enforces the ratio.
 
 ```ts
 interface IResponsiveProps extends IDimensionProps, ICommonsComponentProps,
-    IPaddingProps, IMarginProps, IBorderProps, IRoundedProps {
+    ITagProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps {
     aspectRatio?:  string | number
     contentClass?: string
+    tag?:          string   // root + content wrapper element, default 'div'
 }
 ```
 
 ## Anatomy
 
 ```html
+<!-- both elements follow the `tag` prop (default div) -->
 <div class="origam-responsive" :style="{ aspectRatio }">
     <!-- additional slot -->
     <div class="origam-responsive__content">

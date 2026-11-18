@@ -36,11 +36,12 @@
 					ref="svgRef"
 					class="origam-chart-map__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
-					role="img"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-map-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -81,7 +82,8 @@
 							:d="country.d"
 							:style="{ fill: country.fill, stroke: resolveColor(borderColor) }"
 							:data-cy="`origam-chart-map-country-${ country.code }`"
-							:tabindex="country.hasData ? 0 : -1"
+							tabindex="-1"
+							:data-chart-point="country.hasData ? '' : undefined"
 							:role="country.hasData ? 'button' : undefined"
 							:aria-label="country.hasData ? countryAriaLabel(country) : undefined"
 							@click="onCountryActivate(country, $event)"
@@ -107,7 +109,8 @@
 							fill="none"
 							stroke-linecap="round"
 							:data-cy="`origam-chart-map-route-${ route.index }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="routeAriaLabel(route)"
 							@click="onRouteActivate(route, $event)"
@@ -201,6 +204,7 @@
 		lang="ts"
 		setup
 >
+	import { CHART_ASPECT_RATIO, CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -210,7 +214,9 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -322,31 +328,31 @@
 	/*********************************************************
 	 * SVG canvas constants
 	 ********************************************************/
-	const SVG_WIDTH = 1000
-	const SVG_HEIGHT = 500
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.map, { aspectRatio: CHART_ASPECT_RATIO.map })
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const LEGEND_H = 14
 	const LEGEND_Y_OFFSET = 12
 	const LEGEND_X = 20
 	const LEGEND_W = 200
 
 	/*********************************************************
-	 * Projected paths — computed once from geographic data.
-	 * Each country multi-polygon is projected via Mercator to
-	 * SVG pixel space on a 1000 × 500 canvas.
+	 * Projected paths — re-projected when the measured box changes.
+	 * Each country multi-polygon is projected via Mercator to the
+	 * measured SVG box (2:1, so the geography is never distorted).
 	 ********************************************************/
-	const WORLD_MAP_PATHS: Record<string, string> = Object.fromEntries(
+	const WORLD_MAP_PATHS = computed<Record<string, string>>(() => Object.fromEntries(
 		Object.entries(WORLD_GEOGRAPHIC_DATA).map(([code, multi]) => [
 			code,
-			multiPolygonToSvgPath(multi, SVG_WIDTH, SVG_HEIGHT)
+			multiPolygonToSvgPath(multi, svgWidth.value, svgHeight.value)
 		])
-	)
+	))
 
-	const COUNTRY_CENTROIDS: Record<string, [number, number]> = Object.fromEntries(
+	const COUNTRY_CENTROIDS = computed<Record<string, [number, number]>>(() => Object.fromEntries(
 		Object.entries(WORLD_GEOGRAPHIC_DATA).map(([code, multi]) => [
 			code,
-			multiPolygonCentroid(multi, SVG_WIDTH, SVG_HEIGHT)
+			multiPolygonCentroid(multi, svgWidth.value, svgHeight.value)
 		])
-	)
+	))
 
 	/*********************************************************
 	 * Mode helpers
@@ -439,7 +445,7 @@
 	 ********************************************************/
 	const allCountries = computed<Array<IChartMapCountry>>(() => {
 		const { min, max } = valueRange.value
-		return Object.entries(WORLD_MAP_PATHS).map(([code, d]) => {
+		return Object.entries(WORLD_MAP_PATHS.value).map(([code, d]) => {
 			const datum = choroplethMap.value.get(code)
 			const hasData = isChoroplethMode.value && datum !== undefined
 			let fill: string
@@ -471,8 +477,8 @@
 
 	const computedRoutes = computed<Array<IChartMapRoute>>(() => {
 		return routeData.value.flatMap((datum, index) => {
-			const fromC = COUNTRY_CENTROIDS[datum.from?.toUpperCase()]
-			const toC = COUNTRY_CENTROIDS[datum.to?.toUpperCase()]
+			const fromC = COUNTRY_CENTROIDS.value[datum.from?.toUpperCase()]
+			const toC = COUNTRY_CENTROIDS.value[datum.to?.toUpperCase()]
 			if (!fromC || !toC) return []
 
 			const [x1, y1] = fromC
@@ -539,7 +545,7 @@
 	 * Gradient legend rect (inline, bottom-left corner of SVG)
 	 ********************************************************/
 	const gradientRect = computed(() => {
-		const y = SVG_HEIGHT - LEGEND_H - LEGEND_Y_OFFSET - 20
+		const y = svgHeight.value - LEGEND_H - LEGEND_Y_OFFSET - 20
 		const x2 = LEGEND_X + LEGEND_W
 		return {
 			x: LEGEND_X,
@@ -554,7 +560,6 @@
 	/*********************************************************
 	 * Hover / tooltip — choropleth
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredCode = ref<string | null>(null)
 	const hoveredRouteIndex = ref<number | null>(null)

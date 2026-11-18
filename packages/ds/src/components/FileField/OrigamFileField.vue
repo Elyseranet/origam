@@ -191,14 +191,14 @@
               <slot name="prefix"/>
             </template>
 
-            <template #default="{class: fieldSlotClass, ref, ...fieldSlotProps}">
+            <template #default="{class: fieldSlotClass, ref, isActive: fieldIsActive, isFocused: fieldIsFocused, ...fieldSlotProps}">
               <div
                   :class="fieldSlotClass"
                   data-no-activator=""
               >
                 <slot
                     name="default"
-                    v-bind="{ref, ...fieldSlotProps}"
+                    v-bind="{ref, isActive: fieldIsActive, isFocused: fieldIsFocused, ...fieldSlotProps}"
                 />
                 <input
                     ref="inputRef"
@@ -396,7 +396,7 @@
   import { useDensity } from '../../composables/Commons/density.composable'
   import { useFocus } from '../../composables/Commons/focus.composable'
   import { useLocale } from '../../composables/Commons/locale.composable'
-  import { useProps } from '../../composables/Commons/props.composable'
+  import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
   import { useStyle } from '../../composables/Commons/style.composable'
   import { useVModel } from '../../composables/Commons/vModel.composable'
   import { DENSITY } from '../../enums/Commons/density.enum'
@@ -856,10 +856,10 @@
      * Withheld from the INPUT (no notch, its top edge crosses the floating
      * label) and handed to the FIELD's notched outline instead.
      ********************************************************/
-    return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', ...BORDER_PROP_KEYS])
+    return filterPropsOf(OrigamInput, props, ['modelValue', 'class', 'style', 'focused', ...BORDER_PROP_KEYS])
   })
   const fieldProps = computed(() => {
-    return origamFieldRef.value?.filterProps(props, ['class', 'style', 'id', 'active', 'dirty', 'disabled', 'focused', 'error'])
+    return filterPropsOf(OrigamField, props, ['class', 'style', 'id', 'active', 'dirty', 'disabled', 'focused', 'error'])
   })
 
   /*********************************************************

@@ -10,7 +10,7 @@ import { selectHstOption, toggleHstCheckbox } from './_support/histoire-controls
  *  - Squarified and slice-dice variants both produce the expected tile count.
  *  - Clicking a legend item hides the corresponding tile and applies
  *    the `--hidden` modifier on the legend item.
- *  - ARIA attributes (role="figure", role="img", title, desc) are present.
+ *  - ARIA attributes (role="figure", role="group", title, desc) are present.
  *  - Label text renders inside large-enough tiles (showLabel=true).
  *  - Empty slot renders when series is empty.
  *
@@ -47,12 +47,12 @@ test.describe('OrigamChartTreemap — Default', () => {
         await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
-    test('SVG carries role=img, title and desc', async ({ page }) => {
+    test('SVG carries role=group, title and desc', async ({ page }) => {
         await openVariant(page, TREEMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator('[data-cy="origam-chart-treemap"] svg').first()
         await expect(svg).toBeVisible()
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         await expect(svg.locator('title')).toHaveCount(1)
         await expect(svg.locator('desc')).toHaveCount(1)
     })
@@ -105,15 +105,18 @@ test.describe('OrigamChartTreemap — algorithm variants', () => {
     test('squarified and slice-dice produce different tile geometries', async ({ page }) => {
         await openVariant(page, TREEMAP_STORY, 'Design')
         const sandbox = sandboxOf(page)
-        const tile0 = sandbox.locator(`${ ROOT } [data-cy="origam-chart-treemap-tile-0"]`)
+        // Tuile 1, pas 0 : sur une boite large et basse (viewBox = boite mesuree, #1324)
+        // la premiere tuile est une colonne pleine hauteur dans les deux algorithmes,
+        // donc identique ; c'est la deuxieme qui les distingue.
+        const tile0 = sandbox.locator(`${ ROOT } [data-cy="origam-chart-treemap-tile-1"]`)
 
         await selectHstOption(page, 'Algorithm', 'squarified')
         await expect(tile0).toBeVisible({ timeout: 8000 })
-        const sqW = await tile0.getAttribute('width')
+        const sqW = await tile0.getAttribute('height')
 
         await selectHstOption(page, 'Algorithm', 'slice-dice')
         await expect(tile0).toBeVisible({ timeout: 8000 })
-        const sdW = await tile0.getAttribute('width')
+        const sdW = await tile0.getAttribute('height')
 
         expect(sqW).toBeTruthy()
         expect(sdW).toBeTruthy()
@@ -190,14 +193,14 @@ test.describe('OrigamChartTreemap — accessibility', () => {
         }
     })
 
-    test('each tile is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each tile is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, TREEMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const tiles = sandbox.locator('[data-cy="origam-chart-treemap"] rect[data-cy^="origam-chart-treemap-tile-"]')
         await expect(tiles).toHaveCount(10, { timeout: 6000 })
         const count = await tiles.count()
         for (let i = 0; i < count; i++) {
-            await expect(tiles.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(tiles.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 })

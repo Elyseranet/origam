@@ -1,0 +1,48 @@
+{
+  "name": "OrigamClientOnly",
+  "tag": "origam-client-only",
+  "family": "ClientOnly",
+  "label": "ClientOnly",
+  "props": [
+    {
+      "name": "placeholderTag",
+      "label": "placeholderTag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Tag used for the SSR placeholder when no `#fallback` slot is given.\nDefaults to `undefined` — the SSR output is then completely empty\n(a tiny perf win when the consumer doesn't need a layout reserved\nslot). Set to `'div'` / `'span'` / etc. when the absence of a\nplaceholder would cause layout shift on hydration.",
+      "source": "types"
+    },
+    {
+      "name": "placeholderClass",
+      "label": "placeholderClass",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Class applied to the placeholder element. Pair with `placeholderTag`\nto reserve dimensions matching the eventual client render (avoids\ncumulative layout shift).",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "fallback",
+      "label": "fallback",
+      "slotPropsType": "any",
+      "description": "SSR / pre-hydration placeholder, shown until the component mounts.",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

@@ -229,6 +229,20 @@
 			</origam-chart-polar>
 		</Variant>
 
+		<Variant title="Responsive width">
+			<div
+					v-for="w in [480, 960]"
+					:key="w"
+					:style="{ width: `${ w }px`, maxWidth: '100%', marginBottom: '1rem' }"
+					:data-cy="`origam-chart-polar-responsive-${ w }`"
+			>
+				<origam-chart-polar
+						type="pie" :series="FIXTURE_REVENUE_PIE" :categories="FIXTURE_COUNTRIES"
+						:title="`${ w }px container`"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IChartPolarProps>>({

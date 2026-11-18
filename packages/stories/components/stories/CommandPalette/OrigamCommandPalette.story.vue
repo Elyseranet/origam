@@ -13,6 +13,9 @@
 					maxHeight: 480,
 					width: 640,
 					loading: false,
+					searchIcon: 'mdi:mdi-magnify',
+					loadingIcon: 'mdi:mdi-loading',
+					filter: true,
 					closeOnSelect: true,
 					closeOnEscape: true,
 					closeOnBackdrop: true,
@@ -37,6 +40,9 @@
 							:max-height="state.maxHeight"
 							:width="state.width"
 							:loading="state.loading"
+							:search-icon="state.searchIcon"
+							:loading-icon="state.loadingIcon"
+							:filter="state.filter"
 							:close-on-select="state.closeOnSelect"
 							:close-on-escape="state.closeOnEscape"
 							:close-on-backdrop="state.closeOnBackdrop"
@@ -57,7 +63,12 @@
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.loading" title="Loading"/>
 				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstText v-model="state.searchIcon"  title="Search Icon"/>
+					<HstText v-model="state.loadingIcon" title="Loading Icon"/>
+				</StoryGroup>
 				<StoryGroup title="Behaviour">
+					<HstCheckbox v-model="state.filter"         title="Filter (built-in fuzzy match)"/>
 					<HstCheckbox v-model="state.closeOnSelect"  title="Close on Select"/>
 					<HstCheckbox v-model="state.closeOnEscape"  title="Close on Escape"/>
 					<HstCheckbox v-model="state.closeOnBackdrop" title="Close on Backdrop"/>
@@ -167,6 +178,63 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop - icons (SVG)">
+			<div class="story-shell">
+				<origam-btn
+						text="Open with SVG icons"
+						@click="openPropIcons = true"
+				/>
+				<origam-command-palette
+						v-model="openPropIcons"
+						:commands="GROUPS_FIXTURE"
+						:loading-icon="SVG_LOADING_PATH"
+						:search-icon="SVG_SEARCH_PATH"
+						loading
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Search icon">
+			<div class="story-shell">
+				<origam-btn
+						text="Open with custom search icon"
+						@click="openSlotSearchIcon = true"
+				/>
+				<origam-command-palette
+						v-model="openSlotSearchIcon"
+						:commands="GROUPS_FIXTURE"
+				>
+					<template #search-icon>
+						<span
+								class="slot-search-icon"
+								data-cy="slot-search-icon"
+						>&#9733;</span>
+					</template>
+				</origam-command-palette>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Loading">
+			<div class="story-shell">
+				<origam-btn
+						text="Open with custom loader"
+						@click="openSlotLoading = true"
+				/>
+				<origam-command-palette
+						v-model="openSlotLoading"
+						:commands="GROUPS_FIXTURE"
+						loading
+				>
+					<template #loading>
+						<span
+								class="slot-loading"
+								data-cy="slot-loading"
+						>Fetching&hellip;</span>
+					</template>
+				</origam-command-palette>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Footer">
 			<div class="story-shell">
 				<origam-btn
@@ -207,6 +275,27 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop - filter">
+			<div class="story-shell">
+				<origam-btn
+						text="Open palette"
+						@click="openFilterExternal = true"
+				/>
+				<div class="story-status">
+					filter: <strong>{{ filterFuzzy ? 'true (built-in fuzzy match)' : 'false (externally ranked, shown as given)' }}</strong>
+				</div>
+				<origam-btn
+						text="Toggle built-in fuzzy match"
+						@click="filterFuzzy = !filterFuzzy"
+				/>
+				<origam-command-palette
+						v-model="openFilterExternal"
+						:commands="EXTERNAL_HITS"
+						:filter="filterFuzzy"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ICommandPaletteProps>({
@@ -216,6 +305,9 @@
 					maxHeight: 480,
 					width: 640,
 					loading: false,
+					searchIcon: 'mdi:mdi-magnify',
+					loadingIcon: 'mdi:mdi-loading',
+					filter: true,
 					closeOnSelect: true,
 					closeOnEscape: true,
 					closeOnBackdrop: true,
@@ -252,6 +344,9 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.loading"          title="Loading"/>
+					<HstText v-model="state.searchIcon"           title="Search Icon"/>
+					<HstText v-model="state.loadingIcon"          title="Loading Icon"/>
+					<HstCheckbox v-model="state.filter"           title="Filter (built-in fuzzy match)"/>
 					<HstCheckbox v-model="state.closeOnSelect"    title="Close on Select"/>
 					<HstCheckbox v-model="state.closeOnEscape"    title="Close on Escape"/>
 					<HstCheckbox v-model="state.closeOnBackdrop"  title="Close on Backdrop"/>
@@ -292,7 +387,14 @@
 	const openSlotItem = ref<boolean>(false)
 	const openSlotEmpty = ref<boolean>(false)
 	const openSlotFooter = ref<boolean>(false)
+	const openPropIcons = ref<boolean>(false)
+	const SVG_SEARCH_PATH = 'M12 2L15 9L22 9.5L17 14.5L18.5 22L12 18L5.5 22L7 14.5L2 9.5L9 9Z'
+	const SVG_LOADING_PATH = 'M12 2A10 10 0 1 0 22 12H19A7 7 0 1 1 12 5Z'
+	const openSlotSearchIcon = ref<boolean>(false)
+	const openSlotLoading = ref<boolean>(false)
 	const openAttachTarget = ref<boolean>(false)
+	const openFilterExternal = ref<boolean>(false)
+	const filterFuzzy = ref<boolean>(false)
 
 	/*********************************************************
 	 * attachTargetMounted — #attach-harmonisation
@@ -338,6 +440,12 @@
 		{ id: 'settings-language', label: 'Set language', group: 'Settings', perform: () => undefined },
 		{ id: 'action-create', label: 'Create item', group: 'Actions', perform: () => undefined },
 		{ id: 'action-delete', label: 'Delete item', group: 'Actions', perform: () => undefined }
+	]
+
+	const EXTERNAL_HITS: ReadonlyArray<ICommand> = [
+		{ id: 'hit-install', label: 'Install', description: 'Matched in the page body', perform: () => undefined },
+		{ id: 'hit-deploy', label: 'Deployment guide', description: 'Matched in the page body', perform: () => undefined },
+		{ id: 'hit-config', label: 'Configuration', description: 'Matched in the page body', perform: () => undefined }
 	]
 
 	const USER_FIXTURE: ReadonlyArray<ICommand> = [

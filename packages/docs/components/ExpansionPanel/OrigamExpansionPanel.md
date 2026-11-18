@@ -269,16 +269,14 @@ mean anything one level down.
 | `--origam-expansion-panel__header---min-height` | `48px` | Header min height (collapsed) |
 | `--origam-expansion-panel__header---min-height-active` | `64px` | Header min height (expanded) |
 | `--origam-expansion-panel__header---focus-overlay-opacity` | `opacity.12` (fallback `calc(0.12 * 1)`) | Header focus/focus-visible overlay opacity |
+| `--origam-expansion-panel__header---overlay-opacity-hover` | `0.04` | Header hover overlay opacity |
 | `--origam-expansion-panel__content---padding-block-start` / `-end` | `space.2` / `space.4` | Content vertical padding |
 | `--origam-expansion-panel__content---padding-inline-start` / `-end` | `space.6` | Content horizontal padding |
 
-> **Known gap** — `packages/ds/src/assets/css/tokens/light.css` (and
-> `dark.css`) also declares a
-> `--origam-expansion-panel__header---hover-overlay-opacity` variable, but
-> `OrigamExpansionPanelHeader.vue`'s hover rule uses a hardcoded
-> `opacity: calc(0.04 * 1)` with no matching `var(...)` — the token exists
-> but isn't actually wired as a CSS custom property override point.
-> Overriding that variable from a theme currently has no effect on hover.
+> **Hover overlay** — the header's hover overlay opacity is read from
+> `--origam-expansion-panel__header---overlay-opacity-hover` (`0.04`, row
+> above). The older `--origam-expansion-panel__header---hover-overlay-opacity`
+> variable (declared `0`) is not read by the component; do not use it.
 
 Header-specific typography variables
 (`--origam-expansion-panel__header---font-family` etc.) and the full content

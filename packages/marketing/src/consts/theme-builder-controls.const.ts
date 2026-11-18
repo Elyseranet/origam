@@ -24,6 +24,7 @@
  * prop — it only selects the "Autre…" branch of a control's local UI state.
  */
 import { BORDER_STYLE, DENSITY, ROUNDED } from 'origam/enums'
+import type { TThemeBuilderBorderSide } from '~/types/theme-builder-controls.type'
 
 /** Sentinel select value that reveals a control's custom/"Autre…" editor. */
 export const THEME_BUILDER_CUSTOM_VALUE = '__custom__' as const
@@ -223,3 +224,11 @@ export const THEME_BUILDER_ORPHAN_COLOR_PROPS = new Set([
  * (`ThemeBuilderControls.vue`).
  */
 export const THEME_BUILDER_RICH_CONTROL_KINDS = new Set(['color-intent', 'rounded', 'elevation', 'border', 'box-model'])
+
+/** Border side → the `border*` prop of the target component that receives its width. */
+export const THEME_BUILDER_BORDER_SIDE_PROP: Record<TThemeBuilderBorderSide, 'borderTop' | 'borderRight' | 'borderBottom' | 'borderLeft'> = {
+    top: 'borderTop',
+    right: 'borderRight',
+    bottom: 'borderBottom',
+    left: 'borderLeft'
+}

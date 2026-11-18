@@ -80,14 +80,15 @@
 				data-cy="origam-chart-cartesian-body"
 		>
 			<svg
-					ref="svgRef"
+					:ref="setSvgRef"
 					class="origam-chart-cartesian__svg origam-chart__svg"
 					:class="svgClasses"
 					:viewBox="viewBox"
-					role="img"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-cartesian-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 					@mousedown="onSvgMouseDown"
@@ -186,7 +187,9 @@
 								:width="path.rect!.width"
 								:height="path.rect!.height"
 								:fill="path.color"
-								tabindex="0"
+								tabindex="-1"
+								data-chart-point
+								:data-chart-series="path.seriesIndex"
 								role="button"
 								:aria-label="pointAriaLabel(path)"
 								:data-cy="`origam-chart-bar-${ path.seriesIndex }-${ path.dataIndex }`"
@@ -203,7 +206,9 @@
 								:cy="path.circle!.cy"
 								:r="hoverMatches(path) ? path.circle!.r + 2 : path.circle!.r"
 								:fill="path.color"
-								tabindex="0"
+								tabindex="-1"
+								data-chart-point
+								:data-chart-series="path.seriesIndex"
 								role="button"
 								:aria-label="pointAriaLabel(path)"
 								:data-cy="`origam-chart-point-${ path.seriesIndex }-${ path.dataIndex }`"
@@ -498,6 +503,8 @@
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useChart } from '../../composables/Chart/chart.composable'
 	import { useChartZoom } from '../../composables/Chart/chart-zoom.composable'
@@ -514,7 +521,7 @@
 		computePlotLineGeometry
 	} from '../../composables/Chart/chart.composable'
 
-	import { CHART_RANGE_SELECTOR_DEFAULT_BUTTONS } from '../../consts/Chart/chart.const'
+	import { CHART_RANGE_SELECTOR_DEFAULT_BUTTONS, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		CHART_ZOOM_RESET_GAP,
 		CHART_ZOOM_RESET_MIN_WIDTH,
@@ -756,12 +763,16 @@
 	 * shorter viewBox so they don't grow taller than their host
 	 * row when wrapped into a table cell.
 	 ********************************************************/
-	const SVG_WIDTH = 600
-	const SVG_HEIGHT = 360
+	const { resizeRef: svgSizeRef, width: svgWidth, height: svgHeight } = useChartSize({ width: 600, height: 360 })
 	const PADDING_DEFAULT = { top: 24, right: 24, bottom: 36, left: 48 }
 	const PADDING_WITH_SECONDARY_AXIS = { top: 24, right: 56, bottom: 36, left: 48 }
 
 	const svgRef = ref<SVGSVGElement | null>(null)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
+	const setSvgRef = (el: unknown) => {
+		svgRef.value = el as SVGSVGElement | null
+		svgSizeRef.value = el as SVGSVGElement | null
+	}
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 
 	const hasSecondaryAxis = computed(() =>
@@ -899,8 +910,8 @@
 		smoothing: () => props.smoothing,
 		yMin: () => props.yMin,
 		yMax: () => props.yMax,
-		width: () => SVG_WIDTH,
-		height: () => SVG_HEIGHT,
+		width: () => svgWidth.value,
+		height: () => svgHeight.value,
 		padding: () => chartPadding.value,
 		secondaryYAxis: () => props.secondaryYAxis
 	})
@@ -1178,7 +1189,7 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * Zoom / pan interactions
 	 *
-	 * SVG has a fixed coordinate space (600 × 360). Mouse events
+	 * SVG viewBox follows the measured box (useChartSize). Mouse events
 	 * are in DOM pixels; we convert via `getBoundingClientRect()` +
 	 * the scale factor between DOM and SVG viewBox dimensions.
 	 ********************************************************/
@@ -1187,7 +1198,7 @@ return [ out, props.style as StyleValue ]
 		const svgEl = svgRef.value
 		if (!svgEl) return 0
 		const rect = svgEl.getBoundingClientRect()
-		const domRatio = SVG_WIDTH / Math.max(1, rect.width)
+		const domRatio = svgWidth.value / Math.max(1, rect.width)
 		const svgX = (clientX - rect.left) * domRatio
 		return pxToCategoryIndex(svgX, plot.value.x0, plot.value.x1)
 	}
@@ -1250,7 +1261,7 @@ return [ out, props.style as StyleValue ]
 		const svgEl = svgRef.value
 		if (!svgEl) return
 		const rect = svgEl.getBoundingClientRect()
-		const domRatio = SVG_WIDTH / Math.max(1, rect.width)
+		const domRatio = svgWidth.value / Math.max(1, rect.width)
 		const svgX = (event.clientX - rect.left) * domRatio
 		const { x0, x1 } = plot.value
 		const plotWidth = Math.max(1, x1 - x0)
@@ -1274,7 +1285,7 @@ return [ out, props.style as StyleValue ]
 		const svgEl = svgRef.value
 		if (!svgEl) return null
 		const rect = svgEl.getBoundingClientRect()
-		const domRatio = SVG_WIDTH / Math.max(1, rect.width)
+		const domRatio = svgWidth.value / Math.max(1, rect.width)
 		const startSvgX = (dragStartPx.value - rect.left) * domRatio
 		const endSvgX = (dragEndPx.value - rect.left) * domRatio
 		const { x0, x1, y0, y1 } = plot.value

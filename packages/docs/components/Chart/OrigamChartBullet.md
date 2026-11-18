@@ -106,14 +106,19 @@ Bands are rendered in array order. Each band covers `[previous.to, this.to]`. St
 | `title` | — | Replace the title + subtitle block. |
 | `legend-item` | `{ series, index, visible }` | Replace one legend entry. |
 
+## Behaviour notes
+
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 600 × 400 canvas. The plot fills the container width and height, the geometry is recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until the box is measured (SSR, first paint) the 600 × 400 fallback is used, so hydration is unchanged. Give the chart a `height` / `aspectRatio` to change the box ratio.
+
 ## Accessibility
 
 - Root is a native `<figure>` carrying `aria-label` — the `title` prop when
   given, otherwise the translated `origam.chart.bullet.aria_label`. The
   fallback is a locale key, not an English literal, so it follows the active
   locale (#567).
-- Inner `<svg>` carries `role="img"` plus `<title>` and `<desc>` for screen readers.
-- Each value bar (`<rect>`) has `tabindex="0"`, `role="button"`, and `aria-label` describing category / value / target / achievement %.
+- Inner `<svg>` carries `role="group"` plus `<title>` and `<desc>` for screen readers.
+- The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page.
+- Each value bar (`<rect>`) has `role="button"`, and `aria-label` describing category / value / target / achievement %.
 - Keyboard: `Enter` and `Space` fire `point-click` on the focused bar.
 - Animation respects `prefers-reduced-motion: reduce`.
 

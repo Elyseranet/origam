@@ -102,3 +102,15 @@ export interface IChartSecondaryYAxis {
     /** Optional axis title rendered alongside the right axis. */
     title?: string
 }
+
+/*********************************************************
+ * IChartAxisLabelSlot (#1325)
+ *
+ * @description
+ * Une étiquette X avec son index et son état de décimation.
+ ********************************************************/
+export interface IChartAxisLabelSlot {
+    tick: IChartTick
+    i: number
+    shown: boolean
+}

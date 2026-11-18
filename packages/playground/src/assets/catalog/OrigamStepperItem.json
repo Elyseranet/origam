@@ -1,0 +1,125 @@
+{
+  "name": "OrigamStepperItem",
+  "tag": "origam-stepper-item",
+  "family": "Stepper",
+  "label": "StepperItem",
+  "props": [
+    {
+      "name": "index",
+      "label": "index",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 0,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "source": "types"
+    },
+    {
+      "name": "title",
+      "label": "title",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "subtitle",
+      "label": "subtitle",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "icon",
+      "label": "icon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "status",
+      "label": "status",
+      "tsType": "\"error\" | \"done\" | \"active\" | \"pending\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "error",
+        "done",
+        "active",
+        "pending"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "clickable",
+      "label": "clickable",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    }
+  ],
+  "events": [
+    {
+      "name": "click",
+      "label": "click",
+      "payloadType": "[index: number]",
+      "source": "types"
+    }
+  ],
+  "slots": [],
+  "snippets": [],
+  "requiresParent": false
+}

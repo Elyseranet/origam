@@ -35,6 +35,22 @@
           {{ t(kpi.valueKey, kpi.valueFallback) }}
         </dd>
       </div>
+      <div
+        v-for="kpi in liveKpis"
+        :key="kpi.source"
+        class="home-kpis__item"
+        :data-cy="`kpi-live-${kpi.source}`"
+      >
+        <dt class="home-kpis__label">
+          {{ t(kpi.labelKey, kpi.labelFallback) }}
+        </dt>
+        <dd class="home-kpis__value">
+          <origam-number-format
+            :value="kpi.value"
+            format="decimal"
+          />
+        </dd>
+      </div>
     </origam-grid>
 
     <origam-divider
@@ -47,9 +63,16 @@
 
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
-import { KPIS, KPIS_GRID_COLUMNS, KPIS_RULE_VARS } from '~/consts/kpis.const'
+import { KPIS, KPIS_GRID_COLUMNS, KPIS_RULE_VARS, LIVE_KPIS } from '~/consts/kpis.const'
+import { useGithubStars } from '~/composables/useGithubStars'
+import { resolveLiveKpis } from '~/utils/kpi.util'
+import { useNpmDownloads } from '~/composables/useNpmDownloads'
 
 const { t } = useT()
+const { stars } = useGithubStars()
+const { downloads } = useNpmDownloads()
+
+const liveKpis = computed(() => resolveLiveKpis(LIVE_KPIS, stars.value, downloads.value))
 </script>
 
 <style scoped lang="scss">
@@ -67,6 +90,7 @@ const { t } = useT()
     &__item {
         display: flex;
         flex-direction: column-reverse;
+        justify-content: flex-end;
         align-items: center;
         gap: var(--origam-space---2, 0.5rem);
     }

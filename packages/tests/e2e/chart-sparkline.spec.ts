@@ -284,14 +284,14 @@ test.describe('OrigamChartSparkline', () => {
             expect(tagName).toBe('figure')
         })
 
-        test('SVG has role="img" and aria-label', async ({ page }) => {
+        test('SVG has role="group" and aria-label', async ({ page }) => {
             await openVariant(page, 'Default')
             const sandbox = sandboxOf(page)
 
             const svg = sandbox.locator('[data-cy="origam-chart-sparkline-svg"]').first()
             await expect(svg).toBeVisible({ timeout: 8000 })
 
-            await expect(svg).toHaveAttribute('role', 'img')
+            await expect(svg).toHaveAttribute('role', 'group')
             const ariaLabel = await svg.getAttribute('aria-label')
             expect(ariaLabel).toBeTruthy()
         })

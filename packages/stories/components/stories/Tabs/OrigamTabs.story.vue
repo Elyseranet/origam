@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<ITabsProps & ITabProps>>({ variant: TAB_VARIANT.DEFAULT, color: undefined, bgColor: undefined, rounded: undefined, density: undefined, direction: DIRECTION.HORIZONTAL, fontSize: undefined, fontWeight: undefined, letterSpacing: undefined })"
+				:init-state="() => useStoryInitState<Partial<ITabsProps & ITabProps>>({ variant: TAB_VARIANT.DEFAULT, color: undefined, bgColor: undefined, rounded: undefined, density: undefined, direction: DIRECTION.HORIZONTAL, fontSize: undefined, fontWeight: undefined, letterSpacing: undefined, lineHeight: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-tabs
@@ -18,7 +18,7 @@
 						:direction="state.direction"
 						v-model="designValue"
 				>
-					<origam-tab :value="0" :font-size="state.fontSize" :font-weight="state.fontWeight" :letter-spacing="state.letterSpacing">Profile</origam-tab>
+					<origam-tab :value="0" :font-size="state.fontSize" :font-weight="state.fontWeight" :letter-spacing="state.letterSpacing" :line-height="state.lineHeight">Profile</origam-tab>
 					<origam-tab :value="1" :font-size="state.fontSize" :font-weight="state.fontWeight" :letter-spacing="state.letterSpacing">Settings</origam-tab>
 					<origam-tab :value="2" :font-size="state.fontSize" :font-weight="state.fontWeight" :letter-spacing="state.letterSpacing">Billing</origam-tab>
 				</origam-tabs>
@@ -44,6 +44,7 @@
 					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
 					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -191,6 +192,7 @@
 		FONT_SIZE_OPTIONS,
 		FONT_WEIGHT_OPTIONS,
 		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 

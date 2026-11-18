@@ -89,6 +89,8 @@
 		>
 			<template #default="{ state }">
 				<origam-btn :bg-color="state.bgColor" :hover="resolveHoverState(state.hover)" :active="resolveActiveState(state.active)" text="Button"/>
+				<origam-btn variant="text" text="Text" data-cy="btn-state-text-rest"/>
+				<origam-btn variant="text" active text="Text active" data-cy="btn-state-text-active"/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Surface">
@@ -330,6 +332,74 @@
 					<origam-btn block stacked size="large" prepend-icon="mdi-home" text="Stacked" data-cy="btn-block-stacked"/>
 					<origam-btn block wrap size="large" text="A label long enough to wrap on several lines inside the button" data-cy="btn-block-wrapped"/>
 					<origam-btn block size="large" text="Capped" style="--origam-btn---max-width: 120px;" data-cy="btn-block-capped"/>
+				</div>
+			</div>
+		</Variant>
+
+		<Variant title="Layout — vertical centring (matrix)">
+			<div style="display: flex; flex-direction: column; gap: 16px;" data-cy="btn-center-matrix">
+				<div
+						v-for="density in DENSITY_OPTIONS"
+						:key="`block-${density.label}`"
+						data-cy="btn-center-block-parent"
+				>
+					<template
+							v-for="size in SIZE_OPTIONS"
+							:key="size.label"
+					>
+						<origam-btn
+								:size="size.value"
+								:density="density.value"
+								:text="`button ${size.label} / ${density.label}`"
+								data-center="single"
+						/>
+						<origam-btn
+								href="#centre"
+								:size="size.value"
+								:density="density.value"
+								:text="`a ${size.label} / ${density.label}`"
+								data-center="single"
+						/>
+					</template>
+				</div>
+				<div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start;" data-cy="btn-center-flex-parent">
+					<template
+							v-for="variant in VARIANT_OPTIONS"
+							:key="variant.label"
+					>
+						<origam-btn
+								:variant="variant.value"
+								:text="`button ${variant.label}`"
+								size="small"
+								data-center="single"
+						/>
+						<origam-btn
+								href="#centre"
+								:variant="variant.value"
+								:text="`a ${variant.label}`"
+								size="small"
+								data-center="single"
+						/>
+					</template>
+					<origam-btn :height="60" text="button height 60" data-center="single"/>
+					<origam-btn href="#centre" :height="60" text="a height 60" data-center="single"/>
+				</div>
+				<div data-cy="btn-center-edge-block">
+					<origam-btn prepend-icon="mdi-home" append-icon="mdi-arrow-right" text="button icons" data-center="single"/>
+					<origam-btn href="#centre" prepend-icon="mdi-home" append-icon="mdi-arrow-right" text="a icons" data-center="single"/>
+					<origam-btn icon="mdi-home" size="small" data-center="single"/>
+					<origam-btn href="#centre" icon="mdi-home" size="small" data-center="single"/>
+					<origam-btn href="#centre" icon="mdi-home" size="x-large" density="compact" data-center="single"/>
+					<origam-btn stacked prepend-icon="mdi-home" text="button stacked" data-center="single"/>
+					<origam-btn href="#centre" stacked prepend-icon="mdi-home" text="a stacked" data-center="single"/>
+					<origam-btn :loading="{ type: 'line' }" text="button line" data-center="single"/>
+					<origam-btn href="#centre" :loading="{ type: 'line' }" text="a line" data-center="single"/>
+					<origam-btn href="#centre" :loading="{ type: 'circular' }" text="a circular" data-center="single"/>
+				</div>
+				<div style="width: 200px;" data-cy="btn-center-narrow-parent">
+					<origam-btn href="#centre" wrap text="a label long enough to wrap on two lines" data-cy="btn-center-wrap"/>
+					<origam-btn href="#centre" block text="a block" data-center="single" data-cy="btn-center-block"/>
+					<origam-btn block text="button block" data-center="single"/>
 				</div>
 			</div>
 		</Variant>

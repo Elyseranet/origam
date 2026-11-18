@@ -1,0 +1,618 @@
+{
+  "name": "OrigamTooltip",
+  "tag": "origam-tooltip",
+  "family": "Tooltip",
+  "label": "Tooltip",
+  "props": [
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "text",
+      "label": "text",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "absolute",
+      "label": "absolute",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "closeOnBack",
+      "label": "closeOnBack",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "contentClass",
+      "label": "contentClass",
+      "tsType": "string | string[] | undefined",
+      "runtimeType": [
+        "String",
+        "Array"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "contentProps",
+      "label": "contentProps",
+      "tsType": "any",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "noClickAnimation",
+      "label": "noClickAnimation",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "modelValue",
+      "label": "modelValue",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "zIndex",
+      "label": "zIndex",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "disableGlobalStack",
+      "label": "disableGlobalStack",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "persistent",
+      "label": "persistent",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "height",
+      "label": "height",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "maxHeight",
+      "label": "maxHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "maxWidth",
+      "label": "maxWidth",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "minHeight",
+      "label": "minHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "minWidth",
+      "label": "minWidth",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "defaultValue": 0,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "width",
+      "label": "width",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "target",
+      "label": "target",
+      "tsType": "Element | TAnyString | ComponentPublicInstance | \"parent\" | \"cursor\" | [x: number, y: number] | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "activator",
+      "label": "activator",
+      "tsType": "Element | TAnyString | ComponentPublicInstance | \"parent\" | \"cursor\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "activatorProps",
+      "label": "activatorProps",
+      "tsType": "any",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "openOnClick",
+      "label": "openOnClick",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "openOnContextMenu",
+      "label": "openOnContextMenu",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "openOnHover",
+      "label": "openOnHover",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "openOnFocus",
+      "label": "openOnFocus",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "closeOnContentClick",
+      "label": "closeOnContentClick",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "closeDelay",
+      "label": "closeDelay",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "openDelay",
+      "label": "openDelay",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "locationStrategy",
+      "label": "locationStrategy",
+      "tsType": "\"static\" | \"connected\" | TLocationStrategyFn | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "defaultValue": "connected",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "location",
+      "label": "location",
+      "tsType": "TAnchor | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "right",
+      "hasFactoryDefault": false,
+      "options": [
+        "top",
+        "bottom",
+        "left",
+        "right",
+        "center",
+        "center center",
+        "top left",
+        "top right",
+        "top center",
+        "bottom left",
+        "bottom right",
+        "bottom center",
+        "left top",
+        "left bottom",
+        "left center",
+        "right top",
+        "right bottom",
+        "right center"
+      ],
+      "control": "select",
+      "source": "alias"
+    },
+    {
+      "name": "origin",
+      "label": "origin",
+      "tsType": "TAnchor | \"auto\" | \"overlap\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "auto",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "offset",
+      "label": "offset",
+      "tsType": "string | number | number[] | undefined",
+      "runtimeType": [
+        "Number",
+        "String",
+        "Array"
+      ],
+      "required": false,
+      "defaultValue": 10,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "viewportMargin",
+      "label": "viewportMargin",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Pixels of breathing room enforced between the floating content and\neach viewport edge by the connected location strategy. Defaults to\n`12` so dropdowns / menus / tooltips never touch the browser chrome.\n\nComponents where the activator legitimately spans the full viewport\n(e.g. an `<origam-select>` taking the full row width) should pass\n`0` — otherwise the guard's inward shift produces a visible offset\nbetween the activator's left edge and the dropdown's left edge.",
+      "source": "types"
+    },
+    {
+      "name": "scrollStrategy",
+      "label": "scrollStrategy",
+      "tsType": "\"none\" | \"block\" | \"close\" | \"reposition\" | TScrollStrategyFn | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "defaultValue": "reposition",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "contained",
+      "label": "contained",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "eager",
+      "label": "eager",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "transition",
+      "label": "transition",
+      "tsType": "string | boolean | TTransitionProps | undefined",
+      "runtimeType": [
+        "Boolean",
+        "String",
+        "Object"
+      ],
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "scrim",
+      "label": "scrim",
+      "tsType": "string | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "String"
+      ],
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "attach",
+      "label": "attach",
+      "tsType": "string | boolean | Element | null | undefined",
+      "runtimeType": [
+        "Boolean",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "bgColor",
+      "label": "bgColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "fontSize",
+      "label": "fontSize",
+      "tsType": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl",
+        "4xl",
+        "5xl"
+      ],
+      "control": "select",
+      "description": "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+      "source": "types"
+    },
+    {
+      "name": "fontWeight",
+      "label": "fontWeight",
+      "tsType": "\"regular\" | \"medium\" | \"semibold\" | \"bold\" | \"extrabold\" | \"black\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "regular",
+        "medium",
+        "semibold",
+        "bold",
+        "extrabold",
+        "black"
+      ],
+      "control": "select",
+      "description": "Font weight token. Maps to `--origam-font__weight---{fontWeight}`\n(regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900).\nWhen unset, the component keeps its theme font-weight.",
+      "source": "types"
+    },
+    {
+      "name": "lineHeight",
+      "label": "lineHeight",
+      "tsType": "\"none\" | \"tight\" | \"snug\" | \"normal\" | \"relaxed\" | \"loose\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "none",
+        "tight",
+        "snug",
+        "normal",
+        "relaxed",
+        "loose"
+      ],
+      "control": "select",
+      "description": "Line-height token. Maps to `--origam-font__lineHeight---{lineHeight}`\n(none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2).\nWhen unset, the component keeps its theme line-height.",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "update:modelValue",
+      "label": "update:modelValue",
+      "payloadType": "[event: any]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "activator",
+      "label": "activator",
+      "slotPropsType": "{ props: Record<string, unknown>; }",
+      "description": "Overrides the activator element. Receives the props the overlay\nwants bound onto it (`aria-describedby`, event listeners, …) —\nmirrors `IMenuSlots.activator`, minus the `isActive` flag that\n`<OrigamOverlay>` exposes but `<OrigamTooltip>` doesn't forward.",
+      "source": "types"
+    },
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "description": "Tooltip body. Falls back to the `text` prop when omitted.",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

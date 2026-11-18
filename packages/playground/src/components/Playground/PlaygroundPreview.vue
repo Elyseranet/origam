@@ -183,7 +183,13 @@
         }
 
         &__root {
-            min-width: 0;
+            min-width: min-content;
+            text-align: center;
+
+            > :deep(*) {
+                margin-inline: auto;
+                text-align: start;
+            }
         }
 
         &__stage--select-mode {

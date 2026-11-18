@@ -121,12 +121,16 @@ const series = [{
 }]
 ```
 
+## Behaviour notes
+
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 600 × 400 canvas. The plot fills the container width and height, the geometry is recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until the box is measured (SSR, first paint) the 600 × 400 fallback is used, so hydration is unchanged. Give the chart a `height` / `aspectRatio` to change the box ratio.
+
 ## Accessibility
 
 - Root element carries `role="figure"` with an `aria-label` derived from `title` (or `'candlestick chart'`).
-- The SVG carries `role="img"`, an inline `<title>`, and a `<desc>` that summarises candle count.
+- The SVG carries `role="group"`, an inline `<title>`, and a `<desc>` that summarises candle count.
 - Each candle `<g>` carries `role="button"`, `tabindex="0"`, and an `aria-label` describing date, direction, and all four OHLC values.
-- Keyboard navigation: `Tab` to focus a candle; `Enter` or `Space` to fire `point-click`.
+- Keyboard navigation: The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. `Enter` or `Space` fires `point-click`.
 - CSS animation respects `prefers-reduced-motion: reduce`.
 
 ## Caveats

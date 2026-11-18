@@ -34,7 +34,7 @@
 
   const { theme, setTheme, resolvedMode, toggleMode } = useTheme()
   const { stars } = useGithubStars()
-  const showGithubStars = computed(() => stars.value >= GITHUB_STARS_MIN_DISPLAY)
+  const showGithubStars = computed(() => stars.value !== null && stars.value >= GITHUB_STARS_MIN_DISPLAY)
 
   const paletteOpen = ref(false)
   const { commands, family, isLoading, ensureLoaded, setQuery, resetQuery, setFamily, cycleFamily, getHref } = useGlobalSearch()

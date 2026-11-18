@@ -8,19 +8,23 @@
 		<origam-btn-group>
 			<template #default>
 				<origam-btn
+						:append-icon="modeIcon"
+						:aria-expanded="isMonthsOpen"
+						:aria-label="monthLabel"
+						:class="monthClasses"
 						:disabled="disableMonth"
 						:text="text"
-						class="origam-date-picker-controls__month-btn"
 						rounded="0"
 						@click="handleClickMonth"
 				/>
 
 				<origam-btn
-						key="mode-btn"
-						:aria-label="t('origam.date_picker_controls.toggle_year')"
+						:append-icon="modeIcon"
+						:aria-expanded="isYearsOpen"
+						:aria-label="yearLabel"
+						:class="yearClasses"
 						:disabled="disableYear"
-						:icon="modeIcon"
-						class="origam-date-picker-controls__mode-btn"
+						:text="yearText"
 						rounded="0"
 						@click="handleClickYear"
 				/>
@@ -101,18 +105,14 @@
 	 * type d'un consommateur pour une prop qui ne faisait deja rien — ni
 	 * cablees a un comportement invente. Elles avertissent une fois, en
 	 * dev, avec la raison exacte. Meme traitement que la famille Chart.
+	 * (`viewMode` n'en fait plus partie : il pilote `aria-expanded` et le
+	 * pivot du chevron des deux boutons mois / annee.)
 	 ********************************************************/
 	useUnsupportedProp(
 		'OrigamDatePickerControls',
 		'active',
 		'the controls row reflects the picker view state of its parent; it has no active state of its own.',
 		() => props.active !== undefined
-	)
-	useUnsupportedProp(
-		'OrigamDatePickerControls',
-		'viewMode',
-		'the displayed mode comes from the picker through `mode`, never from this prop.',
-		() => props.viewMode !== DATE_MODE.MONTH
 	)
 
 	const emits = defineEmits<IDatePickerControlsEmits>()
@@ -142,6 +142,30 @@
 	const disableNext = computed(() => {
 		return props.disabled || props.disabledNext
 	})
+
+	/*********************************************************
+	 * Open state & labels
+	 *
+	 * @description
+	 * `viewMode` (passed by the picker) tells which grid is open: the
+	 * matching button reflects it through `aria-expanded` and a modifier
+	 * class that flips its chevron in CSS.
+	 ********************************************************/
+
+	const isMonthsOpen = computed(() => props.viewMode === DATE_MODE.MONTHS)
+	const isYearsOpen = computed(() => props.viewMode === DATE_MODE.YEARS)
+
+	const monthClasses = computed(() => [
+		'origam-date-picker-controls__month-btn',
+		{'origam-date-picker-controls__month-btn--open': isMonthsOpen.value}
+	])
+	const yearClasses = computed(() => [
+		'origam-date-picker-controls__year-btn',
+		{'origam-date-picker-controls__year-btn--open': isYearsOpen.value}
+	])
+
+	const monthLabel = computed(() => t('origam.date_picker_controls.choose_month', props.text ?? ''))
+	const yearLabel = computed(() => t('origam.date_picker_controls.choose_year', props.yearText ?? ''))
 
 	/*********************************************************
 	 * Event handlers
@@ -218,16 +242,25 @@
 		padding-inline-end: 12px;
 
 
-		> :deep(.origam-btn) {
-			&:first-child {
-				text-transform: none;
-				font-weight: 400;
-				line-height: initial;
-				letter-spacing: initial;
+		&__month-btn,
+		&__year-btn {
+			text-transform: none;
+			font-weight: 400;
+			line-height: initial;
+			letter-spacing: initial;
+
+			:deep(.origam-btn__append) {
+				transition: transform 0.2s ease;
 			}
 
-			&:last-child {
-				margin-inline-start: 4px;
+			&--open :deep(.origam-btn__append) {
+				transform: rotate(180deg);
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				:deep(.origam-btn__append) {
+					transition: none;
+				}
 			}
 		}
 

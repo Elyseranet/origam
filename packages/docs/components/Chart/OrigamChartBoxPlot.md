@@ -144,6 +144,8 @@ surface is consumed as-is, with no local override:
 
 ## Behaviour notes
 
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 600 × 400 canvas. The plot fills the container width and height, the geometry is recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until the box is measured (SSR, first paint) the 600 × 400 fallback is used, so hydration is unchanged. Give the chart a `height` / `aspectRatio` to change the box ratio.
+
 **Single-series only.** The component reads `series[0]` exclusively. Extra series are silently ignored.
 
 **Tukey quartile computation (Format B).** `computeQuartiles()` sorts the samples, then interpolates Q1 and Q3 at the 25th and 75th percentile positions using the inclusive linear-interpolation rule (identical to `PERCENTILE.INC` in Excel and `numpy.percentile` with default interpolation). Outliers are defined as values outside `[Q1 − 1.5·IQR, Q3 + 1.5·IQR]`. Whisker endpoints are the smallest non-outlier ≥ lower fence and the largest non-outlier ≤ upper fence.
@@ -156,7 +158,7 @@ surface is consumed as-is, with no local override:
 
 **Tooltip content.** The default tooltip shows: category, min, Q1, median, Q3, max, IQR, and outlier count. Use the `#tooltip` slot to replace it entirely; the `box` binding supplies all the same information.
 
-**Accessibility.** Each box group is a focusable `<g>` with `role="button"` and an `aria-label` summarising all five statistics. Keyboard users can Tab through boxes and activate them with Enter or Space. The SVG carries a `<title>` and `<desc>` element.
+**Accessibility.** Each box group is a focusable `<g>` with `role="button"` and an `aria-label` summarising all five statistics. The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. `Enter` or `Space` activates a box. The SVG carries a `<title>` and `<desc>` element.
 
 **Animation.** Box rectangles fade in on mount. Whiskers and caps are not animated to keep the motion subtle. Respects `prefers-reduced-motion`.
 

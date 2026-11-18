@@ -8,3 +8,6 @@ export type TReferenceKind =
     | 'interface'
     | 'type'
     | 'util'
+
+/** Sibling-slug → description lookup, used to enrich family/related entries. */
+export type TDescriptionsBySlug = Map<string, { description_key: string | null; description_fallback: string | null }>

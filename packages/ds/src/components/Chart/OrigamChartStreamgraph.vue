@@ -37,11 +37,12 @@
 					ref="svgRef"
 					class="origam-chart-streamgraph__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
-					role="img"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-streamgraph-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -103,7 +104,8 @@
 							:d="ribbon.d"
 							:style="{ fill: ribbon.color }"
 							:data-cy="`origam-chart-streamgraph-ribbon-${ ribbon.seriesIndex }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="ribbonAriaLabel(ribbon)"
 							@click="onRibbonActivate(ribbon, $event)"
@@ -180,6 +182,7 @@
 		lang="ts"
 		setup
 >
+	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -190,7 +193,9 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -266,18 +271,18 @@
 	/*********************************************************
 	 * SVG coordinate space — fixed logical box; CSS scales it
 	 ********************************************************/
-	const SVG_WIDTH = 700
-	const SVG_HEIGHT = 420
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.streamgraph)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const PADDING = { top: 24, right: 24, bottom: 40, left: 40 }
 	const AXIS_LABEL_OFFSET = 6
 
 	const plot = computed(() => ({
 		left: PADDING.left,
-		right: SVG_WIDTH - PADDING.right,
+		right: svgWidth.value - PADDING.right,
 		top: PADDING.top,
-		bottom: SVG_HEIGHT - PADDING.bottom,
-		width: SVG_WIDTH - PADDING.left - PADDING.right,
-		height: SVG_HEIGHT - PADDING.top - PADDING.bottom
+		bottom: svgHeight.value - PADDING.bottom,
+		width: svgWidth.value - PADDING.left - PADDING.right,
+		height: svgHeight.value - PADDING.top - PADDING.bottom
 	}))
 
 	/*********************************************************
@@ -660,7 +665,6 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number; y: number }>({ x: 0, y: 0 })
 	const hoveredSeriesIndex = ref<number | null>(null)
 	const hoveredXIndex = ref<number | null>(null)
@@ -748,7 +752,7 @@ return [ out, props.style as StyleValue ]
 		const clientY = event.clientY - rect.top
 		mousePos.value = { x: clientX, y: clientY }
 
-		const svgScaleX = SVG_WIDTH / rect.width
+		const svgScaleX = svgWidth.value / rect.width
 		hoveredXIndex.value = nearestXIndex(clientX * svgScaleX)
 	}
 

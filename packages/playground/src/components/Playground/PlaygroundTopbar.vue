@@ -1,9 +1,9 @@
 <template>
     <header class="pg-topbar">
         <origam-btn
+                v-if="showCatalog"
                 data-cy="playground-catalog-open"
                 variant="outlined"
-                size="large"
                 aria-haspopup="dialog"
                 @click="handleOpenCatalog($event)"
         >
@@ -11,8 +11,10 @@
         </origam-btn>
 
         <origam-title
+                v-if="showTitle"
                 tag="h1"
                 class="pg-topbar__brand"
+                data-cy="playground-title"
         >
             <template #default>
                 {{ title }} <small>{{ subtitle }}</small>
@@ -24,9 +26,9 @@
         <slot name="toolbar"/>
 
         <origam-btn
+                v-if="showSelectMode"
                 data-cy="playground-select-mode-toggle"
                 :variant="selectModeVariant"
-                size="large"
                 :aria-pressed="selectMode"
                 @click="handleToggleSelectMode"
         >
@@ -36,7 +38,6 @@
         <origam-btn
                 data-cy="playground-inspector-toggle"
                 variant="outlined"
-                size="large"
                 :aria-expanded="inspectorOpen"
                 @click="handleToggleInspector"
         >
@@ -56,7 +57,10 @@
      ********************************************************/
     const props = withDefaults(defineProps<IPlaygroundTopbarProps>(), {
         inspectorOpen: true,
-        selectMode: false
+        selectMode: false,
+        showTitle: true,
+        showCatalog: true,
+        showSelectMode: true
     })
 
     const emits = defineEmits<IPlaygroundTopbarEmits>()
@@ -120,6 +124,7 @@
 <style lang="scss" scoped>
     .pg-topbar {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: var(--pg-topbar---gap, 12px);
         padding: var(--pg-topbar---padding, 8px 16px);

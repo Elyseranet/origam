@@ -1,0 +1,292 @@
+{
+  "name": "OrigamNumberFormat",
+  "tag": "origam-number-format",
+  "family": "NumberFormat",
+  "label": "NumberFormat",
+  "props": [
+    {
+      "name": "value",
+      "label": "value",
+      "tsType": "string | number",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Number to render. Strings are parsed via `Number()` — callers can\npass a stringified BigInt-like to preserve precision before\ncoercion (the actual formatting still goes through `Number`, so\nvalues beyond `Number.MAX_SAFE_INTEGER` may lose accuracy).",
+      "source": "types"
+    },
+    {
+      "name": "format",
+      "label": "format",
+      "tsType": "\"compact\" | \"percent\" | \"decimal\" | \"currency\" | \"unit\" | \"scientific\" | \"engineering\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "decimal",
+      "hasFactoryDefault": false,
+      "options": [
+        "compact",
+        "percent",
+        "decimal",
+        "currency",
+        "unit",
+        "scientific",
+        "engineering"
+      ],
+      "control": "select",
+      "description": "High-level format dialect — see `TNumberFormatFormat`.",
+      "source": "types"
+    },
+    {
+      "name": "locale",
+      "label": "locale",
+      "tsType": "TNumberFormatLocale | undefined",
+      "runtimeType": [
+        "String",
+        "Array"
+      ],
+      "required": false,
+      "defaultValue": "auto",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "BCP-47 locale tag (or array, for fallback chains). The literal\nstring `'auto'` triggers the runtime resolution chain (`<html\nlang>` → `navigator.language` → `'en-US'`).",
+      "source": "types"
+    },
+    {
+      "name": "currency",
+      "label": "currency",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "ISO 4217 currency code. Required when `format === 'currency'`; we\nfall back to `'USD'` rather than throwing so storybook controls\nremain forgiving.",
+      "source": "types"
+    },
+    {
+      "name": "currencyDisplay",
+      "label": "currencyDisplay",
+      "tsType": "\"symbol\" | \"name\" | \"code\" | \"narrowSymbol\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "symbol",
+      "hasFactoryDefault": false,
+      "options": [
+        "symbol",
+        "name",
+        "code",
+        "narrowSymbol"
+      ],
+      "control": "select",
+      "description": "Currency-symbol rendering — `'symbol'` (`$`), `'narrowSymbol'`\n(`$` instead of `US$`), `'code'` (`USD`) or `'name'`\n(`US dollar`).",
+      "source": "types"
+    },
+    {
+      "name": "unit",
+      "label": "unit",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Sanctioned unit identifier (e.g. `'kilometer-per-hour'`,\n`'celsius'`, `'liter'`). Required when `format === 'unit'`. The\nfull ECMAScript-sanctioned list is exposed under\n`Intl.supportedValuesOf('unit')` at runtime.",
+      "source": "types"
+    },
+    {
+      "name": "unitDisplay",
+      "label": "unitDisplay",
+      "tsType": "\"short\" | \"long\" | \"narrow\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "short",
+      "hasFactoryDefault": false,
+      "options": [
+        "short",
+        "long",
+        "narrow"
+      ],
+      "control": "select",
+      "description": "Unit-label rendering — `'short'` (`km/h`), `'long'`\n(`kilometers per hour`) or `'narrow'` (`kph`).",
+      "source": "types"
+    },
+    {
+      "name": "notation",
+      "label": "notation",
+      "tsType": "\"compact\" | \"scientific\" | \"engineering\" | \"standard\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "compact",
+        "scientific",
+        "engineering",
+        "standard"
+      ],
+      "control": "select",
+      "description": "Raw `notation` override. Auto-set to `'compact'` when `format ===\n'compact'`, to `'scientific'` / `'engineering'` for the matching\nformats. Explicit values still win — useful for `format:\n'decimal'` with `notation: 'scientific'`.",
+      "source": "types"
+    },
+    {
+      "name": "compactDisplay",
+      "label": "compactDisplay",
+      "tsType": "\"short\" | \"long\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "short",
+      "hasFactoryDefault": false,
+      "options": [
+        "short",
+        "long"
+      ],
+      "control": "select",
+      "description": "Compact-notation rendering — `'short'` (`1M`) or `'long'`\n(`1 million`). Only honoured when `notation === 'compact'`.",
+      "source": "types"
+    },
+    {
+      "name": "minimumFractionDigits",
+      "label": "minimumFractionDigits",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Minimum digits after the decimal point.",
+      "source": "types"
+    },
+    {
+      "name": "maximumFractionDigits",
+      "label": "maximumFractionDigits",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Maximum digits after the decimal point.",
+      "source": "types"
+    },
+    {
+      "name": "minimumSignificantDigits",
+      "label": "minimumSignificantDigits",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Minimum significant digits (mutually exclusive with fraction digits).",
+      "source": "types"
+    },
+    {
+      "name": "maximumSignificantDigits",
+      "label": "maximumSignificantDigits",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Maximum significant digits (mutually exclusive with fraction digits).",
+      "source": "types"
+    },
+    {
+      "name": "useGrouping",
+      "label": "useGrouping",
+      "tsType": "TNumberFormatUseGrouping | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "options": [
+        false,
+        true,
+        "always",
+        "auto",
+        "min2"
+      ],
+      "control": "select",
+      "description": "Thousands-separator behaviour. `true` / `'auto'` keep the locale\ndefault, `false` removes them, `'always'` forces them on, `'min2'`\nonly renders them when the integer part has at least 2 groups.",
+      "source": "alias"
+    },
+    {
+      "name": "signDisplay",
+      "label": "signDisplay",
+      "tsType": "\"auto\" | \"always\" | \"except-zero\" | \"negative\" | \"never\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "auto",
+      "hasFactoryDefault": false,
+      "options": [
+        "auto",
+        "always",
+        "except-zero",
+        "negative",
+        "never"
+      ],
+      "control": "select",
+      "description": "Sign-display strategy. `'auto'` (default — only negatives),\n`'always'`, `'except-zero'`, `'negative'`, `'never'`.",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "span",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "INumberFormatScopedSlotBindings",
+      "description": "Custom render override. Scoped — receives the resolved value plus\nthe structured parts so consumers can paint individual segments.",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

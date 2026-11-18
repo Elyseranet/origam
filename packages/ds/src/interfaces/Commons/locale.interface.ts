@@ -16,8 +16,8 @@ export interface ILocaleInstance {
 
 export interface ILocaleOptions {
     locale?: string
-    fallbackLocale: string
-    messages: Record<string, unknown>
+    fallbackLocale?: string
+    messages?: Record<string, unknown>
 }
 
 /**

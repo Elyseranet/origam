@@ -211,6 +211,20 @@
 			</div>
 		</Variant>
 
+		<Variant title="Responsive width">
+			<div
+					v-for="w in [480, 960]"
+					:key="w"
+					:style="{ width: `${ w }px`, maxWidth: '100%', marginBottom: '1rem' }"
+					:data-cy="`origam-chart-sunburst-responsive-${ w }`"
+			>
+				<origam-chart-sunburst
+						:series="FIXTURE_BUDGET_SERIES"
+						:title="`${ w }px container`"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IChartSunburstProps>>({

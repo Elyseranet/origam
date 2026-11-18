@@ -182,7 +182,7 @@ test.describe('#709 — OrigamResponsive holds its own ratio', () => {
      * pending.
      */
     test('an explicit height still wins on the height axis', async ({ page }) => {
-        await page.goto(variantUrl(RESPONSIVE_ID, 5), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(RESPONSIVE_ID, 6), { waitUntil: 'domcontentloaded' })
         const sandbox = sandboxOf(page)
         const root = await firstResponsiveRoot(sandbox)
 

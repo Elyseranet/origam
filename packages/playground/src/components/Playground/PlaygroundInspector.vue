@@ -13,13 +13,11 @@
                 >
                     <template #default>{{ definition.label }}</template>
                 </origam-title>
-                <p class="pg-inspector__meta">
-                    <span
-                            v-if="definition.category"
-                            class="pg-inspector__chip"
-                    >{{ definition.category }}</span>
-                    <span class="pg-inspector__chip">{{ propsCountLabel }}</span>
-                    <span class="pg-inspector__chip">{{ eventsCountLabel }}</span>
+                <p
+                        v-if="definition.category"
+                        class="pg-inspector__meta"
+                >
+                    <span class="pg-inspector__chip">{{ definition.category }}</span>
                 </p>
             </div>
 
@@ -30,14 +28,6 @@
                     :label="searchLabel"
                     :placeholder="searchPlaceholder"
             />
-
-            <p
-                    class="pg-inspector__tally"
-                    aria-live="polite"
-                    data-cy="playground-prop-tally"
-            >
-                {{ tallyLabel }}
-            </p>
 
             <p
                     v-if="filteredGroups.length === 0"
@@ -55,10 +45,7 @@
                     open
                     :data-cy="`playground-group-${group.id}`"
             >
-                <summary>
-                    {{ groupLabel(group.id) }}
-                    <span class="pg-inspector__group-count">{{ group.totalCount }}</span>
-                </summary>
+                <summary>{{ groupLabel(group.id) }}</summary>
 
                 <template
                         v-for="row in group.rows"
@@ -179,24 +166,17 @@
 
     /*********************************************************
      * Labels
+     *
+     * @description
+     * No counter (#1173, owner's decision): the "N props / N emits" chips,
+     * the "N props · N groups · N at rest · N folded" line and the per-group
+     * count are gone. The search and the foldable groups stay.
      ********************************************************/
-    const propsCountLabel = computed(() => t('playground.inspector.props_count', '{count} props', { count: props.definition?.props.length ?? 0 }))
-    const eventsCountLabel = computed(() => t('playground.inspector.events_count', '{count} emits', { count: props.definition?.events.length ?? 0 }))
     const searchLabel = computed(() => t('playground.inspector.search_label', 'Search a prop by name'))
     const searchPlaceholder = computed(() => t('playground.inspector.search_placeholder', 'Search among {count} props…', { count: props.definition?.props.length ?? 0 }))
     const emptyLabel = computed(() => t('playground.inspector.empty', 'No prop matches {query}.', { query: query.value }))
     const noSelectionLabel = computed(() => t('playground.inspector.no_selection', 'Select a component in the catalog to inspect its props.'))
     const noSelectionAriaLabel = computed(() => t('playground.inspector.aria_label_empty', 'Component props inspector — no selection'))
-
-    const restingRows = computed(() => filteredGroups.value.reduce((sum, group) => sum + group.rows.length, 0))
-    const foldedCount = computed(() => filteredGroups.value.reduce((sum, group) => sum + group.foldedCount, 0))
-
-    const tallyLabel = computed(() => t('playground.inspector.tally', '{count} props · {groups} groups · {resting} at rest · {folded} folded', {
-        count: props.definition?.props.length ?? 0,
-        groups: filteredGroups.value.length,
-        resting: restingRows.value,
-        folded: foldedCount.value
-    }))
 
     /*********************************************************
      * Expose
@@ -227,17 +207,6 @@
             padding: 2px 8px;
             border-radius: 999px;
             background: var(--pg-inspector__chip---background-color, #f1f1f1);
-        }
-
-        &__tally {
-            font-size: 0.8em;
-            opacity: 0.7;
-            margin: 0;
-        }
-
-        &__group-count {
-            opacity: 0.6;
-            font-size: 0.8em;
         }
 
         &__empty {

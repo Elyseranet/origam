@@ -110,11 +110,14 @@ and `fontFamily` is a project-level setting configured once on `OrigamApp`.
 | `modelValue` | `boolean` | `false` | Whether the palette is open. v-model. |
 | `hotkey` | `string[] \| string[][] \| null` | `[['meta','k'],['ctrl','k']]` | Global hotkey(s) that toggle the palette. Pass `null` to disable. |
 | `commands` | `ICommand[]` | — | Static command list. Falls back to the global registry when omitted. |
+| `filter` | `boolean \| (commands: ICommand[], query: string) => ICommand[]` | `true` | How `commands` are filtered against the query. `true`: built-in fuzzy match (see [Fuzzy matching](#fuzzy-matching)). `false`: `commands` are shown as given, in the given order. A function: its return value is shown, in its order. With `false` or a function the list is flat (no group headers) while the query is non-empty, nothing is highlighted, and `commands` is honoured even when empty (no fallback on the `useCommand()` registry). |
 | `placeholder` | `string` | `'origam.command_palette.placeholder'` | Placeholder of the search input, and the name the `role="combobox"` input and the listbox are announced with. Resolved through the locale catalogue — pass a **key** to translate, or literal text to render verbatim (an unknown key is returned unchanged). |
 | `emptyText` | `string` | `'origam.command_palette.empty_text'` | Empty-state message when no command matches the query. Same key-or-literal contract as `placeholder`. |
 | `maxHeight` | `number \| string` | `480` | Max height of the result list (px when number). |
 | `width` | `number \| string` | `640` | Width of the palette dialog (px when number). |
 | `loading` | `boolean` | `false` | Display a loader inside the result list. |
+| `searchIcon` | `TIcon` | `'mdi:mdi-magnify'` | Icon of the search field. Accepts an icon id, an SVG path string or a component. The `search-icon` slot takes precedence. |
+| `loadingIcon` | `TIcon` | `'mdi:mdi-loading'` | Icon shown while `loading` is `true`. The `loading` slot takes precedence. |
 | `closeOnSelect` | `boolean` | `true` | Close the palette automatically when a command is selected. |
 | `closeOnEscape` | `boolean` | `true` | Close on `Escape`. |
 | `closeOnBackdrop` | `boolean` | `true` | Close when the user clicks the backdrop. |
@@ -135,6 +138,8 @@ and `fontFamily` is a project-level setting configured once on `OrigamApp`.
 |---|---|---|
 | `item` | `{ command, isActive }` | Replace a single command row. Useful for avatars / rich rendering. |
 | `empty` | — | Replace the default empty state. |
+| `search-icon` | — | Replace the search field icon (takes precedence over `searchIcon`). |
+| `loading` | — | Replace the loader shown while `loading` is `true` (takes precedence over `loadingIcon`). |
 | `footer` | — | Replace the default footer hints. |
 
 ## `ICommand` interface
@@ -195,6 +200,27 @@ list to navigate.
 
 No external dependency — `fuse.js` / `match-sorter` would add ~20 KB
 gzipped for a feature we can match in 100 lines of pure TS.
+
+### Externally ranked results (`filter`)
+
+For a server-side or full-text search, feed the results through the `query`
+event and turn the built-in matcher off, otherwise a hit found by body text
+(not present in `label` / `keywords` / `description`) is dropped and the
+engine's ranking is re-sorted:
+
+```vue
+<origam-command-palette
+    v-model="open"
+    :commands="hits"
+    :filter="false"
+    @query="q => hits = fullTextSearch(q)"
+/>
+```
+
+`:filter="(commands, query) => commands.filter(...)"` applies your own
+filter and order instead. The grouping, keyboard navigation
+(`aria-activedescendant`) and empty state behave the same as with the
+built-in matcher.
 
 ## Hotkey configuration
 

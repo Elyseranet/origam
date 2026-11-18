@@ -17,7 +17,7 @@ console.log('─'.repeat(70))
 console.log('Self-test: guard-typecheck-ratchet')
 console.log('─'.repeat(70))
 
-const CASES = [
+const selfTestCases = [
     ['empty output', '', 0],
     ['clean run (no errors)', 'nuxt typecheck\n\nNo errors found.\n', 0],
     [
@@ -41,7 +41,7 @@ const CASES = [
     ]
 ]
 
-for (const [label, input, expected] of CASES) {
+for (const [label, input, expected] of selfTestCases) {
     const actual = countTypeErrors(input)
     if (actual !== expected) fail(`${label} — expected ${expected}, got ${actual}`)
     else console.log(`  ok    ${label}`)
@@ -52,4 +52,4 @@ if (failures) {
     console.log(`FAIL — ${failures} self-test case(s) failed.`)
     process.exit(1)
 }
-console.log(`PASS — ${CASES.length} cases.`)
+console.log(`PASS — ${selfTestCases.length} cases.`)

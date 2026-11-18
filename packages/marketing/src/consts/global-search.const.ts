@@ -36,6 +36,15 @@ export const GLOBAL_SEARCH_STATIC_PAGES: IGlobalSearchStaticPage[] = [
         keywords: ['future', 'plan', 'upcoming', 'milestone', 'feature']
     },
     {
+        id: 'page-stability',
+        labelKey: 'nav.stability',
+        labelFallback: 'Stability',
+        descriptionKey: 'chrome.search_page_stability',
+        descriptionFallback: 'Version numbers, release cadence and deprecation policy',
+        icon: 'mdi-shield-check-outline',
+        keywords: ['stability', 'versioning', 'semver', 'breaking', 'deprecation', 'release']
+    },
+    {
         id: 'page-wireframe',
         labelKey: 'nav.wireframe',
         labelFallback: 'Wireframe',
@@ -69,6 +78,7 @@ export const GLOBAL_SEARCH_STATIC_PAGE_HREFS: Record<string, string> = {
     'page-installation': '/installation',
     'page-changelog': '/changelog',
     'page-roadmap': '/roadmap',
+    'page-stability': '/stability',
     'page-wireframe': '/wireframe',
     'page-theming': '/theming',
     'page-why-origam': '/why-origam'
@@ -98,3 +108,6 @@ export const GLOBAL_SEARCH_FAMILY_ICONS: Record<TReferenceKind, string> = {
     util: 'mdi-wrench-outline',
     const: 'mdi-alpha-c-box-outline'
 }
+
+/** Lignes par famille quand la requête est vide et que toutes les familles sont visibles. */
+export const TEASER_PER_FAMILY = 5

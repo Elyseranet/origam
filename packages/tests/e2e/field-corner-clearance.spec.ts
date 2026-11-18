@@ -82,3 +82,34 @@ test.describe('#800 — plancher de degagement des coins', () => {
         await expect(field).toHaveCSS('padding-inline-end', '0px')
     })
 })
+
+// #1254 — le jeton doit etre THEMABLE : pose hors de l'element (comme un theme),
+// il doit atteindre le rendu. Avant, `.origam-field` le re-declarait localement.
+const FIELD_STORY = 'components-stories-field-origamfield-story-vue'
+const FIELD_URL = `/stories/story/${FIELD_STORY}?variantId=${FIELD_STORY}-0`
+
+test.describe('#1254 — corner-clearance themable', () => {
+    test('un theme qui pose le jeton (sur :root) change le padding-inline-start', async ({ page }) => {
+        await page.addInitScript(() => {
+            // :root:root = specificite d'un theme runtime, qui bat la feuille (0,1,0).
+            const inject = () => {
+                const s = document.createElement('style')
+                s.textContent = ':root:root { --origam-field---corner-clearance: 30px; }'
+                document.head.appendChild(s)
+            }
+            if (document.head) inject()
+            else document.addEventListener('DOMContentLoaded', inject, { once: true })
+        })
+        await page.goto(FIELD_URL)
+        const field = page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-field').first()
+        await expect(field).toBeVisible()
+        await expect(field).toHaveCSS('padding-inline-start', '30px')
+    })
+
+    test('sans jeton, le calcul par instance reste inchange', async ({ page }) => {
+        await page.goto(FIELD_URL)
+        const field = page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-field').first()
+        await expect(field).toBeVisible()
+        await expect(field).not.toHaveCSS('padding-inline-start', '30px')
+    })
+})

@@ -1,0 +1,186 @@
+{
+  "name": "OrigamDatePickerHeader",
+  "tag": "origam-date-picker-header",
+  "family": "DatePicker",
+  "label": "DatePickerHeader",
+  "props": [
+    {
+      "name": "header",
+      "label": "header",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "transition",
+      "label": "transition",
+      "tsType": "TTransitionProps | undefined",
+      "runtimeType": "Object",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "appendAvatar",
+      "label": "appendAvatar",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "appendIcon",
+      "label": "appendIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "prependAvatar",
+      "label": "prependAvatar",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "prependIcon",
+      "label": "prependIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "prependAriaLabel",
+      "label": "prependAriaLabel",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "appendAriaLabel",
+      "label": "appendAriaLabel",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "density",
+      "label": "density",
+      "tsType": "\"default\" | \"compact\" | \"comfortable\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "default",
+        "compact",
+        "comfortable"
+      ],
+      "control": "select",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "click",
+      "label": "click",
+      "payloadType": "[event?: MouseEvent | undefined]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "prepend",
+      "label": "prepend",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "append",
+      "label": "append",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

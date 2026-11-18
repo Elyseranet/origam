@@ -10,7 +10,7 @@ import { eventLogItems, fillHstNumber, openEventsTab } from './_support/histoire
  *  - N link `<path>` elements render for N data entries.
  *  - Node rects carry non-empty `x`, `y`, `width`, `height` attributes.
  *  - Link paths carry a non-empty `d` attribute starting with `M`.
- *  - ARIA attributes (role="figure", role="img", title, desc) are present.
+ *  - ARIA attributes (role="figure", role="group", title, desc) are present.
  *  - Empty state slot renders when series is empty.
  *  - point-click emit fires when a node or link is activated.
  *  - Label text elements render when showLabel is true.
@@ -48,12 +48,12 @@ test.describe('OrigamChartSankey — Default', () => {
         await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
-    test('SVG carries role=img, title and desc', async ({ page }) => {
+    test('SVG carries role=group, title and desc', async ({ page }) => {
         await openVariant(page, SANKEY_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator('[data-cy="origam-chart-sankey"] svg').first()
         await expect(svg).toBeVisible({ timeout: 8000 })
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         await expect(svg.locator('title')).toHaveCount(1)
         await expect(svg.locator('desc')).toHaveCount(1)
     })
@@ -179,25 +179,25 @@ test.describe('OrigamChartSankey — accessibility', () => {
         }
     })
 
-    test('each node is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each node is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, SANKEY_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const nodes = sandbox.locator('[data-cy="origam-chart-sankey"] [data-cy^="origam-chart-sankey-node-"]')
         await expect(nodes).toHaveCount(7, { timeout: 8000 })
         const count = await nodes.count()
         for (let i = 0; i < count; i++) {
-            await expect(nodes.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(nodes.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 
-    test('each link is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each link is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, SANKEY_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const links = sandbox.locator('[data-cy="origam-chart-sankey"] [data-cy^="origam-chart-sankey-link-"]')
         await expect(links).toHaveCount(7, { timeout: 8000 })
         const count = await links.count()
         for (let i = 0; i < count; i++) {
-            await expect(links.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(links.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 })

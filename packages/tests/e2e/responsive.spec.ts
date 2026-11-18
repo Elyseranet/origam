@@ -213,3 +213,56 @@ test.describe('OrigamResponsive — tokens déclarés, pas `inherit` (dead custo
         expect(heightAfter).not.toBe(heightBefore)
     })
 })
+
+/**
+ * #1182 — `tag` on OrigamResponsive. The Variant renders
+ * `<p>Before <origam-responsive tag="span"/> after.</p>`.
+ *
+ * The root keeps `display: flex` whatever its tag (the value comes from
+ * `--origam-responsive---display`, not from the element), so a `span` root is
+ * still a block-level box: the layout does not change, only the content model.
+ * Re-parsing `outerHTML` through `innerHTML` is what the browser does with
+ * server HTML — a `<div>` inside the `<p>` would split the paragraph there.
+ */
+test.describe('OrigamResponsive — Prop — tag (#1182)', () => {
+    test('span root + span content wrapper stay inside the <p>, layout unchanged', async ({ page }) => {
+        await openVariant(page, 'Prop — tag (inside a paragraph)')
+        const sandbox = sandboxOf(page)
+        const paragraph = sandbox.locator('[data-cy="responsive-tag-paragraph"]')
+        const root = paragraph.locator('[data-cy="responsive-tag-span"]')
+
+        await expect(root).toBeVisible({ timeout: 8000 })
+        expect(await root.evaluate((el) => el.tagName)).toBe('SPAN')
+        expect(await root.evaluate((el) => el.querySelectorAll(':scope > .origam-responsive__content').length)).toBe(1)
+        expect(await paragraph.evaluate((el) => el.querySelectorAll('div').length)).toBe(0)
+
+        const painted = await root.evaluate((el) => {
+            const cs = getComputedStyle(el)
+
+            return { display: cs.display, width: Math.round(el.getBoundingClientRect().width) }
+        })
+
+        expect(painted).toEqual({ display: 'flex', width: 200 })
+
+        const reparsed = await paragraph.evaluate((el) => {
+            const host = document.createElement('div')
+
+            host.innerHTML = el.outerHTML
+
+            return {
+                paragraphs: host.querySelectorAll('p').length,
+                rootInsideP: !!host.querySelector('p span.origam-responsive')
+            }
+        })
+
+        expect(reparsed).toEqual({ paragraphs: 1, rootInsideP: true })
+    })
+
+    test('the Functional Variant renders a <div> by default', async ({ page }) => {
+        await openVariant(page, 'Functional')
+        const root = sandboxOf(page).locator('.origam-responsive').first()
+
+        await expect(root).toBeVisible({ timeout: 8000 })
+        expect(await root.evaluate((el) => el.tagName)).toBe('DIV')
+    })
+})

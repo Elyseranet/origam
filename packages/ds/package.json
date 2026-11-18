@@ -1,6 +1,6 @@
 {
   "name": "origam",
-  "version": "2.32.1",
+  "version": "2.38.1",
   "type": "module",
   "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
   "keywords": [
@@ -110,6 +110,7 @@
     "guards:token-var-channels-marketing": "node scripts/guards/token-var-channels-marketing.mjs",
     "guards:token-var-channels-marketing:self": "node scripts/guards/lib/marketing-token-scan.selftest.mjs",
     "guards:token-twins": "node scripts/guards/token-twins.mjs",
+    "guards:main-css-fresh": "node scripts/guards/main-css-fresh.mjs",
     "guards:dead-handlers": "node scripts/guards/dead-handlers.mjs",
     "guards:function-as-value": "node scripts/guards/function-as-value.mjs",
     "guards:id-forwarding": "node scripts/guards/id-forwarding.mjs",
@@ -153,8 +154,8 @@
     }
   },
   "devDependencies": {
-    "@nuxt/kit": "^4.5.1",
-    "@nuxt/schema": "^4.5.1",
+    "@nuxt/kit": "^4.6.4",
+    "@nuxt/schema": "^4.6.4",
     "@types/node": "^26.1.0",
     "@vitejs/plugin-vue": "^6.0.7",
     "sass": "^1.102.0",

@@ -1,0 +1,166 @@
+{
+  "name": "OrigamPickerTitle",
+  "tag": "origam-picker-title",
+  "family": "Picker",
+  "label": "PickerTitle",
+  "props": [
+    {
+      "name": "title",
+      "label": "title",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "bgColor",
+      "label": "bgColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "fontSize",
+      "label": "fontSize",
+      "tsType": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl",
+        "4xl",
+        "5xl"
+      ],
+      "control": "select",
+      "description": "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+      "source": "types"
+    },
+    {
+      "name": "fontWeight",
+      "label": "fontWeight",
+      "tsType": "\"regular\" | \"medium\" | \"semibold\" | \"bold\" | \"extrabold\" | \"black\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "regular",
+        "medium",
+        "semibold",
+        "bold",
+        "extrabold",
+        "black"
+      ],
+      "control": "select",
+      "description": "Font weight token. Maps to `--origam-font__weight---{fontWeight}`\n(regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900).\nWhen unset, the component keeps its theme font-weight.",
+      "source": "types"
+    },
+    {
+      "name": "letterSpacing",
+      "label": "letterSpacing",
+      "tsType": "\"tight\" | \"normal\" | \"wide\" | \"wider\" | \"widest\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "tight",
+        "normal",
+        "wide",
+        "wider",
+        "widest"
+      ],
+      "control": "select",
+      "description": "Letter-spacing token. Maps to `--origam-font__letterSpacing---{letterSpacing}`\n(tight -0.025em · normal 0em · wide 0.0094em · wider 0.0125em · widest 0.0893em).\nWhen unset, the component keeps its theme letter-spacing.",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

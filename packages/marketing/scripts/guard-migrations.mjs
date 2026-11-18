@@ -3,11 +3,11 @@
  * guard-migrations.mjs — refuses an unauthorized destructive migration (#831).
  *
  * WHAT
- *   Scans every migration under `server/db/migrations/*.ts` and fails
+ *   Scans every migration under `src/server/db/migrations/*.ts` and fails
  *   (`exit 1`) the moment ONE of them drops a constraint or an index in its
  *   `up()` without an explicit `// origam-allow-destructive: <reason>`
  *   directive on the line immediately above the statement. See
- *   `scripts/lib/migration-guard.mjs`'s header for the full rationale (why
+ *   `scripts/migration-guard.mjs`'s header for the full rationale (why
  *   this is the only protection that also covers the 2 functional indexes,
  *   why only `up()` is scanned, why an inline directive was chosen over a
  *   baseline file).
@@ -19,7 +19,7 @@
  *     - `pnpm -F @origam/tests test:e2e:audit` — audits the Histoire
  *       stories/docs surface (variant drift, spec coverage) against the
  *       component catalogue.
- *   Neither one has ever looked at `packages/marketing/server/db` — that
+ *   Neither one has ever looked at `packages/marketing/src/server/db` — that
  *   tree is not a component, not a story, not a doc page. Bolting this
  *   check onto either family would be exactly the "confused the two
  *   families" mistake #831's own ticket warns happened today. This guard
@@ -56,10 +56,10 @@ import { readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { scanMigrationSource } from './lib/migration-guard.mjs'
+import { scanMigrationSource } from './migration-guard.mjs'
 
-const HERE = path.dirname(fileURLToPath(import.meta.url))
-const MIGRATIONS_DIR = path.join(HERE, '..', 'server', 'db', 'migrations')
+const scriptDir = path.dirname(fileURLToPath(import.meta.url))
+const migrationsDir = path.join(scriptDir, '..', 'src', 'server', 'db', 'migrations')
 
 function scanDirectory (dir) {
     const files = readdirSync(dir).filter((f) => f.endsWith('.ts')).sort()
@@ -159,7 +159,7 @@ function runSelfTest () {
 
     /* 1 — the real, committed "normal" migration (add-only) must stay green. */
     record('migration normale reelle (AddDocEntrySvgKeys) -> 0 violation', () => {
-        const filePath = path.join(MIGRATIONS_DIR, '1785400000001-AddDocEntrySvgKeys.ts')
+        const filePath = path.join(migrationsDir, '1785400000001-AddDocEntrySvgKeys.ts')
         const source = readFileSync(filePath, 'utf8')
         const violations = scanMigrationSource(filePath, source)
         assertEqual(violations.length, 0, 'violations sur AddDocEntrySvgKeys')
@@ -168,7 +168,7 @@ function runSelfTest () {
     /* 1bis — the other 2 real committed migrations, same control. */
     record('migrations normales reelles (InitDocReference + AddDocMeta) -> 0 violation', () => {
         for (const name of ['1719600000001-InitDocReference.ts', '1782000000001-AddDocMeta.ts']) {
-            const filePath = path.join(MIGRATIONS_DIR, name)
+            const filePath = path.join(migrationsDir, name)
             const source = readFileSync(filePath, 'utf8')
             const violations = scanMigrationSource(filePath, source)
             assertEqual(violations.length, 0, `violations sur ${name}`)
@@ -178,7 +178,7 @@ function runSelfTest () {
     /* 2 — the REAL 16-statement destructive diff `db:migrate:make` produces
      *      today (captured verbatim, see the fixture's own header), with NO
      *      directive -> all 16 caught, all unauthorized, exit-worthy. */
-    const realFixturePath = path.join(HERE, 'lib', '__fixtures__', 'real-destructive-diff.fixture.ts')
+    const realFixturePath = path.join(scriptDir, 'real-destructive-diff.fixture.ts')
     const realFixtureSource = readFileSync(realFixturePath, 'utf8')
 
     record('diff destructif REEL (16 statements, non autorise) -> 16 violations, toutes refusees', () => {
@@ -317,7 +317,7 @@ export class M6 implements MigrationInterface {
 if (process.argv.includes('--self-test')) {
     runSelfTest()
 } else {
-    const { files, violations } = scanDirectory(MIGRATIONS_DIR)
+    const { files, violations } = scanDirectory(migrationsDir)
     console.log(`Migrations auditees (${files.length}) : ${files.join(', ')}`)
     console.log('')
 

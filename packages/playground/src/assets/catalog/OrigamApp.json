@@ -1,0 +1,109 @@
+{
+  "name": "OrigamApp",
+  "tag": "origam-app",
+  "family": "App",
+  "label": "App",
+  "props": [
+    {
+      "name": "fullHeight",
+      "label": "fullHeight",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Occupy at least the full viewport (`100vw` / `min-height: 100vh`) — content taller than one screen grows past it rather than clipping. Default `true`.",
+      "source": "types"
+    },
+    {
+      "name": "overlaps",
+      "label": "overlaps",
+      "tsType": "string[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "IDs of layout items allowed to overlap each other (forwarded to the layout).",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "bgColor",
+      "label": "bgColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

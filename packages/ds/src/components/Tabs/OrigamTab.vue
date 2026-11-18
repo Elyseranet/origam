@@ -81,9 +81,10 @@
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
+	import { intentBgExpr, intentFgExpr, isIntent } from '../../utils/Commons/color.util'
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
-	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_LINK_KEY } from '../../consts/Tabs/tabs.const'
+	import { ORIGAM_TABS_COLOR_KEY, ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_LINK_KEY } from '../../consts/Tabs/tabs.const'
 
 	import type {
 		ITabEmits,
@@ -244,9 +245,25 @@
 	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
+	/*********************************************************
+	 * pillsColorStyles (#1253)
+	 *
+	 * @description
+	 * `color` (own prop, or mirrored from `<OrigamTabs>`) feeds the pills active-tab tokens; unset leaves the SCSS fallback (primary).
+	 ********************************************************/
+	const tabsColor = inject(ORIGAM_TABS_COLOR_KEY, undefined)
+	const pillsIntent = computed(() => {
+		const color = props.color || tabsColor?.value
+		return typeof color === 'string' && isIntent(color) ? color : undefined
+	})
+	const pillsColorStyles = computed(() => pillsIntent.value ? {
+		'--origam-tabs__item--pills--active---background-color': intentBgExpr(pillsIntent.value, 'default'),
+		'--origam-tabs__item--pills--active---color': intentFgExpr(pillsIntent.value, 'default')
+	} : undefined)
 	const tabStyles = computed(() => {
 		return [
 			typographyStyles.value,
+			pillsColorStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -298,7 +315,7 @@
 		font-family: inherit;
 		font-size: var(--origam-tabs__item---font-size, 0.875rem);
 		font-weight: var(--origam-tabs__item---font-weight, 500);
-		line-height: 1;
+		line-height: var(--origam-tabs__item---line-height, 1);
 		letter-spacing: var(--origam-tabs__item---letter-spacing, 0.03125em);
 		text-transform: var(--origam-tabs__item---text-transform, none);
 
@@ -399,6 +416,7 @@
 		--origam-tabs__item---font-size: 0.875rem;
 		--origam-tabs__item---font-weight: 500;
 		--origam-tabs__item---letter-spacing: 0.03125em;
+		--origam-tabs__item---line-height: 1;
 		--origam-tabs__item---text-transform: none;
 		--origam-tabs__item---color: currentColor;
 		--origam-tabs__item---background-color: transparent;

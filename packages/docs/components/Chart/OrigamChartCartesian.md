@@ -119,6 +119,10 @@ The `rangeSelector` toolbar rendered above the plot is the standalone `<OrigamCh
 
 ## Behaviour notes
 
+**Responsive drawing surface (#1317).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 600 × 360. The plot fills the container width, scales are recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until measured (SSR, first paint) the 600 × 360 fallback is used, so hydration is unchanged. With an auto-height container the 5:3 ratio is kept; give the chart a `height` / `aspectRatio` to change it.
+
+**X-axis label decimation (#1325).** When the X tick labels would touch (narrow container, large font), only one label in N is shown: N comes from the widest label and the smallest spacing between ticks. After mount the width is MEASURED (`getComputedTextLength`) and re-measured whenever the ticks change (which follows the container width and the categories); on the server and before the first measure it is ESTIMATED (`CHART_AXIS_LABEL_CHAR_WIDTH` per character plus `CHART_AXIS_LABEL_MIN_GAP`), so the initial markup is identical on both sides. Text stays horizontal and complete (no rotation, no truncation). Skipped labels stay in the DOM with `visibility="hidden"` and `aria-hidden` (they must remain measurable); the value of every data point stays available on hover and focus through the point's accessible label.
+
 **Topology primer.**
 
 | `type` | Shape emitted | Smoothing applies |
@@ -134,6 +138,8 @@ The `rangeSelector` toolbar rendered above the plot is the standalone `<OrigamCh
 **`spline` smoothing override.** `spline` calls the monotone path generator by default. Pass `smoothing='curve'` to switch to Catmull-Rom, or `smoothing='none'` to collapse back to straight segments (at which point it is identical to `line`).
 
 **Stacked bar / column.** `stacked=true` accumulates series values per data index. The Y scale is computed over the stacked totals — the global `yMin` / `yMax` overrides still apply after stacking. Stacking on `line`, `area`, or `scatter` has no visual effect.
+
+**Keyboard (#1333).** The chart is a single tab stop (roving tabindex): `Tab` enters it once on the last active point, `Tab` leaves it. `ArrowRight` / `ArrowLeft` move along the series, `ArrowDown` / `ArrowUp` move to the next / previous series at the same position (clamped when the series is shorter), `Home` / `End` jump to the first / last point, `Enter` / `Space` fire `point-click`. The zoom-reset button keeps its own tab stop. Full table in the `OrigamChart` page.
 
 **Accessibility — drilldown & zoom.** `drilldown.navAriaLabel` and `zoomResetLabel` carry **locale keys**, not final text — they resolve through the DS `t()` mechanism, so the breadcrumb `<nav>` and the "Reset zoom" control follow the active locale out of the box. Since #764 the button's VISIBLE text reads the same key as its `aria-label`; before that fix only the accessible name was translated, and the two halves of the same control disagreed in every non-English locale. A raw string that matches no key is returned unchanged, so a literal override (`zoomResetLabel="Reset the view"`) still works for consumers who prefer to translate on their side.
 

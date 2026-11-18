@@ -40,3 +40,8 @@ export interface IAdminUpdateResult {
     ok: boolean
     error?: string
 }
+
+/** Corps de `POST /api/admin/login`. */
+export interface IAdminLoginBody {
+    password: string
+}

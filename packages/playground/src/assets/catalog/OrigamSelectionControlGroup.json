@@ -1,0 +1,241 @@
+{
+  "name": "OrigamSelectionControlGroup",
+  "tag": "origam-selection-control-group",
+  "family": "SelectionControl",
+  "label": "SelectionControlGroup",
+  "props": [
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "error",
+      "label": "error",
+      "tsType": "string | boolean | undefined",
+      "runtimeType": [
+        "String",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Error state. Accepts `boolean` or a `string` error message (same contract as `IValidationProps`).",
+      "source": "types"
+    },
+    {
+      "name": "inline",
+      "label": "inline",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "falseIcon",
+      "label": "falseIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "trueIcon",
+      "label": "trueIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "multiple",
+      "label": "multiple",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "name",
+      "label": "name",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "readonly",
+      "label": "readonly",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "modelValue",
+      "label": "modelValue",
+      "tsType": "any",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "type",
+      "label": "type",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "valueComparator",
+      "label": "valueComparator",
+      "tsType": "((a: any, b: any) => boolean) | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "items",
+      "label": "items",
+      "tsType": "any[] | Record<string, any> | undefined",
+      "runtimeType": [
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "density",
+      "label": "density",
+      "tsType": "\"default\" | \"compact\" | \"comfortable\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "default",
+      "hasFactoryDefault": false,
+      "options": [
+        "default",
+        "compact",
+        "comfortable"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "ripple",
+      "label": "ripple",
+      "tsType": "boolean | { class: string; } | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "update:modelValue",
+      "label": "update:modelValue",
+      "payloadType": "[event: any]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any[] | Record<string, any>",
+      "source": "types"
+    },
+    {
+      "name": "item",
+      "label": "item",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

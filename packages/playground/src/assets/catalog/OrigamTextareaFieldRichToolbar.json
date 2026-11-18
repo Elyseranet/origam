@@ -1,0 +1,66 @@
+{
+  "name": "OrigamTextareaFieldRichToolbar",
+  "tag": "origam-textarea-field-rich-toolbar",
+  "family": "TextareaField",
+  "label": "TextareaFieldRichToolbar",
+  "props": [
+    {
+      "name": "items",
+      "label": "items",
+      "tsType": "readonly (\"bold\" | \"link\" | \"underline\" | \"italic\" | \"list-bullet\" | \"list-ordered\" | \"heading-1\" | \"heading-2\" | \"heading-3\" | \"heading\" | \"code-inline\" | \"clear-format\")[]",
+      "runtimeType": "Array",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "active",
+      "label": "active",
+      "tsType": "ITextareaRichActiveState",
+      "runtimeType": "Object",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "position",
+      "label": "position",
+      "tsType": "\"top\" | \"bottom\" | \"floating\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "top",
+      "hasFactoryDefault": false,
+      "options": [
+        "top",
+        "bottom",
+        "floating"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "format",
+      "label": "format",
+      "payloadType": "[command: \"bold\" | \"link\" | \"underline\" | \"italic\" | \"list-bullet\" | \"list-ordered\" | \"heading-1\" | \"heading-2\" | \"heading-3\" | \"heading\" | \"code-inline\" | \"clear-format\", value?: string | undefined]",
+      "source": "types"
+    }
+  ],
+  "slots": [],
+  "snippets": [],
+  "requiresParent": false
+}

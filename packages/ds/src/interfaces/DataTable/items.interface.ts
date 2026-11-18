@@ -12,7 +12,7 @@ import type { TIcon } from '../../types/Icon/icon.type'
 import type { TSelectItemKey } from '../../types/Commons/commons.type'
 
 export interface IDataTableItemsProps {
-    items?: Array<IDataTableItem>
+    items?: Array<any>
     itemValue?: TSelectItemKey
     itemSelectable?: TSelectItemKey
     rowProps?: TDataTableRow<any>

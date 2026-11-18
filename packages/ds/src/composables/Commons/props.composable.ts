@@ -53,23 +53,43 @@ import { ExtractPropTypes } from "vue"
  * this one.
  ********************************************************/
 export function useProps<T extends object> (props: T): IFilterPropsOptions<T> {
-    const defaultExcludes = ['class', 'style', 'id']
-
     const filterProps = <U extends Partial<ExtractPropTypes<T>>> (
         properties: U,
         excludes: string[] = defaultExcludes
-    ) => {
-        const propKeys = Object.keys(props).filter(key => !excludes.includes(key)) as Extract<keyof U, string>[]
-        const picked = pick(properties, propKeys) as Record<string, unknown>
-        // Strip `undefined` values — when this output feeds a `v-bind`,
-        // Vue 3's Boolean prop coercion turns `undefined` into `false`,
-        // silently overriding the child component's `withDefaults`. By
-        // dropping undefined keys we let the child's defaults stand.
-        for (const key of Object.keys(picked)) {
-            if (picked[key] === undefined) delete picked[key]
-        }
-        return picked as Partial<U>
-    }
+    ) => pickDeclared(properties, Object.keys(props), excludes) as Partial<U>
 
     return {filterProps, props}
+}
+
+const defaultExcludes = ['class', 'style', 'id']
+
+function pickDeclared (properties: object, declared: string[], excludes: string[]) {
+    const propKeys = declared.filter(key => !excludes.includes(key)) as never[]
+    const picked = pick(properties, propKeys) as Record<string, unknown>
+    // Strip `undefined` values — when this output feeds a `v-bind`,
+    // Vue 3's Boolean prop coercion turns `undefined` into `false`,
+    // silently overriding the child component's `withDefaults`. By
+    // dropping undefined keys we let the child's defaults stand.
+    for (const key of Object.keys(picked)) {
+        if (picked[key] === undefined) delete picked[key]
+    }
+    return picked
+}
+
+/*********************************************************
+ * filterPropsOf — #1226
+ *
+ * Same output as `childRef.value?.filterProps(props, excludes)`, but the child's
+ * declared prop names are read from its STATIC component definition instead of
+ * through a template ref. The ref is `undefined` on the server and during
+ * hydration, so every relayed prop (`id`, `variant`, `rounded`…) was missing
+ * from the SSR HTML and arrived one tick after mount, with no hydration warning.
+ ********************************************************/
+export function filterPropsOf (
+    component: object,
+    properties: object,
+    excludes: string[] = defaultExcludes
+): Record<string, unknown> {
+    const declared = (component as { props?: unknown }).props
+    return pickDeclared(properties, Array.isArray(declared) ? declared : Object.keys(declared ?? {}), excludes)
 }

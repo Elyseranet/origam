@@ -70,14 +70,14 @@
 					<slot name="prefix"/>
 				</template>
 
-				<template #default="{class: fieldSlotClass, ref, ...fieldSlotProps}">
+				<template #default="{class: fieldSlotClass, ref, isActive: fieldIsActive, isFocused: fieldIsFocused, ...fieldSlotProps}">
 					<div
 							:class="fieldSlotClass"
 							data-no-activator=""
 					>
 						<slot
 								name="default"
-								v-bind="{ref, ...fieldSlotProps}"
+								v-bind="{ref, isActive: fieldIsActive, isFocused: fieldIsFocused, ...fieldSlotProps}"
 						/>
 						<template v-if="isRichMode">
 							<slot
@@ -131,7 +131,7 @@
 						<textarea
 								v-else
 								ref="textareaRef"
-								v-intersect="intersect"
+								v-intersect.once="intersect"
 								:autofocus="autofocus"
 								:disabled="isDisabled"
 								:name="name"
@@ -274,7 +274,7 @@
 	import { useDragResizer } from '../../composables/Commons/dragResizer.composable'
 	import { useFocus } from '../../composables/Commons/focus.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
+	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTextareaRich } from '../../composables/TextareaField/textarea-field-rich.composable'
 	import { useTheme } from '../../composables/Commons/theme.composable'
@@ -455,9 +455,7 @@
 	 *
 	 ********************************************************/
 	const intersect = computed(() => {
-		return [{
-			handler: handleIntersect
-		}, null, ['once']]
+		return {handler: handleIntersect}
 	})
 
 	/*********************************************************
@@ -775,10 +773,10 @@
 		 * Withheld from the INPUT (no notch, its top edge crosses the floating
 		 * label) and handed to the FIELD's notched outline instead.
 		 ********************************************************/
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', 'centerAffix', ...BORDER_PROP_KEYS])
+		return filterPropsOf(OrigamInput, props, ['modelValue', 'class', 'style', 'focused', 'centerAffix', ...BORDER_PROP_KEYS])
 	})
 	const fieldProps = computed(() => {
-		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'active', 'dirty', 'disabled', 'focused', 'error', 'centerAffix'])
+		return filterPropsOf(OrigamField, props, ['class', 'id', 'style', 'active', 'dirty', 'disabled', 'focused', 'error', 'centerAffix'])
 	})
 
 	/*********************************************************

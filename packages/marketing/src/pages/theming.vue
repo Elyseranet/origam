@@ -193,7 +193,7 @@
           :active-mode="state.activeMode"
           :split="split"
           :preview-props="activePreviewProps"
-          :slot-text="activeSlotText"
+          :theme-defaults="state.defaults"
           :light-style="lightStyle"
           :dark-style="darkStyle"
           @update:active-mode="state.activeMode = $event"
@@ -256,9 +256,9 @@
   import { useThemeBuilder } from '~/composables/useThemeBuilder'
   import type { TEditMode } from '~/interfaces/theme-builder.interface'
 
-  import ThemeBuilderNav from '~/components/theming/ThemeBuilderNav.vue'
-  import ThemeBuilderPreview from '~/components/theming/ThemeBuilderPreview.vue'
-  import ThemeBuilderControls from '~/components/theming/ThemeBuilderControls.vue'
+  import ThemeBuilderNav from '~/components/ThemeBuilderNav.vue'
+  import ThemeBuilderPreview from '~/components/ThemeBuilderPreview.vue'
+  import ThemeBuilderControls from '~/components/ThemeBuilderControls.vue'
 
   const { t } = useT()
 
@@ -276,7 +276,6 @@
     setToken,
     previewProps,
     previewStyle,
-    slotText,
     isPropEdited,
     isTokenEdited,
     componentEditCount,
@@ -310,17 +309,16 @@
   const defaultSlug = computed(() => {
     const preferred = entries.value.find(e => e.slug === 'btn')
     if (preferred) return preferred.slug
-    const firstPreviewable = entries.value.find(e => e.previewable)
-    return firstPreviewable?.slug ?? entries.value[0]?.slug ?? ''
+    return entries.value[0]?.slug ?? ''
   })
 
   /*
    * ⛔ `activeSlug` must NOT snapshot `defaultSlug.value` into a `ref` here
-   * (#741). `entries` is derived from a `useFetch` that has not resolved yet
+   * (#741). `entries` is derived from a `useAsyncData` that has not resolved yet
    * when this setup body runs on the SERVER: the snapshot captured `''`, the
    * lookup below fell through to `entries.value[0]` and the server rendered
    * the FIRST component of the catalogue (Alert) in the preview and the
-   * controls column. On the client the same `useFetch` reads the payload
+   * controls column. On the client the same `useAsyncData` reads the payload
    * synchronously during setup, so the snapshot captured `'btn'` — a whole
    * different component. Measured on /theming: 1 console error
    * (« Hydration completed but contains mismatches. ») and 40 mismatch
@@ -389,9 +387,6 @@
   )
   const activePreviewProps = computed(() =>
     activeEntry.value ? previewProps(activeEntry.value.slug) : {}
-  )
-  const activeSlotText = computed(() =>
-    activeEntry.value ? slotText(activeEntry.value.slug) : ''
   )
 
   const downloadHint = computed(() =>

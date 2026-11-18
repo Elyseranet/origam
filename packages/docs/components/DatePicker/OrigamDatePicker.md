@@ -70,24 +70,40 @@ dates are selected.
 | `showWeek` | `boolean` | `false` | Show week numbers alongside the grid |
 | `weeksInMonth` | `TCalendarStrategy` | `'static'` | Week-count strategy |
 
-## Controls label
+## Controls labels
 
-The toolbar's month button normally shows the displayed month and year,
-formatted by the active date adapter (`monthAndYear`). `text` replaces that
-label with your own string.
+The toolbar has two buttons: **month** (opens the months grid) and **year**
+(opens the years grid). They show the displayed month name and year, formatted
+by the active date adapter (`month` / `year`). `text` replaces the month
+label and `yearText` the year label with your own strings. The chevron of the
+button whose grid is open flips upwards.
 
 ```vue
 <template>
-    <OrigamDatePicker v-model="date" text="Période de référence" />
+    <OrigamDatePicker v-model="date" text="Période" year-text="Année" />
 </template>
 ```
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `text` | `string` | `undefined` | Label of the toolbar's month button. When unset — or empty — the adapter-formatted month + year is shown |
+| `text` | `string` | `undefined` | Label of the toolbar's month button. When unset — or empty — the adapter-formatted month name is shown |
+| `yearText` | `string` | `undefined` | Label of the toolbar's year button. When unset — or empty — the adapter-formatted year is shown |
 
-An empty string falls back to the month + year rather than blanking the label:
-that button is the only place the user reads which month is on screen.
+An empty string falls back to the formatted value rather than blanking the
+label: those buttons are the only place the user reads which month and year
+are on screen.
+
+## Navigation flow
+
+Year → month → day: picking a year opens the months grid, picking a month
+opens the day grid. The previous / next arrows are active on the day grid only
+and are disabled while the months or years grid is open.
+
+::: warning Behaviour change (#1365)
+`text` used to label the whole "June 2024" button; it now labels the month
+button only, the year having its own button (`yearText`). The single
+month + year button and the separate chevron toggle are gone.
+:::
 
 ::: warning Fixed until v3.0.0
 `text` was declared but unreachable: a module-scope `const text` masked it, so
@@ -103,8 +119,8 @@ instead of the month + year.
 | Prop | Type | Description |
 |---|---|---|
 | `disabled` | `boolean` | Disable all controls |
-| `disabledMonth` | `boolean` | Disable the month mode toggle |
-| `disabledYear` | `boolean` | Disable the year mode toggle |
+| `disabledMonth` | `boolean` | Disable the month button |
+| `disabledYear` | `boolean` | Disable the year button |
 | `disabledNext` | `boolean` | Disable the "next month" arrow |
 | `disabledPrev` | `boolean` | Disable the "previous month" arrow |
 

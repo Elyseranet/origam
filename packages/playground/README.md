@@ -129,13 +129,74 @@ onto `packages/ds/dist/`. Before #1141 the check resolved through `origam`'s
 built `.vue` files. The `paths` mapping, the three DS ambient files it pulls in
 and the `noUnusedLocals` trade-off are explained in `src/shims.d.ts`.
 
+## The committed catalogue (lot E, #1145)
+
+Every DS component's `IComponentDefinition` — **219** on `develop` @
+`7c3f0b1fb` — is a COMMITTED artefact, one JSON per component, plus an index:
+
+```sh
+pnpm -F @origam/playground meta:runtime && pnpm -F @origam/playground meta:unions \
+  && pnpm -F @origam/playground meta:aliases
+pnpm -F @origam/playground meta:catalog          # writes src/assets/catalog/*.json + catalog-index.json
+pnpm -F @origam/playground meta:catalog:check    # exit 1 on drift — run by the CI `playground` job
+```
+
+- **Committed**, because every host build (the marketing Docker image, CI,
+  `nuxt dev`) would otherwise have to run the chain first, and forgetting it
+  yields an empty playground that reads exactly like a product defect. Drift is
+  caught by `meta:catalog:check` instead. The files carry no SHA or timestamp,
+  so they are byte-identical while the DS does not change.
+- **One file per component**: 2.78 MB of JSON in total, 176 KB gzip, median
+  16 KB. `@origam/playground/catalog` (`src/utils/Commons/catalog.util.ts`)
+  loads a definition on demand, as its own chunk; `CATALOG_INDEX` (name / tag /
+  family / label) is the one eager file, so a host resolves a family without
+  loading anything. It is a separate export because it calls
+  `import.meta.glob`, which only a Vite pipeline understands.
+- `src/host/catalogSeed.const.ts` is a SUBSET of it (14 named files, eager) —
+  no longer a generated copy: one source of truth.
+- ⛔ A tag is derived with Vue's own `hyphenate` rule. The former rule spelled
+  `OrigamWindowXTranslate` as `origam-window-xtranslate`, which Vue camelizes
+  back to an unknown element.
+
+## Embedded in a host page (#1173)
+
+`<playground embedded>` — `IPlaygroundProps.embedded`, `false` by default (the
+standalone playground does not change). For a host page that already names
+what it shows, e.g. `packages/marketing`'s `/components/{slug}`:
+
+- the "Playground / origam · N components" header is removed;
+- **single-component mode** = `embedded` AND the scene holds exactly one root
+  with no child (`isSingleComponentScene`, `utils/Commons/scene-instance.util.ts`):
+  the Scene panel and the Catalog button are hidden. A scene with children
+  (a BtnGroup and its buttons, a DataTable and its action cell) keeps them.
+  Derived from the scene's SHAPE only — no component name is interpreted.
+
+⛔ Why a prop and not the scene alone: the standalone host starts from an
+empty scene and reaches one root as soon as a component is picked. A rule on
+the scene alone would hide the Catalog there and strand the user.
+
+Everywhere, embedded or not:
+
+- **"Select in preview"** only exists when the scene holds more than one
+  instance — with one, the inspector already shows the only thing to select;
+- the inspector shows **no counter** (no "N props / N emits" chip, no tally
+  line, no per-group count); the search and the foldable groups stay;
+- the **catalog drawer pushes** the content (an in-flow grid column, not an
+  overlay — so no scrim, no `aria-modal`, no focus trap; Escape still closes
+  it and returns focus);
+- **responsive by container query**, not viewport: below 760 px of PLAYGROUND
+  width the layout stacks (top bar, drawer, preview, inspector, dock) inside
+  the playground's own height, which scrolls.
+
 ## Consumers
 
-`packages/marketing` imports the prop-group classification
-(`TPropGroupId`, `PROP_GROUP_IDS`, `classifyPropGroup`) from
-`@origam/playground/{types,consts,utils}` — see `src/types/Commons/prop-group.type.ts`.
-The direction is `marketing → playground`, never the reverse: marketing is a
-HOST of the playground.
+`packages/marketing` is the HOST (#1145): `/components/{slug}` mounts the full
+`Playground`, `/theming` renders through the engine (`PlaygroundSceneNode` +
+registry + snippets), both via its `usePlaygroundHost` composable, with its own
+snippets added by `attachSnippets` and its 8 brand themes handed to the
+`theme` prop. It also imports the prop-group classification (`TPropGroupId`,
+`PROP_GROUP_IDS`, `classifyPropGroup`). The direction is
+`marketing → playground`, never the reverse.
 
 ## The registry
 
@@ -182,10 +243,9 @@ resolved aliases), `origam-switch`, `origam-number-field`,
 - Every emit the definition declares is logged in the dock's events panel
   (`useEventLog`, newest first, bounded by `EVENT_LOG_LIMIT`).
 
-`meta:host-seed` now merges source B into the committed host seed, and derives
-`control` with `deriveControlKind` (pinned by
-`packages/tests/TU/playground/prop-control.spec.ts`). Regenerate after
-`meta:runtime`, `meta:unions` and `meta:aliases`.
+`control` is derived by `deriveControlKind` (`scripts/lib/definition.mjs`,
+pinned by `packages/tests/TU/playground/prop-control.spec.ts`), see "The
+committed catalogue" below.
 
 E2E against the standalone host:
 
@@ -221,8 +281,9 @@ rendered as text, never `v-html`: a scene is serialisable and may come from a UR
   merges both into the extracted definitions — the host does it, the generated
   seed carries neither. A component that requires a parent is hidden from the
   catalogue drawer and offered as a child of its family instead.
-- `meta:host-seed` now emits **slots** (source B) and covers the families that
-  render empty: DataTable, Chart, Tabs/Tab, Window/WindowItem, List/ListItem.
+- The host seed covers the families that render empty: DataTable, Chart,
+  Tabs/Tab, Window/WindowItem, List/ListItem (now a subset of the committed
+  catalogue, #1145).
 
 Every snippet prop is checked against the extracted catalogue by
 `packages/tests/TU/playground/scene-tree.spec.ts` — a snippet that invents a prop

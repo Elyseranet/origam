@@ -198,6 +198,20 @@
 			</origam-chart-sankey>
 		</Variant>
 
+		<Variant title="Responsive width">
+			<div
+					v-for="w in [480, 960]"
+					:key="w"
+					:style="{ width: `${ w }px`, maxWidth: '100%', marginBottom: '1rem' }"
+					:data-cy="`origam-chart-sankey-responsive-${ w }`"
+			>
+				<origam-chart-sankey
+						:series="FIXTURE_WEB_FUNNEL"
+						:title="`${ w }px container`"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IChartSankeyProps>({

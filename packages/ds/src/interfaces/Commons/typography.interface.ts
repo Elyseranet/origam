@@ -34,7 +34,7 @@ import type { TTextTransform } from '../../types/Commons/text-transform.type'
 export interface ITypographyProps {
     /**
      * Font family token. Maps to `--origam-font__family---{fontFamily}`
-     * (sans · mono · serif).
+     * (sans · mono · serif · display).
      * When unset, the component keeps its theme font-family.
      */
     fontFamily?: TFontFamily

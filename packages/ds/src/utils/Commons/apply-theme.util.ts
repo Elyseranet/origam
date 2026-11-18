@@ -193,6 +193,24 @@ export function isModePinned (cookieValue: string | null | undefined, defaultMod
 }
 
 /*********************************************************
+ * knownBrand
+ *
+ * @description
+ * Trust boundary for the brand cookie (#1120): the value is returned only when
+ * it is `auto` or names an INSTALLED theme, otherwise `null` so the caller
+ * falls back to the configured default. A whitelist scan (`some`), never a
+ * property lookup, so `__proto__` / `constructor` are just unknown names.
+ * @description
+ * Shared by both Nuxt plugins so server and client never disagree on it.
+ ********************************************************/
+export function knownBrand (value: string | null | undefined, themes: readonly { name?: string }[] | undefined): string | null {
+    if (!value) {
+        return null
+    }
+    return value === 'auto' || (themes ?? []).some(t => t.name === value) ? value : null
+}
+
+/*********************************************************
  * themeToUnpinnedCss
  *
  * @description

@@ -68,6 +68,7 @@
 					<origam-responsive
 							:aspect-ratio="state.aspectRatio"
 							:content-class="state.contentClass"
+							:tag="state.tag"
 					>
 						<div class="demo-fill"/>
 					</origam-responsive>
@@ -77,6 +78,9 @@
 				<StoryGroup title="Content">
 					<HstSelect v-model="state.aspectRatio"  title="Aspect Ratio"  :options="ASPECT_RATIO_OPTIONS"/>
 					<HstText   v-model="state.contentClass" title="Content Class"/>
+				</StoryGroup>
+				<StoryGroup title="Markup">
+					<HstSelect v-model="state.tag" title="Tag" :options="RESPONSIVE_TAG_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -109,6 +113,16 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — tag (inside a paragraph)">
+			<p data-cy="responsive-tag-paragraph" style="max-width: 480px;">
+				Before
+				<origam-responsive data-cy="responsive-tag-span" tag="span" aspect-ratio="16/9" :max-width="200">
+					<span class="demo-fill">span root</span>
+				</origam-responsive>
+				after.
+			</p>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IResponsiveProps>({
@@ -134,6 +148,9 @@
 					<HstText   v-model="state.width"       title="Width"/>
 					<HstText   v-model="state.height"      title="Height"/>
 				</StoryGroup>
+				<StoryGroup title="Functional">
+					<HstSelect v-model="state.tag" title="Tag" :options="RESPONSIVE_TAG_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -153,6 +170,11 @@
 		BORDER_STYLE_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
+
+	const RESPONSIVE_TAG_OPTIONS: Array<IOptions<string>> = [
+		{ label: 'div', value: 'div' },
+		{ label: 'span', value: 'span' },
+	]
 
 	const ASPECT_RATIO_OPTIONS: Array<IOptions<string | number | undefined>> = [
 		{ label: '(none)', value: undefined },

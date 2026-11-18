@@ -75,6 +75,14 @@ the value text and the floating label never collide with the rounded outline.
 The floor is capped at the control height, so an intentional pill
 (`rounded="9999px"`) stays laid out instead of inheriting a 9999px padding.
 
+That floor is themable: a theme (or any ancestor) that sets
+`--origam-field---corner-clearance` replaces the computed value, e.g. a pill
+field whose text should start at `20px` instead of at its own height.
+
+| Token | Default | Role |
+|---|---|---|
+| `--origam-field---corner-clearance` | per instance: `min(radius, control height)` | Floor of the inline padding. `0px` disables it. |
+
 ## Prefix / suffix
 
 ```vue
@@ -262,6 +270,8 @@ genuinely need the raw DOM events at field level, listen for `focusin` /
 | `--origam-field---border-radius` | theme rung (fallback `8px`) | Corner radius (overridable via `rounded` prop) |
 | `--origam-field---border-color` | semantic border | Outline color |
 | `--origam-field---label-color` | text-secondary | Label color |
+| `--origam-field---placeholder-color` | `currentColor` | Placeholder color of the inner `input` / `textarea`. |
+| `--origam-field---placeholder-opacity` | `0.5` | Placeholder opacity (also the focused value of the floating-label placeholder). |
 | `--origam-field---bg-color` | surface | Background |
 | `--origam-field---density` | `0px` | Density offset |
 | `--origam-field__input---padding-top` | `--origam-field__input---padding-block-md` | Effective top padding of the input. Redirected onto a rung token by the `size` and `variant` rules below — override a rung, not this, when a rung applies. |

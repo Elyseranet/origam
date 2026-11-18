@@ -247,32 +247,34 @@ test.describe('/components/btn — page détail', () => {
         expect(count, `la section tokens rend ${ count } ligne(s) pour btn — la base en contient 8`).toBeGreaterThanOrEqual(3)
     })
 
-    test('le playground est présent et son bouton live répond aux changements de contrôle', async ({ page }) => {
+    /*
+     * #1145 — le playground de la fiche est le MOTEUR de `@origam/playground`
+     * (et non plus `ComponentLivePreview` + des contrôles maison) : on lit le
+     * rendu de l'instance et le panneau Code du moteur. Le détail (thème,
+     * sous-parties, overlays, Theme Builder) vit dans
+     * `marketing-playground-host.spec.ts`.
+     */
+    test('le playground est présent et une édition atteint le rendu et le code', async ({ page }) => {
         const playgroundSection = page.locator('[data-cy="component-playground"]')
         await expect(playgroundSection).toBeVisible()
 
-        const preview = page.locator('[data-cy="playground-preview"]')
-        await expect(preview).toBeVisible()
+        const engine = page.locator('[data-cy="component-playground-engine"]')
+        await expect(engine).toBeVisible({ timeout: 30_000 })
 
-        const generatedCode = page.locator('[data-cy="playground-generated-code"]')
-        await expect(generatedCode).toBeVisible()
-        await expect(generatedCode).toHaveClass(/origam-code/)
+        const instance = engine.locator('.pg-preview__stage [data-cy="playground-preview-instance"]').first()
+        await expect(instance).toBeVisible()
+        await expect(instance).toHaveClass(/origam-btn/)
+        await expect(instance).not.toHaveClass(/origam-btn--variant-tonal/)
 
-        const liveBtn = page.locator('[data-cy="playground-live-btn"]')
-        await expect(liveBtn).toBeVisible()
-        await expect(liveBtn).toHaveClass(/origam-btn/)
+        await engine.locator('[data-cy="playground-dock-handle"]').click()
+        const code = engine.locator('[data-cy="playground-code"] code')
+        await expect(code).toContainText('<origam-btn')
+        const initialCodeText = await code.textContent()
 
-        const initialCodeText = await generatedCode.textContent()
-
-        const disabledCtrl = page.locator('[data-cy="playground-ctrl-disabled"]')
-        await expect(disabledCtrl).toBeVisible()
-        const switchEl = disabledCtrl.locator('.origam-switch input[type="checkbox"]')
-        if (await switchEl.count() > 0) {
-            await switchEl.check({ force: true })
-            await page.waitForTimeout(200)
-            const updatedCodeText = await generatedCode.textContent()
-            expect(updatedCodeText).not.toBe(initialCodeText)
-        }
+        await engine.locator('[data-cy="playground-control-input-variant"]').click()
+        await page.getByRole('option', { name: 'tonal', exact: true }).click()
+        await expect(instance).toHaveClass(/origam-btn--variant-tonal/)
+        await expect(code).not.toHaveText(initialCodeText ?? '')
     })
 
     test('la section Composants liés contient BtnGroup et BtnToggle', async ({ page }) => {

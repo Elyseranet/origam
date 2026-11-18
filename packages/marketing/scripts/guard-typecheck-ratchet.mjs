@@ -61,9 +61,9 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const HERE = dirname(fileURLToPath(import.meta.url))
-const MARKETING_ROOT = resolve(HERE, '..')
-const FLOOR_PATH = resolve(HERE, 'guard-typecheck-ratchet-floor.json')
+const scriptDir = dirname(fileURLToPath(import.meta.url))
+const marketingRoot = resolve(scriptDir, '..')
+const floorPath = resolve(scriptDir, 'guard-typecheck-ratchet-floor.json')
 
 /** Pure — counts `error TS` lines in `nuxt typecheck`'s combined output. */
 export function countTypeErrors (output) {
@@ -72,22 +72,22 @@ export function countTypeErrors (output) {
 }
 
 function loadFloor () {
-    const raw = readFileSync(FLOOR_PATH, 'utf8')
+    const raw = readFileSync(floorPath, 'utf8')
     const parsed = JSON.parse(raw)
     if (typeof parsed.maxErrors !== 'number' || !Number.isFinite(parsed.maxErrors)) {
-        throw new Error(`${FLOOR_PATH} must contain {"maxErrors": <number>}`)
+        throw new Error(`${floorPath} must contain {"maxErrors": <number>}`)
     }
     return parsed.maxErrors
 }
 
 function writeFloor (count) {
-    writeFileSync(FLOOR_PATH, JSON.stringify({ maxErrors: count }, null, 4) + '\n')
+    writeFileSync(floorPath, JSON.stringify({ maxErrors: count }, null, 4) + '\n')
 }
 
 function runTypecheck () {
     try {
         const out = execFileSync('pnpm', ['run', 'typecheck'], {
-            cwd: MARKETING_ROOT,
+            cwd: marketingRoot,
             encoding: 'utf8',
             maxBuffer: 64 * 1024 * 1024
         })
@@ -107,7 +107,7 @@ function run () {
 
     if (process.argv.includes('--update-floor')) {
         writeFloor(count)
-        console.log(`Floor written: maxErrors = ${count} -> ${FLOOR_PATH}`)
+        console.log(`Floor written: maxErrors = ${count} -> ${floorPath}`)
         process.exit(0)
     }
 

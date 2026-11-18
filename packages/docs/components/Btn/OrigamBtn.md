@@ -168,6 +168,8 @@ The outlined variant resolves its colour from
 `var(--origam-btn---border-color, currentColor)`, so per-instance overrides
 work via the prop, a token, or an inline `--origam-btn---border-color`.
 
+**Width.** The outline is a real `border`, and the `outlined` and `ghost` variants subtract its width from `padding-inline` through the internal token `--origam-btn---border-compensation` (`0px` by default, set by the variant to `--origam-btn---border-width-outlined` / `--origam-btn---border-width-ghost`). A bordered button therefore has exactly the outer width of a `flat` button of the same size and text, whatever the width of the outline. Before this change the outer width grew by twice the outline width (breaking change: existing `outlined` and `ghost` buttons are narrower by that amount). The `border` prop on other variants does not compensate.
+
 ### `border` on the default (non-outlined) variant
 
 The `border` shorthand also works standalone, without `variant="outlined"` —
@@ -360,6 +362,13 @@ its content is taller than that minimum — typically a `wrap` label on two line
 - The vertical padding is read from `--origam-btn---padding-block` (declared as `0px`, so
   a button that does not set it does not move). Set it on the button or on an ancestor
   to give a wrapped label some air; it has no effect on `icon` buttons.
+- **The content is centred vertically inside that minimum, whatever the rendered tag.**
+  The root is `display: inline-flex` with `align-items: center` (and `flex` with `block`,
+  or once a flex/grid parent blockifies it). It stays inline-level, so a button inside a
+  plain paragraph keeps the width of its content. From 2.29.1 to 2.32.1, a button
+  rendered as an `<a>` (`href` / `to`) had its label stuck to the top of the box
+  (#1168); a native `<button>` hid the defect because the browser centres its content
+  itself.
 
 ```vue
 <template>
@@ -416,6 +425,21 @@ typography without custom CSS. Unset props keep the theme / size value.
 </button>
 ```
 
+### Aligning the content to the start
+
+The label is centred by default. A `text` button used as a link inside a sentence can flow like
+start-aligned text by setting the two content tokens (both are needed once a `wrap` label spans
+several lines):
+
+```vue
+<OrigamBtn
+    variant="text"
+    wrap
+    text="Guillaume Boutin"
+    :style="{ '--origam-btn__content---justify-content': 'flex-start', '--origam-btn__content---text-align': 'start' }"
+/>
+```
+
 ## Design tokens consumed
 
 `<OrigamBtn>` reads its variables from
@@ -431,6 +455,10 @@ document root or via a `:style` binding to re-skin a single instance.
 | `--origam-btn---background-color-hover` | `{color.action.secondary.bgHover}` |
 | `--origam-btn---border-radius` | `{radius.sm}` |
 | `--origam-btn---border-color` | `currentColor` (outlined variant; overridable via `borderColor` prop) |
+| `--origam-btn---border-compensation` | `0px`; set by `outlined` / `ghost` to their outline width and subtracted from `padding-inline` (internal, do not set) |
+| `--origam-btn---background-color-text-active` | `transparent` by default: set it to give the `text` variant an active (`active` / selected) fill |
+| `--origam-btn__content---justify-content` | `center` — main-axis alignment of the label block; set `flex-start` to align it to the start |
+| `--origam-btn__content---text-align` | `center` — alignment of the lines of a `wrap` label; set `start` to align them to the start |
 | `--origam-btn---border-color-ghost` | `color-mix(currentColor 24%)` (ghost variant) |
 | `--origam-btn---font-size` | `{font.size.md}` |
 | `--origam-btn---font-weight` | `{font.weight.medium}` |

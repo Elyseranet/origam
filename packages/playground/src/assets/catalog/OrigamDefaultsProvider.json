@@ -1,0 +1,80 @@
+{
+  "name": "OrigamDefaultsProvider",
+  "tag": "origam-defaults-provider",
+  "family": "DefaultsProvider",
+  "label": "DefaultsProvider",
+  "props": [
+    {
+      "name": "defaults",
+      "label": "defaults",
+      "tsType": "IDefault | undefined",
+      "runtimeType": "Object",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Map of defaults keyed by `global` or component name.",
+      "source": "types"
+    },
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "When `true`, parent defaults are passed through unchanged — useful to\ntemporarily disable an outer DefaultsProvider without unmounting it.",
+      "source": "types"
+    },
+    {
+      "name": "reset",
+      "label": "reset",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "String",
+        "Number"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "When set, parent defaults are NOT inherited; the subtree starts from\nthis provider's defaults only. The value is opaque (string/number) but\ncan be used to track resets in DevTools.",
+      "source": "types"
+    },
+    {
+      "name": "root",
+      "label": "root",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "String",
+        "Number"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Marks the provider as a root scope. Equivalent to `reset` in behaviour\n(no parent inheritance) but communicates a different intent (this is\nthe top of a defaults tree, not a mid-tree override).",
+      "source": "types"
+    },
+    {
+      "name": "scoped",
+      "label": "scoped",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "When `true`, parent defaults are not merged in — the subtree only\nsees this provider's defaults. Same as `reset` but expressed\ndeclaratively without needing a discriminator value.",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

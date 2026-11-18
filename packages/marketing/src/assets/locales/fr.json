@@ -260,6 +260,7 @@
         "search_page_wireframe": "Wireframe de design et aperçus de composants",
         "search_page_theming": "Générateur de thèmes visuel — personnaliser les design tokens",
         "search_page_why_origam": "Décisions de conception et philosophie",
+        "search_page_stability": "Numéros de version, cadence des releases et politique de dépréciation",
         "star_count": "4.2k",
         "theme": "Thème",
         "theme_active": "Thème : {label}",
@@ -371,10 +372,7 @@
                 "render_failed": "Ce composant a levé une erreur au rendu avec ces props :",
                 "reason": {
                     "needs_parent": "Sous-partie interne : elle est injectée par son composant parent et ne peut pas se rendre seule. Voir la fiche du composant parent pour un exemple vivant.",
-                    "portal": "Ce composant téléporte sa surface à la fin de <body> une fois activé : il ne se rend donc jamais dans cette boîte d’aperçu. Utilisez le panneau de props et le snippet généré, puis essayez-le dans votre page.",
-                    "runtime_data": "Ce composant exige des données d’exécution détenues par son parent (un élément du DOM, un objet contrôleur ou un File), qu’un aperçu statique ne peut pas fournir.",
-                    "media_source": "Ce composant exige une source média (URL audio ou vidéo). Le site marketing n’embarque aucun média d’exemple : l’aperçu reste vide volontairement.",
-                    "layout_only": "Ce composant ne rend aucune surface visible : il ne fait qu’écarter ses voisins dans un conteneur flex."
+                    "portal": "Ce composant téléporte sa surface à la fin de <body> une fois activé : il ne se rend donc jamais dans cette boîte d’aperçu. Utilisez le panneau de props et le snippet généré, puis essayez-le dans votre page."
                 }
             },
             "examples": {
@@ -439,6 +437,217 @@
                 "experimental": "expérimental",
                 "deprecated": "déprécié"
             }
+        },
+        "playground": {
+            "snippet": {
+                "preview_label": "Aperçu",
+                "chart": {
+                    "series_revenue": "Revenus",
+                    "series_costs": "Coûts",
+                    "month_jan": "Janv.",
+                    "month_feb": "Févr.",
+                    "month_mar": "Mars",
+                    "month_apr": "Avr.",
+                    "month_may": "Mai",
+                    "month_jun": "Juin",
+                    "series_progress": "Progression"
+                },
+                "common": {
+                    "one": "Un",
+                    "two": "Deux",
+                    "three": "Trois",
+                    "left": "Gauche",
+                    "right": "Droite",
+                    "middle": "Milieu",
+                    "center": "Centre"
+                },
+                "transition": {
+                    "translated": "Contenu translaté",
+                    "sliding": "Contenu qui glisse",
+                    "expanding": "Contenu qui se déploie",
+                    "snack": "Contenu du snack",
+                    "transitioned": "Contenu en transition",
+                    "fading": "Contenu en fondu",
+                    "rotating": "Contenu qui pivote",
+                    "client_only": "Contenu côté client uniquement"
+                },
+                "data_table": {
+                    "person_ada": "Ada Lovelace",
+                    "role_owner": "Propriétaire",
+                    "header_name": "Nom",
+                    "header_role": "Rôle",
+                    "header_seats": "Sièges",
+                    "person_alan": "Alan Turing",
+                    "role_admin": "Administrateur",
+                    "person_grace": "Grace Hopper",
+                    "role_member": "Membre"
+                },
+                "btn": {
+                    "text": "Bouton"
+                },
+                "card": {
+                    "text": "Contenu de la carte"
+                },
+                "chip": {
+                    "text": "Puce"
+                },
+                "alert": {
+                    "text": "Un court message d'alerte."
+                },
+                "text_field": {
+                    "label": "Libellé",
+                    "value": "Valeur"
+                },
+                "textarea_field": {
+                    "label": "Message",
+                    "value": "Quelques lignes de texte."
+                },
+                "number_field": {
+                    "label": "Montant"
+                },
+                "password_field": {
+                    "label": "Mot de passe"
+                },
+                "select": {
+                    "label": "Choisissez"
+                },
+                "checkbox": {
+                    "label": "Case à cocher"
+                },
+                "switch": {
+                    "label": "Interrupteur"
+                },
+                "radio": {
+                    "label": "Bouton radio"
+                },
+                "title": {
+                    "text": "Portez ce vieux whisky au juge blond"
+                },
+                "badge": {
+                    "text": "Boîte de réception"
+                },
+                "blockquote": {
+                    "text": "Le design, ce n'est pas seulement l'apparence. Le design, c'est la façon dont ça fonctionne."
+                },
+                "breadcrumb": {
+                    "home": "Accueil",
+                    "library": "Bibliothèque",
+                    "data": "Données"
+                },
+                "chip_group": {
+                    "design": "Design",
+                    "code": "Code",
+                    "ship": "Livrer"
+                },
+                "selection_control_group": {
+                    "email": "E-mail",
+                    "sms": "SMS"
+                },
+                "expansion_panels": {
+                    "first_title": "Premier panneau",
+                    "first_text": "Le contenu du premier panneau.",
+                    "second_title": "Second panneau",
+                    "second_text": "Le contenu du second panneau."
+                },
+                "form": {
+                    "email": "E-mail",
+                    "submit": "Envoyer"
+                },
+                "list": {
+                    "inbox": "Boîte de réception",
+                    "starred": "Favoris",
+                    "archive": "Archives"
+                },
+                "list_group": {
+                    "title": "Rapports",
+                    "weekly": "Hebdomadaire",
+                    "monthly": "Mensuel"
+                },
+                "tab_panels": {
+                    "panel_one": "Panneau un"
+                },
+                "responsive": {
+                    "text": "Boîte responsive"
+                },
+                "lazy": {
+                    "text": "Contenu monté à la demande"
+                },
+                "watermark": {
+                    "text": "Contenu protégé"
+                },
+                "theme_provider": {
+                    "text": "Bouton thémé"
+                },
+                "defaults_provider": {
+                    "text": "Bouton avec valeurs par défaut"
+                },
+                "clipboard": {
+                    "text": "Copier la commande d'installation"
+                },
+                "img": {
+                    "alt": "Image d'exemple"
+                },
+                "data_text": {
+                    "text": "Une courte valeur"
+                },
+                "data_title": {
+                    "text": "Un titre de donnée"
+                },
+                "data_list": {
+                    "plan": "Offre",
+                    "pro": "Pro",
+                    "seats": "Sièges"
+                },
+                "inline_edit": {
+                    "value": "Cliquez pour modifier"
+                },
+                "text_mask": {
+                    "text": "Texte en dégradé"
+                },
+                "bracket": {
+                    "semis": "Demi-finales",
+                    "final": "Finale"
+                },
+                "chart_range_selector": {
+                    "one_month": "1 M",
+                    "six_months": "6 M",
+                    "one_year": "1 A"
+                },
+                "tab": {
+                    "text": "Onglet un"
+                },
+                "dialog": {
+                    "title": "Exemple de dialogue"
+                },
+                "dialog_confirmation": {
+                    "title": "Supprimer l'élément ?"
+                },
+                "tooltip": {
+                    "text": "Contenu de l'infobulle"
+                },
+                "overlay": {
+                    "text": "Contenu de la surcouche"
+                },
+                "snackbar": {
+                    "text": "Enregistré avec succès."
+                },
+                "carousel": {
+                    "slide_one": "Diapositive un",
+                    "slide_two": "Diapositive deux"
+                },
+                "parallax": {
+                    "layer": "Calque parallaxe",
+                    "element": "Élément parallaxe"
+                }
+            },
+            "fallback_slot_text": "Contenu",
+            "theme_origam": "Origam",
+            "theme_label": "Thème de l'aperçu",
+            "rendered_by_parent": "Cette sous-partie est rendue par son parent : l'aperçu montre {parent}, avec cette partie à l'intérieur. Thémez-la depuis le Theme Builder, ou éditez le parent ici.",
+            "mode_light": "Clair",
+            "mode_dark": "Sombre",
+            "mode_auto": "Auto",
+            "mode_label": "Mode de l'aperçu"
         }
     },
     "composables": {
@@ -805,7 +1014,9 @@
             "size_value": "<50ko",
             "size_label": "Tree-shakable",
             "license_value": "MIT",
-            "license_label": "Open source"
+            "license_label": "Open source",
+            "npm_downloads_label": "téléchargements npm / semaine",
+            "github_stars_label": "étoiles GitHub"
         },
         "features": {
             "eyebrow": "CE QU'IL Y A DEDANS",
@@ -839,13 +1050,10 @@
             }
         },
         "playground": {
-            "eyebrow": "PLAYGROUND EN DIRECT",
-            "title": "Essayez avant de livrer.",
+            "eyebrow": "EXEMPLE DE CODE",
+            "title": "Quelques lignes, de vrais composants.",
             "file": "App.vue",
-            "caption": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct.",
-            "preview_title": "Hello Origam",
-            "preview_text": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct.",
-            "preview_cta": "Commencer"
+            "caption": "L'aperçu affiche le rendu du code montré à gauche."
         },
         "showcase": {
             "eyebrow": "VITRINE",
@@ -1000,6 +1208,7 @@
             "description": "Explorez le catalogue complet de composants, parcourez les stories interactives ou plongez dans le code source sur GitHub.",
             "cta_components": "Parcourir les composants",
             "cta_github": "Voir sur GitHub",
+            "cta_stability": "Stabilité et versionnement",
             "actions_label": "Explorer origam"
         }
     },
@@ -1087,6 +1296,7 @@
         "changelog": "Journal",
         "github": "GitHub",
         "why_origam": "Pourquoi origam ?",
+        "stability": "Stabilité",
         "roadmap": "Feuille de route",
         "installation": "Installation",
         "wireframe": "Wireframe",
@@ -1438,6 +1648,50 @@
             "empty_cta": "Parcourir les composants"
         }
     },
+    "stability": {
+        "meta": {
+            "title": "Stabilité et versionnement · origam design system",
+            "description": "Ce que signifie le numéro 2.x d’origam, pourquoi les releases sont fréquentes, comment les ruptures sont annoncées et ce que sera la 3.0.0."
+        },
+        "hero": {
+            "badge": "Politique de versionnement",
+            "title": "Stabilité et versionnement",
+            "lead": "Un numéro de version élevé et des releases fréquentes ne signifient pas qu’origam casse souvent. Cette page explique ce que signifie le numéro, comment les releases sont publiées et où les changements sont consignés."
+        },
+        "sections": {
+            "number": {
+                "title": "Ce que signifie le numéro 2.x",
+                "p1": "Le numéro 2.x est historique. En pratique, origam est un projet pré-1.0 qui porte une étiquette 2.x.",
+                "p2": "En dessous de la 3.0.0, les numéros mineur et correctif relèvent de la comptabilité, pas d’un contrat de compatibilité."
+            },
+            "cadence": {
+                "title": "Pourquoi les releases sont fréquentes",
+                "p1": "Chaque changement fusionné dans le paquet publié obtient sa propre release corrective. Les changements ne sont pas retenus pour être groupés dans une release hebdomadaire ou mensuelle : le numéro de correctif grimpe donc vite.",
+                "p2": "Un correctif est une correction de bug. Une mineure est une fonctionnalité de taille moyenne, à impact limité sur l’usage existant. Les changements qui ne touchent pas le paquet publié, comme ce site, la documentation, les tests ou l’outillage, ne produisent aucune release."
+            },
+            "breaking": {
+                "title": "Comment sortent les ruptures",
+                "p1": "Jusqu’à la 3.0.0, une rupture peut sortir dans une version mineure. Elle est alors documentée explicitement et honnêtement dans le CHANGELOG.",
+                "p2": "Le CHANGELOG est l’endroit à consulter avant de monter de version mineure.",
+                "cta": "Lire le changelog"
+            },
+            "major": {
+                "title": "Ce que sera la 3.0.0",
+                "p1": "La 3.0.0 est réservée à la séparation du paquet en modules. Ce sera la première rupture majeure annoncée.",
+                "p2": "Rien d’autre ne sort sous ce numéro : ni un lot de corrections de bugs, ni une mise à jour de dépendance. Cette page ne donne pas de date.",
+                "cta": "Voir la roadmap"
+            },
+            "deprecation": {
+                "title": "Politique de dépréciation",
+                "p1": "Il n’y a pas de long cycle de dépréciation. Au stade actuel du projet, la rupture nette est préférée à une couche de compatibilité : une API dépréciée est retirée dès que quelqu’un s’en occupe, dans une version mineure, et le retrait est consigné dans le CHANGELOG.",
+                "p2": "Les dépréciations annoncées pour la prochaine majeure ne sont pas retenues jusqu’à la 3.0.0. C’est une règle pour le stade actuel du projet, pas une garantie permanente."
+            },
+            "limits": {
+                "title": "Ce que cette page ne promet pas",
+                "p1": "Cette page décrit comment les versions sont numérotées et annoncées. origam ne publie aucune ligne à support long terme, aucune fenêtre de support et aucun délai de réponse garanti."
+            }
+        }
+    },
     "support": {
         "meta": {
             "title": "Soutenir origam · Design system Vue 3",
@@ -1640,8 +1894,7 @@
             "label": "Composants",
             "search": "Rechercher un composant…",
             "no_result": "Aucun composant ne correspond à « {query} ».",
-            "total": "{count} composants",
-            "previewable": "Aperçu en direct disponible"
+            "total": "{count} composants"
         },
         "props": {
             "legend": "Props par défaut",

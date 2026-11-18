@@ -138,7 +138,7 @@ describe('types derived from enums — unified vocabularies', () => {
 
 describe('types derived from enums — new value sets', () => {
     it('exposes the typography scales as enums', () => {
-        expect(Object.values(FONT_FAMILY)).toEqual(['sans', 'mono', 'serif'])
+        expect(Object.values(FONT_FAMILY)).toEqual(['sans', 'mono', 'serif', 'display'])
         expect(Object.values(FONT_SIZE)).toEqual(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'])
         expect(Object.values(LETTER_SPACING)).toEqual(['tight', 'normal', 'wide', 'wider', 'widest'])
         expect(Object.values(LINE_HEIGHT)).toEqual(['none', 'tight', 'snug', 'normal', 'relaxed', 'loose'])

@@ -23,7 +23,7 @@ qui permet d'ecrire `icon="mdi-account"` sans configuration prealable.
 
 **Source** : `packages/ds/src/composables/Icon/icon.composable.ts`
 
-**Consommateurs** (1) : `origam.ts`
+**Consommateurs** (2) : `origam.ts`, `utils/Commons/nuxt-icons.util.ts`
 
 ## `useIcon`
 

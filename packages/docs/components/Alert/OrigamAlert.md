@@ -186,7 +186,7 @@ The styles are bound inline on that element via `useTypography(props, 'alert__ti
 | `position` | `TPosition` | — | CSS positioning scheme. |
 | `top` / `right` / `bottom` / `left` | `number \| string` | — | Offsets, applied when `position` is set. |
 | `location` | `TAnchor` | — | Anchor shorthand resolved by `useLocation()`. |
-| `hover` | `boolean \| IHoverState` | `true` | Enables the hover surface, or configures it explicitly. |
+| `hover` | `boolean \| IHoverState` | `false` | Forces the hover surface on, or configures it explicitly. Without it the hover state follows `mouseenter` / `mouseleave`. |
 
 ### Typography
 

@@ -10,7 +10,7 @@ import { eventLogItems, fillHstNumber, openEventsTab, selectHstOption, toggleHst
  *  - `colorRange` prop change produces distinct fill colours.
  *  - `showLabel` and `showAxis` flags toggle expected elements.
  *  - Clicking a cell emits the `point-click` event (log line appears).
- *  - ARIA attributes (role="figure", role="img", title, desc) are present.
+ *  - ARIA attributes (role="figure", role="group", title, desc) are present.
  *  - Empty-state slot renders when series is empty.
  *  - Each cell has role="button", non-empty aria-label, tabindex="0".
  *
@@ -50,12 +50,12 @@ test.describe('OrigamChartHeatmap — Default (activity grid)', () => {
         await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
-    test('SVG carries role=img, title and desc', async ({ page }) => {
+    test('SVG carries role=group, title and desc', async ({ page }) => {
         await openVariant(page, HEATMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator(`${ CHART } svg`).first()
         await expect(svg).toBeVisible()
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         await expect(svg.locator('title')).toHaveCount(1)
         await expect(svg.locator('desc')).toHaveCount(1)
     })
@@ -190,14 +190,14 @@ test.describe('OrigamChartHeatmap — accessibility', () => {
         }
     })
 
-    test('each cell is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each cell is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, HEATMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const cells = sandbox.locator(`${ CHART } [data-cy^="origam-chart-heatmap-cell-"]:not([data-cy*="-group-"])`)
         const count = await cells.count()
 
         for (let i = 0; i < Math.min(count, 5); i++) {
-            await expect(cells.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(cells.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 })

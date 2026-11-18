@@ -1,0 +1,972 @@
+{
+  "name": "OrigamRow",
+  "tag": "origam-row",
+  "family": "Grids",
+  "label": "Row",
+  "props": [
+    {
+      "name": "gutters",
+      "label": "gutters",
+      "tsType": "TRowGutter | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\ngutters",
+      "source": "types"
+    },
+    {
+      "name": "direction",
+      "label": "direction",
+      "tsType": "\"column\" | \"row\" | \"column-reverse\" | \"row-reverse\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "column",
+        "row",
+        "column-reverse",
+        "row-reverse"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "padding",
+      "label": "padding",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--padded` class.",
+      "source": "types"
+    },
+    {
+      "name": "paddingTop",
+      "label": "paddingTop",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingBlock` for the top edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingLeft",
+      "label": "paddingLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingInline` for the left edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingBottom",
+      "label": "paddingBottom",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingBlock` for the bottom edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingRight",
+      "label": "paddingRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingInline` for the right edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingBlock",
+      "label": "paddingBlock",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`.",
+      "source": "types"
+    },
+    {
+      "name": "paddingInline",
+      "label": "paddingInline",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`.",
+      "source": "types"
+    },
+    {
+      "name": "paddingInlineStart",
+      "label": "paddingInlineStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nLogical per-side padding — rung 3 (issue #1013)",
+      "source": "types"
+    },
+    {
+      "name": "paddingInlineEnd",
+      "label": "paddingInlineEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "paddingBlockStart",
+      "label": "paddingBlockStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "paddingBlockEnd",
+      "label": "paddingBlockEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "margin",
+      "label": "margin",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--marged` class.",
+      "source": "types"
+    },
+    {
+      "name": "marginTop",
+      "label": "marginTop",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginBlock` for the top edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginLeft",
+      "label": "marginLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginInline` for the left edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginBottom",
+      "label": "marginBottom",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginBlock` for the bottom edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginRight",
+      "label": "marginRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginInline` for the right edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginBlock",
+      "label": "marginBlock",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`.",
+      "source": "types"
+    },
+    {
+      "name": "marginInline",
+      "label": "marginInline",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`.",
+      "source": "types"
+    },
+    {
+      "name": "marginInlineStart",
+      "label": "marginInlineStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nLogical per-side margin — rung 3 (issue #1013)",
+      "source": "types"
+    },
+    {
+      "name": "marginInlineEnd",
+      "label": "marginInlineEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "marginBlockStart",
+      "label": "marginBlockStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "marginBlockEnd",
+      "label": "marginBlockEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "border",
+      "label": "border",
+      "tsType": "string | number | boolean | TDirectionBoth[] | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String",
+        "Array"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderTop",
+      "label": "borderTop",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderLeft",
+      "label": "borderLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderBottom",
+      "label": "borderBottom",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderRight",
+      "label": "borderRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderBlock",
+      "label": "borderBlock",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Logical-axis shorthand for the block-start + block-end edges (top +\nbottom in the default horizontal-tb writing mode). Resolves to the\nnative CSS `border-block-{width,style,color}` properties — same\nvalue grammar as `borderTop` / `borderRight` / `borderBottom` /\n`borderLeft` (boolean opt-in, bare width number, or a free-form\n`\"width style color\"` string). Precedence: beats the global `border`\nshorthand for the edges it targets, but a physical `borderTop` /\n`borderBottom` still wins over it for that specific edge — see\n`useBorder` JSDoc for the full precedence table.",
+      "source": "types"
+    },
+    {
+      "name": "borderInline",
+      "label": "borderInline",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Logical-axis shorthand for the inline-start + inline-end edges (left\n+ right in LTR). Same grammar and precedence rules as `borderBlock`,\nmapped onto `border-inline-{width,style,color}`.",
+      "source": "types"
+    },
+    {
+      "name": "borderInlineStart",
+      "label": "borderInlineStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderInlineStart",
+      "source": "types"
+    },
+    {
+      "name": "borderInlineEnd",
+      "label": "borderInlineEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderInlineEnd",
+      "source": "types"
+    },
+    {
+      "name": "borderBlockStart",
+      "label": "borderBlockStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderBlockStart",
+      "source": "types"
+    },
+    {
+      "name": "borderBlockEnd",
+      "label": "borderBlockEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderBlockEnd",
+      "source": "types"
+    },
+    {
+      "name": "borderColor",
+      "label": "borderColor",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderStyle",
+      "label": "borderStyle",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderTopColor",
+      "label": "borderTopColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Per-side color override (issue #215). Additive: absent by default,\nno behaviour change for existing consumers.\n\nPrecedence (specific > global): `borderTopColor` wins over any\ncolor implied by `borderTop` (e.g. `borderTop=\"2px dashed red\"`),\nwhich itself wins over the global `borderColor` / `border` shorthand\nfor the top side. See `useBorder` JSDoc for the full precedence\ntable.\n\nAccepts a {@link TColor} (semantic intent, raw CSS color, or falsy\nto opt out) — same input family as `color` / `bgColor`. Gradients\nare NOT supported on border colors (CSS `border-color` has no\ngradient form) and are silently ignored.",
+      "source": "types"
+    },
+    {
+      "name": "borderRightColor",
+      "label": "borderRightColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderBottomColor",
+      "label": "borderBottomColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderLeftColor",
+      "label": "borderLeftColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "borderInlineStartColor",
+      "label": "borderInlineStartColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderInlineStartColor",
+      "source": "types"
+    },
+    {
+      "name": "borderInlineEndColor",
+      "label": "borderInlineEndColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderInlineEndColor",
+      "source": "types"
+    },
+    {
+      "name": "borderBlockStartColor",
+      "label": "borderBlockStartColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderBlockStartColor",
+      "source": "types"
+    },
+    {
+      "name": "borderBlockEndColor",
+      "label": "borderBlockEndColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nborderBlockEndColor",
+      "source": "types"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "bgColor",
+      "label": "bgColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "density",
+      "label": "density",
+      "tsType": "\"default\" | \"compact\" | \"comfortable\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "default",
+      "hasFactoryDefault": false,
+      "options": [
+        "default",
+        "compact",
+        "comfortable"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "align",
+      "label": "align",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"baseline\" | \"stretch\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "baseline",
+        "stretch"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "alignSm",
+      "label": "alignSm",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"baseline\" | \"stretch\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "baseline",
+        "stretch"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "alignMd",
+      "label": "alignMd",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"baseline\" | \"stretch\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "baseline",
+        "stretch"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "alignLg",
+      "label": "alignLg",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"baseline\" | \"stretch\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "baseline",
+        "stretch"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "alignXl",
+      "label": "alignXl",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"baseline\" | \"stretch\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "baseline",
+        "stretch"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "alignXxl",
+      "label": "alignXxl",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"baseline\" | \"stretch\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "baseline",
+        "stretch"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "justify",
+      "label": "justify",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"space-between\" | \"space-around\" | \"space-evenly\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "space-between",
+        "space-around",
+        "space-evenly"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "justifySm",
+      "label": "justifySm",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"space-between\" | \"space-around\" | \"space-evenly\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "space-between",
+        "space-around",
+        "space-evenly"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "justifyMd",
+      "label": "justifyMd",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"space-between\" | \"space-around\" | \"space-evenly\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "space-between",
+        "space-around",
+        "space-evenly"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "justifyLg",
+      "label": "justifyLg",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"space-between\" | \"space-around\" | \"space-evenly\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "space-between",
+        "space-around",
+        "space-evenly"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "justifyXl",
+      "label": "justifyXl",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"space-between\" | \"space-around\" | \"space-evenly\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "space-between",
+        "space-around",
+        "space-evenly"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "justifyXxl",
+      "label": "justifyXxl",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"space-between\" | \"space-around\" | \"space-evenly\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "space-between",
+        "space-around",
+        "space-evenly"
+      ],
+      "control": "select",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

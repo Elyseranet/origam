@@ -1,0 +1,219 @@
+{
+  "name": "OrigamWatermark",
+  "tag": "origam-watermark",
+  "family": "Watermark",
+  "label": "Watermark",
+  "props": [
+    {
+      "name": "text",
+      "label": "text",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Text glyph repeated across the tile. Required unless `image` is\npassed. UTF-8 is supported (emoji, accents, …) and the SVG\n`<text>` element renders with the browser's font stack, so the\nrendered glyph inherits anti-aliasing from the platform.",
+      "source": "types"
+    },
+    {
+      "name": "image",
+      "label": "image",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "URL / data-URL of an image used as the repeated glyph. Wins over\n`text` when both are passed. Pair with a transparent PNG or SVG\nfor the cleanest result on dark surfaces.",
+      "source": "types"
+    },
+    {
+      "name": "opacity",
+      "label": "opacity",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 0.1,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Opacity of the rendered glyph, between `0` and `1`. The value is\napplied at the SVG level (not as a CSS `opacity` on the layer)\nso the wrapped content stays at full opacity beneath.",
+      "source": "types"
+    },
+    {
+      "name": "angle",
+      "label": "angle",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": -30,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Rotation in degrees applied to each tile. Negative values rotate\ncounter-clockwise — `-30` produces the classic top-left to\nbottom-right diagonal common to confidential-document watermarks.",
+      "source": "types"
+    },
+    {
+      "name": "gap",
+      "label": "gap",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 120,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Distance (in CSS pixels) between two adjacent tiles, measured\nalong both axes. Drives the density of the watermark: smaller\n`gap` = tighter pattern.",
+      "source": "types"
+    },
+    {
+      "name": "fontSize",
+      "label": "fontSize",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 16,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Font size (in CSS pixels) of the text glyph. Ignored when the\n`image` prop is used.",
+      "source": "types"
+    },
+    {
+      "name": "fontFamily",
+      "label": "fontFamily",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "inherit",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "CSS `font-family` of the text glyph. `'inherit'` resolves to the\nSVG element's own default (Helvetica / Arial sans-serif on most\nplatforms) since the SVG is loaded as a data-URL — it cannot\ninherit from the surrounding document.",
+      "source": "types"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "currentColor",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Colour of the text glyph. Any CSS colour string. `'currentColor'`\ndoes NOT work here because the SVG is loaded as a data-URL and\ntherefore detached from the document's cascade — pass an explicit\ncolour for non-default values.",
+      "source": "types"
+    },
+    {
+      "name": "fontWeight",
+      "label": "fontWeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "defaultValue": 400,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "CSS `font-weight` of the text glyph. Accepts the standard CSS\nvalues (`100`–`900`, `'normal'`, `'bold'`, …).",
+      "source": "types"
+    },
+    {
+      "name": "zIndex",
+      "label": "zIndex",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 1,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "`z-index` of the overlay layer. Use a value above the wrapped\ncontent but below any floating UI you want to keep clickable\n(menus, tooltips, modals). Defaults to `1` so the watermark sits\njust above the slot.",
+      "source": "types"
+    },
+    {
+      "name": "antiTamper",
+      "label": "antiTamper",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Installs a `MutationObserver` that re-injects the layer when it\nis removed from the DOM or when its inline style hides it (e.g.\n`display: none`, `opacity: 0`). The observer is scoped to the\ncomponent's own DOM subtree and is disconnected on unmount.\n\nThis is a **dissuasive** measure, not a security feature — a\nuser with DevTools can always disable JS or block the script.",
+      "source": "types"
+    },
+    {
+      "name": "pointerEvents",
+      "label": "pointerEvents",
+      "tsType": "\"none\" | \"auto\" | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "none",
+      "hasFactoryDefault": false,
+      "options": [
+        "none",
+        "auto"
+      ],
+      "control": "select",
+      "description": "Whether the overlay intercepts pointer events. `'none'` (the\ndefault) lets clicks pass through to the wrapped content;\n`'auto'` blocks interaction (useful when the watermark itself is\nmeant to be selectable for copy-paste, e.g. a public licence\nnotice).",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "description": "Wrapped content rendered beneath the diagonal overlay.",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

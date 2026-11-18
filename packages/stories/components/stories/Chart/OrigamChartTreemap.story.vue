@@ -273,6 +273,20 @@
 			</div>
 		</Variant>
 
+		<Variant title="Responsive width">
+			<div
+					v-for="w in [480, 960]"
+					:key="w"
+					:style="{ width: `${ w }px`, maxWidth: '100%', marginBottom: '1rem' }"
+					:data-cy="`origam-chart-treemap-responsive-${ w }`"
+			>
+				<origam-chart-treemap
+						:series="FIXTURE_BUDGET"
+						:title="`${ w }px container`"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IChartTreemapProps>({

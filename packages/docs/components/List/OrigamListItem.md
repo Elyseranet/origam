@@ -185,6 +185,13 @@ controls both children simultaneously.
   outside a listbox — or a `listitem` inside one — is a broken ARIA
   contract, and neither is reachable from here. Which mode a list runs in
   is documented on [`OrigamList`](../List/OrigamList.md#accessibility).
+- **A link row (`href` / `to`) in list mode renders `<div role="listitem"><a>`
+  (#1249).** An explicit `role` replaces the implicit one, so `role="listitem"`
+  on the `<a>` made a link announce as a list item and vanish from the links
+  rotor. The role now sits on a wrapper `div` (`.origam-list-item-wrapper`);
+  the `<a>` keeps `link` and stays the whole visual row (classes, styles,
+  ripple, tabindex, handlers). Selection mode (`option`) and every non-link row
+  keep the flat structure.
 - Two rows still get **no role at all**: one rendered outside any list (no
   `OrigamList` / `OrigamListChildren` ancestor) — no ARIA is better than a
   role whose promised container doesn't exist — and a group activator row,
@@ -211,6 +218,9 @@ controls both children simultaneously.
 | `--origam-list-item__subtitle---letter-spacing`   | `0.0178571429em` | subtitle letter spacing               |
 | `--origam-list-item__subtitle---line-height`      | `1rem`           | subtitle line height                  |
 | `--origam-list-item---min-height`                 | undeclared — resolves through `--origam-list__item---min-height` (`56px`) | row minimum **border-box** height, i.e. the rendered row height (density-adjusted). Set to the whole rung by the `size` prop's `--size-*` rules; padding does **not** subtract from it |
+| `--origam-list-item---overlay-opacity-hover`        | `0.08`           | overlay opacity of a `link` row on hover / focus-visible |
+| `--origam-list-item---overlay-opacity-active`       | `0.12`           | overlay opacity of an active row (`--active`, expanded group activator); set `0` to show the row's bare `bgColor` |
+| `--origam-list-item---overlay-opacity-active-hover` | `0.16`         | overlay opacity of an active row on hover / focus-visible |
 | `--origam-list-item---padding-block-start`        | `8px`            | top padding                           |
 | `--origam-list-item---padding-inline-start`       | `16px`           | left padding (indent-adjusted)        |
 | `--origam-list-item---height-sm` / `-md` / `-lg` / `-xl` | `28px` / `36px` / `44px` / `52px` | total row height per `size` rung |

@@ -8,11 +8,10 @@
  * hardcoded per component — the only per-slug data is the optional preview
  * adapter below, used for components that render nothing on their own.
  */
-import type { TPropGroupId } from '@origam/playground/types'
+import type { TPropGroupId, TPropValue } from '@origam/playground/types'
 import type { TMode } from 'origam/types'
 
 import type { IComponentPlaygroundControl } from '~/interfaces/components-catalog.interface'
-import type { IComponentPreviewAdapter } from '~/interfaces/component-preview.interface'
 import type {
   TThemeBuilderBorderSide,
   TThemeBuilderBoxModelMode,
@@ -69,13 +68,6 @@ export interface IThemeBuilderToken {
   /** Editor control to use. */
   kind: 'color' | 'text'
 }
-
-/**
- * Per-slug preview adapter. Optional — only needed for components that don't
- * render a visible surface from props alone (need slot content or child demo
- * markup). When absent, the preview falls back to `playground.defaultSlotContent`.
- */
-export type IThemeBuilderPreviewAdapter = IComponentPreviewAdapter
 
 /**
  * The serialisable theme-builder state. Only values the user ACTUALLY changed
@@ -261,9 +253,6 @@ export interface IThemeBuilderComponentEntry {
   controls: IThemeBuilderPropControl[]
   /** Flat token list (all groups). */
   tokens: IThemeBuilderToken[]
-  previewAdapter: IThemeBuilderPreviewAdapter
-  /** True when the component can render a visible preview from props alone. */
-  previewable: boolean
 }
 
 /** A nav category section: meta + the components that belong to it. */
@@ -428,8 +417,10 @@ export interface IThemeBuilderPreviewProps {
   entry: IThemeBuilderComponentEntry
   activeMode: TEditMode
   split: boolean
-  previewProps: Record<string, unknown>
-  slotText: string
+  /** Preview-only call-site props (never exported) — the `outlined` showcase default. */
+  previewProps: Record<string, TPropValue>
+  /** The theme being built's `components` block, keyed `origam-{slug}` / `global`. */
+  themeDefaults: Record<string, Record<string, unknown>>
   lightStyle: Record<string, string>
   darkStyle: Record<string, string>
 }

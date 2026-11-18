@@ -15,7 +15,7 @@
 //   --origam-tabs__item---font-size      → fontSize ✓
 //   --origam-tabs__item---font-weight    → fontWeight ✓
 //   --origam-tabs__item---letter-spacing → letterSpacing ✓
-//   line-height: 1 is HARDCODED (no var) → lineHeight intentionally omitted.
+//   --origam-tabs__item---line-height    → lineHeight ✓
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -227,5 +227,15 @@ describe('OrigamTab — prepend/append (IAdjacentProps)', () => {
         expect(wrapper.find('.origam-tab__append').exists()).toBe(false)
 
         wrapper.unmount()
+    })
+})
+
+describe('OrigamTab — lineHeight prop', () => {
+    it('emits no line-height override when lineHeight is unset', () => {
+        expect(styleOfTab()).not.toContain('--origam-tabs__item---line-height:')
+    })
+
+    it('lineHeight="relaxed" sets the line-height var to the relaxed token', () => {
+        expect(styleOfTab({ lineHeight: 'relaxed' })).toContain('--origam-tabs__item---line-height: var(--origam-font__lineHeight---relaxed)')
     })
 })

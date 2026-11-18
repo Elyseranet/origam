@@ -22,7 +22,7 @@ The prop → var mapping:
 
 | prop | emitted variable | resolves to |
 |---|---|---|
-| `fontFamily` | `--origam-{prefix}---font-family` | `var(--origam-font__family---{value})` |
+| `fontFamily` | `--origam-{prefix}---font-family` | `var(--origam-font__family---{value})` — `sans` · `mono` · `serif` · `display` (`display` falls back to `sans`; a theme sets it with `vars.typo.family.display`) |
 | `fontSize` | `--origam-{prefix}---font-size` | `var(--origam-font__size---{value})` |
 | `fontWeight` | `--origam-{prefix}---font-weight` | `var(--origam-font__weight---{value})` |
 | `lineHeight` | `--origam-{prefix}---line-height` | `var(--origam-font__lineHeight---{value})` |

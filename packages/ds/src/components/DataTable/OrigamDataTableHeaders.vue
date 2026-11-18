@@ -86,7 +86,7 @@
 
 	import type { IDataTableHeadersEmits, IDataTableHeadersProps, IDataTableHeadersSlotProps, IDataTableHeadersSlots } from '../../interfaces/DataTable/data-table-headers.interface'
 	import type { TOrigamDataTableHeadersCell } from '../../types/DataTable/data-table-headers-cell.type'
-	import type { TOrigamDataTableHeadersCellMobile } from '../../types/DataTable/data-table-headers-cell-mobile.type'
+	import type { TOrigamDataTableHeadersCellMobile } from '../../types/DataTable/data-table.type'
 
 	import { pickDataTableHeaderColumnSlotNames } from '../../utils/DataTable/slot-name.util'
 

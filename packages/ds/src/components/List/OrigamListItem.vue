@@ -1,4 +1,5 @@
 <template>
+	<origam-list-item-wrapper :role="wrapperRole">
 	<component
 			:is="link.tag.value"
 			:id="styleId"
@@ -7,9 +8,10 @@
 			:aria-selected="ariaSelected"
 			:class="listItemClasses"
 			:href="link.href.value"
-			:role="itemRole"
+			:role="anchorRole"
 			:style="listItemStyles"
 			:tabindex="listItemTabIndex"
+			v-bind="$attrs"
 			@click="handleClick"
 			@keydown="handleKeyDown"
 	>
@@ -115,6 +117,7 @@
 			</div>
 		</slot>
 	</component>
+	</origam-list-item-wrapper>
 </template>
 
 <script
@@ -125,6 +128,7 @@
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
+	import OrigamListItemWrapper from './OrigamListItemWrapper.vue'
 	import { useAccessibleCommand } from '../../composables/Commons/accessibleCommand.composable'
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
@@ -156,6 +160,14 @@
 	/*********************************************************
 	 * Global
 	 ********************************************************/
+
+	/*********************************************************
+	 * inheritAttrs (#1249)
+	 *
+	 * @description
+	 * The root is `ListItemWrapper`, which forwards no attrs: they are bound to the interactive element.
+	 ********************************************************/
+	defineOptions({inheritAttrs: false})
 
 	const props = withDefaults(defineProps<IListItemProps>(), {tag: 'div'})
 
@@ -316,6 +328,27 @@
 	 * the template: no logic in the markup, and the role comparison has a
 	 * single home if the role set ever grows.
 	 ********************************************************/
+	/*********************************************************
+	 * wrapperRole / anchorRole (#1249)
+	 *
+	 * @description
+	 * An explicit `role` REPLACES the implicit one: `role="listitem"` on
+	 * the `<a>` made a link announce as a list item (WCAG 4.1.2). In list
+	 * mode a link row therefore renders `<div role="listitem"><a>`: the
+	 * role moves to a wrapper and the `<a>` keeps its implicit `link`
+	 * role. The `<a>` stays the whole visual row, so classes, styles,
+	 * ripple, tabindex and handlers stay on it. Selection mode (`option`)
+	 * and every non-link row keep the flat structure.
+	 ********************************************************/
+	const isListitemLink = computed(() => {
+		return link.isLink.value && itemRole.value === LIST_ITEM_ROLE.LISTITEM
+	})
+	const wrapperRole = computed(() => {
+		return isListitemLink.value ? itemRole.value : undefined
+	})
+	const anchorRole = computed(() => {
+		return isListitemLink.value ? undefined : itemRole.value
+	})
 	const isOption = computed(() => {
 		return itemRole.value === LIST_ITEM_ROLE.OPTION
 	})
@@ -761,6 +794,10 @@
 				--origam-list-item---margin-block-end: 4px;
 			}
 
+			.origam-list-item-wrapper:not(:only-child) > & {
+				--origam-list-item---margin-block-end: 4px;
+			}
+
 			#{$this}__title {
 				--origam-list-item__title---font-size: 0.8125rem;
 				--origam-list-item__title---font-weight: 500;
@@ -780,7 +817,7 @@
 			&:hover,
 			&:focus-visible {
 				> #{$this}__overlay {
-					--origam-list-item__overlay---opacity: calc(0.08 * 1);
+					--origam-list-item__overlay---opacity: var(--origam-list-item---overlay-opacity-hover, 0.08);
 				}
 			}
 		}
@@ -788,13 +825,13 @@
 		&--active,
 		[aria-haspopup=menu][aria-expanded=true] {
 			> #{$this}__overlay {
-				--origam-list-item__overlay---opacity: calc(0.12 * 1);
+				--origam-list-item__overlay---opacity: var(--origam-list-item---overlay-opacity-active, 0.12);
 			}
 
 			&:hover,
 			&:focus-visible {
 				> #{$this}__overlay {
-					--origam-list-item__overlay---opacity: calc(0.16 * 1);
+					--origam-list-item__overlay---opacity: var(--origam-list-item---overlay-opacity-active-hover, 0.16);
 				}
 			}
 		}

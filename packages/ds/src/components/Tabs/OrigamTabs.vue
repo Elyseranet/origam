@@ -35,7 +35,7 @@
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_LINK_KEY } from '../../consts/Tabs/tabs.const'
+	import { ORIGAM_TABS_COLOR_KEY, ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_LINK_KEY } from '../../consts/Tabs/tabs.const'
 
 	import { omitUndefined } from '../../utils/Commons/commons.util'
 
@@ -122,6 +122,14 @@
 			fixed: wasPropPassed('fixed') ? props.fixed : undefined
 		})
 	}))
+
+	/*********************************************************
+	 * tabsColor (#1253)
+	 *
+	 * @description
+	 * Read reactively by each tab (pills active surface) — a provide, not a forwarded default, so no prop is injected on the tab.
+	 ********************************************************/
+	provide(ORIGAM_TABS_COLOR_KEY, toRef(props, 'color'))
 
 	/*********************************************************
 	 * ARIA + keyboard navigation

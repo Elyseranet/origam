@@ -29,7 +29,6 @@
 						:disabled="isDisabled"
 						:error="isValid === false"
 						:focused="isFocused"
-						:role="role"
 						v-bind="{...fieldProps}"
 						@click="handleControlClick"
 						@mousedown="handleControlMousedown"
@@ -72,7 +71,7 @@
 						<slot name="prefix"/>
 					</template>
 
-					<template #default="{class: fieldSlotClass, ref, ...fieldSlotProps}">
+					<template #default="{class: fieldSlotClass, ref, isActive: fieldIsActive, isFocused: fieldIsFocused, ...fieldSlotProps}">
 						<div
 								:class="fieldSlotClass"
 								data-no-activator=""
@@ -120,16 +119,17 @@
 							</origam-menu>
 							<slot
 									name="default"
-									v-bind="{ref, ...fieldSlotProps}"
+									v-bind="{ref, isActive: fieldIsActive, isFocused: fieldIsFocused, ...fieldSlotProps}"
 							/>
 							<input
 									ref="inputRef"
-									v-intersect="intersect"
+									v-intersect.once="intersect"
 									:autofocus="autofocus"
 									:disabled="isDisabled"
 									:name="name"
 									:placeholder="placeholder"
 									:readonly="isReadonly"
+									:role="role"
 									:size="1"
 									:type="currentType"
 									:value="model"
@@ -318,7 +318,7 @@
 	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
 	import { useFocus } from '../../composables/Commons/focus.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
+	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { BORDER_PROP_KEYS } from '../../consts/Commons/border.const'
@@ -417,7 +417,7 @@
 		;(entries[0].target as HTMLInputElement)?.focus?.()
 	}
 	const intersect = computed(() => {
-		return [{handler: handleIntersect}, null, ['once']]
+		return {handler: handleIntersect}
 	})
 
 	/*********************************************************
@@ -687,10 +687,10 @@
 		 * Withheld from the INPUT (no notch, its top edge crosses the floating
 		 * label) and handed to the FIELD's notched outline instead.
 		 ********************************************************/
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', ...BORDER_PROP_KEYS])
+		return filterPropsOf(OrigamInput, props, ['modelValue', 'class', 'style', 'focused', ...BORDER_PROP_KEYS])
 	})
 	const fieldProps = computed(() => {
-		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])
+		return filterPropsOf(OrigamField, props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])
 	})
 	const resolvedMenuProps = computed(() => {
 		return {

@@ -1,0 +1,172 @@
+{
+  "name": "OrigamTimeline",
+  "tag": "origam-timeline",
+  "family": "Timeline",
+  "label": "Timeline",
+  "props": [
+    {
+      "name": "items",
+      "label": "items",
+      "tsType": "ITimelineEntry[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "orientation",
+      "label": "orientation",
+      "tsType": "\"horizontal\" | \"vertical\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "vertical",
+      "hasFactoryDefault": false,
+      "options": [
+        "horizontal",
+        "vertical"
+      ],
+      "control": "select",
+      "description": "Layout direction.\n - `'vertical'` (default): dots stacked top→bottom, content next to each dot\n   (`side` chooses left / right / alternating).\n - `'horizontal'`: dots laid out left→right inside a scroll-snapping\n   track so the user can navigate point-to-point with a swipe / scroll.\n   Content (title/subtitle/body) renders BELOW each dot.",
+      "source": "types"
+    },
+    {
+      "name": "side",
+      "label": "side",
+      "tsType": "\"start\" | \"end\" | \"alternating\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "start",
+      "hasFactoryDefault": false,
+      "options": [
+        "start",
+        "end",
+        "alternating"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "truncateLine",
+      "label": "truncateLine",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "ariaLabel",
+      "label": "ariaLabel",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "size",
+      "label": "size",
+      "tsType": "number | \"default\" | \"x-small\" | \"small\" | \"large\" | \"x-large\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "density",
+      "label": "density",
+      "tsType": "\"default\" | \"compact\" | \"comfortable\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "default",
+        "compact",
+        "comfortable"
+      ],
+      "control": "select",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "description": "Overrides the whole auto-generated `<OrigamTimelineItem>` list.",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

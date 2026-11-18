@@ -1,0 +1,293 @@
+{
+  "name": "OrigamForm",
+  "tag": "origam-form",
+  "family": "Form",
+  "label": "Form",
+  "props": [
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "fastFail",
+      "label": "fastFail",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "readonly",
+      "label": "readonly",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "modelValue",
+      "label": "modelValue",
+      "tsType": "boolean | null | undefined",
+      "runtimeType": [
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "validateOn",
+      "label": "validateOn",
+      "tsType": "\"blur\" | \"input\" | \"submit\" | \"lazy blur\" | \"lazy input\" | \"lazy submit\" | \"blur lazy\" | \"input lazy\" | \"submit lazy\" | \"lazy\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "blur",
+        "input",
+        "submit",
+        "lazy blur",
+        "lazy input",
+        "lazy submit",
+        "blur lazy",
+        "input lazy",
+        "submit lazy",
+        "lazy"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "rules",
+      "label": "rules",
+      "tsType": "any[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "errorMessages",
+      "label": "errorMessages",
+      "tsType": "string | string[] | undefined",
+      "runtimeType": [
+        "Array",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "hint",
+      "label": "hint",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "messages",
+      "label": "messages",
+      "tsType": "string | string[] | undefined",
+      "runtimeType": [
+        "Array",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "scrollToError",
+      "label": "scrollToError",
+      "tsType": "boolean | ScrollIntoViewOptions | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "fontSize",
+      "label": "fontSize",
+      "tsType": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl",
+        "4xl",
+        "5xl"
+      ],
+      "control": "select",
+      "description": "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+      "source": "types"
+    },
+    {
+      "name": "fontWeight",
+      "label": "fontWeight",
+      "tsType": "\"regular\" | \"medium\" | \"semibold\" | \"bold\" | \"extrabold\" | \"black\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "regular",
+        "medium",
+        "semibold",
+        "bold",
+        "extrabold",
+        "black"
+      ],
+      "control": "select",
+      "description": "Font weight token. Maps to `--origam-font__weight---{fontWeight}`\n(regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900).\nWhen unset, the component keeps its theme font-weight.",
+      "source": "types"
+    },
+    {
+      "name": "lineHeight",
+      "label": "lineHeight",
+      "tsType": "\"none\" | \"tight\" | \"snug\" | \"normal\" | \"relaxed\" | \"loose\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "none",
+        "tight",
+        "snug",
+        "normal",
+        "relaxed",
+        "loose"
+      ],
+      "control": "select",
+      "description": "Line-height token. Maps to `--origam-font__lineHeight---{lineHeight}`\n(none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2).\nWhen unset, the component keeps its theme line-height.",
+      "source": "types"
+    },
+    {
+      "name": "letterSpacing",
+      "label": "letterSpacing",
+      "tsType": "\"tight\" | \"normal\" | \"wide\" | \"wider\" | \"widest\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "tight",
+        "normal",
+        "wide",
+        "wider",
+        "widest"
+      ],
+      "control": "select",
+      "description": "Letter-spacing token. Maps to `--origam-font__letterSpacing---{letterSpacing}`\n(tight -0.025em · normal 0em · wide 0.0094em · wider 0.0125em · widest 0.0893em).\nWhen unset, the component keeps its theme letter-spacing.",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "update:modelValue",
+      "label": "update:modelValue",
+      "payloadType": "[event: any]",
+      "source": "types"
+    },
+    {
+      "name": "submit",
+      "label": "submit",
+      "payloadType": "[value: any]",
+      "source": "types"
+    },
+    {
+      "name": "reset",
+      "label": "reset",
+      "payloadType": "[value: any]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "messages",
+      "label": "messages",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "message",
+      "label": "message",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "actions",
+      "label": "actions",
+      "slotPropsType": "{ submit: (e: Event) => void; reset: (e: Event) => void; }",
+      "source": "types"
+    },
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

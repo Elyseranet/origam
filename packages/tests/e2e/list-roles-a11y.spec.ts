@@ -1,4 +1,7 @@
 import { expect, test } from '@playwright/test'
+import { readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 /**
  * SPEC — le rôle ARIA de `<origam-list>` décrit ce que la liste EST (#424)
@@ -59,6 +62,11 @@ import { expect, test } from '@playwright/test'
 const SELECT_ID = 'components-stories-select-origamselect-story-vue'
 const MENU_ID = 'components-stories-menu-origammenu-story-vue'
 const LIST_ID = 'components-stories-list-origamlist-story-vue'
+const LIST_STORY = resolve(dirname(fileURLToPath(import.meta.url)), '../../stories/components/stories/List/OrigamList.story.vue')
+
+/** Index d'une Variant de la story List retrouvé par TITRE : un index écrit en dur dérive dès qu'on insère une Variant. */
+const listVariant = (title: string) =>
+    [ ...readFileSync(LIST_STORY, 'utf8').matchAll(/<Variant\b[^>]*?\btitle\s*=\s*"([^"]*)"/gs) ].map((m) => m[1]).indexOf(title)
 
 const url = (storyId: string, idx: number) =>
     `/stories/story/${storyId}?variantId=${storyId}-${idx}`
@@ -254,9 +262,7 @@ test.describe('OrigamList — les deux modes sur la story de la liste elle-meme'
     })
 
     test('la Variant « Events - update:selected », qui lie une selection, s\'annonce listbox', async ({ page }) => {
-        // Index 2 dans OrigamList.story.vue — la première Variant qui passe
-        // `selected`, donc la première à entrer en mode selection.
-        await page.goto(url(LIST_ID, 2), { waitUntil: 'domcontentloaded' })
+        await page.goto(url(LIST_ID, listVariant('Events - update:selected')), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
         const list = sandbox.locator('.origam-list').first()
@@ -267,5 +273,30 @@ test.describe('OrigamList — les deux modes sur la story de la liste elle-meme'
             .evaluateAll((els) => els.map((e) => e.getAttribute('role')))
         expect(roles.length).toBeGreaterThan(0)
         expect(new Set(roles)).toEqual(new Set([ 'option' ]))
+    })
+})
+
+
+test.describe('OrigamList — une ligne lien garde son rôle link (#1249)', () => {
+    test.setTimeout(45000)
+
+    test('role=listitem sur un conteneur, <a> sans rôle, axe sans violation', async ({ page }) => {
+        await page.goto(url(LIST_ID, listVariant('Functional - Link rows')), { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+
+        const link = sandbox.locator('[data-cy="list-link-row"]')
+        await expect(link).toBeVisible({ timeout: 12000 })
+
+        expect(await link.evaluate((a) => a.tagName)).toBe('A')
+        await expect(link).not.toHaveAttribute('role', /.*/)
+        expect(await link.evaluate((a) => a.parentElement?.getAttribute('role'))).toBe('listitem')
+
+        const roles = await sandbox.locator('.origam-list').first().evaluate((list) =>
+            Array.from(list.children).map((c) => c.getAttribute('role') ?? c.querySelector(':scope > [role]')?.getAttribute('role') ?? 'none'))
+        expect(roles).toEqual([ 'listitem', 'listitem' ])
+
+        const box = await link.boundingBox()
+        const wrapper = await link.locator('xpath=..').boundingBox()
+        expect(Math.round(box!.width), 'le <a> remplit son conteneur listitem').toBe(Math.round(wrapper!.width))
     })
 })

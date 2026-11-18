@@ -77,9 +77,11 @@ A tiny inline chart for table cells, KPI cards, and dashboards. Renders a single
 
 ## Behaviour notes
 
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured box (`useChartSize`, a `ResizeObserver`), 1 unit = 1 px, and `preserveAspectRatio="none"` is gone: stroke widths stay constant and markers stay round whatever the `width` / `height`. Until measured (SSR, first paint) the 120 × 30 fallback is used, so hydration is unchanged.
+
 - **Point interaction** — every rendered marker (`showMarkers`), special
   marker (`showMin` / `showMax` / `showLast`), and bar (`type="column"` /
-  `type="bar"`) is individually focusable (`tabindex="0"`, `role="button"`,
+  `type="bar"`) is a point of the chart's single tab stop (roving tabindex, #1333: arrows move between marks, `Home` / `End` jump to the ends, see the `OrigamChart` page; `role="button"`,
   a value-carrying `aria-label`) and activates on click, <kbd>Enter</kbd>,
   or <kbd>Space</kbd>. Clicking anywhere else on the SVG — e.g. a plain
   `line`/`area` sparkline with no markers shown — falls back to the
@@ -114,7 +116,7 @@ Special markers (`showMin`, `showMax`) override the colour locally:
 
 ## Accessibility
 
-The component uses a `<figure>` root (semantic landmark for a self-contained chart), an SVG with `role="img"`, `aria-label`, `<title>`, and `<desc>` for screen reader support.
+The component uses a `<figure>` root (semantic landmark for a self-contained chart), an SVG with `role="group"`, `aria-label`, `<title>`, and `<desc>` for screen reader support.
 
 **Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.sparkline.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key.
 

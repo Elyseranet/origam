@@ -486,6 +486,16 @@
           >
             {{ t('installation.cta.cta_github', 'View on GitHub') }}
           </origam-btn>
+
+          <origam-btn
+            class="installation-cta__btn installation-cta__btn--secondary"
+            variant="text"
+            prepend-icon="mdi-shield-check-outline"
+            :href="localeHref('/stability')"
+            data-cy="installation-cta-stability"
+          >
+            {{ t('installation.cta.cta_stability', 'Stability and versioning') }}
+          </origam-btn>
         </nav>
       </div>
     </section>
@@ -494,6 +504,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useLocaleHref } from '~/composables/useLocaleHref'
 import { useT } from '~/composables/useT'
 import {
     INSTALLATION_HERO_BADGE_VARS,
@@ -509,6 +520,7 @@ import {
 import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
 
 const { t } = useT()
+const { localeHref } = useLocaleHref()
 
 useSeoMeta({
     title: () => t('installation.meta.title', 'Installation · origam design system'),

@@ -177,6 +177,8 @@ root or via a `:style` binding to re-skin a single instance.
 | `--origam-table__header-cell---background-color` | `{color.surface.overlay}` |
 | `--origam-table__header-cell---color` | `{color.text.primary}` |
 | `--origam-table__header-cell---font-weight` | `{font.weight.semibold}` |
+| `--origam-table__header-cell---letter-spacing` | `initial` (inherits) — e.g. `{font.letterSpacing.wide}` |
+| `--origam-table__header-cell---text-transform` | `initial` (inherits) — e.g. `uppercase` |
 | `--origam-table__header-cell---padding-block` | `{space.3}` |
 | `--origam-table__header-cell---padding-inline` | `{space.4}` |
 | `--origam-table__header-cell---border-bottom-color` | `{color.border.default}` |
@@ -185,6 +187,8 @@ root or via a `:style` binding to re-skin a single instance.
 | `--origam-table__cell---padding-inline` | `{space.4}` |
 | `--origam-table__cell---border-color` | `{color.border.subtle}` |
 | `--origam-table__cell---border-width` | `{border.width.thin}` |
+| `--origam-table__cell---border-bottom-width` | `{--origam-table__cell---border-width}` — row rule under each cell |
+| `--origam-table__cell---border-top-width` | `{border.width.0}` — set it to draw the rule above each row instead (and the bottom one to `0`) |
 | `--origam-table__row---hover-background-color` | `{color.surface.sunken}` |
 
 The full list lives in `packages/ds/src/assets/css/tokens/light.css` and

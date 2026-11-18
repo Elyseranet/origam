@@ -22,11 +22,9 @@
  */
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import type { IDevtoolsQueueTarget } from '../../../marketing/server/interfaces/devtools-queue-target.interface'
-import {
-    VUE_DEVTOOLS_PLUGINS_KEY,
-    neutraliseVueDevtoolsPluginQueue
-} from '../../../marketing/server/utils/devtools-plugin-queue'
+import type { IDevtoolsQueueTarget } from '../../../marketing/src/interfaces/devtools-queue-target.interface'
+import { VUE_DEVTOOLS_PLUGINS_KEY } from '../../../marketing/src/consts/devtools-plugin-queue.const'
+import { neutraliseVueDevtoolsPluginQueue } from '../../../marketing/src/utils/devtools-plugin-queue.util'
 
 /** Reproduit `setupDevtoolsPlugin()` de `@vue/devtools-api` v6, branche « pas de hook ». */
 function setupDevtoolsPluginLike (target: IDevtoolsQueueTarget, descriptor: object): void {

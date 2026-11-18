@@ -1,6 +1,9 @@
 import { createOrigam } from '../origam'
 
-import { isModePinned, themeToCss, themeToUnpinnedCss } from '../utils/Commons/apply-theme.util'
+import { nuxtIconsOptions } from '../utils/Commons/nuxt-icons.util'
+import { nuxtLocaleOptions } from '../utils/Commons/nuxt-locale.util'
+
+import { isModePinned, knownBrand, themeToCss, themeToUnpinnedCss } from '../utils/Commons/apply-theme.util'
 import { getSsrStyles } from '../utils/Commons/ssr-styles.util'
 
 import type { IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module.interface'
@@ -18,8 +21,10 @@ import type { NuxtApp } from '#app'
  * (that hint feeds the `mode` axis).
  */
 function resolveServerTheme (cookieValue: string | null | undefined, config: IOrigamNuxtRuntimeConfig): TTheme {
-    if (cookieValue && cookieValue !== ORIGAM_THEME_AUTO) {
-        return cookieValue
+    // #1120: the cookie is untrusted input, only an installed theme name passes.
+    const brand = knownBrand(cookieValue, config.themes)
+    if (brand && brand !== ORIGAM_THEME_AUTO) {
+        return brand
     }
 
     if (config.defaultTheme && config.defaultTheme !== ORIGAM_THEME_AUTO) {
@@ -131,7 +136,7 @@ export default defineNuxtPlugin({
         // `IN_BROWSER` is already false so widths are 0 regardless, but passing
         // the flag keeps both plugins symmetric and future-proofs any
         // server-side display branching.
-        const origam = createOrigam({ themes, ssr: true })
+        const origam = createOrigam({ themes, ssr: true, ...nuxtLocaleOptions(config), ...nuxtIconsOptions(config) })
 
         // Seed the per-component DEFAULT PROPS for the ACTIVE brand×mode BEFORE
         // the render so SSR markup already reflects the theme defaults — no flash

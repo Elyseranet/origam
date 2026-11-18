@@ -1,0 +1,469 @@
+{
+  "name": "OrigamDataTableFooter",
+  "tag": "origam-data-table-footer",
+  "family": "DataTable",
+  "label": "DataTableFooter",
+  "props": [
+    {
+      "name": "prevIcon",
+      "label": "prevIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "nextIcon",
+      "label": "nextIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "firstIcon",
+      "label": "firstIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "lastIcon",
+      "label": "lastIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "itemsPerPageText",
+      "label": "itemsPerPageText",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.data_footer.items_per_page_text",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "pageText",
+      "label": "pageText",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.data_footer.page_text",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "firstPageLabel",
+      "label": "firstPageLabel",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.data_footer.first_page",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "prevPageLabel",
+      "label": "prevPageLabel",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.data_footer.prev_page",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "nextPageLabel",
+      "label": "nextPageLabel",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.data_footer.next_page",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "lastPageLabel",
+      "label": "lastPageLabel",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.data_footer.last_page",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "itemsPerPageOptions",
+      "label": "itemsPerPageOptions",
+      "tsType": "(number | { title: string; value: number; })[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "showCurrentPage",
+      "label": "showCurrentPage",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "padding",
+      "label": "padding",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--padded` class.",
+      "source": "types"
+    },
+    {
+      "name": "paddingTop",
+      "label": "paddingTop",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingBlock` for the top edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingLeft",
+      "label": "paddingLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingInline` for the left edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingBottom",
+      "label": "paddingBottom",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingBlock` for the bottom edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingRight",
+      "label": "paddingRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingInline` for the right edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingBlock",
+      "label": "paddingBlock",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`.",
+      "source": "types"
+    },
+    {
+      "name": "paddingInline",
+      "label": "paddingInline",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`.",
+      "source": "types"
+    },
+    {
+      "name": "paddingInlineStart",
+      "label": "paddingInlineStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nLogical per-side padding — rung 3 (issue #1013)",
+      "source": "types"
+    },
+    {
+      "name": "paddingInlineEnd",
+      "label": "paddingInlineEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "paddingBlockStart",
+      "label": "paddingBlockStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "paddingBlockEnd",
+      "label": "paddingBlockEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "align",
+      "label": "align",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"baseline\" | \"stretch\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "baseline",
+        "stretch"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "alignSm",
+      "label": "alignSm",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"baseline\" | \"stretch\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "baseline",
+        "stretch"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "alignMd",
+      "label": "alignMd",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"baseline\" | \"stretch\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "baseline",
+        "stretch"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "alignLg",
+      "label": "alignLg",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"baseline\" | \"stretch\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "baseline",
+        "stretch"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "alignXl",
+      "label": "alignXl",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"baseline\" | \"stretch\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "baseline",
+        "stretch"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "alignXxl",
+      "label": "alignXxl",
+      "tsType": "\"center\" | \"start\" | \"end\" | \"baseline\" | \"stretch\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "baseline",
+        "stretch"
+      ],
+      "control": "select",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "prepend",
+      "label": "prepend",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "append",
+      "label": "append",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}
