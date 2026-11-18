@@ -16,7 +16,8 @@ name: docs-fixtures
 # opened by GITHUB_TOKEN gets its CI runs parked at `action_required` (bot
 # author, needs manual approval) so it never shows a status and never merges —
 # that is how #1030 sat unmerged. `gh pr merge --auto` then merges it as soon
-# as the required checks pass. Needs: repo setting "Allow auto-merge" ON and
+# as the required checks pass. Until the secret exists the token falls back to
+# GITHUB_TOKEN, so the job keeps working (PR just stays without CI). Needs: repo setting "Allow auto-merge" ON and
 # required status checks on `develop` (auto-merge is refused without them).
 # Loop-free: the merge touches packages/marketing only, and this workflow
 # triggers on packages/ds/**.
@@ -176,7 +177,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.DOCS_FIXTURES_TOKEN }}
+          token: ${{ secrets.DOCS_FIXTURES_TOKEN || secrets.GITHUB_TOKEN }}
           branch: chore/regenerate-fixtures
           base: develop
           commit-message: 'chore(docs): regenerate API-reference fixtures'
@@ -204,5 +205,5 @@ jobs:
       - name: Enable auto-merge
         if: steps.cpr.outputs.pull-request-number != ''
         env:
-          GH_TOKEN: ${{ secrets.DOCS_FIXTURES_TOKEN }}
+          GH_TOKEN: ${{ secrets.DOCS_FIXTURES_TOKEN || secrets.GITHUB_TOKEN }}
         run: gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --auto --squash
