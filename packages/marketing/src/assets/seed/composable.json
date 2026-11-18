@@ -1,8 +1,8 @@
 {
   "kind": "composable",
-  "exportedAt": "2026-11-17T18:48:57.500Z",
-  "sourceCommit": "2909b321a",
-  "entryCount": 147,
+  "exportedAt": "2026-11-18T16:12:23.127Z",
+  "sourceCommit": "fe36f02cc",
+  "entryCount": 148,
   "entries": [
     {
       "entry": {
@@ -2794,6 +2794,55 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-content",
+        "name": "useContent",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useContent(props: IContentProps): { contentStyles: ComputedRef<{ display: \"block\" | \"contents\" | \"flex\" | \"grid\"; gap: string; }>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/content.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "IContentProps",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
