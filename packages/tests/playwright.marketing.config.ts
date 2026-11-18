@@ -177,7 +177,11 @@ const MARKETING_GREEN_SPECS = [
     // #1292 — en Split, chaque overlay se rend dans SON canvas, avec le mode du
     // pane. Rouge 10/10 sur le parent, vert 10/10 apres ; 12/12 en
     // `--repeat-each=6` sur command-palette + contextual-menu.
-    'marketing-theming-split-overlay-attach.spec.ts'
+    'marketing-theming-split-overlay-attach.spec.ts',
+
+    // #1172 — encart « même sujet » en index de lignes, repli au-delà de 12.
+    // Mesure d'admission : voir la PR (A/B rouge sur le parent, repeat-each).
+    'marketing-catalog-related-families.spec.ts'
 ]
 
 /*

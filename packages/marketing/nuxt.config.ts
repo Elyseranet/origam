@@ -5,6 +5,7 @@ import { createRequire } from 'node:module'
 
 import { MARKETING_DEFAULTS } from './src/consts/marketing.const'
 import { I18N_LOCALES, I18N_COOKIE_KEY } from './src/consts/i18n.const'
+import { LEGAL_DEFAULTS } from './src/consts/legal.const'
 import { geekThemes } from './src/themes/geek.theme'
 import { glassThemes } from './src/themes/glass.theme'
 import { cartoonThemes } from './src/themes/cartoon.theme'
@@ -186,7 +187,8 @@ export default defineNuxtConfig({
             npmPkg: process.env.NUXT_PUBLIC_NPM_PKG ?? MARKETING_DEFAULTS.npmPkg,
             npmVersion: process.env.NUXT_PUBLIC_NPM_VERSION ?? dsVersion,
             siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? MARKETING_DEFAULTS.siteUrl,
-            donateUrl: process.env.NUXT_PUBLIC_DONATE_URL ?? MARKETING_DEFAULTS.donateUrl
+            donateUrl: process.env.NUXT_PUBLIC_DONATE_URL ?? MARKETING_DEFAULTS.donateUrl,
+            legal: { ...LEGAL_DEFAULTS }
         }
     },
 
