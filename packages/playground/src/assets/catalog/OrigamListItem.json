@@ -734,7 +734,7 @@
     {
       "name": "to",
       "label": "to",
-      "tsType": "string | kt | Tt | undefined",
+      "tsType": "string | J | W | undefined",
       "runtimeType": null,
       "required": false,
       "hasFactoryDefault": false,

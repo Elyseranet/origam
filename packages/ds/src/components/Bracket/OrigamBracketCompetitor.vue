@@ -2,7 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
-			:aria-label="ariaLabel"
+			:aria-description="ariaDescription"
 			:class="rowClasses"
 			:role="interactive ? 'button' : undefined"
 			:style="rowStyles"
@@ -161,14 +161,10 @@
 		return t('origam.bracket.advantage_aria_label', rounds)
 	})
 
-	const ariaLabel = computed<string>(() => {
+	const ariaDescription = computed<string | undefined>(() => {
 		if (isTbd.value) return t('origam.bracket.tbd_long')
 
-		const base = props.competitor!.name
-		const score = props.score != null ? t('origam.bracket.score_aria_suffix', displayScore.value) : ''
-		const winner = props.isWinner ? t('origam.bracket.winner_aria_suffix') : ''
-
-		return `${base}${score}${winner}`
+		return props.isWinner ? t('origam.bracket.winner_aria_suffix').replace(/^,\s*/, '') : undefined
 	})
 
 	const handleClick = (event: MouseEvent) => {

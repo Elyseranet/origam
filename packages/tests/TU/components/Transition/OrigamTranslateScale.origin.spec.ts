@@ -62,7 +62,7 @@ describe('OrigamTranslateScale — origin prop, CSS-only path (no target)', () =
         await nextTick()
 
         const el = wrapper.find('[data-cy="content"]').element as HTMLElement
-        expect(el.style.transformOrigin).toBe('top left')
+        expect(el.style.transformOrigin).toBe('left top')
     })
 
     it('sets transform-origin on the element before it leaves', async () => {
@@ -77,7 +77,7 @@ describe('OrigamTranslateScale — origin prop, CSS-only path (no target)', () =
         show.value = false
         await nextTick()
 
-        expect(el.style.transformOrigin).toBe('bottom right')
+        expect(el.style.transformOrigin).toBe('right bottom')
     })
 
     it('does NOT touch transform-origin when origin is absent (baseline)', async () => {

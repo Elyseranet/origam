@@ -138,7 +138,7 @@
                 class="component-hero__import"
                 variant="text"
                 size="small"
-                :aria-label="t('components.detail.hero.import_label', 'Copy import statement')"
+                :aria-label="`${importStatement} — ${t('components.detail.hero.import_label', 'Copy import statement')}`"
                 :data-cy="`component-import-btn-${slug}`"
                 @click="copyImport"
               >
@@ -935,7 +935,6 @@
                   <nuxt-link
                     :to="`/components/${member.slug}`"
                     class="component-family__link"
-                    :aria-label="`${member.name} — ${t(member.descriptionKey, member.descriptionFallback)}`"
                     :data-cy="`component-family-card-${member.slug}`"
                   >
                     <origam-card

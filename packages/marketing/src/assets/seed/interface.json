@@ -1,7 +1,7 @@
 {
   "kind": "interface",
-  "exportedAt": "2026-11-11T21:53:34.331Z",
-  "sourceCommit": "7638e2b2c",
+  "exportedAt": "2026-11-17T18:48:57.706Z",
+  "sourceCommit": "2909b321a",
   "entryCount": 994,
   "entries": [
     {
@@ -47865,7 +47865,7 @@
         "icon": null,
         "description_key": "",
         "description_fallback": "",
-        "definition": "export interface IDatePickerControlsProps extends ICommonsComponentProps {\n    /**\n     * Highlighted item(s) in the controls toolbar. Widened to include\n     * `boolean | IActiveState` so that IDatePickerProps can extend both this\n     * interface and IPickerProps (which via ISheetProps → IActiveProps declares\n     * `active?: boolean | IActiveState`) without TS2320.\n     */\n    active?: string | Array<string> | boolean | IActiveState\n    disabled?: boolean\n    disabledMonth?: boolean\n    disabledYear?: boolean\n    disabledNext?: boolean\n    disabledPrev?: boolean\n    nextIcon?: TIcon\n    prevIcon?: TIcon\n    modeIcon?: TIcon\n    text?: string,\n    viewMode?: TDateMode\n}",
+        "definition": "export interface IDatePickerControlsProps extends ICommonsComponentProps {\n    /**\n     * Highlighted item(s) in the controls toolbar. Widened to include\n     * `boolean | IActiveState` so that IDatePickerProps can extend both this\n     * interface and IPickerProps (which via ISheetProps → IActiveProps declares\n     * `active?: boolean | IActiveState`) without TS2320.\n     */\n    active?: string | Array<string> | boolean | IActiveState\n    disabled?: boolean\n    disabledMonth?: boolean\n    disabledYear?: boolean\n    disabledNext?: boolean\n    disabledPrev?: boolean\n    nextIcon?: TIcon\n    prevIcon?: TIcon\n    modeIcon?: TIcon\n    text?: string,\n    yearText?: string,\n    viewMode?: TDateMode\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -48005,13 +48005,25 @@
           "description_fallback": ""
         },
         {
+          "name": "yearText",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 10,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
           "name": "viewMode",
           "type_label": "TDateMode",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 10,
+          "position": 11,
           "default_value": null,
           "description_key": null,
           "description_fallback": ""

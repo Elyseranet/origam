@@ -980,7 +980,8 @@
             "title": "Mentions légales",
             "license": "Licence MIT",
             "privacy": "Confidentialité",
-            "contact": "Contact"
+            "contact": "Contact",
+            "legal_notice": "Mentions légales"
         },
         "copyright": "© 2026 origam · MIT",
         "made_with": "Fait avec origam, par des humains.",
@@ -1364,6 +1365,8 @@
     "catalog_nav": {
         "family_menu_label": "Changer de famille — actuelle : {name}",
         "related_title": "Même sujet dans les autres familles",
+        "related_show_all": "Tout afficher ({count})",
+        "related_show_fewer": "Afficher moins",
         "prev_next_label": "Précédent et suivant dans cette famille",
         "previous": "Précédent",
         "next": "Suivant"
@@ -2322,5 +2325,31 @@
             "cta_components": "Parcourir les composants",
             "cta_install": "Guide d'installation"
         }
+    },
+    "legal_notice": {
+        "title": "Mentions légales",
+        "intro": "Informations sur l’éditeur et l’hébergeur de ce site.",
+        "to_complete": "À compléter",
+        "publisher_title": "Éditeur",
+        "host_title": "Hébergeur",
+        "content_title": "Contenu du site",
+        "content_body": "origam est un design system Vue public. Le dépôt source est publié sous licence MIT.",
+        "meta_title": "Mentions légales",
+        "meta_description": "Informations sur l’éditeur et l’hébergeur du site origam.",
+        "field_name": "Nom",
+        "field_status": "Statut",
+        "field_form": "Forme juridique",
+        "field_capital": "Capital",
+        "field_siren": "SIREN",
+        "field_rcs": "RCS",
+        "field_vat": "N° de TVA",
+        "field_address": "Adresse",
+        "field_phone": "Téléphone",
+        "field_email": "E-mail",
+        "field_publication_director": "Directeur de la publication",
+        "field_host_name": "Nom",
+        "field_host_address": "Adresse",
+        "field_host_phone": "Téléphone",
+        "field_host_country": "Pays"
     }
 }

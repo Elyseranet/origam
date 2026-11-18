@@ -27,6 +27,7 @@ import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 
 import { installThemePropsResolver } from '@origam/composables/Commons/theme-props-resolver.composable'
+import { usePadding } from '@origam/composables'
 import OrigamBlockquote from '@origam/components/Blockquote/OrigamBlockquote.vue'
 import { BLOCKQUOTE_VARIANT_PRESETS, VARIANT_PRESETS, VARIANT_PROP_KEY } from '@origam/consts'
 import { BLOCKQUOTE_VARIANT } from '@origam/enums'
@@ -128,18 +129,21 @@ describe('Ce que chaque preset EMET reellement', () => {
     })
 
     it('minimal — padding-inline AVANT padding-inline-start, sinon l\'axe ecraserait le cote', () => {
-        const style = styleOf({ variant: 'minimal' })
+        // On asserte sur l'ordre d'EMISSION de `usePadding` (le contrat), pas
+        // sur l'attribut `style` serialise : jsdom 31 (cssstyle) ne sait pas
+        // serialiser un raccourci `padding-inline: var(...)` suivi d'un
+        // longhand, il le laisse tomber de l'attribut.
+        const { paddingStyles } = usePadding({ ...BLOCKQUOTE_VARIANT_PRESETS.minimal } as never, BLOCKQUOTE_NAME)
+        const styles = paddingStyles.value as string[]
 
         // `padding-inline` est un raccourci qui pose les DEUX cotes ; le
         // `padding-inline-start` qui suit doit donc venir APRES pour gagner.
-        // `usePadding` emet le rang d'axe avant le rang par cote — cet ordre
-        // est le contrat, pas un hasard.
-        const axis = style.indexOf('padding-inline: var(--origam-blockquote__minimal---padding-inline, 12px)')
-        const side = style.indexOf('padding-inline-start: calc(')
+        const axis = styles.findIndex(s => s.startsWith('padding-inline:'))
+        const side = styles.findIndex(s => s.startsWith('padding-inline-start:'))
 
         expect(axis).toBeGreaterThanOrEqual(0)
         expect(side).toBeGreaterThan(axis)
-        expect(style).toContain('padding-block: 0px')
+        expect(styles).toContain('padding-block: 0px')
     })
 
     it('minimal — porte le token MORT de #1014 telle quelle, sans le corriger', () => {

@@ -32,7 +32,7 @@ Object.defineProperty(window, 'matchMedia', {
 
 describe('OrigamCard — borderBlock / borderInline actually paint the root element', () => {
     it('borderBlock renders border-block-* on the rendered element style, computed via getComputedStyle', () => {
-        const wrapper = mount(OrigamCard, { props: { borderBlock: 4 } })
+        const wrapper = mount(OrigamCard, { props: { borderBlock: 4 }, attachTo: document.body })
         const el = wrapper.element as HTMLElement
 
         expect(el.style.getPropertyValue('border-block-width')).toBe('4px')
@@ -47,7 +47,7 @@ describe('OrigamCard — borderBlock / borderInline actually paint the root elem
     })
 
     it('borderInline renders border-inline-* on the rendered element style', () => {
-        const wrapper = mount(OrigamCard, { props: { borderInline: '2px dashed red' } })
+        const wrapper = mount(OrigamCard, { props: { borderInline: '2px dashed red' }, attachTo: document.body })
         const el = wrapper.element as HTMLElement
 
         expect(el.style.getPropertyValue('border-inline-width')).toBe('2px')
@@ -57,7 +57,7 @@ describe('OrigamCard — borderBlock / borderInline actually paint the root elem
         const computed = getComputedStyle(el)
         expect(computed.borderInlineWidth).toBe('2px')
         expect(computed.borderInlineStyle).toBe('dashed')
-        expect(computed.borderInlineColor).toBe('red')
+        expect(computed.borderInlineColor).toBe('rgb(255, 0, 0)')
     })
 
     it('borderBlock + borderInline together paint both axes independently on the same element', () => {

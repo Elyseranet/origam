@@ -71,6 +71,7 @@ describe('OrigamProgressCircular — size/rotate parse a CSS-length / numeric st
         const svg = wrapper.find('svg')
         const style = svg.attributes('style') ?? ''
         expect(style).not.toContain('NaN')
-        expect(style).toContain('-90deg + 90deg')
+        // jsdom 31 (cssstyle) folds the calc: -90deg + 90deg -> 0deg
+        expect(style).toContain('rotate(calc(0deg))')
     })
 })

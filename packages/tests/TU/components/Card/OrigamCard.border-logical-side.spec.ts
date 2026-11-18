@@ -117,8 +117,8 @@ describe('#1013 — logical-per-side border props survive useStateEffect and rea
         // properties, so assert on source order in the serialised
         // attribute — that IS what the browser resolves.
         const attr = el.getAttribute('style') ?? ''
-        const logical = attr.indexOf('border-inline-start-width')
-        const physical = attr.indexOf('border-left-width')
+        const logical = attr.indexOf('border-inline-start')
+        const physical = attr.indexOf('border-left')
 
         expect(logical).toBeGreaterThanOrEqual(0)
         expect(physical).toBeGreaterThan(logical)

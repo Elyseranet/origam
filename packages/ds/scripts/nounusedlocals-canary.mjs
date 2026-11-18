@@ -36,7 +36,6 @@
 
 import { execFileSync } from 'node:child_process'
 import { mkdtempSync, writeFileSync, rmSync, existsSync } from 'node:fs'
-import { tmpdir } from 'node:os'
 import { join, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
@@ -73,7 +72,10 @@ function installedLanguageCoreVersion () {
 
 function countTemplateRefUnusedErrors () {
     // Force noUnusedLocals ON via a throwaway tsconfig that extends the DS one.
-    const dir = mkdtempSync(join(tmpdir(), 'origam-canary-'))
+    // The throwaway config must live INSIDE the DS (not in os.tmpdir()):
+    // `types: ["node"]` / typeRoots resolve relative to the config file, so a
+    // tmpdir copy dies with TS2688, reports zero TS6133 and reads as "fixed".
+    const dir = mkdtempSync(join(DS_ROOT, '.origam-canary-'))
     const tsconfigPath = join(dir, 'tsconfig.canary.json')
     writeFileSync(tsconfigPath, JSON.stringify({
         extends: join(DS_ROOT, 'tsconfig.json'),
@@ -89,7 +91,10 @@ function countTemplateRefUnusedErrors () {
         // a spawn failure (ENOENT, no status) — the latter must NOT read as 0.
         if (e.status == null) throw e
         const out = `${e.stdout ?? ''}${e.stderr ?? ''}`
-        return (out.match(/error TS6133/g) ?? []).length
+        const unused = (out.match(/error TS6133/g) ?? []).length
+        // Failed for another reason: inconclusive, never read it as "fixed".
+        if (unused === 0) throw new Error('vue-tsc failed without any TS6133: ' + out.slice(0, 200))
+        return unused
     } finally {
         rmSync(dir, { recursive: true, force: true })
     }

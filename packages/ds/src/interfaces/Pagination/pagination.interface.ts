@@ -74,7 +74,7 @@ export interface IPaginationProps extends ICommonsComponentProps, ITagProps, ICo
     /**
      * Label rendered next to the prev chevron in `withInfo` mode.
      * Default falls back to the `origam.pagination.previous` i18n key
-     * (`"Prev"` in English). Useful for setting a translated label
+     * (`"Previous"` in English). Useful for setting a translated label
      * inline without touching the locale catalogue.
      */
     previousText?: string

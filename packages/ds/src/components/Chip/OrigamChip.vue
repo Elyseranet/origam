@@ -366,7 +366,7 @@
 		return !props.disabled && (!!group || props.link || link.isClickable.value)
 	})
 	const rippleProps = computed(() => {
-		return [isClickable.value && props.ripple, null]
+		return isClickable.value && props.ripple
 	})
 	const isSelected = computed(() => {
 		return !group || group.isSelected.value

@@ -87,6 +87,15 @@ export function createDisplay (options?: IDisplayOptions, ssr?: TSSROptions): ID
     }
 
 
+    /*********************************************************
+     * Breakpoints
+     *
+     * @description
+     * flush 'sync' : `update()` doit etre lisible immediatement. Avec le
+     * flush 'pre' par defaut, Vue 3.5.45 ne vide plus cet effet avant la
+     * premiere lecture et les flags de breakpoint restent perimes
+     * (display.composable.spec).
+     ********************************************************/
     watchEffect(() => {
         const xs = width.value < thresholds.sm
         const sm = width.value < thresholds.md && !xs
@@ -125,7 +134,7 @@ export function createDisplay (options?: IDisplayOptions, ssr?: TSSROptions): ID
         state.mobileBreakpoint = mobileBreakpoint
         state.platform = platform.value
         state.thresholds = thresholds
-    })
+    }, {flush: 'sync'})
 
     if (IN_BROWSER) {
         window.addEventListener('resize', updateSize, {passive: true})

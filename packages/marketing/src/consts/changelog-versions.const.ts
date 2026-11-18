@@ -18,6 +18,30 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'espacement du contenu de Card et de Form' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.38.2',
+        date: '2026-11-18',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2382.summary',
+        summaryFallback: '1 change and 2 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2382.h1', textFallback: 'accessibilité : règle axe 4.14 label-content-name-mismatch (#1371, #1379)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2382.h2', textFallback: 'v-ripple suit enfin la prop ripple (#1349)' },
+            { type: 'changed', textKey: 'changelog.versions.v2382.h3', textFallback: 'dépendances' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.38.1',
         date: '2026-11-17',
         type: 'patch',

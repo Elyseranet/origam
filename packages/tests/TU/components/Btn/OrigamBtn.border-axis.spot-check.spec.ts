@@ -35,7 +35,7 @@ describe('OrigamBtn — borderBlock / borderInline spot-check (useStateEffect co
 
         expect(computed.getPropertyValue('border-inline-width')).toBe('1px')
         expect(computed.getPropertyValue('border-inline-style')).toBe('dotted')
-        expect(computed.getPropertyValue('border-inline-color')).toBe('blue')
+        expect(computed.getPropertyValue('border-inline-color')).toBe('rgb(0, 0, 255)')
 
         wrapper.unmount()
     })

@@ -110,7 +110,7 @@
 	 * Touch / swipe
 	 ********************************************************/
 	const touchOptions = computed(() => {
-		if (!props.swipeable) return false
+		if (!props.swipeable) return undefined
 
 		const options: ITouchHandlers = {
 			left: () => next(),
