@@ -1,7 +1,6 @@
 <template>
   <aside
     v-if="hasRelated"
-    class="catalog-related"
     :aria-labelledby="titleId"
     data-cy="catalog-related"
   >
@@ -9,58 +8,111 @@
       <origam-title
         :id="titleId"
         tag="h2"
-        class="catalog-related__title"
       >
-        {{ t('catalog_nav.related_title', 'Same subject in the other families') }}
+        <template #default>
+          {{ t('catalog_nav.related_title', 'Same subject in the other families') }}
+        </template>
       </origam-title>
 
-      <ul class="catalog-related__groups">
-        <li
+      <origam-grid
+        tag="ul"
+        :columns="1"
+        :gap="0"
+        border-block-end
+        :border-block-end-color="CATALOG_RELATED_RULE_COLOR"
+      >
+        <origam-row
           v-for="group in groups"
           :key="group.kind"
-          class="catalog-related__group"
+          tag="li"
+          gutters="none"
+          border-block-start
+          :border-block-start-color="CATALOG_RELATED_RULE_COLOR"
+          padding-block="4"
           :data-cy="`catalog-related-group-${group.kind}`"
         >
-          <origam-title
-            tag="h3"
-            class="catalog-related__family"
+          <origam-col
+            cols="12"
+            md="3"
           >
-            {{ group.label }}
-            <span class="catalog-related__count">{{ group.entries.length }}</span>
-          </origam-title>
-
-          <ul class="catalog-related__links">
-            <li
-              v-for="entry in group.entries"
-              :key="entry.slug"
+            <origam-title
+              :id="group.labelId"
+              tag="h3"
+              font-size="sm"
+              font-weight="semibold"
             >
-              <origam-btn
-                :href="entry.href"
-                variant="tonal"
-                size="small"
-                :elevation="0"
-                :data-cy="`catalog-related-link-${group.kind}-${entry.slug}`"
+              <template #default>
+                {{ group.label }}
+              </template>
+            </origam-title>
+            <origam-chip
+              size="x-small"
+              :text="group.count"
+              :data-cy="`catalog-related-count-${group.kind}`"
+            />
+          </origam-col>
+
+          <origam-col
+            cols="12"
+            md="9"
+          >
+            <origam-grid
+              :id="group.listId"
+              tag="ul"
+              columns="repeat(auto-fill, minmax(12rem, 1fr))"
+              gap="xs"
+              :aria-labelledby="group.labelId"
+              :data-cy="`catalog-related-list-${group.kind}`"
+            >
+              <origam-grid-item
+                v-for="entry in group.entries"
+                v-show="entry.isShown"
+                :key="entry.slug"
+                tag="li"
               >
-                {{ entry.name }}
-              </origam-btn>
-            </li>
-          </ul>
-        </li>
-      </ul>
+                <origam-list-item
+                  :href="entry.href"
+                  :title="entry.name"
+                  density="compact"
+                  rounded="sm"
+                  color="primary"
+                  font-size="sm"
+                  :data-cy="`catalog-related-link-${group.kind}-${entry.slug}`"
+                />
+              </origam-grid-item>
+            </origam-grid>
+
+            <origam-btn
+              v-if="group.isCollapsible"
+              variant="text"
+              size="small"
+              :border="false"
+              :elevation="0"
+              :append-icon="group.toggleIcon"
+              :aria-expanded="group.isOpen"
+              :aria-controls="group.listId"
+              :data-cy="`catalog-related-toggle-${group.kind}`"
+              @click="handleToggle(group.kind)"
+            >
+              <template #default>
+                {{ group.toggleLabel }}
+              </template>
+            </origam-btn>
+          </origam-col>
+        </origam-row>
+      </origam-grid>
     </origam-container>
   </aside>
 </template>
 
 <script setup lang="ts">
-import { computed, useId } from 'vue'
-
-import { useCatalogNeighbours } from '~/composables/useApiReference'
-import { useLocaleHref } from '~/composables/useLocaleHref'
+import { useCatalogRelatedFamilies } from '~/composables/useCatalogRelatedFamilies'
 import { useT } from '~/composables/useT'
 
-import { CATALOG_FAMILIES } from '~/consts/catalog-family.const'
+import { CATALOG_RELATED_RULE_COLOR } from '~/consts/catalog-detail-nav.const'
 
 import type { ICatalogDetailNavEmits, ICatalogDetailNavProps, ICatalogDetailNavSlots } from '~/interfaces/catalog-detail-nav.interface'
+import type { TReferenceKind } from '~/types/api-reference.type'
 
 const props = defineProps<ICatalogDetailNavProps>()
 
@@ -72,94 +124,29 @@ defineSlots<ICatalogDetailNavSlots>()
  * Données
  *
  * @description
- * Relations STOCKÉES uniquement, lues dans les deux sens par le serveur
- * (`/api/reference/neighbours`). Aucun rapprochement par le nom ici non plus :
- * la page ne fait que présenter ce que l'API a résolu.
+ * Une ligne par famille liée (piste B validée, #1172) : libellé et compteur
+ * à gauche, liens à droite. Au-delà de `CATALOG_RELATED_LIMIT` entrées la
+ * ligne se replie ; les entrées repliées restent dans le DOM (`v-show`).
  ********************************************************/
 const { t } = useT()
-const { localeHref } = useLocaleHref()
 
-const titleId = `catalog-related-${useId()}`
+const { titleId, groups, hasRelated, toggle } = useCatalogRelatedFamilies(props)
 
-const kind = computed(() => props.kind)
-const slug = computed(() => props.slug)
-
-const { data: neighbours } = useCatalogNeighbours(props.kind, slug)
-
-const groups = computed(() => {
-    const related = neighbours.value?.related ?? []
-
-    return CATALOG_FAMILIES.flatMap((family) => {
-        const group = related.find(g => g.kind === family.kind)
-
-        if (!group || group.kind === kind.value) return []
-
-        return [{
-            kind: family.kind,
-            label: t(family.labelKey, family.labelFallback),
-            entries: group.entries.map(e => ({
-                slug: e.slug,
-                name: e.name,
-                href: localeHref(`${family.route}/${e.slug}`)
-            }))
-        }]
-    })
-})
-
-const hasRelated = computed(() => groups.value.length > 0)
-</script>
-
-<style scoped lang="scss">
-.catalog-related {
-    padding-block: var(--origam-space---4, 1rem);
-    border-block-end: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.1));
-
-    &__title {
-        margin: 0 0 var(--origam-space---3, 0.75rem);
-        font-size: var(--origam-font__size---sm, 0.875rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__text---secondary, #525252);
-    }
-
-    &__groups {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--origam-space---4, 1rem) var(--origam-space---6, 1.5rem);
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
-
-    &__group {
-        display: flex;
-        flex-direction: column;
-        gap: var(--origam-space---2, 0.5rem);
-        min-inline-size: 0;
-    }
-
-    &__family {
-        display: flex;
-        align-items: center;
-        gap: var(--origam-space---2, 0.5rem);
-        margin: 0;
-        font-size: var(--origam-font__size---xs, 0.75rem);
-        font-weight: var(--origam-font__weight---medium, 500);
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--origam-color__text---tertiary, #737373);
-    }
-
-    &__count {
-        font-variant-numeric: tabular-nums;
-    }
-
-    &__links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--origam-space---2, 0.5rem);
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
+/*********************************************************
+ * Repli
+ *
+ * @description
+ * Le bouton « Show all N » déplie ou replie sa ligne.
+ ********************************************************/
+const handleToggle = (kind: TReferenceKind) => {
+    toggle(kind)
 }
-</style>
+
+/*********************************************************
+ * Expose
+ *
+ * @description
+ * Rien à piloter depuis le parent.
+ ********************************************************/
+defineExpose({})
+</script>

@@ -87,9 +87,15 @@ export function createDisplay (options?: IDisplayOptions, ssr?: TSSROptions): ID
     }
 
 
-    // flush 'sync': `update()` must be readable immediately. With the default
-    // 'pre' flush, Vue 3.5.45 no longer flushes this effect before the first
-    // read, leaving the breakpoint flags stale (display.composable.spec).
+    /*********************************************************
+     * Breakpoints
+     *
+     * @description
+     * flush 'sync' : `update()` doit etre lisible immediatement. Avec le
+     * flush 'pre' par defaut, Vue 3.5.45 ne vide plus cet effet avant la
+     * premiere lecture et les flags de breakpoint restent perimes
+     * (display.composable.spec).
+     ********************************************************/
     watchEffect(() => {
         const xs = width.value < thresholds.sm
         const sm = width.value < thresholds.md && !xs

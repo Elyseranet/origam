@@ -79,6 +79,7 @@ export const FOOTER_COLUMNS: IFooterColumn[] = [
         titleFallback: 'Legal',
         links: [
             { i18nKey: 'footer.legal.license', i18nFallback: 'MIT License', href: `${MARKETING_DEFAULTS.githubRepo}/blob/main/LICENSE`, external: true },
+            { i18nKey: 'footer.legal.legal_notice', i18nFallback: 'Legal notice', href: '/legal' },
             { i18nKey: 'footer.legal.privacy', i18nFallback: 'Privacy', href: '/privacy' },
             { i18nKey: 'footer.legal.contact', i18nFallback: 'Contact', href: '/contact' }
         ]
