@@ -5,7 +5,7 @@
 > rien n'est redige ici. Corriger une description se fait dans la banniere du symbole,
 > puis en regenerant. Issue #545.
 
-112 symbole(s) exporte(s).
+113 symbole(s) exporte(s).
 
 ## `_resetCssSupportCache`
 
@@ -785,6 +785,19 @@ declared them, so the foreground/background scalars are now just
 **Source** : `packages/ds/src/composables/Commons/colorEffect.composable.ts`
 
 **Consommateurs** (9) : `components/Audio/OrigamAudio.vue`, `components/Chip/OrigamChip.vue`, `components/Video/OrigamVideo.vue`, `consts/Commons/color.const.ts`, `enums/Commons/color.enum.ts`, `enums/Commons/intent.enum.ts`, `types/Commons/color.type.ts`, `types/Commons/intent.type.ts`, …
+
+## `useContent`
+
+```ts
+export function useContent (props: IContentProps)
+```
+
+Inline style of a `__content` wrapper from `contentDisplay` / `contentGap`.
+`undefined` when neither is set, so the token defaults stay in charge.
+
+**Source** : `packages/ds/src/composables/Commons/content.composable.ts`
+
+**Consommateurs** (2) : `components/Card/OrigamCard.vue`, `components/Form/OrigamForm.vue`
 
 ## `useCreateLayout`
 

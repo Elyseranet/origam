@@ -332,6 +332,8 @@
   --origam-card--loading---min-height: 120px;
   --origam-card__asset---aspect-ratio: 16 / 9;
   --origam-card__content---display: block;
+  --origam-card__content---gap: 0;
+  --origam-card__content---flex-direction: row;
   --origam-card__loader---min-height: 4px;
   --origam-card__skeleton---padding: var(--origam-space---4);
   --origam-card__loader---z-index: 3;
@@ -1122,6 +1124,9 @@
   --origam-field__loader---height: 4px;
   --origam-form__actions---margin-top: var(--origam-space---4);
   --origam-form__actions---gap: var(--origam-space---2);
+  --origam-form__content---display: block;
+  --origam-form__content---gap: 0;
+  --origam-form__content---flex-direction: row;
   --origam-form__actions---display: flex;
   --origam-form__details---font-size: var(--origam-font__size---sm);
   --origam-form__details---font-weight: var(--origam-font__weight---regular);

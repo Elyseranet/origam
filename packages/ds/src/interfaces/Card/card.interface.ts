@@ -28,7 +28,9 @@ import type { IPositionProps } from '../Commons/position.interface'
 import type { IRippleProps } from '../Commons/ripple.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TCardContentDisplay, TCardType } from '../../types/Card/card.type'
+import type { IContentProps } from '../Commons/content.interface'
+
+import type { TCardType } from '../../types/Card/card.type'
 
 // `IColorProps` exposes `color` / `bgColor` / hover / active colour
 // hooks. Pre-fix `ICardProps` did NOT extend it, so a consumer
@@ -42,16 +44,7 @@ import type { TCardContentDisplay, TCardType } from '../../types/Card/card.type'
 // and `useStateEffect` resolves the `active` object's `color` /
 // `bgColor` overrides. `IHoverProps` types `hover` as `boolean | IStateEffectConfig`
 // (#1100) — the runtime already read the object form.
-export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, IDensityProps, IDimensionProps, IElevationProps, ILoaderProps, ILocationProps, IPositionProps, IRoundedProps, IMarginProps, IPaddingProps, ILinkProps, IRippleProps, IAdjacentProps, IActiveProps, IHoverProps {
-    /*********************************************************
-     * contentDisplay
-     *
-     * @description
-     * `display` of the `.origam-card__content` wrapper around the default and `text` slots (#1100).
-     * `contents` flattens it so the slotted children become direct items of the card's own grid / flex layout.
-     * Defaults to the `--origam-card__content---display` token (`block`).
-     ********************************************************/
-    contentDisplay?: TCardContentDisplay
+export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, IDensityProps, IDimensionProps, IElevationProps, ILoaderProps, ILocationProps, IPositionProps, IRoundedProps, IMarginProps, IPaddingProps, ILinkProps, IRippleProps, IAdjacentProps, IActiveProps, IHoverProps, IContentProps {
     disabled?: boolean
     flat?: boolean
     image?: string

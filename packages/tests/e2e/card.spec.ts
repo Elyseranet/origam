@@ -552,6 +552,33 @@ test.describe('OrigamCard', () => {
         })
     })
 
+    test.describe('contentGap', () => {
+        test('contentGap="24px" on a grid wrapper spaces the blocks by 24px', async ({ page }) => {
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            const sandbox = await expectCardVisible(page)
+            const m = await sandbox.locator('[data-cy="card-content-gap"]').evaluate((card) => {
+                const content = card.querySelector('.origam-card__content') as HTMLElement
+                const a = (card.querySelector('[data-cy="card-content-gap-a"]') as HTMLElement).getBoundingClientRect()
+                const b = (card.querySelector('[data-cy="card-content-gap-b"]') as HTMLElement).getBoundingClientRect()
+                return { rowGap: getComputedStyle(content).rowGap, space: b.top - a.bottom }
+            })
+            expect(m.rowGap).toBe('24px')
+            expect(m.space).toBeCloseTo(24, 0)
+        })
+
+        test('the token --origam-card__content---gap is read by the wrapper', async ({ page }) => {
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            const sandbox = await expectCardVisible(page)
+            const rowGap = await sandbox.locator('[data-cy="card-content-default"]').evaluate((card) => {
+                const content = card.querySelector('.origam-card__content') as HTMLElement
+                content.style.display = 'grid'
+                card.ownerDocument.documentElement.style.setProperty('--origam-card__content---gap', '10px')
+                return getComputedStyle(content).rowGap
+            })
+            expect(rowGap).toBe('10px')
+        })
+    })
+
     test.describe('hover as an object (#1100)', () => {
         test('hover={ borderColor } repaints the border on pointer-over only', async ({ page }) => {
             await page.goto(variantUrl(24), { waitUntil: 'domcontentloaded' })

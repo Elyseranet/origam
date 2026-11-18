@@ -439,6 +439,16 @@
 					<span data-cy="card-content-contents-a">A</span>
 					<span data-cy="card-content-contents-b">B</span>
 				</origam-card>
+				<origam-card
+						data-cy="card-content-gap"
+						:flat="false"
+						content-display="grid"
+						content-gap="24px"
+						style="width: 320px;"
+				>
+					<span data-cy="card-content-gap-a">A</span>
+					<span data-cy="card-content-gap-b">B</span>
+				</origam-card>
 			</div>
 		</Variant>
 

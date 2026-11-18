@@ -8,7 +8,10 @@
 			@reset="handleReset"
 			@submit="handleSubmit"
 	>
-		<div class="origam-form__content">
+		<div
+				class="origam-form__content"
+				:style="contentStyles"
+		>
 			<slot
 					name="default"
 					v-bind="form"
@@ -61,6 +64,7 @@
 	import { computed, nextTick, ref, StyleValue, useSlots } from 'vue'
 	import OrigamMessages from '../Messages/OrigamMessages.vue'
 
+	import { useContent } from '../../composables/Commons/content.composable'
 	import { useForm } from '../../composables/Form/form.composable'
 	import { useMessage } from '../../composables/Commons/message.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
@@ -89,6 +93,7 @@
 
 
 	const {filterProps} = useProps<IFormProps>(props)
+	const {contentStyles} = useContent(props)
 
 	/*********************************************************
 	 * Reset & Submit
@@ -247,6 +252,12 @@
 >
 	.origam-form {
 		$this: &;
+
+		&__content {
+			display: var(--origam-form__content---display, block);
+			flex-direction: var(--origam-form__content---flex-direction, row);
+			gap: var(--origam-form__content---gap, 0);
+		}
 
 		&__actions {
 			margin-top: var(--origam-form__actions---margin-top, 16px);

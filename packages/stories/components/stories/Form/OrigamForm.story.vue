@@ -206,6 +206,18 @@
 			</origam-form>
 		</Variant>
 
+		<Variant title="Prop — contentDisplay + contentGap">
+			<origam-form
+					data-cy="form-content-gap"
+					content-display="grid"
+					content-gap="24px"
+					@submit.prevent
+			>
+				<span data-cy="form-content-gap-a">A</span>
+				<span data-cy="form-content-gap-b">B</span>
+			</origam-form>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IFormProps>({

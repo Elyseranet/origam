@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added — espacement du contenu de Card et de Form
+
+- `contentGap` (`string | number`, nombre = px) sur `OrigamCard` (et donc `OrigamDialog`, qui relaie ses props à sa carte) et `OrigamForm` : `gap` posé en ligne sur `.origam-*__content`. Réglable par thème (`components['origam-card' | 'origam-form']`). Sans effet tant que le wrapper n'est pas `flex` / `grid`.
+- `contentDisplay` sur `OrigamForm`, même type et même mécanique que sur `OrigamCard`. Les deux props viennent de la nouvelle interface Commons `IContentProps` et du composable `useContent` ; `ICardProps` étend `IContentProps` (la déclaration `contentDisplay` y disparaît, l'API publique est inchangée).
+- Jetons `--origam-card__content---gap`, `--origam-card__content---flex-direction`, `--origam-form__content---display`, `--origam-form__content---gap`, `--origam-form__content---flex-direction`. Défauts `block` / `0` / `row` : aucun changement de rendu pour les consommateurs existants.
+
 ## [2.38.1] - 2026-11-17
 
 ### Security — nuxt 4.6.4, avis `pnpm audit` (#1366)

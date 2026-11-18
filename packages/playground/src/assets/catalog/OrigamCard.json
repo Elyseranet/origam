@@ -5,23 +5,6 @@
   "label": "Card",
   "props": [
     {
-      "name": "contentDisplay",
-      "label": "contentDisplay",
-      "tsType": "\"block\" | \"grid\" | \"contents\" | \"flex\" | undefined",
-      "runtimeType": null,
-      "required": false,
-      "hasFactoryDefault": false,
-      "options": [
-        "block",
-        "grid",
-        "contents",
-        "flex"
-      ],
-      "control": "select",
-      "description": "*******************************************************\ncontentDisplay",
-      "source": "types"
-    },
-    {
       "name": "disabled",
       "label": "disabled",
       "tsType": "boolean | undefined",
@@ -1345,6 +1328,37 @@
       "required": false,
       "hasFactoryDefault": false,
       "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "contentDisplay",
+      "label": "contentDisplay",
+      "tsType": "\"block\" | \"grid\" | \"contents\" | \"flex\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "block",
+        "grid",
+        "contents",
+        "flex"
+      ],
+      "control": "select",
+      "description": "`display` of the content wrapper. `contents` flattens it into the host's own layout.",
+      "source": "types"
+    },
+    {
+      "name": "contentGap",
+      "label": "contentGap",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "String",
+        "Number"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "`gap` between the blocks of the content wrapper — a CSS length, or a number read as px. Needs `flex` / `grid`.",
       "source": "types"
     }
   ],

@@ -121,6 +121,8 @@ then emits `reset`.
 | `fastFail` | `boolean` | `undefined` | Stop validating at the first failing field. |
 | `disabled` | `boolean` | `undefined` | Disable every registered field. |
 | `readonly` | `boolean` | `undefined` | Put every registered field in read-only mode. |
+| `contentDisplay` | `'block' \| 'contents' \| 'flex' \| 'grid'` | `'block'` | `display` of `.origam-form__content`, the wrapper around the default slot. Same prop as `OrigamCard`. |
+| `contentGap` | `string \| number` | `0` | `gap` between the blocks of that wrapper (number = px). Needs `contentDisplay` `flex` or `grid`. |
 | `scrollToError` | `boolean \| ScrollIntoViewOptions` | `undefined` | After a failed submit, scroll the first `.origam-input--error` into view. An object is forwarded to `scrollIntoView`; `true` uses `{ behavior: 'smooth', block: 'center' }`. |
 | `fontSize`, `fontWeight`, `lineHeight`, `letterSpacing` | typography tokens | `undefined` | Applied to the `__details` row — see below. |
 | `id` | `string` | generated | DOM id of the `<form>` element. |
@@ -178,5 +180,5 @@ The `__details` div is only rendered when `hasMessages` is true (form has `error
 
 ## Design tokens
 
-`<OrigamForm>` is a structural container. The `__details` typography tokens above are the only component-level tokens.
+`<OrigamForm>` is a structural container. Besides the `__details` typography tokens above, the content wrapper reads `--origam-form__content---display` (`block`), `---gap` (`0`) and `---flex-direction` (`row`). Theme them props-first with `components['origam-form'] = { contentDisplay: 'grid', contentGap: '1rem' }`.
 Individual field tokens apply to child components.
