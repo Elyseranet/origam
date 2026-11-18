@@ -164,8 +164,8 @@
       "page": "Page",
       "of": "sur",
       "info": "Affichage de {0}-{1} sur {2}",
-      "next": "Suivant",
-      "previous": "Précédent"
+      "next": "Suivante",
+      "previous": "Précédente"
     },
     "code": {
       "copy": "Copier",

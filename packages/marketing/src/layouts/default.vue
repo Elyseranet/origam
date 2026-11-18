@@ -152,13 +152,12 @@
         <nuxt-link
           :to="localeHref('/')"
           class="brand"
-          :aria-label="brandName"
           data-cy="brand-home"
         >
           <img
             class="brand__logo"
             :src="MARKETING_DEFAULTS.logoPath"
-            :alt="brandName"
+            alt=""
             width="26"
             height="26"
           >

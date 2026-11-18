@@ -298,7 +298,7 @@
       "required": false,
       "hasFactoryDefault": false,
       "control": "text",
-      "description": "Label rendered next to the prev chevron in `withInfo` mode.\nDefault falls back to the `origam.pagination.previous` i18n key\n(`\"Prev\"` in English). Useful for setting a translated label\ninline without touching the locale catalogue.",
+      "description": "Label rendered next to the prev chevron in `withInfo` mode.\nDefault falls back to the `origam.pagination.previous` i18n key\n(`\"Previous\"` in English). Useful for setting a translated label\ninline without touching the locale catalogue.",
       "source": "types"
     },
     {

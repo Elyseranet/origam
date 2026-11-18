@@ -73,7 +73,7 @@ describe('OrigamBracketCompetitor — libellés traduits (C8)', () => {
 
     it('l\'aria-label du compétiteur indéterminé est traduit', () => {
         const fr = mountCompetitor({ competitor: null }, 'fr')
-        const label = fr.find('.origam-bracket-competitor').attributes('aria-label')
+        const label = fr.find('.origam-bracket-competitor').attributes('aria-description')
 
         expect(label).toBe('À déterminer')
     })
@@ -83,9 +83,10 @@ describe('OrigamBracketCompetitor — libellés traduits (C8)', () => {
             { competitor: { id: 'a', name: 'Alice' }, score: 2, isWinner: true, showScore: true },
             'fr'
         )
-        const label = fr.find('.origam-bracket-competitor').attributes('aria-label')
+        const row = fr.find('.origam-bracket-competitor')
 
-        expect(label).toBe('Alice, score 2, vainqueur')
+        expect(row.attributes('aria-label')).toBeUndefined()
+        expect(row.attributes('aria-description')).toBe('vainqueur')
     })
 
     // Trouvé en réparant, absent du classeur (colonne Notes ne le mentionnait

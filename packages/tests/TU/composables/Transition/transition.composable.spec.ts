@@ -234,7 +234,7 @@ describe('useCssTransition — handleBeforeEnter', () => {
         const el = document.createElement('div')
         const tp = capturedApi.transitionProps.value
         tp.onBeforeEnter?.(el)
-        expect(el.style.transformOrigin).toBe('top center')
+        expect(el.style.transformOrigin).toBe('center top')
     })
 
     it('does NOT set transformOrigin when origin is not set', () => {
@@ -250,7 +250,7 @@ describe('useCssTransition — handleBeforeEnter', () => {
         el.style.transformOrigin = 'top left'
         const tp = capturedApi.transitionProps.value
         tp.onBeforeEnter?.(el)
-        expect(el.style.transformOrigin).toBe('top left')
+        expect(el.style.transformOrigin).toBe('left top')
     })
 })
 
