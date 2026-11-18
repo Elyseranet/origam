@@ -12,7 +12,6 @@
       :aria-expanded="hasChildren ? isNodeExpanded : undefined"
       :aria-selected="isSelectable ? isNodeSelected : undefined"
       :aria-disabled="node.disabled || undefined"
-      :aria-label="node.label"
       :tabindex="node.disabled ? -1 : 0"
       :data-cy="`treeview-row-${node.id}`"
       @click="handleRowClick"
