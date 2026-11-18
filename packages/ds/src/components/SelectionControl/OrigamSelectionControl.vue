@@ -306,11 +306,7 @@
   } = useStateEffect(props, isHover, undefined, hoverState, undefined, toRef(props, 'disabled'))
 
   const rippleProp = computed(() => {
-    if (props.ripple) {
-      return [ !props.disabled && !props.readonly, null, [ 'center', 'circle' ] ]
-    }
-
-    return [ false, null, [ 'center', 'circle' ] ]
+    return !!props.ripple && !props.disabled && !props.readonly
   })
 
   /*********************************************************
