@@ -4,4 +4,4 @@ import type { TReferenceKind } from './api-reference.type'
 export type TGlobalSearchFamily = TReferenceKind | 'all'
 
 /** Signature de `t()` (composable `useT`) telle que reçue par les fonctions pures de la palette. */
-export type TTranslate = (key: string, fallback?: string) => string
+export type TTranslate = (key: string, fallback?: string, named?: Record<string, unknown>) => string

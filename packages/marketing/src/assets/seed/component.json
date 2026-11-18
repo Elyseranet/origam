@@ -1,7 +1,7 @@
 {
   "kind": "component",
-  "exportedAt": "2026-11-11T21:53:36.429Z",
-  "sourceCommit": "7638e2b2c",
+  "exportedAt": "2026-11-17T18:48:57.415Z",
+  "sourceCommit": "2909b321a",
   "entryCount": 215,
   "entries": [
     {
@@ -95127,13 +95127,25 @@
           "description_fallback": null
         },
         {
+          "name": "yearText",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 98,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
           "name": "viewMode",
           "type_label": "TDateMode",
           "type_slug": "date-mode",
           "type_kind": "type",
           "optional": false,
           "required": false,
-          "position": 98,
+          "position": 99,
           "default_value": "'month'",
           "description_key": "components.date_picker.props.view_mode.description",
           "description_fallback": "Current calendar view. 'month' shows day grid; 'months' shows month grid; 'year' shows year list."
@@ -95145,7 +95157,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 99,
+          "position": 100,
           "default_value": "false",
           "description_key": "components.date_picker.props.hide_weekdays.description",
           "description_fallback": "Hides the weekday labels (Mon, Tue…) above the day grid."
@@ -95157,7 +95169,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 100,
+          "position": 101,
           "default_value": "false",
           "description_key": "components.date_picker.props.multiple.description",
           "description_fallback": "Enables multi-date selection. Pass a number to limit how many dates can be selected."
@@ -95169,7 +95181,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 101,
+          "position": 102,
           "default_value": "false",
           "description_key": "components.date_picker.props.range.description",
           "description_fallback": "Enables date-range selection mode (start date + end date). modelValue should be an array of two dates."
@@ -95181,7 +95193,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 102,
+          "position": 103,
           "default_value": "false",
           "description_key": "components.date_picker.props.show_week.description",
           "description_fallback": "Shows week numbers in the first column of the day grid."
@@ -95193,7 +95205,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 103,
+          "position": 104,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95205,7 +95217,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 104,
+          "position": 105,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95217,7 +95229,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 105,
+          "position": 106,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95229,7 +95241,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 106,
+          "position": 107,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95241,7 +95253,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 107,
+          "position": 108,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95253,7 +95265,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 108,
+          "position": 109,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95265,7 +95277,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 109,
+          "position": 110,
           "default_value": "undefined",
           "description_key": "components.date_picker.props.max.description",
           "description_fallback": "Maximum selectable date. Dates after this value are disabled."
@@ -95277,7 +95289,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 110,
+          "position": 111,
           "default_value": "undefined",
           "description_key": "components.date_picker.props.min.description",
           "description_fallback": "Minimum selectable date. Dates before this value are disabled."
@@ -95289,7 +95301,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 111,
+          "position": 112,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95301,7 +95313,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 112,
+          "position": 113,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95313,7 +95325,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 113,
+          "position": 114,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95325,7 +95337,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 114,
+          "position": 115,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95337,7 +95349,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 115,
+          "position": 116,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95349,7 +95361,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 116,
+          "position": 117,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95361,7 +95373,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 117,
+          "position": 118,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95373,7 +95385,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 118,
+          "position": 119,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95385,7 +95397,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 119,
+          "position": 120,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95397,7 +95409,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 120,
+          "position": 121,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95409,7 +95421,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 121,
+          "position": 122,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95421,7 +95433,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 122,
+          "position": 123,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -95433,7 +95445,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 123,
+          "position": 124,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -96058,13 +96070,25 @@
           "description_fallback": "Label displayed on the month button (e.g. \"June 2024\")."
         },
         {
+          "name": "yearText",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 10,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
           "name": "viewMode",
           "type_label": "TDateMode",
           "type_slug": "date-mode",
           "type_kind": "type",
           "optional": false,
           "required": false,
-          "position": 10,
+          "position": 11,
           "default_value": "'month'",
           "description_key": "components.date_picker_controls.props.view_mode.description",
           "description_fallback": "Current view mode — controls which panel (month/year) is active."
@@ -96076,7 +96100,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 11,
+          "position": 12,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -96088,7 +96112,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 12,
+          "position": 13,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -96100,7 +96124,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 13,
+          "position": 14,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
