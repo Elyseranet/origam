@@ -980,7 +980,8 @@
             "title": "Legal",
             "license": "MIT License",
             "privacy": "Privacy",
-            "contact": "Contact"
+            "contact": "Contact",
+            "legal_notice": "Legal notice"
         },
         "copyright": "© 2026 origam · MIT",
         "made_with": "Made with origam, by humans.",
@@ -2322,5 +2323,31 @@
             "cta_components": "Browse components",
             "cta_install": "Installation guide"
         }
+    },
+    "legal_notice": {
+        "title": "Legal notice",
+        "intro": "Information about the publisher and the hosting provider of this website.",
+        "to_complete": "To complete",
+        "publisher_title": "Publisher",
+        "host_title": "Hosting provider",
+        "content_title": "Website content",
+        "content_body": "origam is a public Vue design system. The source repository is published under the MIT License.",
+        "meta_title": "Legal notice",
+        "meta_description": "Publisher and hosting information for the origam website.",
+        "field_name": "Name",
+        "field_status": "Status",
+        "field_form": "Legal form",
+        "field_capital": "Share capital",
+        "field_siren": "SIREN",
+        "field_rcs": "RCS",
+        "field_vat": "VAT number",
+        "field_address": "Address",
+        "field_phone": "Telephone",
+        "field_email": "Email",
+        "field_publication_director": "Publication director",
+        "field_host_name": "Name",
+        "field_host_address": "Address",
+        "field_host_phone": "Telephone",
+        "field_host_country": "Country"
     }
 }
