@@ -21,7 +21,7 @@
     {
       "name": "format",
       "label": "format",
-      "tsType": "\"compact\" | \"percent\" | \"decimal\" | \"currency\" | \"unit\" | \"scientific\" | \"engineering\" | undefined",
+      "tsType": "\"compact\" | \"percent\" | \"currency\" | \"unit\" | \"decimal\" | \"scientific\" | \"engineering\" | undefined",
       "runtimeType": null,
       "required": false,
       "defaultValue": "decimal",
@@ -29,9 +29,9 @@
       "options": [
         "compact",
         "percent",
-        "decimal",
         "currency",
         "unit",
+        "decimal",
         "scientific",
         "engineering"
       ],

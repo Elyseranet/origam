@@ -17,6 +17,12 @@ updates:
     commit-message:
       prefix: chore
       include: scope
+    # TypeScript 7 (native) breaks vue-tsc, typescript-eslint and unbuild's
+    # rollup-plugin-dts — see #1377; re-enable once they support it.
+    ignore:
+      - dependency-name: typescript
+        update-types:
+          - version-update:semver-major
     groups:
       vue:
         patterns:
