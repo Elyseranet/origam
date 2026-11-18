@@ -1714,7 +1714,7 @@
         "flex"
       ],
       "control": "select",
-      "description": "`display` of the content wrapper. `contents` flattens it into the host's own layout.",
+      "description": "*******************************************************\ncontentDisplay",
       "source": "types"
     },
     {
@@ -1728,7 +1728,7 @@
       "required": false,
       "hasFactoryDefault": false,
       "control": "text",
-      "description": "`gap` between the blocks of the content wrapper — a CSS length, or a number read as px. Needs `flex` / `grid`.",
+      "description": "*******************************************************\ncontentGap",
       "source": "types"
     },
     {
