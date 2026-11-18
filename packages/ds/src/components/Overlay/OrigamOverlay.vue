@@ -32,7 +32,7 @@
 					<div
 							v-show="isActive"
 							ref="contentEl"
-							v-click-outside="{ handler: handleClickOutside, closeConditional, include: () => [activatorEl] }"
+							v-click-outside="{ handler: handleClickOutside, closeConditional, include: () => activatorEl ? [activatorEl] : [] }"
 							:class="overlayContentClasses"
 							:style="overlayContentStyles"
 							v-bind="{ ...contentEvents, ...contentProps }"

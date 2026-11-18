@@ -342,7 +342,7 @@
 	 * when it is an object, caller overrides are merged in.
 	 ********************************************************/
 	const touchOptions = computed(() => {
-		if (props.touch === false) return props.touch
+		if (props.touch === false) return undefined
 
 		const options: ITouchHandlers = {
 			left: () => {
