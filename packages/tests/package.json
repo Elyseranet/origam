@@ -45,13 +45,13 @@
   "dependencies": {
     "@vue/server-renderer": "^3.5.43",
     "origam": "workspace:*",
-    "vue": "3.5.43"
+    "vue": "3.5.45"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
     "@histoire/shared": "^1.0.0-beta.1",
     "@playwright/test": "^1.48.0",
-    "@vitejs/plugin-vue": "^6.0.7",
+    "@vitejs/plugin-vue": "^6.0.11",
     "@vitest/coverage-v8": "4.1.12",
     "@vue/test-utils": "^2.4.6",
     "axe-core": "^4.11.4",
@@ -59,6 +59,6 @@
     "jsdom": "^30.0.1",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.12",
-    "vue-router": "^4.5.0"
+    "vue-router": "^5.5.1"
   }
 }

@@ -256,11 +256,7 @@
 	 * Ripple
 	 ********************************************************/
 	const isRipple = computed(() => {
-		return [
-			!isDisabled.value && props.ripple,
-			null,
-			props.icon ? ['center'] : null
-		]
+		return !isDisabled.value && props.ripple
 	})
 
 	/*********************************************************
