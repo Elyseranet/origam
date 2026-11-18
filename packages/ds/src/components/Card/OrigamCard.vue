@@ -200,6 +200,7 @@
 	import OrigamSkeletonGroup from '../Skeleton/OrigamSkeletonGroup.vue'
 
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useContent } from '../../composables/Commons/content.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useLink } from '../../composables/Commons/link.composable'
@@ -574,7 +575,7 @@
 	 * Instance-level `contentDisplay` rides INLINE on the wrapper itself, not as a custom property on the root.
 	 * A custom property would inherit into any Card nested in the slot and flatten its content too.
 	 ********************************************************/
-	const contentStyles = computed(() => props.contentDisplay ? {display: props.contentDisplay} : undefined)
+	const {contentStyles} = useContent(props)
 	const cardProgressClasses = computed(() => {
 		return [
 			'origam-card__progress',
@@ -685,6 +686,8 @@
 
 		&__content {
 			display: var(--origam-card__content---display, block);
+			flex-direction: var(--origam-card__content---flex-direction, row);
+			gap: var(--origam-card__content---gap, 0);
 		}
 
 		&__asset {

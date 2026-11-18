@@ -563,23 +563,6 @@
       "source": "types"
     },
     {
-      "name": "contentDisplay",
-      "label": "contentDisplay",
-      "tsType": "\"block\" | \"grid\" | \"contents\" | \"flex\" | undefined",
-      "runtimeType": null,
-      "required": false,
-      "hasFactoryDefault": false,
-      "options": [
-        "block",
-        "grid",
-        "contents",
-        "flex"
-      ],
-      "control": "select",
-      "description": "*******************************************************\ncontentDisplay",
-      "source": "types"
-    },
-    {
       "name": "flat",
       "label": "flat",
       "tsType": "boolean | undefined",
@@ -1743,6 +1726,37 @@
       "required": false,
       "hasFactoryDefault": false,
       "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "contentDisplay",
+      "label": "contentDisplay",
+      "tsType": "\"block\" | \"grid\" | \"contents\" | \"flex\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "block",
+        "grid",
+        "contents",
+        "flex"
+      ],
+      "control": "select",
+      "description": "*******************************************************\ncontentDisplay",
+      "source": "types"
+    },
+    {
+      "name": "contentGap",
+      "label": "contentGap",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "String",
+        "Number"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\ncontentGap",
       "source": "types"
     },
     {

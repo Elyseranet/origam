@@ -67,3 +67,24 @@ describe('OrigamCard — contentDisplay (#1100)', () => {
         expect(wrapper.classes()).toContain('origam-card')
     })
 })
+
+describe('OrigamCard — contentGap', () => {
+    it('declares contentGap in its runtime props', () => {
+        const props = (OrigamCard as unknown as { props: Record<string, unknown> }).props
+        expect(Object.keys(props)).toContain('contentGap')
+    })
+
+    it('emits no inline gap by default', () => {
+        const style = mountThemed({}).find('.origam-card__content').attributes('style') ?? ''
+        expect(style).not.toContain('gap')
+    })
+
+    it('contentGap paints gap inline (number = px, string as-is)', () => {
+        expect(mountThemed({}, { contentGap: 12 }).find('.origam-card__content').attributes('style')).toContain('gap: 12px')
+        expect(mountThemed({}, { contentGap: '1rem' }).find('.origam-card__content').attributes('style')).toContain('gap: 1rem')
+    })
+
+    it('resolves contentGap from theme.components[\'origam-card\']', () => {
+        expect(mountThemed({ contentGap: '8px' }).find('.origam-card__content').attributes('style')).toContain('gap: 8px')
+    })
+})

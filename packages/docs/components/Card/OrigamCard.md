@@ -181,8 +181,9 @@ The default and `text` slots are wrapped in `.origam-card__content`. When the ca
 | Prop | Values | Effect |
 |---|---|---|
 | `contentDisplay` | `block` (default), `contents`, `flex`, `grid` | `display` of `.origam-card__content`, painted inline on the wrapper itself. Themable through `theme.components['origam-card']`. |
+| `contentGap` | CSS length or number (px), default `0` | `gap` between the blocks of the wrapper, painted inline. Needs `contentDisplay` `flex` or `grid` (`OrigamDialog` forwards it and its content is already a flex column). Themable the same way. |
 
-For a theme-wide default, set the token `--origam-card__content---display` instead. Do not confuse it with `flat`, which only removes the shadow.
+For a theme-wide default, set the tokens `--origam-card__content---display`, `---gap` (default `0`) and `---flex-direction` (default `row`, only read when the wrapper is `flex`) instead. Do not confuse it with `flat`, which only removes the shadow.
 ## Flat
 
 Remove shadow with `flat`.

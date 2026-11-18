@@ -144,4 +144,25 @@ test.describe('OrigamForm', () => {
         await expect(sandbox.locator('[data-cy="form-playground"]')).toBeVisible({ timeout: 5000 })
         await expect(sandbox.locator('[data-cy="form-playground-submit"]')).toBeVisible({ timeout: 3000 })
     })
+
+    test('contentDisplay + contentGap — the wrapper is a grid and the gap spaces its blocks', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Prop — contentDisplay + contentGap', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const form = sandbox.locator('[data-cy="form-content-gap"]')
+        await expect(form).toBeVisible({ timeout: 5000 })
+        const m = await form.evaluate((el) => {
+            const c = el.querySelector('.origam-form__content') as HTMLElement
+            const a = (el.querySelector('[data-cy="form-content-gap-a"]') as HTMLElement).getBoundingClientRect()
+            const b = (el.querySelector('[data-cy="form-content-gap-b"]') as HTMLElement).getBoundingClientRect()
+            const cs = getComputedStyle(c)
+            return { display: cs.display, rowGap: cs.rowGap, space: b.top - a.bottom }
+        })
+        expect(m.display).toBe('grid')
+        expect(m.rowGap).toBe('24px')
+        expect(m.space).toBeCloseTo(24, 0)
+    })
 })

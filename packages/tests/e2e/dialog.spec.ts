@@ -686,3 +686,22 @@ test.describe('OrigamDialog', () => {
 		})
 	})
 })
+
+// contentGap — variant « Prop — contentGap » (index 20, appended after the reachability probe).
+test('contentGap="24px" spaces two blocks of the dialog content by 24px', async ({ page }) => {
+    const id = 'components-stories-dialog-origamdialog-story-vue'
+    await page.goto(`/stories/story/${ id }?variantId=${ id }-20`, { waitUntil: 'domcontentloaded' })
+    const sandbox: FrameLocator = page.frameLocator('iframe[src*="__sandbox"]')
+    await sandbox.locator('[data-cy="dialog-content-gap-open"]').click()
+    await expect(sandbox.locator('#gap-b')).toBeVisible({ timeout: 10000 })
+    const m = await sandbox.locator('#gap-a').evaluate((a) => {
+        const b = a.ownerDocument.querySelector('#gap-b') as HTMLElement
+        const content = a.closest('.origam-card__content') as HTMLElement
+        return {
+            rowGap: getComputedStyle(content).rowGap,
+            space: b.getBoundingClientRect().top - a.getBoundingClientRect().bottom
+        }
+    })
+    expect(m.rowGap).toBe('24px')
+    expect(m.space).toBeCloseTo(24, 0)
+})

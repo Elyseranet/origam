@@ -455,6 +455,24 @@
 				</origam-dialog>
 			</div>
 		</Variant>
+
+		<Variant title="Prop — contentGap">
+			<div style="padding: 16px;">
+				<origam-dialog
+						v-model="contentGapOpen"
+						title="Content gap"
+						content-gap="24px"
+				>
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open content gap" data-cy="dialog-content-gap-open"/>
+					</template>
+					<template #content>
+						<div id="gap-a" style="height: 40px; flex: 0 0 auto;">A</div>
+						<div id="gap-b" style="height: 40px; flex: 0 0 auto;">B</div>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -492,6 +510,7 @@
 	const slotActivatorOpen  = ref(false)
 	const slotAssetOpen      = ref(false)
 	const overflowContentOpen  = ref(false)
+	const contentGapOpen  = ref(false)
 	const slotContentOpen    = ref(false)
 	const slotDefaultOpen    = ref(false)
 	const slotFooterOpen     = ref(false)

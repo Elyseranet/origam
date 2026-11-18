@@ -4,6 +4,7 @@ import type {
     ICommonsComponentProps,
     ICommonsComponentSlots
 } from '../Commons/commons.interface'
+import type { IContentProps } from '../Commons/content.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 import type { TValidateOn } from '../../types/Commons/validation.type'
 
@@ -25,7 +26,7 @@ export interface IFormProvide {
     validateOn: Ref<TValidateOn | undefined>
 }
 
-export interface IFormProps extends ICommonsComponentProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
+export interface IFormProps extends ICommonsComponentProps, IContentProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     disabled?: boolean
     fastFail?: boolean
     readonly?: boolean
