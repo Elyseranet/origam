@@ -18,6 +18,30 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.38.2] - 2026-11-18
+
+### Fixed — accessibilité : règle axe 4.14 `label-content-name-mismatch` (#1371, #1379)
+
+- **`OrigamBracketCompetitor`** : le nom accessible n'est plus « Alice, score 2, winner » imposé par `aria-label`. Il vient du contenu visible (« Alice 2 »). Le statut de vainqueur passe dans `aria-description`.
+- **`OrigamPagination`** : le libellé anglais du bouton précédent passe de « Prev » à « Previous ». En français, « Précédent » et « Suivant » deviennent « Précédente » et « Suivante ».
+- **`OrigamTreeviewNode`** : l'`aria-label` qui doublait le libellé visible du nœud est retiré.
+
+### Fixed — `v-ripple` suit enfin la prop `ripple` (#1349)
+
+- Sur `OrigamBtn`, `OrigamChip` et `OrigamSelectionControl`, la directive recevait un tableau, toujours vrai : l'ondulation restait active même avec `disabled` ou `ripple=false`. Elle suit désormais `ripple` et l'état désactivé.
+- Les modifiers `center` et `circle` ne sont toujours pas appliqués : suivi dans #1378.
+- `OrigamOverlay` : `v-click-outside` ne reçoit plus `[null]` quand l'activateur est absent.
+- `OrigamTabPanels` et `OrigamWindow` : la directive tactile reçoit `undefined` au lieu de `false` quand le swipe est désactivé.
+- `useDisplay` : l'effet des breakpoints passe en `flush: 'sync'`. Avec Vue 3.5.45 les flags restaient périmés à la première lecture.
+
+### Changed — dépendances
+
+- Vue 3.5.45, vue-router 5.5.1, `@vitejs/plugin-vue` 6.0.11, vue-tsc 3.3.14, vue-sfc-transformer 0.3.3 (#1349).
+- Outillage : vite 8 et vitest 5 (#1199), jsdom 31 et `@axe-core/playwright` 4.14 (#1371), `@types/node` 26.6.6 (#1201), lint (#1362), shiki 4.6.0 (#1363), typeorm 1.1.3 (#1364).
+- `pnpm-lock.yaml` régénéré : une clé dupliquée cassait `pnpm install --frozen-lockfile` sur develop (#1374, #1376).
+
+- **Vérifié** : CI de la PR #1349 (24 checks) et de la PR #1371 (23/23 checks verts, dont les jobs axe composants et marketing, les 4 shards E2E et les unit tests Node 22 et 24).
+
 ## [2.38.1] - 2026-11-17
 
 ### Security — nuxt 4.6.4, avis `pnpm audit` (#1366)
