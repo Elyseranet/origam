@@ -161,9 +161,6 @@
 		return t('origam.bracket.advantage_aria_label', rounds)
 	})
 
-	// Pas d'`aria-label` : le nom accessible vient du contenu visible (nom + score),
-	// sinon axe 4.14 `label-content-name-mismatch`. Le sens non visible
-	// (vainqueur / a determiner) passe par la description.
 	const ariaDescription = computed<string | undefined>(() => {
 		if (isTbd.value) return t('origam.bracket.tbd_long')
 
