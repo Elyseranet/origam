@@ -17,7 +17,7 @@ import {
 } from '../consts/catalog-detail-nav.const'
 import type { ICatalogRelatedGroup, ICatalogRelatedGroupView } from '../interfaces/catalog-neighbours.interface'
 import type { TReferenceKind } from '../types/api-reference.type'
-import type { TTranslate } from '../types/i18n.type'
+import type { TTranslate } from '../types/global-search.type'
 
 /** Vrai quand une famille compte plus d'entrées que la limite : elle se replie. */
 export function isRelatedGroupCollapsible (count: number, limit = CATALOG_RELATED_LIMIT): boolean {
