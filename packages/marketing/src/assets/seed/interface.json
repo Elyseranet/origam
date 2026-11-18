@@ -1,8 +1,8 @@
 {
   "kind": "interface",
-  "exportedAt": "2026-11-17T18:48:57.706Z",
-  "sourceCommit": "2909b321a",
-  "entryCount": 994,
+  "exportedAt": "2026-11-18T16:12:23.312Z",
+  "sourceCommit": "fe36f02cc",
+  "entryCount": 995,
   "entries": [
     {
       "entry": {
@@ -13369,7 +13369,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_card_props.description",
         "description_fallback": "Full prop surface for OrigamCard — extends the entire cross-cutting DS commons (tag, color, bgColor, border, density, dimension, elevation, loader, location, position, rounded, margin, padding, link, ripple, adjacent, active) plus card-specific props (disabled, flat, hover, image, link, subtitle, text, title, type).",
-        "definition": "export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, IDensityProps, IDimensionProps, IElevationProps, ILoaderProps, ILocationProps, IPositionProps, IRoundedProps, IMarginProps, IPaddingProps, ILinkProps, IRippleProps, IAdjacentProps, IActiveProps, IHoverProps {\n    /*********************************************************\n     * contentDisplay\n     *\n     * @description\n     * `display` of the `.origam-card__content` wrapper around the default and `text` slots (#1100).\n     * `contents` flattens it so the slotted children become direct items of the card's own grid / flex layout.\n     * Defaults to the `--origam-card__content---display` token (`block`).\n     ********************************************************/\n    contentDisplay?: TCardContentDisplay\n    disabled?: boolean\n    flat?: boolean\n    image?: string\n    link?: boolean\n    subtitle?: string | number\n    text?: string | number\n    title?: string | number\n    type?: TCardType\n    /*********************************************************\n     * titleId\n     *\n     * @description\n     * Forwarded to the nested `<OrigamCardHeader>` as its own `titleId`\n     * (#412) — lets a consumer (e.g. `<OrigamDialog>`) give the rendered\n     * title element a stable DOM id to target with `aria-labelledby`,\n     * without overloading `id` (already the Card's own root/style id).\n     ********************************************************/\n    titleId?: string\n}",
+        "definition": "export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, IDensityProps, IDimensionProps, IElevationProps, ILoaderProps, ILocationProps, IPositionProps, IRoundedProps, IMarginProps, IPaddingProps, ILinkProps, IRippleProps, IAdjacentProps, IActiveProps, IHoverProps, IContentProps {\n    disabled?: boolean\n    flat?: boolean\n    image?: string\n    link?: boolean\n    subtitle?: string | number\n    text?: string | number\n    title?: string | number\n    type?: TCardType\n    /*********************************************************\n     * titleId\n     *\n     * @description\n     * Forwarded to the nested `<OrigamCardHeader>` as its own `titleId`\n     * (#412) — lets a consumer (e.g. `<OrigamDialog>`) give the rendered\n     * title element a stable DOM id to target with `aria-labelledby`,\n     * without overloading `id` (already the Card's own root/style id).\n     ********************************************************/\n    titleId?: string\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -13389,25 +13389,13 @@
       },
       "props": [
         {
-          "name": "contentDisplay",
-          "type_label": "TCardContentDisplay",
-          "type_slug": null,
-          "type_kind": null,
-          "optional": true,
-          "required": false,
-          "position": 0,
-          "default_value": null,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
           "name": "disabled",
           "type_label": "boolean",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 1,
+          "position": 0,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Puts the card in a disabled state — mutes pointer events and reduces visual opacity."
@@ -13419,7 +13407,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 2,
+          "position": 1,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Removes the elevation shadow, rendering the card flush with its container."
@@ -13431,7 +13419,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 3,
+          "position": 2,
           "default_value": null,
           "description_key": null,
           "description_fallback": "URL of an image rendered as the card background."
@@ -13443,7 +13431,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 4,
+          "position": 3,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Renders the card as a navigable link surface (adds cursor pointer and focuses via href/to)."
@@ -13455,7 +13443,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 5,
+          "position": 4,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Secondary text line rendered below the title in the built-in header."
@@ -13467,7 +13455,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 6,
+          "position": 5,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Body text rendered inside the built-in card text area."
@@ -13479,7 +13467,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 7,
+          "position": 6,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Headline text rendered in the built-in card header."
@@ -13491,7 +13479,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 8,
+          "position": 7,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Card type variant — controls layout and semantic role (e.g. outlined, tonal, elevated)."
@@ -13503,7 +13491,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 9,
+          "position": 8,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -13723,6 +13711,16 @@
           "to_name": "IHoverProps",
           "prop_name": null,
           "position": 18,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "extends",
+          "to_kind": "interface",
+          "to_slug": "i-content-props",
+          "to_name": "IContentProps",
+          "prop_name": null,
+          "position": 19,
           "description_key": null,
           "description_fallback": null
         }
@@ -38927,6 +38925,70 @@
     {
       "entry": {
         "kind": "interface",
+        "slug": "i-content-props",
+        "name": "IContentProps",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IContentProps {\n    /*********************************************************\n     * contentDisplay\n     *\n     * @description\n     * `display` of the content wrapper. `contents` flattens it into the host's own layout.\n     ********************************************************/\n    contentDisplay?: TCardContentDisplay\n    /*********************************************************\n     * contentGap\n     *\n     * @description\n     * `gap` between the blocks of the content wrapper — a CSS length, or a number read as px. Needs `flex` / `grid`.\n     ********************************************************/\n    contentGap?: string | number\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Commons/content.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "contentDisplay",
+          "type_label": "TCardContentDisplay",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "contentGap",
+          "type_label": "string | number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "interface",
         "slug": "i-contextual-menu-emits",
         "name": "IContextualMenuEmits",
         "category": "ContextualMenu",
@@ -59185,7 +59247,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_form_props.description",
         "description_fallback": "Props for OrigamForm — controls disabled/readonly state, validation timing (validateOn), fast-fail behaviour, error messages, hints, scroll-to-error, and the overall validity v-model.",
-        "definition": "export interface IFormProps extends ICommonsComponentProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {\n    disabled?: boolean\n    fastFail?: boolean\n    readonly?: boolean\n    modelValue?: boolean | null\n    validateOn?: TValidateOn\n    rules?: Array<any>\n    errorMessages?: Array<string> | string\n    hint?: string\n    messages?: Array<string> | string\n    scrollToError?: boolean | ScrollIntoViewOptions\n}",
+        "definition": "export interface IFormProps extends ICommonsComponentProps, IContentProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {\n    disabled?: boolean\n    fastFail?: boolean\n    readonly?: boolean\n    modelValue?: boolean | null\n    validateOn?: TValidateOn\n    rules?: Array<any>\n    errorMessages?: Array<string> | string\n    hint?: string\n    messages?: Array<string> | string\n    scrollToError?: boolean | ScrollIntoViewOptions\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -59365,10 +59427,20 @@
         {
           "rel_type": "extends",
           "to_kind": "interface",
+          "to_slug": "i-content-props",
+          "to_name": "IContentProps",
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "extends",
+          "to_kind": "interface",
           "to_slug": "pick",
           "to_name": "Pick",
           "prop_name": null,
-          "position": 1,
+          "position": 2,
           "description_key": null,
           "description_fallback": null
         }
@@ -79837,7 +79909,7 @@
         "icon": null,
         "description_key": "",
         "description_fallback": "",
-        "definition": "export interface IPaginationProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ISizeProps, IDensityProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {\n    start?: number\n    modelValue?: number\n    disabled?: boolean\n    length?: number | string\n    totalVisible?: number | string\n    firstIcon?: TIcon\n    prevIcon?: TIcon\n    nextIcon?: TIcon\n    lastIcon?: TIcon\n    ariaLabel?: string\n    pageAriaLabel?: string\n    currentPageAriaLabel?: string\n    firstAriaLabel?: string\n    previousAriaLabel?: string\n    nextAriaLabel?: string\n    lastAriaLabel?: string\n    ellipsis?: string\n    showFirstLastPage?: boolean\n    compact?: boolean\n    pageText?: string\n    ofText?: string\n    /**\n     * Toggle the \"with info\" mode — pagination then renders a left-side\n     * range label `Showing {start}-{end} of {total}` next to the standard\n     * list of page buttons. Requires `total` (and optionally `perPage`)\n     * to compute meaningful start/end indices.\n     */\n    withInfo?: boolean\n    /**\n     * Total number of *items* (NOT pages). Drives the `withInfo` label —\n     * \"Showing 21-40 of {total}\". When omitted while `withInfo` is true,\n     * falls back to `length * perPage`.\n     */\n    total?: number | string\n    /**\n     * Number of items rendered on a single page. Used together with\n     * `total` to compute the Showing N-M range. Defaults to 10 when\n     * `withInfo` is enabled.\n     */\n    perPage?: number | string\n    /** i18n key for the `withInfo` label. Receives `{0}=start`, `{1}=end`, `{2}=total`. */\n    infoText?: string\n    /**\n     * Label rendered next to the prev chevron in `withInfo` mode.\n     * Default falls back to the `origam.pagination.previous` i18n key\n     * (`\"Prev\"` in English). Useful for setting a translated label\n     * inline without touching the locale catalogue.\n     */\n    previousText?: string\n    /**\n     * Label rendered next to the next chevron in `withInfo` mode.\n     * Default falls back to the `origam.pagination.next` i18n key\n     * (`\"Next\"` in English).\n     */\n    nextText?: string\n    /**\n     * aria-label for the compact mode page number `<input>`. Falls back to\n     * the `origam.pagination.aria_label.page_number` i18n key.\n     *\n     * @default 'origam.pagination.aria_label.page_number'\n     */\n    pageNumberAriaLabel?: string\n}",
+        "definition": "export interface IPaginationProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ISizeProps, IDensityProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {\n    start?: number\n    modelValue?: number\n    disabled?: boolean\n    length?: number | string\n    totalVisible?: number | string\n    firstIcon?: TIcon\n    prevIcon?: TIcon\n    nextIcon?: TIcon\n    lastIcon?: TIcon\n    ariaLabel?: string\n    pageAriaLabel?: string\n    currentPageAriaLabel?: string\n    firstAriaLabel?: string\n    previousAriaLabel?: string\n    nextAriaLabel?: string\n    lastAriaLabel?: string\n    ellipsis?: string\n    showFirstLastPage?: boolean\n    compact?: boolean\n    pageText?: string\n    ofText?: string\n    /**\n     * Toggle the \"with info\" mode — pagination then renders a left-side\n     * range label `Showing {start}-{end} of {total}` next to the standard\n     * list of page buttons. Requires `total` (and optionally `perPage`)\n     * to compute meaningful start/end indices.\n     */\n    withInfo?: boolean\n    /**\n     * Total number of *items* (NOT pages). Drives the `withInfo` label —\n     * \"Showing 21-40 of {total}\". When omitted while `withInfo` is true,\n     * falls back to `length * perPage`.\n     */\n    total?: number | string\n    /**\n     * Number of items rendered on a single page. Used together with\n     * `total` to compute the Showing N-M range. Defaults to 10 when\n     * `withInfo` is enabled.\n     */\n    perPage?: number | string\n    /** i18n key for the `withInfo` label. Receives `{0}=start`, `{1}=end`, `{2}=total`. */\n    infoText?: string\n    /**\n     * Label rendered next to the prev chevron in `withInfo` mode.\n     * Default falls back to the `origam.pagination.previous` i18n key\n     * (`\"Previous\"` in English). Useful for setting a translated label\n     * inline without touching the locale catalogue.\n     */\n    previousText?: string\n    /**\n     * Label rendered next to the next chevron in `withInfo` mode.\n     * Default falls back to the `origam.pagination.next` i18n key\n     * (`\"Next\"` in English).\n     */\n    nextText?: string\n    /**\n     * aria-label for the compact mode page number `<input>`. Falls back to\n     * the `origam.pagination.aria_label.page_number` i18n key.\n     *\n     * @default 'origam.pagination.aria_label.page_number'\n     */\n    pageNumberAriaLabel?: string\n}",
         "signature": null,
         "tag": null,
         "value": null,
