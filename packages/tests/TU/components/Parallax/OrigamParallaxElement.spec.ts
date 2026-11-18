@@ -63,25 +63,25 @@ describe('OrigamParallaxElement — calculateMouseMovement, event="move"', () =>
 
     it('no axis set: both channels pass through (X=10 -> -11px, Y=20 -> -21px)', () => {
         const wrapper = mountElement(makeParallaxProvide({ event: ref('move' as any) }))
-        expect(transformOf(wrapper)).toBe('translate3d(-11px, -21px, 0)')
+        expect(transformOf(wrapper)).toBe('translate3d(-11px, -21px, 0px)')
         wrapper.unmount()
     })
 
     it('axis="x": X passes through (-11px), Y is zeroed (-1px)', () => {
         const wrapper = mountElement(makeParallaxProvide({ event: ref('move' as any) }), { axis: 'x' })
-        expect(transformOf(wrapper)).toBe('translate3d(-11px, -1px, 0)')
+        expect(transformOf(wrapper)).toBe('translate3d(-11px, -1px, 0px)')
         wrapper.unmount()
     })
 
     it('axis="y": X is zeroed (-1px), Y passes through (-21px)', () => {
         const wrapper = mountElement(makeParallaxProvide({ event: ref('move' as any) }), { axis: 'y' })
-        expect(transformOf(wrapper)).toBe('translate3d(-1px, -21px, 0)')
+        expect(transformOf(wrapper)).toBe('translate3d(-1px, -21px, 0px)')
         wrapper.unmount()
     })
 
     it('axis="both" behaves like no axis: both channels pass through', () => {
         const wrapper = mountElement(makeParallaxProvide({ event: ref('move' as any) }), { axis: 'both' })
-        expect(transformOf(wrapper)).toBe('translate3d(-11px, -21px, 0)')
+        expect(transformOf(wrapper)).toBe('translate3d(-11px, -21px, 0px)')
         wrapper.unmount()
     })
 })
@@ -92,7 +92,7 @@ describe('OrigamParallaxElement — calculateMouseMovement, event="move"', () =>
 describe('OrigamParallaxElement — calculateMouseMovement, event="orientation"', () => {
     it('behaves like event="move": axis="x" passes X through, zeroes Y', () => {
         const wrapper = mountElement(makeParallaxProvide({ event: ref('orientation' as any) }), { axis: 'x' })
-        expect(transformOf(wrapper)).toBe('translate3d(-11px, -1px, 0)')
+        expect(transformOf(wrapper)).toBe('translate3d(-11px, -1px, 0px)')
         wrapper.unmount()
     })
 })
@@ -108,19 +108,19 @@ describe('OrigamParallaxElement — calculateMouseMovement, event="scroll"', () 
 
     it('axis="x": the scroll value routes to the X channel (-36px), Y is zeroed (-1px)', () => {
         const wrapper = mountElement(makeParallaxProvide({ event: ref('scroll' as any) }), { axis: 'x' })
-        expect(transformOf(wrapper)).toBe('translate3d(-36px, -1px, 0)')
+        expect(transformOf(wrapper)).toBe('translate3d(-36px, -1px, 0px)')
         wrapper.unmount()
     })
 
     it('axis="y": X is zeroed (-1px), the scroll value routes to the Y channel (-36px)', () => {
         const wrapper = mountElement(makeParallaxProvide({ event: ref('scroll' as any) }), { axis: 'y' })
-        expect(transformOf(wrapper)).toBe('translate3d(-1px, -36px, 0)')
+        expect(transformOf(wrapper)).toBe('translate3d(-1px, -36px, 0px)')
         wrapper.unmount()
     })
 
     it('no axis set behaves like axis="y" (scroll value defaults to the Y channel)', () => {
         const wrapper = mountElement(makeParallaxProvide({ event: ref('scroll' as any) }))
-        expect(transformOf(wrapper)).toBe('translate3d(-1px, -36px, 0)')
+        expect(transformOf(wrapper)).toBe('translate3d(-1px, -36px, 0px)')
         wrapper.unmount()
     })
 })
@@ -132,13 +132,13 @@ describe('OrigamParallaxElement — calculateMouseMovement, event="scroll"', () 
 describe('OrigamParallaxElement — calculateMouseMovement early-return guards', () => {
     it('shape=null -> zero movement regardless of axis', () => {
         const wrapper = mountElement(makeParallaxProvide({ shape: ref(null) }), { axis: 'x' })
-        expect(transformOf(wrapper)).toBe('translate3d(-1px, -1px, 0)')
+        expect(transformOf(wrapper)).toBe('translate3d(-1px, -1px, 0px)')
         wrapper.unmount()
     })
 
     it('isMoving=false -> zero movement even with a valid shape', () => {
         const wrapper = mountElement(makeParallaxProvide({ isMoving: ref(false) }), { axis: 'x' })
-        expect(transformOf(wrapper)).toBe('translate3d(-1px, -1px, 0)')
+        expect(transformOf(wrapper)).toBe('translate3d(-1px, -1px, 0px)')
         wrapper.unmount()
     })
 })

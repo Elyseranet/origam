@@ -142,7 +142,6 @@
               <nuxt-link
                 :to="`/components/${entry.slug}`"
                 class="components-catalog-card__link"
-                :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
                 :data-cy="`components-card-${entry.slug}`"
               >
                 <origam-card

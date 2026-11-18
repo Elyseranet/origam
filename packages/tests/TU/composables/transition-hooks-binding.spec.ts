@@ -75,7 +75,7 @@ describe('useCssTransition — liaison des hooks JS (#549)', () => {
 
         ;(bind.onBeforeEnter as (e: HTMLElement) => void)(el)
 
-        expect(el.style.transformOrigin).toBe('top left')
+        expect(el.style.transformOrigin).toBe('left top')
     })
 
     it('hideOnLeave est applique par onLeave en usage normal', () => {
