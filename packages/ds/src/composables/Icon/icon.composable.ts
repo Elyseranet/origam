@@ -1,7 +1,8 @@
 import { computed, inject, Ref, unref } from 'vue'
 import { OrigamComponentIcon, OrigamSvgIcon } from '../../components/Icon/index'
 
-import { MDI, MDI_ALIASES } from '../../consts/Commons/mdi.const'
+import { MDI_ALIASES } from '../../consts/Commons/mdi.const'
+import { MDI, MDI_CORE_ALIASES } from '../../consts/Commons/mdi-core.const'
 import { DEFAULT_SETS, ORIGAM_ICONS_KEY } from '../../consts/Icon/icon.const'
 
 import type { TIcon, TIconInstance, TIconOptions } from '../../types/Icon/icon.type'
@@ -102,6 +103,19 @@ export const useIcon = (props: Ref<TIcon | undefined>) => {
  * qui permet d'ecrire `icon="mdi-account"` sans configuration prealable.
  ********************************************************/
 export function createIcons (options?: TIconOptions) {
+    return createIconsCore(mergeDeep({aliases: MDI_ALIASES}, options))
+}
+
+/*********************************************************
+ * createIconsCore (#1384)
+ *
+ * @description
+ * `createIcons` without the 7 000 `MDI_ICONS` aliases: the default set and
+ * the ~45 semantic aliases only. Used by `createOrigamCore`, so the enum is
+ * not bundled. `$ABACUS`-style aliases come back by passing
+ * `icons: {aliases: MDI_ICONS}`.
+ ********************************************************/
+export function createIconsCore (options?: TIconOptions) {
     return mergeDeep({
         defaultSet: 'mdi',
         sets: {
@@ -109,7 +123,7 @@ export function createIcons (options?: TIconOptions) {
             mdi: MDI
         },
         aliases: {
-            ...MDI_ALIASES
+            ...MDI_CORE_ALIASES
         }
     }, options)
 }

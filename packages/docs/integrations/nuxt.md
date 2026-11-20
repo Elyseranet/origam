@@ -115,6 +115,8 @@ export default defineNuxtConfig({
 | `includeUtilities` | `boolean` | `true` | Inject the utility-classes stylesheet (`origam-utilities.css`). |
 | `locale` | `ILocaleOptions` | `undefined` (`en`) | Locale of Origam's built-in strings (aria-labels, button labels…). Serialisable: `{ locale, fallbackLocale, messages }`. See [Locale](#locale). |
 | `icons` | `{ defaultSet?, aliases? }` | `undefined` | `defaultSet` and `aliases` of `createOrigam({ icons })` (e.g. `{ aliases: { info: 'mdi-information-outline' } }` so `<origam-icon icon="$info" />` resolves it). Serialisable subset only: aliases are strings (or path arrays), never components. `sets` (render functions) is **not** relayed. |
+| `lite` | `boolean` | `false` | Build the app with `createOrigamCore` (`origam/core`): no `import *` of every component and directive, no MDI stylesheet. Same themes, PROPS-FIRST, locale and SSR styles. Components come from Nuxt's on-demand auto-import. Icons become opt-in: add `@mdi/font/css/materialdesignicons.css` to `css` yourself. See [Lightweight entry](#lightweight-entry). |
+| `include` | `string[]` | `undefined` | With `lite` and `autoImport`: the only components Nuxt may auto-import (`['OrigamBtn', 'OrigamTitle']`). An unknown name fails the build. Omitted: every component is available on demand. |
 | `prefix` | `string` | `'Origam'` | Reserved for future use. origam components already ship prefixed, so the active prefix is empty. |
 
 ## Locale
@@ -281,6 +283,23 @@ plus optional `description` and `swatch`):
 The metadata comes from the `label` / `description` / `swatch` fields on
 the installed `IOrigamTheme` objects. The brand-name list is also exposed
 on `useRuntimeConfig().public.origam.themes` (names only) for SSR contexts.
+
+## Lightweight entry
+
+By default the plugins call `createOrigam`, which pulls in every component and the MDI font stylesheet. For a site that uses a few components, set `lite`:
+
+```ts
+export default defineNuxtConfig({
+    modules: ['origam/nuxt'],
+    origam: {
+        lite: true,
+        include: ['OrigamTitle', 'OrigamBtn'], // optional
+        themes: [myTheme]
+    }
+})
+```
+
+No `build.transpile` entry is needed (the SSR build of a Nuxt 4.6 app with `lite: true` runs without it). The module's token stylesheets (`origam/tokens/css/*`) are still added to `css`: they are independent of `lite`.
 
 ## Opting out of auto-imports
 

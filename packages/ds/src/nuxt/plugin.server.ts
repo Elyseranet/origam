@@ -1,4 +1,4 @@
-import { createOrigam } from '../origam'
+import { createOrigamForNuxt as createOrigam } from '#origam-create'
 
 import { nuxtIconsOptions } from '../utils/Commons/nuxt-icons.util'
 import { nuxtLocaleOptions } from '../utils/Commons/nuxt-locale.util'

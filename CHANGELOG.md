@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added — entrée allégée `origam/core` / `createOrigamCore` (#1384)
+
+- `createOrigamCore(options)` (`origam/core`) : même API et même installation que `createOrigam` (thèmes, bloc `components` du thème = PROPS-FIRST, locale, display, styles SSR), mais **sans** `import *` des composants et des directives et **sans** `@mdi/font/css/materialdesignicons.css`. Composants et directives passés explicitement (`components: { OrigamBtn }`), tree-shakables ; icônes en opt-in.
+- `createIconsCore` : `createIcons` sans les ~7 000 alias `MDI_ICONS` (jeu `mdi` + alias sémantiques seulement). Nouveau fichier `consts/Commons/mdi-core.const.ts` (`MDI`, `MDI_CORE_ALIASES`) ; `MDI` et `MDI_ALIASES` restent exportés par `mdi.const.ts`.
+- Module Nuxt : option `lite` (les plugins passent par `createOrigamCore`, alias `#origam-create`) et option `include` (liste des composants auto-importables).
+- Garde de budget : fixture `packages/tests/TU/fixtures/lite-entry` + `TU/origam/lite-entry-1384.spec.ts`. Le test construit la fixture (Vite, 4 composants + un thème) et échoue au-delà de 105 Kio gzip de JS ou 10 Kio gzip de CSS, si le bundle contient `materialdesignicons` ou un composant non importé, ou si les props du thème ne s'appliquent pas au rendu serveur.
+
+`createOrigam` est inchangé (signature, défauts, CSS MDI, composants et directives). Il s'appuie désormais sur `createOrigamCore`. `createIcons` garde ses alias.
+
+
 ## [2.39.0] - 2026-11-18
 
 ### Added — espacement du contenu de Card et de Form (#1381)

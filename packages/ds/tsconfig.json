@@ -8,7 +8,8 @@
     "rootDir": "./src",
     "baseUrl": ".",
     "paths": {
-      "#app": ["./src/nuxt/nuxt-app.shim.d.ts"]
+      "#app": ["./src/nuxt/nuxt-app.shim.d.ts"],
+      "#origam-create": ["./src/nuxt/create.full.ts"]
     }
   },
   "include": [

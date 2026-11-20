@@ -1,0 +1,325 @@
+import {
+    createDate,
+    createDefaults,
+    createDisplay,
+    createGoTo,
+    createIconsCore,
+    createLocale,
+    installThemePropsResolver,
+    resolveVariantPresetRegistry,
+    themedPropKeysUnion
+} from './composables'
+
+import {
+    IN_BROWSER,
+    ORIGAM_CODE_KEY,
+    ORIGAM_DATE_ADAPTER_KEY,
+    ORIGAM_DATE_OPTIONS_KEY,
+    ORIGAM_DEFAULTS_KEY,
+    ORIGAM_DISPLAY_KEY,
+    ORIGAM_GO_TO_KEY,
+    ORIGAM_ICONS_KEY,
+    ORIGAM_LOCALE_KEY,
+    ORIGAM_SSR_STYLES_KEY,
+    ORIGAM_THEME_DEFAULTS_KEY,
+    ORIGAM_THEMES_KEY,
+    VARIANT_PRESETS
+} from './consts'
+
+import { setContrastConfig } from './directives/Contrast/contrast.directive'
+
+import type { IDefault, INuxtAwareApp, IOrigamOptions, IOrigamTheme } from './interfaces'
+import type { TIconOptions, TModeResolved, TVariantPresetRegistry } from './types'
+import { applyThemes, installedThemesFromList, mergeDeep, registerSsrStyleCollector } from './utils'
+
+import { App, ComponentPublicInstance, defineComponent, effectScope, InjectionKey, nextTick, reactive } from 'vue'
+
+/*********************************************************
+ * createOrigamCore (#1384)
+ *
+ * @description
+ * Lightweight entry of `createOrigam`: same options, same install (themes,
+ * PROPS-FIRST resolver, defaults, locale, display, SSR styles) but it imports
+ * NEITHER the component/directive namespaces NOR the MDI stylesheet. Components
+ * and directives are registered only when passed in `options.components` /
+ * `options.directives`, so the bundler keeps what the app imports and nothing
+ * else. Icons are opt-in: the app imports `@mdi/font/css/materialdesignicons.css`
+ * itself (or passes SVG icons).
+ * @description
+ * `createOrigam` (origam.ts) is this function plus the full components,
+ * directives and the MDI stylesheet as defaults.
+ ********************************************************/
+export function createOrigamCore (origam: IOrigamOptions = {}) {
+    const {blueprint, ...rest} = origam
+    const options: IOrigamOptions = mergeDeep(blueprint, rest)
+    const {
+        aliases = {},
+        components = {},
+        directives = {}
+    } = options
+
+    // Collect singular `theme` + plural `themes` into one install list. The
+    // installed-brand summary is computed eagerly (pure, SSR-safe) so it can be
+    // provided to the app context on both server and client.
+    //
+    // ⛔ #360 (v3.0.0 harvest) — `createOrigam()` no longer prefixes this list
+    // with the DS's own `origamTheme` baseline. A bare `app.use(createOrigam())`
+    // installs NO theme: no `vars` CSS is injected, and no per-component
+    // `components` prop default (ADR-005) is resolved — components fall back to
+    // their own hardcoded `withDefaults()` values only. The baseline identity
+    // (`origamTheme`, ROOT-scoped: light at `:root`, dark at `[data-mode="dark"]`)
+    // is still shipped — `import { origamTheme } from 'origam/themes'` — but a
+    // consumer now opts in explicitly: `createOrigam({ themes: origamTheme })`.
+    // See CHANGELOG.md [Unreleased] for the before/after migration snippet.
+    const suppliedThemes = [
+        ...(options.theme ? [options.theme] : []),
+        ...(options.themes ?? [])
+    ]
+    const allThemes: IOrigamTheme[] = [...suppliedThemes]
+    const installedThemes = installedThemesFromList(allThemes)
+
+    // Seed the per-component DEFAULT PROPS provider. The active brand×mode
+    // themes' `component` maps are collapsed into one `IDefault` and provided
+    // under `ORIGAM_DEFAULTS_KEY`, so `useDefaults(props)` in components resolves
+    // a missing prop against the theme before falling back to `withDefaults`.
+    // The Nuxt plugins reassign `defaultsRef.value` (a NEW object) whenever the
+    // brand / mode changes — never mutate in place, or the `useDefaults`
+    // computeds won't re-evaluate.
+    const defaultsRef = createDefaults({})
+    defaultsRef.value = activeDefaultsFor(allThemes, allThemes[0]?.name ?? '', undefined)
+
+    // ADR-005 — the union of every prop key ANY registered theme names (not
+    // only the brand×mode active at mount, see `themedPropKeysUnion`'s own
+    // doc comment for why that scoping matters), used to decide which props
+    // `installThemePropsResolver` intercepts on `instance.props`. Computed
+    // once, eagerly, from the same install list `activeDefaultsFor` reads —
+    // pure, SSR-safe.
+    const themedKeysUnion = themedPropKeysUnion(
+        allThemes.map((theme) => theme.components).filter((components): components is IDefault => !!components)
+    )
+
+    /*********************************************************
+     * variantPresets
+     *
+     * @description
+     * ADR-005 D1 + D4 — les tables de presets que le DS livre, surchargees
+     * par ce que les themes enregistres declarent sous `variants`.
+     *
+     * @description
+     * Collapse une seule fois, synchronement, comme `themedKeysUnion` :
+     * pure, SSR-safe, et sur la liste COMPLETE des themes installes plutot
+     * que sur la marque active au montage — un basculement de marque a
+     * l'execution doit trouver les slots deja patches.
+     ********************************************************/
+    const variantPresets = resolveVariantPresetRegistry(
+        VARIANT_PRESETS,
+        allThemes.map((theme) => theme.variants).filter((variants): variants is TVariantPresetRegistry => !!variants)
+    )
+
+    const scope = effectScope()
+    return scope.run(() => {
+        const icons = createIconsCore(options.icons)
+        const display = createDisplay(options.display, options.ssr)
+        const locale = createLocale(options.locale)
+        const date = createDate(options.date, locale)
+        const goTo = createGoTo(options.goTo, locale)
+
+        setContrastConfig(options.contrast)
+
+        const install = (app: App) => {
+            // Runtime theme injection. SSR-safe: `applyThemes` is a no-op when
+            // `document` is unavailable, so the server render is untouched and
+            // the variables land on the first client install instead. Each
+            // theme gets its own name×mode scoped `<style>` block.
+            if (allThemes.length) {
+                applyThemes(allThemes)
+            }
+
+            for (const key in directives) {
+                app.directive(key, directives[key])
+            }
+
+            for (const key in components) {
+                app.component(key, components[key])
+            }
+
+            for (const key in aliases) {
+                app.component(key, defineComponent({
+                    ...aliases[key],
+                    name: key,
+                    aliasName: aliases[key].name
+                }))
+            }
+
+
+            const appScope = effectScope()
+            app.onUnmount(() => appScope.stop())
+
+            app.provide(ORIGAM_ICONS_KEY, icons as Required<TIconOptions>)
+            /*********************************************************
+             * ORIGAM_CODE_KEY
+             *
+             * @description
+             * Optional — see `ICodeOptions`. `{}` (no `highlighter`) when the
+             * consumer never set `code`, so `useCode()`'s `inject(ORIGAM_CODE_KEY)`
+             * always finds a defined-but-empty object once the plugin IS
+             * installed, and `undefined` only when it is not installed at all.
+             ********************************************************/
+            app.provide(ORIGAM_CODE_KEY, options.code ?? {})
+            app.provide(ORIGAM_DISPLAY_KEY, display)
+            app.provide(ORIGAM_LOCALE_KEY, locale)
+            app.provide(ORIGAM_DATE_OPTIONS_KEY, date.options)
+            app.provide(ORIGAM_DATE_ADAPTER_KEY, date.instance)
+            app.provide(ORIGAM_GO_TO_KEY, goTo)
+            app.provide(ORIGAM_THEMES_KEY, installedThemes)
+            app.provide(ORIGAM_DEFAULTS_KEY, defaultsRef)
+            /*********************************************************
+             * ORIGAM_SSR_STYLES_KEY (#1092)
+             *
+             * @description
+             * Server render only. `useStyle()` writes its rule to `<head>` from
+             * `onMounted`, which never runs here, so it registers the rule in
+             * this per-app collector instead; the host reads it back with
+             * `renderSsrStyles(app)` (plain Vue SSR) or the Nuxt server plugin.
+             * Never provided in a browser: the registry would only grow.
+             ********************************************************/
+            if (!IN_BROWSER) {
+                app.provide(ORIGAM_SSR_STYLES_KEY, registerSsrStyleCollector(app))
+            }
+            // ADR-005 — resolves `theme.components` into EVERY component's
+            // props, not just the 39 that opt in via `useDefaults()`. See
+            // `theme-props-resolver.composable.ts` for the full mechanism;
+            // this is invisible machinery, read that file before assuming a
+            // resolved prop value came from `withDefaults()`.
+            installThemePropsResolver(app, themedKeysUnion, variantPresets)
+            // Resolver over the full install list so `<OrigamThemeProvider>` can
+            // re-apply a named brand's default props to its sub-tree, mirroring
+            // the document-root defaults collapse. Static (install-time) — no
+            // reassignment on theme switch needed.
+            app.provide(ORIGAM_THEME_DEFAULTS_KEY, (brand: string, mode?: TModeResolved) =>
+                activeDefaultsFor(allThemes, brand, mode))
+
+            if (IN_BROWSER && options.ssr) {
+                const nuxt = (app as App & INuxtAwareApp).$nuxt
+
+                if (nuxt) {
+                    nuxt.hook('app:suspense:resolve', () => {
+                        display.update()
+                    })
+                } else {
+                    const {mount} = app
+                    app.mount = (...args) => {
+                        const vm = mount(...args)
+                        nextTick(() => display.update())
+                        app.mount = mount
+                        return vm
+                    }
+                }
+            }
+
+            /*********************************************************
+             * ⛔ No `getUid.reset()` here — do not reintroduce it
+             *
+             * @description
+             * It used to sit on this line, and it was the direct cause of the
+             * cross-request id bleed documented in
+             * `utils/Commons/getCurrentInstance.util.ts`.
+             * @description
+             * Nuxt's server plugin calls `createOrigam()` + `app.use()` ONCE
+             * PER REQUEST, so this line rewound module-global state in the
+             * middle of a DIFFERENT request's render.
+             * @description
+             * `getUid()` now derives its value from the component instance
+             * (Vue's `useId()`), which is already scoped per app: there is
+             * nothing left to reset, and nothing one request can do to another.
+             ********************************************************/
+
+            if (typeof __VUE_OPTIONS_API__ !== 'boolean' || __VUE_OPTIONS_API__) {
+                app.mixin({
+                    computed: {
+                        $origam () {
+                            return reactive({
+                                display: inject.call(this as unknown as ComponentPublicInstance, ORIGAM_DISPLAY_KEY),
+                                icons: inject.call(this as unknown as ComponentPublicInstance, ORIGAM_ICONS_KEY),
+                                locale: inject.call(this as unknown as ComponentPublicInstance, ORIGAM_LOCALE_KEY),
+                                date: inject.call(this as unknown as ComponentPublicInstance, ORIGAM_DATE_ADAPTER_KEY)
+                            })
+                        }
+                    }
+                })
+            }
+        }
+
+        function unmount () {
+            scope.stop()
+        }
+
+        return {
+            install,
+            unmount,
+            display,
+            icons,
+            locale,
+            date,
+            goTo,
+            themes: installedThemes,
+            // Reactive per-component DEFAULT PROPS map (provided under
+            // ORIGAM_DEFAULTS_KEY). The Nuxt plugins reassign `.value` (a NEW
+            // object) whenever the active brand / mode changes so `useDefaults`
+            // computeds re-run. NEVER mutate it in place.
+            _defaultsRef: defaultsRef,
+            // Re-export the collapse helper so the plugins can recompute the
+            // active defaults from the same install list on a theme switch.
+            _activeDefaultsFor: (brand: string, mode?: TModeResolved): IDefault =>
+                activeDefaultsFor(allThemes, brand, mode)
+        }
+    })!
+}
+
+/**
+ * Collapse the per-component DEFAULT PROPS (`theme.components`) of the themes
+ * matching the ACTIVE brand×mode into a single `IDefault`. A theme matches when
+ * its `name` equals `brand` AND its `mode` is compatible with the active `mode`:
+ *   - the theme is mode-agnostic (`mode` unset or `'auto'`), OR
+ *   - the active `mode` is unset (match every mode of the brand — used for the
+ *     mode-less install-time seed before the plugins resolve a concrete mode), OR
+ *   - the theme's `mode` equals the active `mode`.
+ * Matching themes are deep-merged in install order (later wins) via the shared
+ * `mergeDeep` util — no hand-rolled merge.
+ *
+ * Pure (no DOM / Vue access) so it runs identically on the server and client.
+ */
+export function activeDefaultsFor (
+    themes: IOrigamTheme[],
+    brand: string,
+    mode?: TModeResolved
+): IDefault {
+    let merged: IDefault = {}
+    for (const theme of themes) {
+        if (!theme.components) continue
+        // A name-less theme is the ROOT baseline (`origam`) — its component
+        // defaults ALWAYS apply; the active brand is layered on top.
+        const brandMatches = !theme.name || theme.name === brand
+        const themeModeAgnostic = theme.mode === undefined || theme.mode === 'auto'
+        const modeMatches = themeModeAgnostic || mode === undefined || theme.mode === mode
+        if (brandMatches && modeMatches) {
+            merged = mergeDeep(merged, theme.components) as IDefault
+        }
+    }
+    return merged
+}
+
+// Vue's inject() can only be used in setup
+function inject (this: ComponentPublicInstance, key: InjectionKey<any> | string) {
+    const vm = this.$
+
+    // `provides` is a runtime property of ComponentInternalInstance that Vue's
+    // public types don't expose — cast to read it (appContext.provides is public).
+    const parentProvides = (vm.parent as { provides?: Record<string | symbol, unknown> } | null)?.provides
+
+    const provides = parentProvides ?? vm.vnode.appContext?.provides
+
+    if (provides && (key as any) in provides) {
+        return provides[(key as string)]
+    }
+}

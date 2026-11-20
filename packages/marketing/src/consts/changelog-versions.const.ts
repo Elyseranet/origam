@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'entrée allégée origam/core / createOrigamCore (#1384)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.39.0',
         date: '2026-11-18',
         type: 'minor',

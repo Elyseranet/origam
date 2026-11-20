@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs'
-import { join } from 'node:path'
+import { basename, join } from 'node:path'
 
-import { addComponentsDir, addImports, addPlugin, createResolver, defineNuxtModule } from '@nuxt/kit'
+import { addComponent, addComponentsDir, addImports, addPlugin, createResolver, defineNuxtModule } from '@nuxt/kit'
 // `NuxtModule` is imported from `@nuxt/schema`, not `@nuxt/kit`: kit uses the
 // type internally but does not re-export it. It is needed to ANNOTATE the
 // default export below — without the annotation TypeScript infers a type it
@@ -65,7 +65,9 @@ const DEFAULTS: Required<IOrigamNuxtModuleOptions> = {
     includeUtilities: true,
     prefix: 'Origam',
     locale: {},
-    icons: {}
+    icons: {},
+    lite: false,
+    include: []
 }
 
 const SCALAR_DEFAULTS = {
@@ -124,6 +126,16 @@ const origamNuxtModule: NuxtModule<IOrigamNuxtModuleOptions, IOrigamNuxtModuleOp
         if (includeUtilities && !nuxt.options.css.includes('origam/tokens/css/utilities')) {
             nuxt.options.css.push('origam/tokens/css/utilities')
         }
+
+        /*********************************************************
+         * lite (#1384)
+         *
+         * @description
+         * The plugins build the app through `createOrigamCore` (no `import *` of the components, no MDI stylesheet). Both import `#origam-create`, aliased here to the matching entry.
+         ********************************************************/
+        const lite = options.lite ?? DEFAULTS.lite
+        nuxt.options.alias = nuxt.options.alias || {}
+        nuxt.options.alias['#origam-create'] = resolver.resolve(lite ? './create.core' : './create.full')
 
         addPlugin({
             src: resolver.resolve('./plugin.server'),
@@ -195,12 +207,38 @@ const origamNuxtModule: NuxtModule<IOrigamNuxtModuleOptions, IOrigamNuxtModuleOp
                 addImports(imports)
             }
 
-            addComponentsDir({
-                path: resolver.resolve('../components'),
-                prefix: '',
-                pathPrefix: false,
-                global: false
-            })
+            const include = options.include ?? DEFAULTS.include
+
+            if (lite && include.length) {
+                /*********************************************************
+                 * include (#1384)
+                 *
+                 * @description
+                 * Only the listed components are known to Nuxt, and bundled when a template uses them.
+                 ********************************************************/
+                const files = new Map<string, string>()
+                const walk = (dir: string): void => {
+                    for (const entry of readdirSync(dir, {withFileTypes: true})) {
+                        const full = join(dir, entry.name)
+                        if (entry.isDirectory()) walk(full)
+                        else if (entry.name.endsWith('.vue') && !entry.name.endsWith('.story.vue')) files.set(basename(entry.name, '.vue'), full)
+                    }
+                }
+                walk(resolver.resolve('../components'))
+
+                for (const name of include) {
+                    const filePath = files.get(name)
+                    if (!filePath) throw new Error(`[origam] \`include\`: unknown component "${name}"`)
+                    addComponent({name, filePath})
+                }
+            } else {
+                addComponentsDir({
+                    path: resolver.resolve('../components'),
+                    prefix: '',
+                    pathPrefix: false,
+                    global: false
+                })
+            }
         }
 
         nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {}

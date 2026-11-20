@@ -5,7 +5,7 @@
 > rien n'est redige ici. Corriger une description se fait dans la banniere du symbole,
 > puis en regenerant. Issue #545.
 
-3 symbole(s) exporte(s).
+4 symbole(s) exporte(s).
 
 ## `createIcons`
 
@@ -23,7 +23,22 @@ qui permet d'ecrire `icon="mdi-account"` sans configuration prealable.
 
 **Source** : `packages/ds/src/composables/Icon/icon.composable.ts`
 
-**Consommateurs** (2) : `origam.ts`, `utils/Commons/nuxt-icons.util.ts`
+**Consommateurs** (1) : `utils/Commons/nuxt-icons.util.ts`
+
+## `createIconsCore`
+
+```ts
+export function createIconsCore (options?: TIconOptions)
+```
+
+`createIcons` without the 7 000 `MDI_ICONS` aliases: the default set and
+the ~45 semantic aliases only. Used by `createOrigamCore`, so the enum is
+not bundled. `$ABACUS`-style aliases come back by passing
+`icons: {aliases: MDI_ICONS}`.
+
+**Source** : `packages/ds/src/composables/Icon/icon.composable.ts`
+
+**Consommateurs** (1) : `origam-core.ts`
 
 ## `useIcon`
 

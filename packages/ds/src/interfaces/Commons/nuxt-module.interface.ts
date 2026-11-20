@@ -123,6 +123,28 @@ export interface IOrigamNuxtModuleOptions {
      */
     includeUtilities?: boolean
 
+    /*********************************************************
+     * lite (#1384)
+     *
+     * @description
+     * Build the app with `createOrigamCore` instead of `createOrigam`: no `import *` of the components and directives, no MDI stylesheet. Themes, PROPS-FIRST, locale, display and SSR styles are unchanged; components come from Nuxt's on-demand auto-import, so only the ones a template uses are bundled.
+     * @description
+     * Icons become opt-in: add `@mdi/font/css/materialdesignicons.css` to `css` yourself, or pass SVG icons.
+     *
+     * @default false
+     ********************************************************/
+    lite?: boolean
+
+    /*********************************************************
+     * include (#1384)
+     *
+     * @description
+     * Only meaningful with `lite` and `autoImport`: names of the components Nuxt may auto-import (`['OrigamBtn', 'OrigamTitle']`). When omitted, every component stays available on demand. An unknown name fails the build.
+     *
+     * @default undefined
+     ********************************************************/
+    include?: string[]
+
     /**
      * Prefix applied to auto-imported components. Origam ships components
      * already prefixed `Origam*` so the default is an empty prefix — set
