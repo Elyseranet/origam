@@ -28,11 +28,43 @@ import {
 
 import { setContrastConfig } from './directives/Contrast/contrast.directive'
 
-import type { IDefault, INuxtAwareApp, IOrigamOptions, IOrigamTheme } from './interfaces'
+import type { IDefault, IDisplayInstance, INuxtAwareApp, IOrigamOptions, IOrigamTheme } from './interfaces'
 import type { TIconOptions, TModeResolved, TVariantPresetRegistry } from './types'
 import { applyThemes, installedThemesFromList, mergeDeep, registerSsrStyleCollector } from './utils'
 
 import { App, ComponentPublicInstance, defineComponent, effectScope, InjectionKey, nextTick, reactive } from 'vue'
+
+// Re-measures the display once the app is hydrated (Nuxt hook) or mounted (plain Vue).
+function scheduleDisplayUpdate (app: App & INuxtAwareApp, display: IDisplayInstance): void {
+    const nuxt = app.$nuxt
+
+    if (nuxt) {
+        nuxt.hook('app:suspense:resolve', () => display.update())
+        return
+    }
+
+    const {mount} = app
+    app.mount = (...args) => {
+        const vm = mount(...args)
+        nextTick(() => display.update())
+        app.mount = mount
+        return vm
+    }
+}
+
+// Options-API `$origam` accessor (display, icons, locale, date).
+function origamAccessor (this: ComponentPublicInstance) {
+    return reactive({
+        display: inject.call(this, ORIGAM_DISPLAY_KEY),
+        icons: inject.call(this, ORIGAM_ICONS_KEY),
+        locale: inject.call(this, ORIGAM_LOCALE_KEY),
+        date: inject.call(this, ORIGAM_DATE_ADAPTER_KEY)
+    })
+}
+
+function installOptionsApiMixin (app: App): void {
+    app.mixin({computed: {$origam: origamAccessor}})
+}
 
 /*********************************************************
  * createOrigamCore (#1384)
@@ -200,21 +232,7 @@ export function createOrigamCore (origam: IOrigamOptions = {}) {
                 activeDefaultsFor(allThemes, brand, mode))
 
             if (IN_BROWSER && options.ssr) {
-                const nuxt = (app as App & INuxtAwareApp).$nuxt
-
-                if (nuxt) {
-                    nuxt.hook('app:suspense:resolve', () => {
-                        display.update()
-                    })
-                } else {
-                    const {mount} = app
-                    app.mount = (...args) => {
-                        const vm = mount(...args)
-                        nextTick(() => display.update())
-                        app.mount = mount
-                        return vm
-                    }
-                }
+                scheduleDisplayUpdate(app as App & INuxtAwareApp, display)
             }
 
             /*********************************************************
@@ -235,18 +253,7 @@ export function createOrigamCore (origam: IOrigamOptions = {}) {
              ********************************************************/
 
             if (typeof __VUE_OPTIONS_API__ !== 'boolean' || __VUE_OPTIONS_API__) {
-                app.mixin({
-                    computed: {
-                        $origam () {
-                            return reactive({
-                                display: inject.call(this as unknown as ComponentPublicInstance, ORIGAM_DISPLAY_KEY),
-                                icons: inject.call(this as unknown as ComponentPublicInstance, ORIGAM_ICONS_KEY),
-                                locale: inject.call(this as unknown as ComponentPublicInstance, ORIGAM_LOCALE_KEY),
-                                date: inject.call(this as unknown as ComponentPublicInstance, ORIGAM_DATE_ADAPTER_KEY)
-                            })
-                        }
-                    }
-                })
+                installOptionsApiMixin(app)
             }
         }
 

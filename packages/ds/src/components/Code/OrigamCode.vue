@@ -123,6 +123,7 @@
 	import type { ICodeEmits, ICodeProps, ICodeSlots } from '../../interfaces/Code/code.interface'
 
 	import { parseHighlightLines } from '../../utils/Code/parse-highlight-lines.util'
+	import { trimBlankLines } from '../../utils/Code/trim-blank-lines.util'
 
 	/*********************************************************
 	 * Global
@@ -252,7 +253,7 @@
 	const sourceCode = computed(() => {
 		if (typeof props.code === 'string') return props.code
 		const fromSlot = extractSlotText()
-		return fromSlot.replace(/^\n+/, '').replace(/\n+$/, '')
+		return trimBlankLines(fromSlot)
 	})
 
 	/*********************************************************

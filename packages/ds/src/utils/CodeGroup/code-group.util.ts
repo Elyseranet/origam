@@ -2,6 +2,8 @@ import { cloneVNode, Comment, Fragment, h, Text } from 'vue'
 
 import { CODE_GROUP_EMBED_PROPS } from '../../consts/CodeGroup/code-group.const'
 
+import { trimBlankLines } from '../Code/trim-blank-lines.util'
+
 import type { VNode } from 'vue'
 
 import type {
@@ -56,7 +58,7 @@ export function extractCodeGroupText (node: VNode): string {
     }
     visit(raw)
 
-    return parts.join('').replace(/^\n+/, '').replace(/\n+$/, '')
+    return trimBlankLines(parts.join(''))
 }
 
 /*********************************************************

@@ -7,7 +7,7 @@ import { addComponent, addComponentsDir, addImports, addPlugin, createResolver, 
 // default export below — without the annotation TypeScript infers a type it
 // cannot name from a package that is not a direct dependency, and the
 // declaration build fails with TS2883. Surfaced by Nuxt 4.5.
-import type { NuxtModule } from '@nuxt/schema'
+import type { Nuxt, NuxtModule } from '@nuxt/schema'
 
 import type { IOrigamNuxtModuleOptions } from '../interfaces/Commons/nuxt-module.interface'
 import type { IOrigamTheme } from '../interfaces/Commons/theme.interface'
@@ -81,6 +81,103 @@ const SCALAR_DEFAULTS = {
     prefix: DEFAULTS.prefix
 }
 
+/**
+ * The base token sheets carry the FULL --origam-* surface (primitive + semantic
+ * + component); the per-brand `vars` / default-props blocks are injected on top
+ * at runtime by the plugins via `createOrigam({ themes })`.
+ */
+function registerStyleSheets (nuxt: Nuxt, includeUtilities: boolean): void {
+    nuxt.options.css = nuxt.options.css || []
+    const sheets = [
+        'origam/tokens/css/light',
+        'origam/tokens/css/dark',
+        ...(includeUtilities ? ['origam/tokens/css/utilities'] : [])
+    ]
+    if (!nuxt.options.css.includes('origam/tokens/css/primitive')) {
+        nuxt.options.css.unshift('origam/tokens/css/primitive')
+    }
+    for (const sheet of sheets) {
+        if (!nuxt.options.css.includes(sheet)) {
+            nuxt.options.css.push(sheet)
+        }
+    }
+}
+
+const EXPORT_NAME_REGEX = /export\s+(?:async\s+)?(?:function|const|let|var)\s+([A-Za-z_$][\w$]*)/g
+
+function safely<T> (fn: () => T, fallback: T): T {
+    try {
+        return fn()
+    } catch {
+        return fallback
+    }
+}
+
+function exportedNames (file: string): string[] {
+    const src = safely(() => readFileSync(file, 'utf-8'), '')
+    return [...src.matchAll(EXPORT_NAME_REGEX)]
+        .map((m) => m[1])
+        .filter((name) => !NUXT_COMPOSABLES_BLOCKLIST.has(name))
+}
+
+function collectComposableImports (dir: string, acc: Array<{name: string, from: string}>): void {
+    for (const entry of safely(() => readdirSync(dir), [] as string[])) {
+        const full = join(dir, entry)
+        const stat = safely(() => statSync(full), null)
+        if (!stat) continue
+        if (stat.isDirectory()) {
+            collectComposableImports(full, acc)
+        } else if (/\.(?:m?js|ts)$/.test(entry) && !entry.endsWith('.d.ts')) {
+            acc.push(...exportedNames(full).map((name) => ({name, from: full})))
+        }
+    }
+}
+
+/**
+ * Adds each composable export individually, EXCEPT the ones that conflict with
+ * Nuxt's built-ins (see NUXT_COMPOSABLES_BLOCKLIST). `addImportsDir` used to
+ * slurp `useRouter` / `useRoute` / `useHydration` too: Nuxt pinned origam's
+ * version, which then blew up at SSR with
+ * `[Origam] useRouter must be called from inside a setup function`, because
+ * origam's wrappers expect a Vue instance and Nuxt calls `useRouter()` from
+ * non-setup contexts (router guards, …).
+ */
+function registerComposableImports (composablesRoot: string): void {
+    const imports: Array<{name: string, from: string}> = []
+    collectComposableImports(composablesRoot, imports)
+    if (imports.length) {
+        addImports(imports)
+    }
+}
+
+function collectVueFiles (dir: string, files: Map<string, string>): void {
+    for (const entry of readdirSync(dir, {withFileTypes: true})) {
+        const full = join(dir, entry.name)
+        if (entry.isDirectory()) collectVueFiles(full, files)
+        else if (entry.name.endsWith('.vue') && !entry.name.endsWith('.story.vue')) files.set(basename(entry.name, '.vue'), full)
+    }
+}
+
+/**
+ * include (#1384): in lite mode only the listed components are known to Nuxt,
+ * and bundled when a template uses them.
+ */
+function registerComponents (componentsRoot: string, lite: boolean, include: string[]): void {
+    if (!(lite && include.length)) {
+        addComponentsDir({path: componentsRoot, prefix: '', pathPrefix: false, global: false})
+        return
+    }
+
+    const files = new Map<string, string>()
+    collectVueFiles(componentsRoot, files)
+
+    for (const name of include) {
+        const filePath = files.get(name)
+        if (!filePath) throw new Error(`[origam] \`include\`: unknown component "${name}"`)
+        addComponent({name, filePath})
+    }
+}
+
 const origamNuxtModule: NuxtModule<IOrigamNuxtModuleOptions, IOrigamNuxtModuleOptions, false> = defineNuxtModule<IOrigamNuxtModuleOptions>({
     meta: {
         name: MODULE_NAME,
@@ -114,18 +211,7 @@ const origamNuxtModule: NuxtModule<IOrigamNuxtModuleOptions, IOrigamNuxtModuleOp
         // semantic/scale token via `vars` cascades to every component. Load them
         // as CSS here; the per-brand `vars` / default-props blocks are injected
         // on top at runtime by the plugins via `createOrigam({ themes })`.
-        nuxt.options.css = nuxt.options.css || []
-        if (!nuxt.options.css.includes('origam/tokens/css/primitive')) {
-            nuxt.options.css.unshift('origam/tokens/css/primitive')
-        }
-        for (const sheet of ['origam/tokens/css/light', 'origam/tokens/css/dark']) {
-            if (!nuxt.options.css.includes(sheet)) {
-                nuxt.options.css.push(sheet)
-            }
-        }
-        if (includeUtilities && !nuxt.options.css.includes('origam/tokens/css/utilities')) {
-            nuxt.options.css.push('origam/tokens/css/utilities')
-        }
+        registerStyleSheets(nuxt, includeUtilities)
 
         /*********************************************************
          * lite (#1384)
@@ -147,98 +233,8 @@ const origamNuxtModule: NuxtModule<IOrigamNuxtModuleOptions, IOrigamNuxtModuleOp
         })
 
         if (autoImport) {
-            // Scan the composables directory and add each named export
-            // individually, EXCEPT the ones that conflict with Nuxt's
-            // built-in composables (see NUXT_COMPOSABLES_BLOCKLIST).
-            //
-            // We used to call `addImportsDir(resolver.resolve('../composables'))`
-            // which slurps every named export from every file in that
-            // tree, including `useRouter` / `useRoute` / `useHydration` —
-            // names also provided by Nuxt core. Nuxt emitted a build-time
-            // warning ("Duplicated imports …") but went ahead and pinned
-            // origam's version, which then blew up at SSR with:
-            //   `[Origam] useRouter must be called from inside a setup function`
-            // because origam's wrappers expect a Vue instance and Nuxt
-            // calls `useRouter()` from non-setup contexts (router guards,
-            // i18n middleware, …).
-            const composablesRoot = resolver.resolve('../composables')
-            const exportNameRegex = /export\s+(?:async\s+)?(?:function|const|let|var)\s+([A-Za-z_$][\w$]*)/g
-
-            const collect = (dir: string, acc: Array<{name: string, from: string}>): void => {
-                let entries: string[]
-                try {
-                    entries = readdirSync(dir)
-                } catch {
-                    return
-                }
-                for (const entry of entries) {
-                    const full = join(dir, entry)
-                    let s
-                    try {
-                        s = statSync(full)
-                    } catch {
-                        continue
-                    }
-                    if (s.isDirectory()) {
-                        collect(full, acc)
-                        continue
-                    }
-                    if (!/\.(?:m?js|ts)$/.test(entry)) continue
-                    if (entry.endsWith('.d.ts')) continue
-                    let src = ''
-                    try {
-                        src = readFileSync(full, 'utf-8')
-                    } catch {
-                        continue
-                    }
-                    let m: RegExpExecArray | null
-                    exportNameRegex.lastIndex = 0
-                    while ((m = exportNameRegex.exec(src))) {
-                        const name = m[1]
-                        if (NUXT_COMPOSABLES_BLOCKLIST.has(name)) continue
-                        acc.push({name, from: full})
-                    }
-                }
-            }
-
-            const imports: Array<{name: string, from: string}> = []
-            collect(composablesRoot, imports)
-            if (imports.length) {
-                addImports(imports)
-            }
-
-            const include = options.include ?? DEFAULTS.include
-
-            if (lite && include.length) {
-                /*********************************************************
-                 * include (#1384)
-                 *
-                 * @description
-                 * Only the listed components are known to Nuxt, and bundled when a template uses them.
-                 ********************************************************/
-                const files = new Map<string, string>()
-                const walk = (dir: string): void => {
-                    for (const entry of readdirSync(dir, {withFileTypes: true})) {
-                        const full = join(dir, entry.name)
-                        if (entry.isDirectory()) walk(full)
-                        else if (entry.name.endsWith('.vue') && !entry.name.endsWith('.story.vue')) files.set(basename(entry.name, '.vue'), full)
-                    }
-                }
-                walk(resolver.resolve('../components'))
-
-                for (const name of include) {
-                    const filePath = files.get(name)
-                    if (!filePath) throw new Error(`[origam] \`include\`: unknown component "${name}"`)
-                    addComponent({name, filePath})
-                }
-            } else {
-                addComponentsDir({
-                    path: resolver.resolve('../components'),
-                    prefix: '',
-                    pathPrefix: false,
-                    global: false
-                })
-            }
+            registerComposableImports(resolver.resolve('../composables'))
+            registerComponents(resolver.resolve('../components'), lite, options.include ?? DEFAULTS.include)
         }
 
         nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {}
