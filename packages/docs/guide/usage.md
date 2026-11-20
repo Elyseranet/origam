@@ -22,6 +22,41 @@ app.use(createOrigam({ themes: origamTheme }))
 app.mount('#app')
 ```
 
+## Entrée allégée (`origam/core`)
+
+`createOrigam` importe **tous** les composants et directives, et le CSS de la police MDI (`@mdi/font`) : même avec `components: { … }`, le bundler garde tout l'arbre. Pour une vitrine ou un site qui n'utilise que quelques composants, `createOrigamCore` offre la même API sans ces trois coûts :
+
+- ni composants ni directives par défaut : on passe ceux qu'on utilise ;
+- ni CSS MDI : les icônes sont en opt-in ;
+- thèmes, bloc `components` du thème (PROPS-FIRST), locale, display et styles SSR (`getSsrStyles`) **identiques**.
+
+```typescript
+import { createSSRApp } from 'vue'
+import { createOrigamCore } from 'origam/core'
+import { OrigamBtn } from 'origam/components/Btn'
+import { OrigamTitle } from 'origam/components/Title'
+import { myTheme } from './my-theme'
+
+const app = createSSRApp(App)
+app.use(createOrigamCore({
+    ssr: true,
+    themes: [myTheme],
+    components: { OrigamBtn, OrigamTitle }
+}))
+```
+
+Importez chaque composant par son sous-chemin (`origam/components/Btn`), pas par le barrel `origam/components` qui référence tous les composants.
+
+**Icônes.** Les icônes `mdi-*` et les alias sémantiques (`$loading`, `$close`, …) sont résolus par le jeu `mdi`, mais la police n'est plus chargée. Ajoutez-la vous-même si vous l'utilisez, ou passez des icônes SVG :
+
+```typescript
+import '@mdi/font/css/materialdesignicons.css'
+```
+
+Les alias `$ABACUS`-style (les ~7 000 entrées de `MDI_ICONS`) ne sont plus pré-enregistrés par l'entrée allégée ; `createOrigam` les garde. Pour les retrouver : `createOrigamCore({ icons: { aliases: MDI_ICONS } })` (importer `MDI_ICONS` de `origam/enums` embarque l'enum, ~325 Kio minifié, mesuré).
+
+`createOrigam` est inchangé : même signature, mêmes défauts. Avec Nuxt, voir l'option `lite` du [module](../integrations/nuxt.md).
+
 ## Thème runtime (`createOrigam({ theme })`)
 
 `createOrigam` accepte une option `theme` : un objet de tokens injecté à

@@ -67,6 +67,7 @@
     "./tokens/scss/utilities": "./dist/src/assets/scss/tokens/_origam-utilities.scss",
     "./tokens/types": "./dist/src/types/tokens.type.d.ts",
     "./origam": "./dist/src/origam.js",
+    "./core": "./dist/src/origam-core.js",
     "./nuxt": {
       "types": "./dist/src/nuxt/module.d.ts",
       "import": "./dist/src/nuxt/module.js",
