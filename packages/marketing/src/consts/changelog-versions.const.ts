@@ -18,13 +18,14 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 addition. See the full changelog for detail.',
+        version: '2.39.1',
+        date: '2026-11-20',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2391.summary',
+        summaryFallback: '1 addition and 1 fix. See the full changelog for detail.',
         highlights: [
-            { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'entrée allégée origam/core / createOrigamCore (#1384)' }
+            { type: 'added', textKey: 'changelog.versions.v2391.h1', textFallback: 'entrée allégée origam/core / createOrigamCore (#1384)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2391.h2', textFallback: 'Quality Gate Sonar sur le nouveau code (#1388)' }
         ]
     },
     {

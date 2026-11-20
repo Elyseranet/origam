@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.39.1] - 2026-11-20
+
 ### Added — entrée allégée `origam/core` / `createOrigamCore` (#1384)
 
 - `createOrigamCore(options)` (`origam/core`) : même API et même installation que `createOrigam` (thèmes, bloc `components` du thème = PROPS-FIRST, locale, display, styles SSR), mais **sans** `import *` des composants et des directives et **sans** `@mdi/font/css/materialdesignicons.css`. Composants et directives passés explicitement (`components: { OrigamBtn }`), tree-shakables ; icônes en opt-in.
@@ -26,6 +28,13 @@ This project follows [Semantic Versioning](https://semver.org).
 - Garde de budget : fixture `packages/tests/TU/fixtures/lite-entry` + `TU/origam/lite-entry-1384.spec.ts`. Le test construit la fixture (Vite, 4 composants + un thème) et échoue au-delà de 105 Kio gzip de JS ou 10 Kio gzip de CSS, si le bundle contient `materialdesignicons` ou un composant non importé, ou si les props du thème ne s'appliquent pas au rendu serveur.
 
 `createOrigam` est inchangé (signature, défauts, CSS MDI, composants et directives). Il s'appuie désormais sur `createOrigamCore`. `createIcons` garde ses alias.
+
+### Fixed — Quality Gate Sonar sur le nouveau code (#1388)
+
+- `nuxt/module.ts` (`setup` découpé en helpers nommés) et `origam-core.ts` (`scheduleDisplayUpdate` et `installOptionsApiMixin` sortis d'`install()`) : complexité cognitive et imbrication ramenées sous les seuils. Comportement inchangé.
+- `OrigamCode` et `OrigamCodeGroup` : les sauts de ligne de début et de fin du code passé en slot sont retirés par `trimBlankLines` (`utils/Code/trim-blank-lines.util.ts`), un parcours d'index qui remplace la regex `/\n+$/`, quadratique sur un texte riche en sauts de ligne internes (hotspot S5852).
+
+- **Vérifié** : CI de la PR #1389, 23/23 checks verts ; sur `develop` @ `f59f03cda`, workflows CI, Build et docs-fixtures verts ; Sonar : 0 issue critique, 100 % des hotspots revus.
 
 
 ## [2.39.0] - 2026-11-18
