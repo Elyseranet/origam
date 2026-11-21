@@ -194,29 +194,37 @@
       }
     } else if (e.key === 'ArrowRight') {
       e.preventDefault()
-      if (hasChildren.value && !isNodeExpanded.value) {
-        treeview?.toggleExpanded(props.node.id)
-      } else if (hasChildren.value && isNodeExpanded.value) {
-        // Move focus to first child
-        const row = (e.currentTarget as HTMLElement)
-          .closest('.origam-treeview-node')
-          ?.querySelector<HTMLElement>('.origam-treeview-node__children [role="treeitem"]')
-        row?.focus()
-      }
+      moveRight(e)
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault()
-      if (hasChildren.value && isNodeExpanded.value) {
-        treeview?.toggleExpanded(props.node.id)
-      } else {
-        // Move focus to parent treeitem
-        const parentChildren = (e.currentTarget as HTMLElement)
-          .closest('.origam-treeview-node__children')
-        if (parentChildren) {
-          const parentNode = parentChildren.closest('.origam-treeview-node')
-          const parentRow = parentNode?.querySelector<HTMLElement>(':scope > [role="treeitem"]')
-          parentRow?.focus()
-        }
-      }
+      moveLeft(e)
+    }
+  }
+
+  const moveRight = (e: KeyboardEvent) => {
+    if (hasChildren.value && !isNodeExpanded.value) {
+      treeview?.toggleExpanded(props.node.id)
+    } else if (hasChildren.value && isNodeExpanded.value) {
+      // Move focus to first child
+      const row = (e.currentTarget as HTMLElement)
+        .closest('.origam-treeview-node')
+        ?.querySelector<HTMLElement>('.origam-treeview-node__children [role="treeitem"]')
+      row?.focus()
+    }
+  }
+
+  const moveLeft = (e: KeyboardEvent) => {
+    if (hasChildren.value && isNodeExpanded.value) {
+      treeview?.toggleExpanded(props.node.id)
+      return
+    }
+    // Move focus to parent treeitem
+    const parentChildren = (e.currentTarget as HTMLElement)
+      .closest('.origam-treeview-node__children')
+    if (parentChildren) {
+      const parentNode = parentChildren.closest('.origam-treeview-node')
+      const parentRow = parentNode?.querySelector<HTMLElement>(':scope > [role="treeitem"]')
+      parentRow?.focus()
     }
   }
 

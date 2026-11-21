@@ -68,7 +68,7 @@ export function useSize (props: ISizeProps, name = getCurrentInstanceName()) {
         const size = isRef(props) ? props.value : props.size
         const classes: string[] = []
 
-        if (size && SIZES_ARRAY.includes(size as TSize)) {
+        if (typeof size === 'string' && SIZES_ARRAY.includes(size as TSize)) {
             classes.push(`${name}--size-${size}`)
 
             // Classes-first companion: bridge the legacy enum onto the

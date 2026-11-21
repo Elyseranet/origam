@@ -50,11 +50,8 @@ export function useDragResizer (el: MaybeRef<HTMLElement | undefined>, value: Re
     const isHorizontal = computed(() => {
         return axis === AXIS.X
     })
-    // const isVertical = computed(() => {
-    //   return axis === AXIS.Y
-    // })
 
-    // TODO - Rework for both axis
+    // Axe X uniquement — voir #1410
 
     const onDragEnd = () => {
         removeListeners.forEach((fn) => fn())

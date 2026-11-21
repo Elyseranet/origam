@@ -20,7 +20,7 @@ export function createLocale (options?: ILocaleOptions & IRtlOptions) {
         locale: 'en',
         fallbackLocale: 'en',
         messages: JSON.parse(JSON.stringify(origamMessages)) // Fix problems with json file imported
-    }, options as unknown as Record<string, unknown>) as Record<string, unknown>
+    }, options as unknown as Record<string, unknown>)
 
     // `vue-i18n` est un peer OPTIONNEL : le chemin par defaut ne doit jamais
     // l'importer. Un consommateur qui veut vue-i18n passe son propre
