@@ -649,6 +649,14 @@
 		connectorPaths.value = paths
 	}
 
+	const resolveNextMatchIndex = (match: IBracketMatch, index: number, nextRound: IBracketRound): number => {
+		const found = match.nextMatchId != null
+			? nextRound.matches.findIndex(m => m.id === match.nextMatchId)
+			: -1
+
+		return found === -1 ? Math.floor(index / 2) : found
+	}
+
 	const measureSingleConnectors = (): void => {
 		const treeEl = treeRef.value
 
@@ -683,11 +691,7 @@
 			for (let i = 0; i < round.matches.length; i += 1) {
 				const match = round.matches[i]
 
-				let nextIndex = -1
-				if (match.nextMatchId != null) {
-					nextIndex = nextRound.matches.findIndex(m => m.id === match.nextMatchId)
-				}
-				if (nextIndex === -1) nextIndex = Math.floor(i / 2)
+				const nextIndex = resolveNextMatchIndex(match, i, nextRound)
 
 				const nextMatch = nextRound.matches[nextIndex]
 				const fromRect = fromCards[i]

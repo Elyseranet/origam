@@ -145,12 +145,12 @@ export function rippleShow (e: TRippleEvent) {
     if (isTouchEvent(e)) {
         element._ripple.touched = true
         element._ripple.isTouch = true
-    } else {
+    } else if (element._ripple.isTouch) {
         // It's possible for touch events to fire
         // as mouse events on Android/iOS, this
         // will skip the event call if it has
         // already been registered as touch
-        if (element._ripple.isTouch) return
+        return
     }
 
     value.center = element._ripple.centered || isKeyboardEvent(e)

@@ -1,6 +1,6 @@
 import { BUILT_IN_PATTERN_KEYS, BUILT_IN_PATTERNS } from '../../consts/TextField/text-field.const'
 
-import type { IMaskOptions, IResolvedMaskConfig } from '../../interfaces/Commons/mask.interface'
+import type { IResolvedMaskConfig } from '../../interfaces/Commons/mask.interface'
 
 import type { TBuiltInPattern, TMask } from '../../types/TextField/text-field.type'
 
@@ -33,7 +33,7 @@ export function resolveMaskConfig (
         return {pattern: mask, validator: null, required: false}
     }
 
-    const opts = mask as IMaskOptions
+    const opts = mask
     return {
         pattern: opts.pattern,
         validator: opts.validator ?? null,

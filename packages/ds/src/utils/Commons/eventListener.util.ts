@@ -15,9 +15,7 @@ export function resolveUnref (r: Ref | (() => unknown)) {
  * @param elRef …
  */
 export function unrefElement (elRef: Ref) {
-    let _a
-
     const plain = resolveUnref(elRef)
 
-    return (_a = plain == null ? void 0 : plain.$el) != null ? _a : plain
+    return plain?.$el ?? plain
 }

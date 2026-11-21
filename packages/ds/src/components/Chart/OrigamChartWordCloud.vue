@@ -350,11 +350,42 @@
 	 * AABB overlap test
 	 ********************************************************/
 	const overlaps = (
-		ax: number, ay: number, aw: number, ah: number,
-		bx: number, by: number, bw: number, bh: number
+		a: Pick<IChartWordCloudWord, 'x' | 'y' | 'width' | 'height'>,
+		b: Pick<IChartWordCloudWord, 'x' | 'y' | 'width' | 'height'>
 	): boolean => {
-		return Math.abs(ax - bx) < (aw + bw) / 2 + 2
-			&& Math.abs(ay - by) < (ah + bh) / 2 + 2
+		return Math.abs(a.x - b.x) < (a.width + b.width) / 2 + 2
+			&& Math.abs(a.y - b.y) < (a.height + b.height) / 2 + 2
+	}
+
+	/*********************************************************
+	 * Spiral slot search — first collision-free, in-bounds point on the
+	 * Archimedean spiral for a word box; `null` when none within
+	 * MAX_SPIRAL_ITERATIONS. The first word sits at the centre.
+	 ********************************************************/
+	const findSpiralSlot = (
+		placed: Array<IChartWordCloudWord>,
+		wordW: number,
+		wordH: number
+	): { x: number, y: number } | null => {
+		if (placed.length === 0) return { x: centerX.value, y: centerY.value }
+
+		let theta = 0
+		for (let iter = 0; iter < MAX_SPIRAL_ITERATIONS; iter++) {
+			const r = SPIRAL_A * theta
+			const cx = centerX.value + r * Math.cos(theta)
+			const cy = centerY.value + r * Math.sin(theta)
+
+			const outOfBounds = cx < wordW / 2 || cx > svgWidth.value - wordW / 2
+				|| cy < wordH / 2 || cy > svgHeight.value - wordH / 2
+
+			if (!outOfBounds && !placed.some((p) => overlaps({ x: cx, y: cy, width: wordW, height: wordH }, p))) {
+				return { x: cx, y: cy }
+			}
+
+			theta += SPIRAL_STEP
+		}
+
+		return null
 	}
 
 	/*********************************************************
@@ -387,45 +418,11 @@
 
 			const color = colorFor(idx)
 
-			let cx = centerX.value
-			let cy = centerY.value
-			let placed_ = false
+			const slot = findSpiralSlot(placed, wordW, wordH)
 
-			if (placed.length === 0) {
-				placed_ = true
-			} else {
-				let theta = 0
-				for (let iter = 0; iter < MAX_SPIRAL_ITERATIONS; iter++) {
-					const r = SPIRAL_A * theta
-					cx = centerX.value + r * Math.cos(theta)
-					cy = centerY.value + r * Math.sin(theta)
-
-					if (cx < wordW / 2 || cx > svgWidth.value - wordW / 2
-						|| cy < wordH / 2 || cy > svgHeight.value - wordH / 2) {
-						theta += SPIRAL_STEP
-						continue
-					}
-
-					let collision = false
-					for (const p of placed) {
-						if (overlaps(cx, cy, wordW, wordH, p.x, p.y, p.width, p.height)) {
-							collision = true
-							break
-						}
-					}
-
-					if (!collision) {
-						placed_ = true
-						break
-					}
-
-					theta += SPIRAL_STEP
-				}
-
-				if (!placed_) {
-					console.warn(`[OrigamChartWordCloud] Could not place word "${datum.text}" within ${MAX_SPIRAL_ITERATIONS} iterations — skipped.`)
-					return
-				}
+			if (!slot) {
+				console.warn(`[OrigamChartWordCloud] Could not place word "${datum.text}" within ${MAX_SPIRAL_ITERATIONS} iterations — skipped.`)
+				return
 			}
 
 			const word: IChartWordCloudWord = {
@@ -433,8 +430,8 @@
 				value: datum.value,
 				color,
 				fontSize,
-				x: cx,
-				y: cy,
+				x: slot.x,
+				y: slot.y,
 				angle,
 				index: idx,
 				width: wordW,

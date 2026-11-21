@@ -732,38 +732,44 @@
 	 * Event handlers
 	 ********************************************************/
 
+	const handleSelectMultiple = (item: IInternalListItem, set: boolean | null) => {
+		const index = model.value.findIndex((selection) => (props.valueComparator ? props.valueComparator(selection.value, item.value) : deepEqual(selection.value, item.value)))
+		const add = set == null ? !~index : set
+
+		if (~index) {
+			const value = add ? [...model.value, item] : [...model.value]
+
+			value.splice(index, 1)
+			model.value = value
+		} else if (add) {
+			model.value = [...model.value, item]
+		}
+
+		if (props.clearOnSelect && props.autocomplete) {
+			search.value = ''
+		}
+	}
+	const handleSelectSingle = (item: IInternalListItem, set: boolean | null) => {
+		const add = set !== false
+
+		model.value = add ? [item] : []
+
+		if (props.autocomplete) {
+			search.value = add ? item.title : ''
+		}
+
+		nextTick(() => {
+			menu.value = false
+			isPristine.value = true
+		})
+	}
 	const handleSelect = (item: IInternalListItem, set: boolean | null = true) => {
 		if (item.props?.disabled) return
 
 		if (props.multiple) {
-			const index = model.value.findIndex((selection) => (props.valueComparator ? props.valueComparator(selection.value, item.value) : deepEqual(selection.value, item.value)))
-			const add = set == null ? !~index : set
-
-			if (~index) {
-				const value = add ? [...model.value, item] : [...model.value]
-
-				value.splice(index, 1)
-				model.value = value
-			} else if (add) {
-				model.value = [...model.value, item]
-			}
-
-			if (props.clearOnSelect && props.autocomplete) {
-				search.value = ''
-			}
+			handleSelectMultiple(item, set)
 		} else {
-			const add = set !== false
-
-			model.value = add ? [item] : []
-
-			if (props.autocomplete) {
-				search.value = add ? item.title : ''
-			}
-
-			nextTick(() => {
-				menu.value = false
-				isPristine.value = true
-			})
+			handleSelectSingle(item, set)
 		}
 	}
 	const handleClear = (e: MouseEvent) => {
@@ -860,6 +866,148 @@
 		// click double-toggles (icon → open, control → close again) because
 		// stopPropagation is only called after the first focus is set.
 	}
+	/*********************************************************
+	 * Keyboard handling — split by concern (#1398). The helpers below keep
+	 * the exact evaluation order of the former single `handleKeydown`; the
+	 * `length` / `selectionStart` snapshots are taken once, up front, and
+	 * passed down.
+	 ********************************************************/
+
+	// WAI-ARIA combobox: highlight navigation stays on the <input>.
+	// DOM focus never leaves the input — only aria-activedescendant changes.
+	// Returns true when Enter selected the highlighted item (stop handling).
+	const handleHighlightNavigation = (e: KeyboardEvent): boolean => {
+		const itemCount = displayItems.value.length
+		if (!menu.value || itemCount <= 0) return false
+
+		if (e.key === KEYBOARD_VALUES.DOWN) {
+			highlightIndex.value = highlightIndex.value < itemCount - 1
+				? highlightIndex.value + 1
+				: 0
+		} else if (e.key === KEYBOARD_VALUES.UP) {
+			highlightIndex.value = highlightIndex.value > 0
+				? highlightIndex.value - 1
+				: itemCount - 1
+		} else if (e.key === KEYBOARD_VALUES.HOME) {
+			highlightIndex.value = 0
+		} else if (e.key === KEYBOARD_VALUES.END) {
+			highlightIndex.value = itemCount - 1
+		} else if (e.key === KEYBOARD_VALUES.ENTER && highlightIndex.value >= 0) {
+			handleSelect(displayItems.value[highlightIndex.value] as IInternalListItem, null)
+			highlightIndex.value = -1
+			return true
+		}
+
+		return false
+	}
+
+	// Backspace / Delete in autocomplete mode. Returns true when it removed the
+	// single selection (the caller stops handling the key).
+	const handleAutocompleteBack = (e: KeyboardEvent, length: number): boolean => {
+		if (
+				!props.multiple &&
+				model.value.length > 0 &&
+				!search.value
+		) {
+			handleSelect(model.value[0], false)
+			return true
+		}
+
+		if (~selectionIndex.value) {
+			const originalSelectionIndex = selectionIndex.value
+			handleSelect(model.value[selectionIndex.value], false)
+
+			selectionIndex.value = originalSelectionIndex >= length - 1 ? (length - 2) : originalSelectionIndex
+		} else if (e.key === KEYBOARD_VALUES.BACKSPACE && !search.value) {
+			selectionIndex.value = length - 1
+		}
+
+		return false
+	}
+
+	const handleSelectionLeft = (selectionStart: number | null | undefined, length: number) => {
+		if (selectionIndex.value < 0 && (selectionStart ?? 0) > 0) return
+
+		const prev = selectionIndex.value > -1
+				? selectionIndex.value - 1
+				: length - 1
+
+		if (model.value[prev]) {
+			selectionIndex.value = prev
+		} else {
+			selectionIndex.value = -1
+			origamTextFieldRef.value?.setSelectionRange(search.value?.length ?? null, search.value?.length ?? null)
+		}
+	}
+
+	const handleSelectionRight = () => {
+		if (selectionIndex.value < 0) return
+
+		const next = selectionIndex.value + 1
+
+		if (model.value[next]) {
+			selectionIndex.value = next
+		} else {
+			selectionIndex.value = -1
+			origamTextFieldRef.value?.setSelectionRange(0, 0)
+		}
+	}
+
+	const handleAutocompleteKeydown = (e: KeyboardEvent, selectionStart: number | null | undefined, length: number) => {
+		const keyAutocompleteEnter = [KEYBOARD_VALUES.ENTER, KEYBOARD_VALUES.TAB]
+		if (highlightFirst.value && keyAutocompleteEnter.includes(e.key as typeof keyAutocompleteEnter[number])) {
+			handleSelect(displayItems.value[0] as IInternalListItem)
+		}
+
+		if (e.key === KEYBOARD_VALUES.DOWN && highlightFirst.value) {
+			origamListRef.value?.focus('next')
+		}
+
+		const keyBack = [KEYBOARD_VALUES.BACKSPACE, KEYBOARD_VALUES.DELETE]
+		if (keyBack.includes(e.key as typeof keyBack[number]) && handleAutocompleteBack(e, length)) return
+
+		if (!props.multiple) return
+
+		if (e.key === KEYBOARD_VALUES.LEFT) handleSelectionLeft(selectionStart, length)
+		if (e.key === KEYBOARD_VALUES.RIGHT) handleSelectionRight()
+	}
+
+	const handleTypeAheadKeydown = (e: KeyboardEvent) => {
+		// html select hotkeys
+		const KEYBOARD_LOOKUP_THRESHOLD = 1000 // milliseconds
+
+		const checkPrintable = (e: KeyboardEvent) => {
+			const isPrintableChar = e.key.length === 1
+			const noModifier = !e.ctrlKey && !e.metaKey && !e.altKey
+
+			return isPrintableChar && noModifier
+		}
+
+		if (props.multiple || !checkPrintable(e)) return
+
+		const now = performance.now()
+
+		if (now - keyboardLookupLastTime > KEYBOARD_LOOKUP_THRESHOLD) {
+			keyboardLookupPrefix = ''
+		}
+
+		keyboardLookupPrefix += e.key.toLowerCase()
+		keyboardLookupLastTime = now
+
+		const item = items.value.find((item) => item.title?.toLowerCase().startsWith(keyboardLookupPrefix))
+
+		if (item !== undefined) {
+			model.value = [item as IInternalListItem]
+			const index = displayItems.value.indexOf(item)
+
+			scheduleScrollFrame(() => {
+				if (index >= 0) {
+					origamVirtualScrollRef.value?.scrollToIndex(index)
+				}
+			})
+		}
+	}
+
 	const handleKeydown = (e: KeyboardEvent) => {
 		if (!e.key || props.readonly || form?.isReadonly.value) return
 
@@ -882,28 +1030,7 @@
 			menu.value = false
 		}
 
-		// WAI-ARIA combobox: highlight navigation stays on the <input>.
-		// DOM focus never leaves the input — only aria-activedescendant changes.
-		const itemCount = displayItems.value.length
-		if (menu.value && itemCount > 0) {
-			if (e.key === KEYBOARD_VALUES.DOWN) {
-				highlightIndex.value = highlightIndex.value < itemCount - 1
-					? highlightIndex.value + 1
-					: 0
-			} else if (e.key === KEYBOARD_VALUES.UP) {
-				highlightIndex.value = highlightIndex.value > 0
-					? highlightIndex.value - 1
-					: itemCount - 1
-			} else if (e.key === KEYBOARD_VALUES.HOME) {
-				highlightIndex.value = 0
-			} else if (e.key === KEYBOARD_VALUES.END) {
-				highlightIndex.value = itemCount - 1
-			} else if (e.key === KEYBOARD_VALUES.ENTER && highlightIndex.value >= 0) {
-				handleSelect(displayItems.value[highlightIndex.value] as IInternalListItem, null)
-				highlightIndex.value = -1
-				return
-			}
-		}
+		if (handleHighlightNavigation(e)) return
 
 		if (e.key === KEYBOARD_VALUES.HOME) {
 			origamListRef.value?.focus('first')
@@ -911,97 +1038,10 @@
 			origamListRef.value?.focus('last')
 		}
 
-		const keyAutocompleteEnter = [KEYBOARD_VALUES.ENTER, KEYBOARD_VALUES.TAB]
 		if (props.autocomplete) {
-			if (highlightFirst.value && keyAutocompleteEnter.includes(e.key as typeof keyAutocompleteEnter[number])) {
-				handleSelect(displayItems.value[0] as IInternalListItem)
-			}
-
-			if (e.key === KEYBOARD_VALUES.DOWN && highlightFirst.value) {
-				origamListRef.value?.focus('next')
-			}
-
-			const keyBack = [KEYBOARD_VALUES.BACKSPACE, KEYBOARD_VALUES.DELETE]
-			if (keyBack.includes(e.key as typeof keyBack[number])) {
-				if (
-						!props.multiple &&
-						model.value.length > 0 &&
-						!search.value
-				) return handleSelect(model.value[0], false)
-
-				if (~selectionIndex.value) {
-					const originalSelectionIndex = selectionIndex.value
-					handleSelect(model.value[selectionIndex.value], false)
-
-					selectionIndex.value = originalSelectionIndex >= length - 1 ? (length - 2) : originalSelectionIndex
-				} else if (e.key === KEYBOARD_VALUES.BACKSPACE && !search.value) {
-					selectionIndex.value = length - 1
-				}
-			}
-
-			if (!props.multiple) return
-
-			if (e.key === KEYBOARD_VALUES.LEFT) {
-				if (selectionIndex.value < 0 && (selectionStart ?? 0) > 0) return
-
-				const prev = selectionIndex.value > -1
-						? selectionIndex.value - 1
-						: length - 1
-
-				if (model.value[prev]) {
-					selectionIndex.value = prev
-				} else {
-					selectionIndex.value = -1
-					origamTextFieldRef.value?.setSelectionRange(search.value?.length ?? null, search.value?.length ?? null)
-				}
-			}
-
-			if (e.key === KEYBOARD_VALUES.RIGHT) {
-				if (selectionIndex.value < 0) return
-
-				const next = selectionIndex.value + 1
-
-				if (model.value[next]) {
-					selectionIndex.value = next
-				} else {
-					selectionIndex.value = -1
-					origamTextFieldRef.value?.setSelectionRange(0, 0)
-				}
-			}
+			handleAutocompleteKeydown(e, selectionStart, length)
 		} else {
-			// html select hotkeys
-			const KEYBOARD_LOOKUP_THRESHOLD = 1000 // milliseconds
-
-			const checkPrintable = (e: KeyboardEvent) => {
-				const isPrintableChar = e.key.length === 1
-				const noModifier = !e.ctrlKey && !e.metaKey && !e.altKey
-
-				return isPrintableChar && noModifier
-			}
-
-			if (props.multiple || !checkPrintable(e)) return
-
-			const now = performance.now()
-
-			if (now - keyboardLookupLastTime > KEYBOARD_LOOKUP_THRESHOLD) {
-				keyboardLookupPrefix = ''
-			}
-
-			keyboardLookupPrefix += e.key.toLowerCase()
-			keyboardLookupLastTime = now
-
-			const item = items.value.find((item) => item.title?.toLowerCase().startsWith(keyboardLookupPrefix))
-
-			if (item !== undefined) {
-				model.value = [item as IInternalListItem]
-				const index = displayItems.value.indexOf(item)
-
-				scheduleScrollFrame(() => {
-					if (index >= 0) {
-						origamVirtualScrollRef.value?.scrollToIndex(index)
-					}
-				})
-			}
+			handleTypeAheadKeydown(e)
 		}
 	}
 	const handleBlur = (e: FocusEvent) => {
@@ -1138,7 +1178,7 @@
 			// it must stay empty so it doesn't visually duplicate the
 			// selection.
 			if (props.autocomplete) {
-				// @ts-expect-error TODO
+				// @ts-expect-error model items are loosely typed (props.title)
 				search.value = props.multiple ? '' : String(model.value?.at(-1)?.props.title ?? '')
 			}
 			isPristine.value = true

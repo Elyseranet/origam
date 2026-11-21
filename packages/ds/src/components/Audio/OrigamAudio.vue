@@ -288,6 +288,7 @@
 	import type { TAudioLoopMode } from '../../types/Audio/audio.type'
 
 	import { formatMediaTime } from '../../utils/Media/format-time.util'
+	import { warnAsyncRejection } from '../../utils/Commons/console.util'
 
 	/*********************************************************
 	 * Global
@@ -567,10 +568,11 @@
 	// `withDefaults` resolves `loopMode` to `'none'` by default, so we
 	// only fall through to the legacy `loop` flag when `loopMode` was
 	// left at its default — never overriding an explicit non-'none' value.
-	const seedLoopMode = (): TAudioLoopMode =>
-		props.loopMode && props.loopMode !== 'none'
-			? props.loopMode
-			: (props.loop ? 'one' : 'none')
+	const seedLoopMode = (): TAudioLoopMode => {
+		if (props.loopMode && props.loopMode !== 'none') return props.loopMode
+
+		return props.loop ? 'one' : 'none'
+	}
 	watch(() => props.loopMode, (next) => {
 		if (next && next !== internalLoopMode.value) internalLoopMode.value = next
 	})
@@ -747,8 +749,13 @@
 	 * and stays suppressed under `prefers-reduced-motion` (a11y) since
 	 * `resolvedAutoplay` already accounts for it.
 	 ********************************************************/
+	const onAsyncRejection = (err: unknown): void => warnAsyncRejection('OrigamAudio', err)
+	const playSafely = (): void => {
+		methods.play().catch(onAsyncRejection)
+	}
+
 	watch(resolvedAutoplay, (on) => {
-		if (on) void methods.play()
+		if (on) playSafely()
 	})
 
 	/*********************************************************
@@ -957,7 +964,7 @@
 
 		if (resolvedShuffle.value) {
 			setActiveTrack(pickRandomIndex())
-			void nextTick(() => { void methods.play() })
+			nextTick(playSafely).catch(onAsyncRejection)
 			return
 		}
 
@@ -965,10 +972,10 @@
 		const target = cur + 1
 		if (target < total) {
 			setActiveTrack(target)
-			void nextTick(() => { void methods.play() })
+			nextTick(playSafely).catch(onAsyncRejection)
 		} else if (resolvedLoopMode.value === 'all') {
 			setActiveTrack(0)
-			void nextTick(() => { void methods.play() })
+			nextTick(playSafely).catch(onAsyncRejection)
 		}
 	}
 
