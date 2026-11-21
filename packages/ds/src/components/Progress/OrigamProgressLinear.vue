@@ -14,21 +14,21 @@
 			role="progressbar"
 			@click="handleClick"
 	>
-		<div
+		<span
 				v-if="stream"
 				key="stream"
 				:style="streamStyles"
 				class="origam-progress__stream"
 		/>
-		<div
+		<span
 				:class="progressBackgroundClasses"
 				:style="backgroundStyles"
 		/>
 
 		<origam-transition :transition="transition">
-			<div :class="progressLoaderClasses">
+			<span :class="progressLoaderClasses">
 				<template v-if="indeterminate">
-					<div
+					<span
 							v-for="bar in ['long', 'short']"
 							:key="bar"
 							:class="`origam-progress__bar--${bar}`"
@@ -37,12 +37,12 @@
 					/>
 				</template>
 				<template v-else>
-					<div
+					<span
 							:style="loaderStyles"
 							class="origam-progress__bar"
 					/>
 				</template>
-			</div>
+			</span>
 		</origam-transition>
 
 		<div
@@ -329,6 +329,7 @@
 			}
 
 			#{$this}__loader {
+				display: block;
 				color: var(--origam-progress-linear__loader---color, inherit);
 
 				> * {
