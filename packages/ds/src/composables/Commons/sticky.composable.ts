@@ -38,7 +38,7 @@ export function useSticky ({rootEl, isSticky, layoutItemStyles}: ISticky) {
             isSticky.value ? {top: 'auto', bottom: 'auto', height: undefined} : undefined,
             isStuck.value
                 ? {[side]: convertToUnit(stuckPosition.value)} as CSSProperties
-                : {top: layoutItemStyles.value.top as CSSProperties['top']}
+                : {top: layoutItemStyles.value.top}
         ]
     })
 

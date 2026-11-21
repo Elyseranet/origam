@@ -1,6 +1,6 @@
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 
-import { TEXTAREA_TOOLBAR_COMMAND } from '../../enums'
+import { TEXTAREA_TOOLBAR_COMMAND } from '../../enums/TextareaField/textarea-field-rich-toolbar.enum'
 
 import type { ITextareaRichActiveState, IUseTextareaRichOptions } from '../../interfaces/TextareaField/textarea-field-rich.interface'
 

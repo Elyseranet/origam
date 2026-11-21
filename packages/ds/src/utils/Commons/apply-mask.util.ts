@@ -1,4 +1,4 @@
-import { MASK_TOKEN_KIND } from '../../enums'
+import { MASK_TOKEN_KIND } from '../../enums/TextField/text-field.enum'
 
 import type { IMaskApplyResult, IMaskToken } from '../../interfaces/Commons/mask.interface'
 

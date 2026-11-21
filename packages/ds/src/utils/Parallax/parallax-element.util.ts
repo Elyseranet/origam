@@ -1,4 +1,4 @@
-import { PARALLAX_EVENT } from '../../enums'
+import { PARALLAX_EVENT } from '../../enums/Parallax/parallax.enum'
 
 import type { IParallaxElementCicle, IParallaxElementMovement } from '../../interfaces/Parallax/parallax-element.interface'
 

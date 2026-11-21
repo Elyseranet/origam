@@ -288,7 +288,6 @@
 
 	import { AXIS } from '../../enums/Commons/drag.enum'
 	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { TEXTAREA_MODE, TEXTAREA_OUTPUT } from '../../enums/TextareaField/textarea-field.enum'
 	import { TEXTAREA_TOOLBAR_POSITION } from '../../enums/TextareaField/textarea-field-rich-toolbar.enum'
 
@@ -311,7 +310,7 @@
 
 	const props = withDefaults(defineProps<ITextareaFieldProps>(), {
 		density: DENSITY.DEFAULT,
-		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
+		clearIcon: 'mdi:mdi-close-circle-outline',
 		rounded: true,
 		rows: 3,
 		mode: TEXTAREA_MODE.PLAIN,

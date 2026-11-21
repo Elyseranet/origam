@@ -1,4 +1,4 @@
-import { SORT_DIRECTION } from '../../enums'
+import { SORT_DIRECTION } from '../../enums/Commons/sort.enum'
 import type { IDataTableSortItem, IDataTableSortItemsOptions } from '../../interfaces/DataTable/sort.interface'
 import type { IInternalItem } from '../../interfaces/List/list-children.interface'
 import type { TDataTableSortEntry } from '../../types/DataTable/data-table.type'

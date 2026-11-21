@@ -34,7 +34,7 @@ import {
     PASSWORD_STRONG_LENGTH
 } from '../../consts/PasswordField/password-field.const'
 
-import { PASSWORD_STRENGTH_LEVEL } from '../../enums'
+import { PASSWORD_STRENGTH_LEVEL } from '../../enums/PasswordField/password-field.enum'
 import type { IPasswordStrength } from '../../interfaces/PasswordField/password-strength.interface'
 import type { TPasswordStrengthScore } from '../../types/PasswordField/password-field.type'
 

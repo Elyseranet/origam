@@ -68,7 +68,6 @@
   import { useProps } from '../../composables/Commons/props.composable'
   import { useStyle } from '../../composables/Commons/style.composable'
   import { useTypography } from '../../composables/Commons/typography.composable'
-  import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
   import type { IFileFieldListItemProps, IFileFieldListItemSlots, IFileFieldListItemEmits } from '../../interfaces/FileField/file-field-list-item.interface'
 
   import { humanReadableFileSize } from '../../utils/Commons/commons.util'
@@ -84,9 +83,9 @@
    * Slots for the component.
    ********************************************************/
   const props = withDefaults(defineProps<IFileFieldListItemProps>(), {
-    fileIcon: MDI_ICONS.FILE,
-    removeIcon: MDI_ICONS.CLOSE,
-    downloadIcon: MDI_ICONS.DOWNLOAD,
+    fileIcon: 'mdi:mdi-file',
+    removeIcon: 'mdi:mdi-close',
+    downloadIcon: 'mdi:mdi-download',
   })
   const emits = defineEmits<IFileFieldListItemEmits>()
 

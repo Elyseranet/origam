@@ -401,7 +401,6 @@
   import { useVModel } from '../../composables/Commons/vModel.composable'
   import { DENSITY } from '../../enums/Commons/density.enum'
   import { FILE_FIELD_DISPLAY } from '../../enums/FileField/file-field.enum'
-  import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
   import type { IFileFieldProps, IFileFieldSlots, IFileFieldEmits } from '../../interfaces/FileField/file-field.interface'
 
   import type { TOrigamField } from '../../types/Field/field.type'
@@ -421,11 +420,11 @@
    * Slots for the component.
    ********************************************************/
   const props = withDefaults(defineProps<IFileFieldProps>(), {
-    prependInnerIcon: MDI_ICONS.PAPERCLIP,
-    dragndropIcon: MDI_ICONS.CLOUD_UPLOAD_OUTLINE,
-    fileIcon: MDI_ICONS.FILE,
-    removeIcon: MDI_ICONS.CLOSE,
-    downloadIcon: MDI_ICONS.DOWNLOAD,
+    prependInnerIcon: 'mdi:mdi-paperclip',
+    dragndropIcon: 'mdi:mdi-cloud-upload-outline',
+    fileIcon: 'mdi:mdi-file',
+    removeIcon: 'mdi:mdi-close',
+    downloadIcon: 'mdi:mdi-download',
     showSize: false,
     clearable: true,
     centerAffix: true,

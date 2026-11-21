@@ -2,7 +2,8 @@ import { computed, ref, toValue } from 'vue'
 import type { MaybeRef, MaybeRefOrGetter, Ref } from 'vue'
 import { useEventListener } from './eventListener.composable'
 
-import { AXIS, CLIENT_POSITION } from '../../enums'
+import { AXIS } from '../../enums/Commons/drag.enum'
+import { CLIENT_POSITION } from '../../enums/Commons/commons.enum'
 
 import type { TAxis } from '../../types/Commons/axis.type'
 
@@ -50,11 +51,8 @@ export function useDragResizer (el: MaybeRef<HTMLElement | undefined>, value: Re
     const isHorizontal = computed(() => {
         return axis === AXIS.X
     })
-    // const isVertical = computed(() => {
-    //   return axis === AXIS.Y
-    // })
 
-    // TODO - Rework for both axis
+    // Axe X uniquement — voir #1410
 
     const onDragEnd = () => {
         removeListeners.forEach((fn) => fn())

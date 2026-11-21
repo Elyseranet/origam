@@ -1,4 +1,4 @@
-import { KEYBOARD_VALUES } from '../../enums'
+import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 
 export const COMPOSITION_IGNORE_KEYS = [
     KEYBOARD_VALUES.UP,

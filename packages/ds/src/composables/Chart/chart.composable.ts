@@ -31,7 +31,8 @@ import type {
 import type { TChartSmoothing, TChartStacking, TChartType } from '../../types/Chart/chart.type'
 import type { TIntent } from '../../types/Commons/intent.type'
 
-import { CHART_SMOOTHING, CHART_STACKING, CHART_TYPE, INTENT } from '../../enums'
+import { CHART_SMOOTHING, CHART_STACKING, CHART_TYPE } from '../../enums/Chart/chart.enum'
+import { INTENT } from '../../enums/Commons/intent.enum'
 
 import {
     arcPath,

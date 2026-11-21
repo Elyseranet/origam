@@ -52,7 +52,6 @@
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { ICheckboxBtnProps, ICheckboxBtnSlots, ICheckboxBtnEmits } from '../../interfaces/Checkbox/checkbox-btn.interface'
 
@@ -70,9 +69,9 @@
 
 	const props = withDefaults(defineProps<ICheckboxBtnProps>(), {
 		density: DENSITY.DEFAULT,
-		trueIcon: MDI_ICONS.CHECKBOX_MARKED_OUTLINE,
-		falseIcon: MDI_ICONS.CHECKBOX_BLANK_OUTLINE,
-		indeterminateIcon: MDI_ICONS.MINUS_BOX
+		trueIcon: 'mdi:mdi-checkbox-marked-outline',
+		falseIcon: 'mdi:mdi-checkbox-blank-outline',
+		indeterminateIcon: 'mdi:mdi-minus-box'
 	})
 
 	const emits = defineEmits<ICheckboxBtnEmits>()
