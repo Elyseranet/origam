@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamFileField` : anneau de focus sur la dropzone et attributs natifs sur l'`<input>` seul (#1383)
+
+- Focus : en mode `dragndrop`/`dropzone`, l'`<input type="file">` (opacity 0) porte le focus clavier mais la dropzone restait sans outline (`outline-style: none` mesuré dans Chromium). La dropzone peint désormais un anneau `:has(:focus-visible)`, aux tokens `--origam-color__border---focus` / `--origam-border__width---2` (même forme que `OrigamRatingFieldItem`).
+- Attributs : `OrigamFileField` n'avait pas `inheritAttrs: false` ; `aria-label` / `accept` se retrouvaient aussi sur le `<div>` racine en plus de l'`<input>`. Corrigé comme `OrigamTextField` (#818).
+- Non traité : `data-cy` reste sur le conteneur racine (convention `filterInputAttrs` partagée par TextField, Radio, etc.), à arbitrer séparément.
+
 ### Fixed — poids JS : `origam-chip` et le coeur `origam/core` n'embarquent plus l'enum MDI de 360 Ko (#1403)
 
 - Cause : l'enum `MDI_ICONS` (~7 000 membres) restait dans le bundle bien qu'inutilisé, car Rolldown ne retire pas l'IIFE d'un enum atteint par un barrel. Chemins : `OrigamChip`/`OrigamChipGroup` (et ~40 autres composants) l'importaient pour leurs icônes par défaut ; `origam-core.ts` et `consts/Commons/display.const.ts` passaient par les barrels `composables/index` (donc `createIcons` -> `mdi.const`) et `enums/index`.
