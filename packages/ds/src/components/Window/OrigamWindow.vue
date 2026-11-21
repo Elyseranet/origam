@@ -8,14 +8,14 @@
 			:style="windowStyles"
 			v-bind="landmarkAttrs"
 	>
-		<p
+		<output
 				class="origam-window__live-region"
 				role="status"
 				aria-atomic="true"
 				aria-live="polite"
 		>
 			{{ slideAnnouncement }}
-		</p>
+		</output>
 
 		<div
 				:style="windowContainerStyles"

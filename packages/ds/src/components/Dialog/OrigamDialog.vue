@@ -44,16 +44,9 @@
 					</template>
 
 					<!--
-						#412 — the target names below (`#header.append`, …) address
-						`<OrigamCard>`'s OWN slots, which it reads as `slots['header.append']`
-						(point notation, `OrigamCard.vue:70`). Dialog's PUBLIC slot names
-						exposed to ITS OWN consumers stay dash-named (`<slot name="header-append">`
-						right below) — the two are independent identifiers: a named
-						template's target must match the CHILD's slot name, not whatever
-						name this component re-exposes upward. Pre-fix these were both
-						written as `#header-append` (dash) — a literal string that never
-						matched Card's `header.append`, so the five header zones (including
-						the default close button) were silently discarded. See #412.
+						#412: the target names below address the Card's OWN slots, read as
+						point-notation keys. Dialog's public slots stay dash-named; the two
+						identifiers are independent and the target must match the child's slot name.
 					-->
 					<template #header.append>
 						<slot name="header-append">

@@ -204,6 +204,13 @@
 			padding-block-end: var(--origam-row---padding-block-end);
 			padding-inline-start: var(--origam-row---padding-inline-start);
 			padding-inline-end: var(--origam-row---padding-inline-end);
+			// #950 — gutter margin, same zero-specificity reasoning: the
+			// custom properties below stay at (0,2,0), only these consuming
+			// declarations drop so `.origam--m-6` can win.
+			margin-block-start: calc(var(--origam-row---margin-block-start) + var(--origam-row---density));
+			margin-block-end: calc(var(--origam-row---margin-block-end) + var(--origam-row---density));
+			margin-inline-start: calc(var(--origam-row---margin-inline-start) + var(--origam-row---density));
+			margin-inline-end: calc(var(--origam-row---margin-inline-end) + var(--origam-row---density));
 		}
 
 		--origam-col---padding-block-start: calc(var(--origam-row---gutter) / 2);
@@ -216,22 +223,12 @@
 		--origam-row---margin-inline-start: calc(var(--origam-row---gutter) / -2);
 		--origam-row---margin-inline-end: calc(var(--origam-row---gutter) / -2);
 
-		// ⛔ #950 — same reasoning for the gutter margin. The custom
-		// properties above stay at (0,2,0); only the declarations that
-		// CONSUME them drop to (0,0,0), so `.origam--m-6` can win.
-		// ⚠️ Deliberately PARTIAL: the `+ .origam-row` rule below is
+		// ⚠️ #950 gutter margin: deliberately PARTIAL: the `+ .origam-row` rule below is
 		// (0,3,0) and still overrides `margin-block-start` on every Row
 		// that follows another Row — that gutter collapse is the intended
 		// behaviour and #950 does not touch it. The utility therefore wins
 		// on all four sides of the FIRST Row, and on three sides of the
 		// next ones. (This is what the census read as `repos = -12px`.)
-		:where(&) {
-			margin-block-start: calc(var(--origam-row---margin-block-start) + var(--origam-row---density));
-			margin-block-end: calc(var(--origam-row---margin-block-end) + var(--origam-row---density));
-			margin-inline-start: calc(var(--origam-row---margin-inline-start) + var(--origam-row---density));
-			margin-inline-end: calc(var(--origam-row---margin-inline-end) + var(--origam-row---density));
-		}
-
 		+ .origam-row {
 			margin-block-start: calc((var(--origam-row---margin-block-start) + var(--origam-row---density)) * -1);
 		}
