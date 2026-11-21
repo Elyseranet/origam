@@ -55,7 +55,7 @@ export function useTextareaRich(options: IUseTextareaRichOptions) {
             // Only update when the selection actually lives inside our host.
             const sel = document.getSelection()
             if (!sel || sel.rangeCount === 0) return
-            const node = sel.anchorNode as Node | null
+            const node = sel.anchorNode
             if (!node || !hostRef.value?.contains(node)) return
             syncActiveState()
         }

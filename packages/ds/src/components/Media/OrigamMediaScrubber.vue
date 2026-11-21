@@ -310,21 +310,24 @@
 		return range.value * 0.05
 	}
 
+	function keyTarget (key: string, isVertical: boolean, step: number): number | null {
+		switch (key) {
+			case 'ArrowRight': return isVertical ? null : resolvedValue.value + step
+			case 'ArrowLeft': return isVertical ? null : resolvedValue.value - step
+			case 'ArrowUp': return isVertical ? resolvedValue.value + step : null
+			case 'ArrowDown': return isVertical ? resolvedValue.value - step : null
+			case 'PageUp': return resolvedValue.value + range.value * 0.1
+			case 'PageDown': return resolvedValue.value - range.value * 0.1
+			case 'Home': return resolvedMin.value
+			case 'End': return resolvedMax.value
+			default: return null
+		}
+	}
+
 	function onKeyDown (event: KeyboardEvent): void {
 		if (props.disabled) return
-		const isVertical = props.orientation === DIRECTION.VERTICAL
-		const step = keyStep()
-		let next: number | null = null
-
-		if (event.key === 'ArrowRight' && !isVertical) next = resolvedValue.value + step
-		else if (event.key === 'ArrowLeft' && !isVertical) next = resolvedValue.value - step
-		else if (event.key === 'ArrowUp' && isVertical) next = resolvedValue.value + step
-		else if (event.key === 'ArrowDown' && isVertical) next = resolvedValue.value - step
-		else if (event.key === 'PageUp') next = resolvedValue.value + range.value * 0.1
-		else if (event.key === 'PageDown') next = resolvedValue.value - range.value * 0.1
-		else if (event.key === 'Home') next = resolvedMin.value
-		else if (event.key === 'End') next = resolvedMax.value
-		else return
+		const next = keyTarget(event.key, props.orientation === DIRECTION.VERTICAL, keyStep())
+		if (next === null) return
 
 		event.preventDefault()
 		const snapped = props.step && props.step > 0

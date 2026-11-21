@@ -336,18 +336,17 @@
 		value: unknown
 		disabled: boolean | undefined
 	}, index: number, group: IGroupProvide) => {
-		return Object.assign({},
-				item,
-				{
+		// The SELECTED dot is active. When the consumer passes an `active`
+		// STATE object, the selected dot wears that surface (forced);
+		// otherwise it just reads as active.
+		const selectedActive = props.active && typeof props.active === 'object' ? { ...props.active, enabled: true } : true
+
+		return {
+				...item,
 					id: `carousel-item-${item.id}`,
 					'aria-label': t('origam.carousel.aria_label.delimiter', index + 1, group.items.value.length),
-					// The SELECTED dot is active. When the consumer passes an
-					// `active` STATE object, the selected dot wears that surface
-					// (forced); otherwise it just reads as active. Hover applies
-					// to any dot on hover.
-					active: group.isSelected(item.id)
-						? (props.active && typeof props.active === 'object' ? { ...props.active, enabled: true } : true)
-						: false,
+					// Hover applies to any dot on hover.
+					active: group.isSelected(item.id) ? selectedActive : false,
 					hover: props.hover,
 					class: [
 						'origam-carousel__controls-item'
@@ -357,7 +356,7 @@
 					bgColor: props.bgColor,
 					size: SIZES.SMALL,
 					density: DENSITY.COMPACT
-				})
+		}
 	}
 
 	const slots = useSlots()

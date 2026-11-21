@@ -1,3 +1,4 @@
+import type { TBoxValue } from '../../types/Commons/box-value.type'
 /**
  * Outer-spacing surface.
  *
@@ -29,19 +30,19 @@ export interface IMarginProps {
      * design rung; `"8px 16px"` → block / inline; `true` → the legacy
      * `--marged` class.
      */
-    margin?: boolean | number | string
+    margin?: TBoxValue
     /** Overrides `margin` and `marginBlock` for the top edge. */
-    marginTop?: boolean | number | string
+    marginTop?: TBoxValue
     /** Overrides `margin` and `marginInline` for the left edge. */
-    marginLeft?: boolean | number | string
+    marginLeft?: TBoxValue
     /** Overrides `margin` and `marginBlock` for the bottom edge. */
-    marginBottom?: boolean | number | string
+    marginBottom?: TBoxValue
     /** Overrides `margin` and `marginInline` for the right edge. */
-    marginRight?: boolean | number | string
+    marginRight?: TBoxValue
     /** Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`. */
-    marginBlock?: boolean | number | string
+    marginBlock?: TBoxValue
     /** Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`. */
-    marginInline?: boolean | number | string
+    marginInline?: TBoxValue
     /*********************************************************
      * Logical per-side margin — rung 3 (issue #1013)
      *
@@ -66,8 +67,8 @@ export interface IMarginProps {
      * Each overrides `margin` and its axis prop for the one edge it
      * targets, and is beaten by the matching PHYSICAL prop.
      ********************************************************/
-    marginInlineStart?: boolean | number | string
-    marginInlineEnd?: boolean | number | string
-    marginBlockStart?: boolean | number | string
-    marginBlockEnd?: boolean | number | string
+    marginInlineStart?: TBoxValue
+    marginInlineEnd?: TBoxValue
+    marginBlockStart?: TBoxValue
+    marginBlockEnd?: TBoxValue
 }

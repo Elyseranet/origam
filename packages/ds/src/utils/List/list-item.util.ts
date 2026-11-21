@@ -3,6 +3,12 @@ import type { IInternalListItemChildren } from '../../interfaces/List/list-child
 
 import { getPropertyFromItem, omit } from '../Commons/commons.util'
 
+function resolveItemProps (props: Omit<IItemProps, 'items'>, item: any) {
+    if (props.itemProps !== true) return getPropertyFromItem(item, props.itemProps)
+    if (typeof item !== 'object' || item == null || Array.isArray(item)) return undefined
+    return 'children' in item ? omit(item, ['children']) : item
+}
+
 /**
  * Transform list items.
  *
@@ -52,13 +58,7 @@ export function transformListItem (props: Omit<IItemProps, 'items'> & { itemType
     const title = getPropertyFromItem(item, props.itemTitle, item)
     const value = getPropertyFromItem(item, props.itemValue, title)
     const children = getPropertyFromItem(item, props.itemChildren)
-    const itemProps = props.itemProps === true
-        ? typeof item === 'object' && item != null && !Array.isArray(item)
-            ? 'children' in item
-                ? omit(item, ['children'])
-                : item
-            : undefined
-        : getPropertyFromItem(item, props.itemProps)
+    const itemProps = resolveItemProps(props, item)
 
     const _props = {
         title,
