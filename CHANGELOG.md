@@ -22,6 +22,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 La règle `.origam-card > * { opacity: var(--origam-card---opacity) }` s'appliquait aussi au `<span class="origam-card__overlay">` et écrasait son opacité (0 au repos) : une carte avec `to` / `link` s'affichait noire. Elle exclut désormais l'overlay et l'underlay ; le contenu garde son opacité (0,6 si désactivée). Mesuré en Chromium : overlay 1 avant, 0 au repos et 0,12 au survol après.
 
+### Added — budget JS d'une page à un seul composant (#1404)
+
+- #1404 supposait un registre de jetons/réglages dans `origam/core`. Mesure : le chunk de 202 Ko vu dans Elysera est l'entry Nuxt (nuxt, i18n, router, consts du site), sans module Origam. Le vrai poids Origam était l'enum `MDI_ICONS` (~360 Ko), corrigé par #1403/#1406.
+- Fixture Vite (`createOrigamCore` + thème du DS + un `origam-title`) : **57,4 Kio gzip** avant #1406, **57,7 Kio** après (elle ne tirait déjà pas l'enum). Retirables mais non retirés : locale `fr` (-3,1 Kio gz), adaptateur de dates (-2,8), tables de variantes (-0,6) ; les rendre optionnels changerait l'API du mode core.
+- Garde `TU/origam/single-component-budget-1404.spec.ts` (fixture `TU/fixtures/single-component`) : <= 63 Kio gzip, ni police MDI ni `MDI_ICONS`.
+
 ### Fixed — poids JS : `origam-chip` et le coeur `origam/core` n'embarquent plus l'enum MDI de 360 Ko (#1403)
 
 - Cause : l'enum `MDI_ICONS` (~7 000 membres) restait dans le bundle bien qu'inutilisé, car Rolldown ne retire pas l'IIFE d'un enum atteint par un barrel. Chemins : `OrigamChip`/`OrigamChipGroup` (et ~40 autres composants) l'importaient pour leurs icônes par défaut ; `origam-core.ts` et `consts/Commons/display.const.ts` passaient par les barrels `composables/index` (donc `createIcons` -> `mdi.const`) et `enums/index`.

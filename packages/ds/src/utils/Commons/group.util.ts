@@ -53,7 +53,7 @@ export function getValues (items: UnwrapRef<Array<IGroupItem>>, ids: Array<any>)
         const itemIndex = items.findIndex(item => item.id === id)
         if (~itemIndex) {
             const item = items[itemIndex]
-            values.push(item.value != null ? item.value : itemIndex)
+            values.push(item.value ?? itemIndex)
         }
     })
 

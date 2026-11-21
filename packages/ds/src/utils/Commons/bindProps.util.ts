@@ -28,12 +28,10 @@ export function bindProps (el: HTMLElement, props: Record<string, any>) {
                 _handler.add([name, props[k]])
                 if (!HANDLERS.has(el)) HANDLERS.set(el, _handler)
             }
+        } else if (props[k] == null) {
+            el.removeAttribute(k)
         } else {
-            if (props[k] == null) {
-                el.removeAttribute(k)
-            } else {
-                el.setAttribute(k, props[k])
-            }
+            el.setAttribute(k, props[k])
         }
     })
 }

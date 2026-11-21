@@ -15,7 +15,7 @@ import type { IRoundedProps } from '../Commons/rounded.interface'
 
 import type {
     TGridAutoFlow,
-    TGridGapSize,
+    TGridGap,
     TGridPlaceContent,
     TGridPlaceItems
 } from '../../types/Grid/grid.type'
@@ -74,15 +74,15 @@ export interface IGridProps extends ICommonsComponentProps, ITagProps, IDimensio
      *
      * @default 'md'
      */
-    gap?: TGridGapSize | string | number
+    gap?: TGridGap
     /**
      * Inline-axis-only gap override. Same accepted shapes as `gap`.
      */
-    columnGap?: TGridGapSize | string | number
+    columnGap?: TGridGap
     /**
      * Block-axis-only gap override. Same accepted shapes as `gap`.
      */
-    rowGap?: TGridGapSize | string | number
+    rowGap?: TGridGap
     /**
      * `grid-template-areas`. Two accepted shapes:
      *

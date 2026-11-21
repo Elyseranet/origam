@@ -54,3 +54,11 @@ export type TGridPlaceContent = TJustify | Extract<TAlign, 'stretch'>
  * radius).
  */
 export type TGridGapSize = Exclude<TRoundedToken, 'none' | 'full'>
+
+/*********************************************************
+ * TGridGap
+ *
+ * @description
+ * A gap: a size token, any CSS length string, or a number of pixels.
+ ********************************************************/
+export type TGridGap = TGridGapSize | string | number
