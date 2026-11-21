@@ -265,7 +265,7 @@
 		return [
 			'origam-data-table-row',
 			{
-				'origam-data-table-row--clickable': !!(Object.prototype.hasOwnProperty.call(vm.vnode.props, 'onClick') || Object.prototype.hasOwnProperty.call(vm.vnode.props, 'onContextmenu') || Object.prototype.hasOwnProperty.call(vm.vnode.props, 'onDblclick'))
+				'origam-data-table-row--clickable': !!(Object.hasOwn(vm.vnode.props as object, 'onClick') || Object.hasOwn(vm.vnode.props as object, 'onContextmenu') || Object.hasOwn(vm.vnode.props as object, 'onDblclick'))
 			},
 			displayClasses.value,
 			props.class

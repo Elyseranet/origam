@@ -33,7 +33,7 @@ const BY_DAY_MAP: Record<string, number> = {
  */
 function parseUntil (value: string): Date | null {
     if (!value) return null
-    const m = value.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})Z?)?$/)
+    const m = /^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})Z?)?$/.exec(value)
     if (!m) return null
     const [, yy, mm, dd, hh, mi, ss] = m
     const y = Number(yy)
@@ -110,6 +110,20 @@ function cloneOccurrence (template: IEvent, occurrenceStart: Date, durationMin: 
  */
 const MAX_OCCURRENCES = 366 * 3 // 3 years worth of daily events
 
+function isInRange (event: IEvent, start: Date, range: { start: Date, end: Date }): boolean {
+    if (start.getTime() > range.end.getTime()) return false
+    const eventEnd = event.end ? toDate(event.end) : null
+    if (eventEnd) return !(eventEnd.getTime() < range.start.getTime())
+    return !(start.getTime() < range.start.getTime())
+}
+
+function canEmitMore (cursor: Date, rule: ICalendarParsedRule, range: { start: Date, end: Date }, emitted: number): boolean {
+    return cursor.getTime() <= range.end.getTime()
+        && (!rule.until || cursor.getTime() <= rule.until.getTime())
+        && (rule.count == null || emitted < rule.count)
+        && emitted < MAX_OCCURRENCES
+}
+
 /**
  * Expand an event with an `rrule` into the list of concrete
  * occurrences that fall inside `[range.start, range.end]`. Events
@@ -131,11 +145,7 @@ export function expandRecurrence (
     if (!event.rrule) {
         // Pass-through. We still filter against the range so callers
         // never receive events outside the visible window.
-        if (start.getTime() > range.end.getTime()) return []
-        const eventEnd = event.end ? toDate(event.end) : null
-        if (eventEnd && eventEnd.getTime() < range.start.getTime()) return []
-        if (!eventEnd && start.getTime() < range.start.getTime()) return []
-        return [event]
+        return isInRange(event, start, range) ? [event] : []
     }
 
     const rule = parseRRule(event.rrule)
@@ -146,12 +156,7 @@ export function expandRecurrence (
     let cursor = new Date(start.getTime())
     let emitted = 0
 
-    while (
-        cursor.getTime() <= range.end.getTime()
-        && (!rule.until || cursor.getTime() <= rule.until.getTime())
-        && (rule.count == null || emitted < rule.count)
-        && emitted < MAX_OCCURRENCES
-    ) {
+    while (canEmitMore(cursor, rule, range, emitted)) {
         const passesByDay = rule.freq === 'WEEKLY' && rule.byDay
             ? rule.byDay.includes(cursor.getDay())
             : true

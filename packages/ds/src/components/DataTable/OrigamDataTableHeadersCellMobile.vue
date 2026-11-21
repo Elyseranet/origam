@@ -262,7 +262,10 @@
 
 		if (showSelectColumn == null) return
 
-		return allSelected.value ? MDI_ICONS.CHECKBOX_MARKED_OUTLINE : someSelected.value ? MDI_ICONS.MINUS_BOX : MDI_ICONS.CHECKBOX_BLANK_OUTLINE
+		if (allSelected.value) return MDI_ICONS.CHECKBOX_MARKED_OUTLINE
+		if (someSelected.value) return MDI_ICONS.MINUS_BOX
+
+		return MDI_ICONS.CHECKBOX_BLANK_OUTLINE
 	})
 
 	/*********************************************************
