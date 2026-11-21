@@ -150,7 +150,9 @@
 		await nextFrame()
 		await nextFrame()
 
-		if (disposed) return
+		if (disposed) {
+			return
+		}
 
 		;(el as HTMLElement).style.visibility = ''
 

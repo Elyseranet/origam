@@ -229,9 +229,9 @@
 	 * number and a CSS-length string (`parseInt(value, 10)`).
 	 ********************************************************/
 	const width = computed(() => {
-		return (props.rail && props.expandOnHover && isHovering.value)
-				? int(props.width)
-				: int(props.rail ? props.railWidth : props.width)
+		const isExpanded = props.rail && props.expandOnHover && isHovering.value
+
+		return int(props.rail && !isExpanded ? props.railWidth : props.width)
 	})
 	const location = computed(() => {
 		return props.location as 'left' | 'right' | 'bottom'
@@ -298,9 +298,8 @@
 		// width regardless of whether the drawer is currently visible.
 		if (!isPushing.value) return 0
 
-		const size = isTemporary.value ? 0
-				: props.rail && props.expandOnHover ? int(props.railWidth)
-						: width.value
+		const restingSize = props.rail && props.expandOnHover ? int(props.railWidth) : width.value
+		const size = isTemporary.value ? 0 : restingSize
 
 		return isDragging.value ? size * dragProgress.value : size
 	})
