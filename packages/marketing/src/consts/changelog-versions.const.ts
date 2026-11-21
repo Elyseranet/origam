@@ -18,14 +18,14 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
+        version: '2.40.1',
+        date: '2026-11-21',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2401.summary',
         summaryFallback: '2 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'origam-img ne plante plus quand son élément n\'est pas monté (#1394)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'origam-btn n\'atteint plus le jeu d\'icônes MDI sans icône (#1392)' }
+            { type: 'fixed', textKey: 'changelog.versions.v2401.h1', textFallback: 'origam-img ne plante plus quand son élément n\'est pas monté (#1394)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2401.h2', textFallback: 'origam-btn n\'atteint plus le jeu d\'icônes MDI sans icône (#1392)' }
         ]
     },
     {
