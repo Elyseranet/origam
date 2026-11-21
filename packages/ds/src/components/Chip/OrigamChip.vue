@@ -158,7 +158,6 @@
 	import vRipple from '../../directives/Ripple/ripple.directive'
 
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { SIZES } from '../../enums/Commons/size.enum'
 
 	import type { IChipProps, IChipEmits, IChipSlots } from '../../interfaces/Chip/chip.interface'
@@ -175,8 +174,8 @@
 
 	const props = withDefaults(defineProps<IChipProps>(), {
 		tag: 'span',
-		closeIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
-		filterIcon: MDI_ICONS.CHECK,
+		closeIcon: 'mdi:mdi-close-circle-outline',
+		filterIcon: 'mdi:mdi-check',
 		closeLabel: 'origam.close',
 		modelValue: true,
 		// Default size — without this `withDefaults` value, `useSize`

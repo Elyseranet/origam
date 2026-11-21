@@ -1,5 +1,5 @@
 import type { InjectionKey } from 'vue'
-import { BREAKPOINTS } from '../../enums'
+import { BREAKPOINTS } from '../../enums/Commons/display.enum'
 
 import type { IDisplayInstance, IDisplayOptions } from '../../interfaces/Commons/display.interface'
 

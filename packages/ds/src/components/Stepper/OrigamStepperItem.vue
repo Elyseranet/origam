@@ -16,10 +16,10 @@
 				aria-hidden="true"
 		>
 			<template v-if="resolvedStatus === STEPPER_ITEM_STATUS.DONE">
-				<origam-icon :icon="MDI_ICONS.CHECK" />
+				<origam-icon :icon="'mdi:mdi-check'" />
 			</template>
 			<template v-else-if="resolvedStatus === STEPPER_ITEM_STATUS.ERROR">
-				<origam-icon :icon="MDI_ICONS.EXCLAMATION" />
+				<origam-icon :icon="'mdi:mdi-exclamation'" />
 			</template>
 			<template v-else-if="icon">
 				<origam-icon :icon="icon" />
@@ -51,7 +51,6 @@
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 	import { ORIGAM_STEPPER_KEY } from '../../consts/Stepper/stepper.const'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { STEPPER_ITEM_STATUS } from '../../enums/Stepper/stepper.enum'
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'

@@ -34,7 +34,6 @@
 	import { ORIGAM_CHIP_GROUP_KEY } from '../../consts/Chip/chip-group.const'
 
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IChipGroupProps, IChipGroupEmits, IChipGroupSlots } from '../../interfaces/Chip/chip-group.interface'
 
@@ -55,8 +54,8 @@
 
 	const props = withDefaults(defineProps<IChipGroupProps>(), {
 		direction: DIRECTION.HORIZONTAL,
-		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
-		prevIcon: MDI_ICONS.CHEVRON_LEFT,
+		nextIcon: 'mdi:mdi-chevron-right',
+		prevIcon: 'mdi:mdi-chevron-left',
 		selectedClass: 'origam-chip--selected'
 	})
 

@@ -25,7 +25,7 @@
 							<template v-if="isSelected(color)">
 								<origam-icon
 										:color="getContrast(color, '#FFFFFF') > 2 ? 'white' : 'black'"
-										:icon="MDI_ICONS.CHECK_CIRCLE_OUTLINE"
+										:icon="'mdi:mdi-check-circle-outline'"
 										aria-hidden="true"
 										size="x-small"
 								/>
@@ -49,7 +49,6 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
   import type { IColorPickerSwatchesProps, IColorPickerSwatchesSlots, IColorPickerSwatchesEmits } from '../../interfaces/ColorPicker/color-picker-swatches.interface'
 

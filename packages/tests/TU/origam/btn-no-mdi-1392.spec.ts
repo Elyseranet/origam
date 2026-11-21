@@ -9,7 +9,7 @@
  * à coup sûr. Aucun composant qui n'a besoin que de `useIcon` ne doit donc
  * l'atteindre. Les imports `import type` sont ignorés (effacés à la compilation).
  ********************************************************/
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { dirname, normalize, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
@@ -46,6 +46,24 @@ describe('graphe d\'imports sans icône (#1392)', () => {
             expect(files).not.toContain('enums/Commons/mdi.enum.ts')
         })
     }
+
+    // #1403 — Chip (texte seul) tirait mdi.enum (360 Ko) par ses icônes par défaut et enums/index par display.const.
+    // Les défauts d'icône sont des chaînes `mdi:mdi-*` ; aucun composant public n'a le droit d'embarquer le jeu.
+    const components = readdirSync(resolve(SRC, 'components')).filter(d => existsSync(resolve(SRC, 'components', d, 'index.ts')))
+    it.each(components)('components/%s n\'atteint ni mdi.const, ni mdi.enum, ni enums/index (#1403)', (name) => {
+        const files = reachable(`components/${name}/index.ts`)
+        expect(files).not.toContain('consts/Commons/mdi.const.ts')
+        expect(files).not.toContain('enums/index.ts')
+        expect(files).not.toContain('enums/Commons/mdi.enum.ts')
+    })
+
+    // #1403 — le coeur (origam/core + module Nuxt lite) importait les barrels : l'enum de 360 Ko restait dans l'entrée (non éliminé par Rolldown).
+    it.each(['origam-core.ts', 'nuxt/create.core.ts'])('%s n\'atteint ni mdi.const, ni mdi.enum, ni enums/index (#1403)', (entry) => {
+        const files = reachable(entry)
+        expect(files).not.toContain('consts/Commons/mdi.const.ts')
+        expect(files).not.toContain('enums/index.ts')
+        expect(files).not.toContain('enums/Commons/mdi.enum.ts')
+    })
 
     it('témoin : le barrel des composables, lui, atteint createIcons', () => {
         expect(reachable('composables/index.ts')).toContain('composables/Icon/iconsFull.composable.ts')

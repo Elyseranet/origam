@@ -20,9 +20,25 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Added — budget JS d'une page à un seul composant (#1404)
 
-- Mesure : `createOrigamCore` + le thème du DS + un seul `origam-title` = **57,4 Kio gzip** de JS client (Vue compris, build Vite minifié). Il n'y a **pas** de registre global de réglages ou de jetons importé en bloc : un build Nuxt réel (module `lite`, `OrigamTitle`) place ~92 Ko minifiés d'Origam dans le chunk d'entrée, dont ~60 Ko de code que la page exerce (thème, résolveur PROPS-FIRST, icônes, display, directive contrast) ; le thème lui-même voyage dans le payload HTML, pas dans le chunk.
-- Ce que la page paie sans l'utiliser, mesuré par retrait : locale `fr` (-3,1 Kio gz), adaptateur de dates `createDate` (-2,8 Kio gz), tables de variantes Kbd/Blockquote (-0,6 Kio gz). Ce sont des instances/tables installées par `createOrigamCore` : les rendre optionnelles change l'API du mode core, décision laissée au propriétaire.
-- Garde `TU/origam/single-component-budget-1404.spec.ts` (fixture `TU/fixtures/single-component`) : <= 62 Kio gzip.
+- #1404 supposait un registre de jetons/réglages dans `origam/core`. Mesure : le chunk de 202 Ko vu dans Elysera est l'entry Nuxt (nuxt, i18n, router, consts du site), sans module Origam. Le vrai poids Origam était l'enum `MDI_ICONS` (~360 Ko), corrigé par #1403/#1406.
+- Fixture Vite (`createOrigamCore` + thème du DS + un `origam-title`) : **57,4 Kio gzip** avant #1406, **57,7 Kio** après (elle ne tirait déjà pas l'enum). Retirables mais non retirés : locale `fr` (-3,1 Kio gz), adaptateur de dates (-2,8), tables de variantes (-0,6) ; les rendre optionnels changerait l'API du mode core.
+- Garde `TU/origam/single-component-budget-1404.spec.ts` (fixture `TU/fixtures/single-component`) : <= 63 Kio gzip, ni police MDI ni `MDI_ICONS`.
+
+### Fixed — poids JS : `origam-chip` et le coeur `origam/core` n'embarquent plus l'enum MDI de 360 Ko (#1403)
+
+- Cause : l'enum `MDI_ICONS` (~7 000 membres) restait dans le bundle bien qu'inutilisé, car Rolldown ne retire pas l'IIFE d'un enum atteint par un barrel. Chemins : `OrigamChip`/`OrigamChipGroup` (et ~40 autres composants) l'importaient pour leurs icônes par défaut ; `origam-core.ts` et `consts/Commons/display.const.ts` passaient par les barrels `composables/index` (donc `createIcons` -> `mdi.const`) et `enums/index`.
+- Correctif sans changement d'API : les icônes par défaut deviennent la chaîne `mdi:mdi-*` équivalente (même valeur que le membre d'enum) dans les composants et `EMPTY_STATE_PRESET_CONFIG` ; les imports de barrel `enums` (consts, utils, composables) et ceux d'`origam-core.ts` visent le fichier source. `OrigamBreadcrumbDivider` teste le préfixe `mdi:` au lieu de `Object.values(MDI_ICONS)` (un `mdi:` hors enum est désormais aussi traité comme icône).
+- Mesure (fixture Nuxt 4 minimale, `origam/nuxt` en `lite`, page avec `OrigamChip` texte seul, JS total du client) : 754 492 -> 403 614 octets (201 -> 127 Kio gzip) ; page sans composant : 650 014 -> 299 232 octets. Plus aucune occurrence de `mdi-ab-testing` dans le build.
+- Garde `TU/origam/btn-no-mdi-1392.spec.ts` étendue : aucun composant public, ni `origam-core.ts` ni `nuxt/create.core.ts`, n'atteint `mdi.enum`, `mdi.const` ou `enums/index`.
+
+## [2.41.0] - 2026-11-21
+
+### Fixed — Quality Gate Sonar vert sur le nouveau code (#1390)
+
+- `new_violations` : **279 → 0** (mesure SonarQube après #1402, Quality Gate `OK`). 180 imports dupliqués fusionnés (S3863, #1399), ~45 défauts TypeScript (ternaires imbriqués, assertions inutiles, `TAnyString`, API dépréciées, #1401, #1402), 11 défauts de template (`<output>` natif, code commenté, CSS dupliqué, #1400, #1402). Aucun changement de rendu ni de prop hors la rupture `useBackButton` décrite plus bas.
+- 25 alertes vérifiées comme faux positifs et 10 interfaces d'emits (convention du dépôt) sont marquées dans Sonar, chacune avec sa justification.
+- Garde : règle ESLint `no-duplicate-imports` sur `packages/ds/src` (un `import type` séparé d'un import valeur reste autorisé).
+
 
 ### Added — plafond CSS d'`OrigamBlockquote` (#1395)
 

@@ -1,4 +1,5 @@
-import { BRACKET_MATCH_STATUS, BRACKET_VARIANT } from '../../enums'
+import { BRACKET_MATCH_STATUS } from '../../enums/Bracket/bracket-match.enum'
+import { BRACKET_VARIANT } from '../../enums/Bracket/bracket.enum'
 
 import type { TBracketMatchStatus } from '../../types/Bracket/bracket-match.type'
 import type { TBracketVariant } from '../../types/Bracket/bracket.type'

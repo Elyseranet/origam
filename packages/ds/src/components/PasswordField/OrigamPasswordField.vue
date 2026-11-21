@@ -103,7 +103,7 @@
 												<div class="origam-password-field__validate">
 													<origam-icon
 															:color="isChecked(info.key) ? 'success' : 'accent'"
-															:icon="isChecked(info.key) ? MDI_ICONS.CHECK_CIRCLE_OUTLINE : MDI_ICONS.CLOSE_CIRCLE_OUTLINE"
+															:icon="isChecked(info.key) ? 'mdi:mdi-check-circle-outline' : 'mdi:mdi-close-circle-outline'"
 													/>
 												</div>
 												<div
@@ -249,7 +249,7 @@
 							>
 								<origam-icon
 										class="origam-password-field__requirement-icon"
-										:icon="isRuleSatisfied(rule) ? MDI_ICONS.CHECK_CIRCLE_OUTLINE : MDI_ICONS.CLOSE_CIRCLE_OUTLINE"
+										:icon="isRuleSatisfied(rule) ? 'mdi:mdi-check-circle-outline' : 'mdi:mdi-close-circle-outline'"
 								/>
 								<span class="origam-password-field__requirement-label">{{ rule.label }}</span>
 							</li>
@@ -266,7 +266,7 @@
 											isRuleSatisfied(rule) ? 'origam-password-field__requirement-chip--satisfied' : 'origam-password-field__requirement-chip--pending'
 										]"
 									:bg-color="isRuleSatisfied(rule) ? 'success' : undefined"
-									:prepend-icon="isRuleSatisfied(rule) ? MDI_ICONS.CHECK_CIRCLE_OUTLINE : MDI_ICONS.CLOSE_CIRCLE_OUTLINE"
+									:prepend-icon="isRuleSatisfied(rule) ? 'mdi:mdi-check-circle-outline' : 'mdi:mdi-close-circle-outline'"
 									:text="rule.label"
 									:data-requirement-id="rule.id"
 									:data-satisfied="isRuleSatisfied(rule) ? 'true' : 'false'"
@@ -327,7 +327,6 @@
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 	import type { IPasswordFieldProps, IPasswordFieldSlots, IPasswordFieldEmits } from '../../interfaces/PasswordField/password-field.interface'
 	import type { IPasswordRequirement } from '../../interfaces/PasswordField/password-requirement.interface'
@@ -353,8 +352,8 @@
 	const props = withDefaults(defineProps<IPasswordFieldProps>(), {
 		minLength: 8,
 		eager: true,
-		offIcon: MDI_ICONS.EYE_OFF,
-		onIcon: MDI_ICONS.EYE_OUTLINE,
+		offIcon: 'mdi:mdi-eye-off',
+		onIcon: 'mdi:mdi-eye-outline',
 		menuProps: () => ({
 			closeDelay: 250,
 			closeOnContentClick: true,

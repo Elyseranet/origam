@@ -13,7 +13,7 @@
 						:aria-label="eyeDropperAriaLabel"
 						:density="DENSITY.DEFAULT"
 						:disabled="disabled"
-						:icon="MDI_ICONS.EYEDROPPER"
+						:icon="'mdi:mdi-eyedropper'"
 						@click="openEyeDropper"
 				/>
 			</div>
@@ -80,7 +80,6 @@
 	import { SUPPORTS_EYE_DROPPER } from '../../consts/Commons/commons.const'
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
   import type { IColorPickerPreviewProps, IColorPickerPreviewSlots, IColorPickerPreviewEmits } from '../../interfaces/ColorPicker/color-picker-preview.interface'
 

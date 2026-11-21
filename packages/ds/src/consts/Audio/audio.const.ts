@@ -1,4 +1,5 @@
-import { AUDIO_VARIANT, COVER_POSITION, POSITION } from '../../enums'
+import { AUDIO_VARIANT, COVER_POSITION } from '../../enums/Audio/audio.enum'
+import { POSITION } from '../../enums/Commons/position.enum'
 
 /*********************************************************
  * WAVEFORM_DEFAULT_BINS

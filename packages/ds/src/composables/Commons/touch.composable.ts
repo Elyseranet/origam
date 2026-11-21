@@ -62,24 +62,77 @@ export function useTouch ({isActive, isTemporary, width, touchless, position}: {
     const offset = shallowRef(0)
     let start: [number, number] | undefined
 
+    /*********************************************************
+     * distanceFromEdge
+     *
+     * @description
+     * Distance from the panel's anchored edge to the pointer, along the panel axis.
+     ********************************************************/
+    const distanceFromEdge = (pos: number): number => {
+        switch (position.value) {
+            case 'left': return pos
+            case 'right': return document.documentElement.clientWidth - pos
+            case 'top': return pos
+            case 'bottom': return document.documentElement.clientHeight - pos
+            default: return oops()
+        }
+    }
     const getOffset = (pos: number, active: boolean): number => {
-        return (
-            position.value === 'left' ? pos
-                : position.value === 'right' ? document.documentElement.clientWidth - pos
-                    : position.value === 'top' ? pos
-                        : position.value === 'bottom' ? document.documentElement.clientHeight - pos
-                            : oops()
-        ) - (active ? width.value : 0)
+        return distanceFromEdge(pos) - (active ? width.value : 0)
     }
     const getProgress = (pos: number, limit = true): number => {
-        const progress = (
-            position.value === 'left' ? (pos - offset.value) / width.value
-                : position.value === 'right' ? (document.documentElement.clientWidth - pos - offset.value) / width.value
-                    : position.value === 'top' ? (pos - offset.value) / width.value
-                        : position.value === 'bottom' ? (document.documentElement.clientHeight - pos - offset.value) / width.value
-                            : oops()
-        )
+        const progress = (distanceFromEdge(pos) - offset.value) / width.value
         return limit ? Math.max(0, Math.min(1, progress)) : progress
+    }
+
+    const isInTouchZone = (touchX: number, touchY: number): boolean => {
+        switch (position.value) {
+            case 'left': return touchX < TOUCH_EDGE_ZONE_PX
+            case 'right': return touchX > document.documentElement.clientWidth - TOUCH_EDGE_ZONE_PX
+            case 'top': return touchY < TOUCH_EDGE_ZONE_PX
+            case 'bottom': return touchY > document.documentElement.clientHeight - TOUCH_EDGE_ZONE_PX
+            default: return oops()
+        }
+    }
+
+    const isInsidePanel = (touchX: number, touchY: number): boolean => {
+        switch (position.value) {
+            case 'left': return touchX < width.value
+            case 'right': return touchX > document.documentElement.clientWidth - width.value
+            case 'top': return touchY < width.value
+            case 'bottom': return touchY > document.documentElement.clientHeight - width.value
+            default: return oops()
+        }
+    }
+
+    /*********************************************************
+     * trackDragIntent
+     *
+     * @description
+     * Resolves the drag axis once the threshold is exceeded; returns false when the gesture must be abandoned (not cancelable).
+     ********************************************************/
+    const trackDragIntent = (e: TouchEvent, touchX: number, touchY: number): boolean => {
+        if (!maybeDragging) return true
+
+        if (!e.cancelable) {
+            maybeDragging = false
+            return false
+        }
+
+        const dx = Math.abs(touchX - start![0])
+        const dy = Math.abs(touchY - start![1])
+
+        const thresholdMet = isHorizontal.value
+            ? dx > dy && dx > TOUCH_DRAG_THRESHOLD_PX
+            : dy > dx && dy > TOUCH_DRAG_THRESHOLD_PX
+
+        if (thresholdMet) {
+            isDragging.value = true
+            maybeDragging = false
+        } else if ((isHorizontal.value ? dy : dx) > TOUCH_DRAG_THRESHOLD_PX) {
+            maybeDragging = false
+        }
+        return true
     }
 
     const handleTouchstart = (e: TouchEvent) => {
@@ -88,22 +141,8 @@ export function useTouch ({isActive, isTemporary, width, touchless, position}: {
         const touchX = e.changedTouches[0].clientX
         const touchY = e.changedTouches[0].clientY
 
-        let inTouchZone: boolean
-        switch (position.value) {
-            case 'left': inTouchZone = touchX < TOUCH_EDGE_ZONE_PX; break
-            case 'right': inTouchZone = touchX > document.documentElement.clientWidth - TOUCH_EDGE_ZONE_PX; break
-            case 'top': inTouchZone = touchY < TOUCH_EDGE_ZONE_PX; break
-            case 'bottom': inTouchZone = touchY > document.documentElement.clientHeight - TOUCH_EDGE_ZONE_PX; break
-            default: inTouchZone = oops()
-        }
-
-        const inElement: boolean = isActive.value && (
-            position.value === 'left' ? touchX < width.value
-                : position.value === 'right' ? touchX > document.documentElement.clientWidth - width.value
-                    : position.value === 'top' ? touchY < width.value
-                        : position.value === 'bottom' ? touchY > document.documentElement.clientHeight - width.value
-                            : oops()
-        )
+        const inTouchZone = isInTouchZone(touchX, touchY)
+        const inElement = isActive.value && isInsidePanel(touchX, touchY)
 
         if (
             inTouchZone ||
@@ -124,26 +163,7 @@ export function useTouch ({isActive, isTemporary, width, touchless, position}: {
         const touchX = e.changedTouches[0].clientX
         const touchY = e.changedTouches[0].clientY
 
-        if (maybeDragging) {
-            if (!e.cancelable) {
-                maybeDragging = false
-                return
-            }
-
-            const dx = Math.abs(touchX - start![0])
-            const dy = Math.abs(touchY - start![1])
-
-            const thresholdMet = isHorizontal.value
-                ? dx > dy && dx > TOUCH_DRAG_THRESHOLD_PX
-                : dy > dx && dy > TOUCH_DRAG_THRESHOLD_PX
-
-            if (thresholdMet) {
-                isDragging.value = true
-                maybeDragging = false
-            } else if ((isHorizontal.value ? dy : dx) > TOUCH_DRAG_THRESHOLD_PX) {
-                maybeDragging = false
-            }
-        }
+        if (!trackDragIntent(e, touchX, touchY)) return
 
         if (!isDragging.value) return
 
@@ -182,14 +202,20 @@ export function useTouch ({isActive, isTemporary, width, touchless, position}: {
         }
     }
 
+    const dragTransform = (): string => {
+        const travelled = dragProgress.value * width.value
+        switch (position.value) {
+            case 'left': return `translateX(calc(-100% + ${travelled}px))`
+            case 'right': return `translateX(calc(100% - ${travelled}px))`
+            case 'top': return `translateY(calc(-100% + ${travelled}px))`
+            case 'bottom': return `translateY(calc(100% - ${travelled}px))`
+            default: return oops()
+        }
+    }
+
     const dragStyles = computed(() => {
         return isDragging.value ? {
-            transform:
-                position.value === 'left' ? `translateX(calc(-100% + ${dragProgress.value * width.value}px))`
-                    : position.value === 'right' ? `translateX(calc(100% - ${dragProgress.value * width.value}px))`
-                        : position.value === 'top' ? `translateY(calc(-100% + ${dragProgress.value * width.value}px))`
-                            : position.value === 'bottom' ? `translateY(calc(100% - ${dragProgress.value * width.value}px))`
-                                : oops(),
+            transform: dragTransform(),
             transition: 'none'
         } : undefined
     })

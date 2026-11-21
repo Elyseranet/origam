@@ -13,7 +13,7 @@ import {
     PARALLAX_LAYER_VAR_SPEED
 } from '../../consts/Parallax/parallax-layer.const'
 
-import { PARALLAX_DIRECTION, PARALLAX_EASING } from '../../enums'
+import { PARALLAX_DIRECTION, PARALLAX_EASING } from '../../enums/Parallax/parallax.enum'
 
 import type { IParallaxLayerRegistry } from '../../interfaces/Parallax/parallax-layer.interface'
 import type { IUseParallaxRuntimeOptions } from '../../interfaces/Parallax/parallax.interface'

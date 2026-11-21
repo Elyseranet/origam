@@ -63,7 +63,7 @@
       v-if="dismissible !== false"
       :aria-label="dismissLabel"
       :data-cy="`${dataCy}-dismiss`"
-      :icon="MDI_ICONS.CLOSE"
+      :icon="'mdi:mdi-close'"
       class="origam-snackbar-item__dismiss"
       size="x-small"
       variant="text"
@@ -88,7 +88,6 @@
 
   import vContrast from '../../directives/Contrast/contrast.directive'
 
-  import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
   import type { ISnackbarItemEmits, ISnackbarItemProps, ISnackbarItemSlots } from '../../interfaces/Snackbar/snackbar-item.interface'
   import type { ISnackbarGroupItemAction } from '../../interfaces/Snackbar/snackbar-group-item.interface'
@@ -160,14 +159,14 @@
    * Intent helpers
    ********************************************************/
   const INTENT_ICONS: Record<TIntent, TIcon> = {
-    primary: MDI_ICONS.INFORMATION,
-    secondary: MDI_ICONS.INFORMATION,
-    ghost: MDI_ICONS.INFORMATION,
-    neutral: MDI_ICONS.INFORMATION,
-    success: MDI_ICONS.CHECK_CIRCLE,
-    warning: MDI_ICONS.ALERT,
-    danger: MDI_ICONS.ALERT_CIRCLE,
-    info: MDI_ICONS.INFORMATION
+    primary: 'mdi:mdi-information',
+    secondary: 'mdi:mdi-information',
+    ghost: 'mdi:mdi-information',
+    neutral: 'mdi:mdi-information',
+    success: 'mdi:mdi-check-circle',
+    warning: 'mdi:mdi-alert',
+    danger: 'mdi:mdi-alert-circle',
+    info: 'mdi:mdi-information'
   }
 
   const resolvedIcon = computed<TIcon | false>(() => {
