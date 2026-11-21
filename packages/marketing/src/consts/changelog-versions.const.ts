@@ -22,14 +22,14 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 addition and 6 fixes. See the full changelog for detail.',
+        summaryFallback: '1 addition and 7 fixes. See the full changelog for detail.',
         highlights: [
             { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamField : les labels ne reprennent plus l\'id de l\'input (#1149)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'v-ripple : center / circle enfin appliqués (#1378)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamFileField : anneau de focus sur la dropzone et attributs natifs sur l\'<input> seul (#1383)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamCounter : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'origam-card cliquable : l\'overlay n\'est plus opaque au repos (#1276)' },
-            { type: 'added', textKey: 'changelog.versions.unreleased.h6', textFallback: 'budget JS d\'une page à un seul composant (#1404)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'v-contrast ne force plus de couleur sur un fond en dégradé (#1427)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'v-ripple : center / circle enfin appliqués (#1378)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamFileField : anneau de focus sur la dropzone et attributs natifs sur l\'<input> seul (#1383)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamCounter : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'origam-card cliquable : l\'overlay n\'est plus opaque au repos (#1276)' }
         ]
     },
     {
