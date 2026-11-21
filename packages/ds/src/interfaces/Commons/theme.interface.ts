@@ -175,3 +175,17 @@ export interface IOrigamTheme {
      ********************************************************/
     variants?: TVariantPresetRegistry
 }
+
+/*********************************************************
+ * IRenderThemeCssOptions (#1386)
+ *
+ * @description
+ * Options of `renderThemeCss`: which brand and which mode the page is served
+ * with. `theme` absent / `'auto'` = the unnamed (DS default) theme. `mode`
+ * absent / `'auto'` = NOT pinned: both modes, dark under
+ * `@media (prefers-color-scheme: dark)`.
+ ********************************************************/
+export interface IRenderThemeCssOptions {
+    theme?: TTheme
+    mode?: TMode
+}

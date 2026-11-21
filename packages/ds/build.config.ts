@@ -1,6 +1,7 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 import { defineBuildConfig } from "unbuild"
+import { writeDarkSheets } from "./scripts/lib/split-dark-sheet.mjs"
 
 export default defineBuildConfig({
     // If entries is not provided, will be automatically inferred from package.json
@@ -55,6 +56,7 @@ export default defineBuildConfig({
     hooks: {
         'build:done': () => {
             fs.cpSync('./src/assets', './dist/src/assets', {recursive: true})
+            writeDarkSheets('./dist/src/assets/css/tokens')
             if (fs.existsSync('./src/nuxt/module.d.ts')) {
                 fs.mkdirSync('./dist/src/nuxt', {recursive: true})
                 fs.cpSync('./src/nuxt/module.d.ts', './dist/src/nuxt/module.d.ts')

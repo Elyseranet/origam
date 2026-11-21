@@ -3,7 +3,8 @@ import { createOrigamForNuxt as createOrigam } from '#origam-create'
 import { nuxtIconsOptions } from '../utils/Commons/nuxt-icons.util'
 import { nuxtLocaleOptions } from '../utils/Commons/nuxt-locale.util'
 
-import { isModePinned, knownBrand, themeToCss, themeToUnpinnedCss } from '../utils/Commons/apply-theme.util'
+import { isModePinned, knownBrand } from '../utils/Commons/apply-theme.util'
+import { renderThemeCss } from '../utils/Commons/theme-ssr.util'
 import { getSsrStyles } from '../utils/Commons/ssr-styles.util'
 
 import type { IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module.interface'
@@ -108,20 +109,10 @@ export default defineNuxtPlugin({
          * @description
          * The component props are seeded LIGHT; the client hydrates with the same.
          ********************************************************/
-        const activeThemes = themes.filter((theme) => {
-            const brandMatches = resolvedTheme === ORIGAM_THEME_AUTO
-                ? (theme.name === undefined || theme.name === '')
-                : theme.name === resolvedTheme
-            const modeMatches = !modePinned || theme.mode === undefined || theme.mode === 'auto' || theme.mode === resolvedMode
-            return brandMatches && modeMatches
+        const ssrThemeCss = renderThemeCss(themes, {
+            theme: resolvedTheme,
+            mode: modePinned ? resolvedMode : 'auto'
         })
-        const ssrThemeCss = modePinned
-            ? activeThemes.map(themeToCss).join('\n')
-            : [
-                ...activeThemes.filter(t => t.mode !== 'light' && t.mode !== 'dark').map(themeToCss),
-                ...activeThemes.filter(t => t.mode === 'light').map(themeToUnpinnedCss),
-                ...activeThemes.filter(t => t.mode === 'dark').map(themeToUnpinnedCss)
-            ].join('\n')
 
         useHead({
             htmlAttrs,
