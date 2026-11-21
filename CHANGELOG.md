@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamOverlay` : Échap n'est plus ignoré juste après l'ouverture (#1357)
+
+- Cause : `globalTop` (`useStack`) était mis à jour dans un `setTimeout` lancé par un `watchEffect` ; tant que le timer n'avait pas tourné, `globalTop` valait encore `false` et `handleKeydown` ignorait Échap (2 à 55 ms mesurées côté consommateur).
+- Correctif : `globalTop` est un `computed` sur `GLOBAL_STACK` (réactif), donc synchrone ; plus de timer. Sans changement d'API.
+- Test : `stack.composable.spec.ts` — rouge sur le commit parent, vert après.
+
 ### Fixed — poids JS : `origam-chip` et le coeur `origam/core` n'embarquent plus l'enum MDI de 360 Ko (#1403)
 
 - Cause : l'enum `MDI_ICONS` (~7 000 membres) restait dans le bundle bien qu'inutilisé, car Rolldown ne retire pas l'IIFE d'un enum atteint par un barrel. Chemins : `OrigamChip`/`OrigamChipGroup` (et ~40 autres composants) l'importaient pour leurs icônes par défaut ; `origam-core.ts` et `consts/Commons/display.const.ts` passaient par les barrels `composables/index` (donc `createIcons` -> `mdi.const`) et `enums/index`.

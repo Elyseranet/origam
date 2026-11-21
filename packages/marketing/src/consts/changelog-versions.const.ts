@@ -22,9 +22,10 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 fix. See the full changelog for detail.',
+        summaryFallback: '2 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'poids JS : origam-chip et le coeur origam/core n\'embarquent plus l\'enum MDI de 360 Ko (#1403)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamOverlay : Échap n\'est plus ignoré juste après l\'ouverture (#1357)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'poids JS : origam-chip et le coeur origam/core n\'embarquent plus l\'enum MDI de 360 Ko (#1403)' }
         ]
     },
     {
