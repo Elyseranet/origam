@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamSelect` : les items `subheader` / `divider` ne sont plus des options (#1426)
+
+- Cause : `itemType` figurait dans les `withDefaults` mais pas dans `ISelectProps` — jamais une vraie prop, donc `type` n'était jamais lu par `useItems`, et le gabarit rendait chaque entrée en `origam-list-item` `role="option"`.
+- Correctif : `itemType` déclaré dans `ISelectProps` ; le gabarit rend `origam-list-subheader` / `origam-divider` (comme `OrigamListChildren`) ; flèches, Home/End et type-ahead sautent ces lignes, le filtre les écarte.
+
 ### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
 
 - Cause : Btn/SelectionControl passaient un tuple façon Vuetify à `v-ripple` ; en template Vue les modifiers de directive sont statiques et le tableau n'est que la valeur, donc `binding.modifiers.center/circle` n'étaient jamais posés.

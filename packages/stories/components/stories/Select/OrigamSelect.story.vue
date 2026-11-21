@@ -540,6 +540,18 @@
 					data-cy="select-long-list"
 			/>
 		</Variant>
+
+		<!--
+			#1426 — `{ type: 'subheader' }` / `{ type: 'divider' }` : structure,
+			ni option ni atteignable au clavier. Appendue EN DERNIER (index 31).
+		-->
+		<Variant title="Items - subheader / divider">
+			<origam-select
+					:items="groupedItems"
+					label="Networks"
+					data-cy="select-grouped-items"
+			/>
+		</Variant>
 	</Story>
 </template>
 
@@ -602,7 +614,15 @@
 	const stringItems = ['France', 'Germany', 'Spain', 'Italy', 'Portugal']
 
 	// 30 entrées — volume de la page /changelog qui a révélé #742.
-	const longItems = Array.from({ length: 30 }, (_, i) => `Option ${ i + 1 }`)
+	const groupedItems = [
+		{ type: 'subheader', title: 'Automatic' },
+		{ value: 'linkedin', title: 'LinkedIn' },
+		{ value: 'bluesky', title: 'Bluesky' },
+		{ type: 'divider' },
+		{ type: 'subheader', title: 'Manual' },
+		{ value: 'instagram', title: 'Instagram' }
+	]
+	const longItems =Array.from({ length: 30 }, (_, i) => `Option ${ i + 1 }`)
 
 	const designModel        = ref<string | null>(null)
 	const functionalModel    = ref<any>(null)
