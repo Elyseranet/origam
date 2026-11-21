@@ -220,6 +220,8 @@
 
 	import type { IInlineEditProps, IInlineEditEmits, IInlineEditSlots } from '../../interfaces/InlineEdit/inline-edit.interface'
 
+	import { warnAsyncRejection } from '../../utils/Commons/console.util'
+
 
 	/*********************************************************
 	 * Global
@@ -458,7 +460,7 @@
 
 	const handleConfirm = (): void => {
 		noteTransition(false)
-		void confirm()
+		confirm().catch((err: unknown) => warnAsyncRejection('OrigamInlineEdit', err))
 	}
 
 	const handleCancel = (): void => {
