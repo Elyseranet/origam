@@ -49,6 +49,10 @@ export interface IPasswordFieldProps extends ITextFieldProps {
     persistentRequirements?: boolean
     /** Minimum length. Enforced only when set explicitly, or with `requirements` / `strengthBar` (default 8 there). */
     minLength?: number
+    /*********************************************************
+     * Replaces the default (translated) message of the length rule for this field.
+     ********************************************************/
+    minLengthMessage?: string
     /** Require at least one lowercase letter. */
     needTiny?: boolean
     /** Require at least one uppercase letter. */

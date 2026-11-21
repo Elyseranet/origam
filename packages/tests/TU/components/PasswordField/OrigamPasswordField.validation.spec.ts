@@ -100,13 +100,13 @@ interface IMountOpts {
     slots?: Record<string, unknown>
 }
 
-const mountPasswordField = (opts: IMountOpts = {}): VueWrapper => {
+const mountPasswordField = (opts: IMountOpts & { locale?: string } = {}): VueWrapper => {
     return mount(OrigamPasswordField, {
         attachTo: document.body,
         props: opts.props,
         slots: opts.slots,
         global: {
-            plugins: [createOrigam()],
+            plugins: [createOrigam(opts.locale ? { locale: { locale: opts.locale } } as never : undefined)],
             stubs: {
                 OrigamInput: OrigamInputStub,
                 OrigamField: OrigamFieldStub,
@@ -174,5 +174,25 @@ describe('OrigamPasswordField — length rule is opt-in (#1334)', () => {
         const wrapper = mountPasswordField({ props: { requirements: true } })
         expect(runRules(wrapper, 'abc')).toHaveLength(1)
         expect(runRules(wrapper, 'abcdefgh')).toEqual([])
+    })
+})
+
+describe('OrigamPasswordField — length message (#1334 / #1434)', () => {
+    it('translates the default message (fr): no hardcoded "characters"', () => {
+        const wrapper = mountPasswordField({ props: { minLength: 15 }, locale: 'fr' })
+        const [message] = runRules(wrapper, 'abc') as string[]
+        expect(message).toBe('Ce champ doit contenir : 15 caractères')
+    })
+
+    it('minLengthMessage replaces the message for this field', () => {
+        const wrapper = mountPasswordField({ props: { minLength: 15, minLengthMessage: 'Trop court' } })
+        expect(runRules(wrapper, 'abc')).toEqual(['Trop court'])
+    })
+
+    it('translates the default checklist labels (fr)', () => {
+        const wrapper = mountPasswordField({ props: { requirements: true, requirementsLayout: 'list' }, locale: 'fr' })
+        const labels = wrapper.findAll('.origam-password-field__requirement-label').map(l => l.text())
+        expect(labels).toContain('Au moins 8 caractères')
+        expect(labels.join(' ')).not.toMatch(/characters|At least/)
     })
 })

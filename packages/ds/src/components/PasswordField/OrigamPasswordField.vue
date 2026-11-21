@@ -251,7 +251,7 @@
 										class="origam-password-field__requirement-icon"
 										:icon="isRuleSatisfied(rule) ? 'mdi:mdi-check-circle-outline' : 'mdi:mdi-close-circle-outline'"
 								/>
-								<span class="origam-password-field__requirement-label">{{ rule.label }}</span>
+								<span class="origam-password-field__requirement-label">{{ ruleLabel(rule) }}</span>
 							</li>
 						</ul>
 						<div
@@ -267,7 +267,7 @@
 										]"
 									:bg-color="isRuleSatisfied(rule) ? 'success' : undefined"
 									:prepend-icon="isRuleSatisfied(rule) ? 'mdi:mdi-check-circle-outline' : 'mdi:mdi-close-circle-outline'"
-									:text="rule.label"
+									:text="ruleLabel(rule)"
 									:data-requirement-id="rule.id"
 									:data-satisfied="isRuleSatisfied(rule) ? 'true' : 'false'"
 							/>
@@ -594,6 +594,10 @@
 		return !!props.strengthBar || hasInlineRequirements.value
 	})
 
+	const ruleLabel = (rule: IPasswordRequirement): string => {
+		return rule.labelKey ? t(rule.labelKey, rule.labelParams) : rule.label
+	}
+
 	const isRuleSatisfied = (rule: IPasswordRequirement): boolean => {
 		const v = (model.value ?? '').toString()
 		try {
@@ -660,8 +664,11 @@
 			const info = infos.value[key]
 
 			base.push((value: any) => {
-				return !value || info.reg.test(value) ||
-						t('origam.validation.must_contains', {value: info.message})
+				if (!value || info.reg.test(value)) return true
+
+				if (key === 'minLength' && props.minLengthMessage) return props.minLengthMessage
+
+				return t('origam.validation.must_contains', {value: t(info.messageKey, {count: info.count})})
 			})
 		})
 

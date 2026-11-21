@@ -102,6 +102,7 @@
 					clearable: false,
 					requirements: false,
 					minLength: 8,
+					minLengthMessage: '',
 					needTiny: false,
 					needUppercase: false,
 					needNumber: false,
@@ -122,6 +123,7 @@
 						:clearable="state.clearable"
 						:requirements="state.requirements"
 						:min-length="state.minLength"
+						:min-length-message="state.minLengthMessage || undefined"
 						:need-tiny="state.needTiny"
 						:need-uppercase="state.needUppercase"
 						:need-number="state.needNumber"
@@ -145,6 +147,7 @@
 				<StoryGroup title="Requirements">
 					<HstCheckbox v-model="state.requirements"           title="Requirements"/>
 					<HstNumber   v-model="state.minLength"              title="Min Length" :min="4" :max="64" :step="1"/>
+					<HstText     v-model="state.minLengthMessage"       title="Min Length Message"/>
 					<HstCheckbox v-model="state.needTiny"               title="Need Tiny"/>
 					<HstCheckbox v-model="state.needUppercase"          title="Need Uppercase"/>
 					<HstCheckbox v-model="state.needNumber"             title="Need Number"/>

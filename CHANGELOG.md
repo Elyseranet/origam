@@ -27,7 +27,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 - Cause : `minLength` valait 8 par défaut et une règle de validation était toujours ajoutée, même sans `requirements`, et même à vide.
 - Correctif : la règle de longueur n'est construite que si `min-length` est fourni explicitement, ou avec `requirements` / `strengthBar` (défaut 8 alors). Une valeur vide n'échoue plus sur les règles d'exigence : elle est laissée à `rules` / `required`. **Rupture assumée** : `min-length` n'a plus de défaut de prop.
-- Non traité : message de la règle surchargeable par champ (nécessite une nouvelle prop, à arbitrer).
+- Nouvelle prop `minLengthMessage` : remplace le message de la règle de longueur pour ce champ.
+
+### Fixed — `OrigamPasswordField` : plus aucune chaîne anglaise en dur dans les exigences (#1434)
+
+- Cause : `password-field.const.ts` portait « At least 8 characters », « 8 characters », « a tiny »… en dur ; en français : « Ce champ doit contenir : 8 characters ».
+- Correctif : clés `origam.password_field.requirement_*` / `message_*` dans `en.json` et `fr.json` (paramètre `{count}`), résolues par `t()` au rendu ; `IPasswordRequirement` gagne `labelKey` / `labelParams` (les `label` fournis par le consommateur restent inchangés).
 
 ### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
 
