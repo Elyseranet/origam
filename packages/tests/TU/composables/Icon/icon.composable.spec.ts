@@ -21,7 +21,8 @@ import { describe, expect, it } from 'vitest'
 
 import { ORIGAM_ICONS_KEY } from '@origam/consts'
 import { OrigamComponentIcon, OrigamSvgIcon } from '@origam/components'
-import { useIcon, createIcons } from '@origam/composables/Icon/icon.composable'
+import { useIcon } from '@origam/composables/Icon/icon.composable'
+import { createIcons } from '@origam/composables/Icon/iconsFull.composable'
 
 // ---------------------------------------------------------------------------
 // Minimal icon set stub

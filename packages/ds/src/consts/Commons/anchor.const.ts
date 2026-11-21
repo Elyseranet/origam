@@ -1,4 +1,4 @@
-import { BLOCK, INLINE, START_END } from '../../enums'
+import { BLOCK, INLINE, START_END } from '../../enums/Commons/anchor.enum'
 
 import type { TBlock, TBlockStartEnd, TDirectionBoth, TInline, TInlineStartEnd } from '../../types/Commons/anchor.type'
 

@@ -1,4 +1,5 @@
-import { BLOCK, BORDER_LOGICAL_AXIS, INLINE, START_END } from '../../enums'
+import { BLOCK, INLINE, START_END } from '../../enums/Commons/anchor.enum'
+import { BORDER_LOGICAL_AXIS } from '../../enums/Commons/border.enum'
 
 import type { TDirectionBoth, TLogicalCorner, TLogicalSide } from '../../types/Commons/anchor.type'
 import type { TBorderLogicalAxis } from '../../types/Commons/border.type'

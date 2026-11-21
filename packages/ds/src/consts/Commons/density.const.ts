@@ -1,4 +1,4 @@
-import { DENSITY } from '../../enums'
+import { DENSITY } from '../../enums/Commons/density.enum'
 
 import type { TDensity } from '../../types/Commons/density.type'
 

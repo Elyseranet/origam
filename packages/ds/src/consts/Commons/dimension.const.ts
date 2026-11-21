@@ -1,4 +1,4 @@
-import { DIMENSIONS } from '../../enums'
+import { DIMENSIONS } from '../../enums/Commons/dimension.enum'
 
 import type { TDimensions } from '../../types/Commons/dimension.type'
 
