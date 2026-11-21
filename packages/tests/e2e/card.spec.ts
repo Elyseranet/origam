@@ -732,3 +732,43 @@ test.describe('OrigamCard — loading skeleton (#1073 lot 2b, Variant 22)', () =
         expect(reduced).toBe('none')
     })
 })
+
+// #1276 — `.origam-card > *` overwrote the overlay's own opacity, so a clickable
+// card was painted black at rest. Real browser only: jsdom never resolves var().
+test.describe('OrigamCard — overlay opacity (#1276, Playground)', () => {
+    test.setTimeout(45000)
+
+    async function measure(page: Page, disabled: boolean) {
+        await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
+        await page.getByText('Link', { exact: true }).first().click()
+        if (disabled) await page.getByText('Disabled', { exact: true }).first().click()
+        const sandbox = await expectCardVisible(page)
+        return sandbox.locator('.origam-card').first().evaluate((el) => {
+            const o = el.querySelector('.origam-card__overlay')
+            return {
+                overlay: o ? getComputedStyle(o).opacity : null,
+                content: getComputedStyle(el.querySelector(':scope > :not(.origam-card__overlay):not(.origam-card__underlay)')!).opacity
+            }
+        })
+    }
+
+    test('clickable card: overlay is transparent at rest', async ({ page }) => {
+        const m = await measure(page, false)
+        expect(m.overlay).toBe('0')
+        expect(m.content).toBe('1')
+    })
+
+    test('clickable card: overlay darkens to 0.12 on hover', async ({ page }) => {
+        await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
+        await page.getByText('Link', { exact: true }).first().click()
+        const card = (await expectCardVisible(page)).locator('.origam-card').first()
+        await card.hover()
+        await expect.poll(() => card.evaluate((el) => getComputedStyle(el.querySelector('.origam-card__overlay')!).opacity)).toBe('0.12')
+    })
+
+    test('disabled card keeps 0.6 on its content', async ({ page }) => {
+        const m = await measure(page, true)
+        expect(m.overlay).toBeNull()
+        expect(m.content).toBe('0.6')
+    })
+})

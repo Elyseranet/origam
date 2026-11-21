@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `origam-card` cliquable : l'overlay n'est plus opaque au repos (#1276)
+
+La règle `.origam-card > * { opacity: var(--origam-card---opacity) }` s'appliquait aussi au `<span class="origam-card__overlay">` et écrasait son opacité (0 au repos) : une carte avec `to` / `link` s'affichait noire. Elle exclut désormais l'overlay et l'underlay ; le contenu garde son opacité (0,6 si désactivée). Mesuré en Chromium : overlay 1 avant, 0 au repos et 0,12 au survol après.
+
 ### Fixed — poids JS : `origam-chip` et le coeur `origam/core` n'embarquent plus l'enum MDI de 360 Ko (#1403)
 
 - Cause : l'enum `MDI_ICONS` (~7 000 membres) restait dans le bundle bien qu'inutilisé, car Rolldown ne retire pas l'IIFE d'un enum atteint par un barrel. Chemins : `OrigamChip`/`OrigamChipGroup` (et ~40 autres composants) l'importaient pour leurs icônes par défaut ; `origam-core.ts` et `consts/Commons/display.const.ts` passaient par les barrels `composables/index` (donc `createIcons` -> `mdi.const`) et `enums/index`.
