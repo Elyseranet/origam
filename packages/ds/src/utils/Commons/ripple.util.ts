@@ -23,7 +23,6 @@ export function updateRipple (el: IRippleHtmlElement, binding: IRippleDirectiveB
 
     el._ripple = el._ripple ?? {}
     el._ripple.enabled = enabled
-    // Modifiers (`v-ripple.center`) are static in a template: a component that decides at runtime passes `{center, circle}` as the value.
     el._ripple.centered = modifiers.center || (isObject(value) && value.center)
     el._ripple.circle = modifiers.circle || (isObject(value) && value.circle)
     if (isObject(value) && value.class) {
