@@ -201,6 +201,45 @@ app, not per document). The second `useStyle` no longer shares the first one's
 `<style>`: it gets a tag of its own. Give one of the apps its own
 `app.config.idPrefix` to keep the **element** ids distinct as well.
 
+## Token sheets per mode and theme CSS for the server (`origam/ssr`)
+
+Authors who serve one brand and one colour mode should not ship the rest. `origam/tokens/css/light` and `origam/tokens/css/dark` stay as they are (primitive + light + dark = 651 KiB raw, 84 KiB gzip). The dark sheet holds its palette twice, once under `[data-mode="dark"]` and once under `@media (prefers-color-scheme: dark)`, so it is also published in two halves:
+
+| Import | Holds | Use it when |
+|---|---|---|
+| `origam/tokens/css/primitive` | primitives | always |
+| `origam/tokens/css/light` | light palette (the base, also the default) | always |
+| `origam/tokens/css/dark-pinned` | dark under `[data-mode="dark"]` | the page pins its mode (`data-mode` on `<html>`) |
+| `origam/tokens/css/dark-system` | dark under `@media (prefers-color-scheme: dark)` | the mode follows the system (`data-mode` absent) |
+| `origam/tokens/css/dark` | both | the mode switches at runtime |
+
+A page pinned to light needs `primitive` + `light` only (30 KiB gzip instead of 84). A pinned dark page needs `primitive` + `light` + `dark-pinned` (60 KiB).
+
+The DS ships one theme (`origam`). The tokens of a brand are generated from its `IOrigamTheme`, so there is no static sheet per brand: `renderThemeCss` produces it, for the brand and the mode of the request only.
+
+```ts
+import { renderThemeCss, renderSsrStyles } from 'origam/ssr'
+
+// brand and mode come from your cookies; `mode: 'auto'` (or omitted) = not pinned
+const themeCss = renderThemeCss(themes, { theme: 'elysera', mode: 'dark' })
+const head = `<style id="origam-theme-ssr">${themeCss}</style>${renderSsrStyles(app)}`
+```
+
+With Nuxt and **without** the module, in a server plugin:
+
+```ts
+import { getSsrStyles, renderThemeCss } from 'origam/ssr'
+
+export default defineNuxtPlugin(({ vueApp, ssrContext }) => {
+  useHead({ style: [{ key: 'origam-theme-ssr', innerHTML: renderThemeCss(themes, { theme, mode }) }] })
+  vueApp.hook('app:rendered', () => {
+    for (const { id, css } of getSsrStyles(vueApp)) ssrContext?.head.push({ style: [{ id, key: id, innerHTML: css }] })
+  })
+})
+```
+
+`origam/ssr` also exports `getSsrStyles`, `renderSsrStyles`, `isModePinned` and `knownBrand`. It replaces the internal paths `origam/utils/Commons/apply-theme.util.js` and `ssr-styles.util.js`. The Nuxt module calls the same `renderThemeCss`.
+
 ## SSR theme + mode resolution
 
 The server plugin reads the `origam-theme` and `origam-mode` cookies

@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added — jetons par mode, helper SSR `origam/ssr`, budget CSS (#1386)
+
+- `origam/tokens/css/dark-pinned` (bloc `[data-mode="dark"]`) et `origam/tokens/css/dark-system` (bloc `@media (prefers-color-scheme: dark)`) : les deux moitiés de `dark.css`, générées dans `dist` au build (`scripts/lib/split-dark-sheet.mjs`). `dark.css`, `light.css` et `primitive.css` sont inchangés.
+- `origam/ssr` : `renderThemeCss(themes, { theme, mode })` (CSS de thème de la seule marque et du seul mode actifs), plus `getSsrStyles`, `renderSsrStyles`, `isModePinned`, `knownBrand`. Remplace les imports internes `origam/utils/Commons/apply-theme.util.js` et `ssr-styles.util.js`. `renderThemeCss` est aussi exporté par `origam/utils`, et le plugin serveur du module Nuxt l'appelle (comportement inchangé).
+- Garde de budget `TU/origam/theme-tokens-1386.spec.ts` : primitive + light <= 32 Kio gzip, primitive + light + dark-pinned <= 62 Kio gzip (référence avant : 84 Kio gzip, 651 Kio bruts).
+
 ## [2.39.1] - 2026-11-20
 
 ### Added — entrée allégée `origam/core` / `createOrigamCore` (#1384)
