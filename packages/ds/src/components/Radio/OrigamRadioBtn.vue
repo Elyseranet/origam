@@ -51,9 +51,8 @@
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IRadioBtnProps } from '../../interfaces/Radio/radio-btn.interface'
+	import type { IRadioBtnProps, IRadioBtnEmits, IRadioBtnSlots } from '../../interfaces/Radio/radio-btn.interface'
 
-	import type { IRadioBtnEmits, IRadioBtnSlots } from '../../interfaces/Radio/radio-btn.interface'
 
 	import type { TOrigamSelectionControl } from '../../types/SelectionControl/selection-control.type'
 

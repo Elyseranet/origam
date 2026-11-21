@@ -44,9 +44,8 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { ISelectionControlGroupProps, ISelectionControlGroupSlots } from '../../interfaces/SelectionControl/selection-control-group.interface'
+	import type { ISelectionControlGroupProps, ISelectionControlGroupSlots, ISelectionControlGroupEmits } from '../../interfaces/SelectionControl/selection-control-group.interface'
 
-	import type { ISelectionControlGroupEmits } from '../../interfaces/SelectionControl/selection-control-group.interface'
 
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 	import { omitUndefined } from '../../utils/Commons/commons.util'

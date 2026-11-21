@@ -292,9 +292,8 @@
 	import { TEXTAREA_MODE, TEXTAREA_OUTPUT } from '../../enums/TextareaField/textarea-field.enum'
 	import { TEXTAREA_TOOLBAR_POSITION } from '../../enums/TextareaField/textarea-field-rich-toolbar.enum'
 
-	import type { ITextareaFieldProps, ITextareaFieldSlots } from '../../interfaces/TextareaField/textarea-field.interface'
+	import type { ITextareaFieldProps, ITextareaFieldSlots, ITextareaFieldEmits } from '../../interfaces/TextareaField/textarea-field.interface'
 
-	import type { ITextareaFieldEmits } from '../../interfaces/TextareaField/textarea-field.interface'
 
 	import type { TOrigamField } from '../../types/Field/field.type'
 	import type { TOrigamInput } from '../../types/Input/input.type'

@@ -104,9 +104,8 @@
 
 	import type { IItemProps } from '../../interfaces/Commons/item.interface'
 	import type { IListItemProps } from '../../interfaces/List/list-item.interface'
-	import type { IMenuProps } from '../../interfaces/Menu/menu.interface'
+	import type { IMenuProps, IMenuEmits, IMenuSlots } from '../../interfaces/Menu/menu.interface'
 
-	import type { IMenuEmits, IMenuSlots } from '../../interfaces/Menu/menu.interface'
 
 	import type { TOrigamOverlay } from '../../types/Overlay/overlay.type'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'

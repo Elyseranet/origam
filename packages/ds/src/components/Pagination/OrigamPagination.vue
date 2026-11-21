@@ -200,9 +200,8 @@
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { VARIANT } from '../../enums/Commons/variant.enum'
 
-	import type { IPaginationProps } from '../../interfaces/Pagination/pagination.interface'
+	import type { IPaginationProps, IPaginationEmits, IPaginationSlots } from '../../interfaces/Pagination/pagination.interface'
 
-	import type { IPaginationEmits, IPaginationSlots } from '../../interfaces/Pagination/pagination.interface'
 
 	import { createRange, int } from '../../utils/Commons/commons.util'
 

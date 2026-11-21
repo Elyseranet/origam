@@ -33,9 +33,8 @@
 
 	import vIntersect from '../../directives/Intersect/intersect.directive'
 
-	import type { ILazyComponentProps } from '../../interfaces/Lazy/lazy.interface'
+	import type { ILazyComponentProps, ILazyEmits, ILazySlots } from '../../interfaces/Lazy/lazy.interface'
 
-	import type { ILazyEmits, ILazySlots } from '../../interfaces/Lazy/lazy.interface'
 
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 

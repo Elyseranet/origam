@@ -191,9 +191,8 @@
 	import { SIZES } from '../../enums/Commons/size.enum'
 	import { VARIANT } from '../../enums/Commons/variant.enum'
 
-	import type { IRatingFieldProps } from '../../interfaces/RatingField/rating-field.interface'
+	import type { IRatingFieldProps, IRatingFieldEmits, IRatingFieldSlots } from '../../interfaces/RatingField/rating-field.interface'
 
-	import type { IRatingFieldEmits, IRatingFieldSlots } from '../../interfaces/RatingField/rating-field.interface'
 
 	import type { TOrigamInput } from '../../types/Input/input.type'
 	import type { TOrigamRatingFieldItem } from '../../types/RatingField/rating-field-item.type'

@@ -104,9 +104,8 @@
 
 	import { COLOR_MODES_NAMES } from '../../enums/ColorPicker/color-picker.enum'
 
-	import type { IColorPickerProps } from '../../interfaces/ColorPicker/color-picker.interface'
+	import type { IColorPickerProps, IColorPickerEmits, IColorPickerSlots } from '../../interfaces/ColorPicker/color-picker.interface'
 
-	import type { IColorPickerEmits, IColorPickerSlots } from '../../interfaces/ColorPicker/color-picker.interface'
 
 	import type { TColorModes } from '../../types/ColorPicker/color-picker.type'
 	import type { THSVA } from '../../types/Commons/color.type'

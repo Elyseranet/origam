@@ -107,8 +107,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { IBadgeProps } from '../../interfaces/Badge/badge.interface'
-	import type { IBadgeEmits, IBadgeSlots } from '../../interfaces/Badge/badge.interface'
+	import type { IBadgeProps, IBadgeEmits, IBadgeSlots } from '../../interfaces/Badge/badge.interface'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'

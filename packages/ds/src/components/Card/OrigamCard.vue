@@ -222,9 +222,8 @@
 
 	import { splitSkeletonOverrides } from '../../utils/Skeleton/skeleton.util'
 
-	import type { ICardProps } from '../../interfaces/Card/card.interface'
+	import type { ICardProps, ICardEmits, ICardSlots } from '../../interfaces/Card/card.interface'
 
-	import type { ICardEmits, ICardSlots } from '../../interfaces/Card/card.interface'
 
 	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 

@@ -118,9 +118,8 @@
 
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IExpansionPanelHeaderProps } from '../../interfaces/ExpansionPanel/expansion-panel-header.interface'
+	import type { IExpansionPanelHeaderProps, IExpansionPanelHeaderEmits, IExpansionPanelHeaderSlots } from '../../interfaces/ExpansionPanel/expansion-panel-header.interface'
 
-	import type { IExpansionPanelHeaderEmits, IExpansionPanelHeaderSlots } from '../../interfaces/ExpansionPanel/expansion-panel-header.interface'
 
 	/*********************************************************
 	 * Global

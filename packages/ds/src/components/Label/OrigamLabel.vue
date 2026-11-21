@@ -32,9 +32,8 @@
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { ILabelProps, ILabelSlots } from '../../interfaces/Label/label.interface'
+	import type { ILabelProps, ILabelSlots, ILabelEmits } from '../../interfaces/Label/label.interface'
 
-	import type { ILabelEmits } from '../../interfaces/Label/label.interface'
 
 	/*********************************************************
 	 * Global

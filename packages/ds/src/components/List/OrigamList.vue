@@ -115,9 +115,8 @@
 	import { LIST_ITEM_ROLE } from '../../enums/List/list-item.enum'
 	import { OPEN_STRATEGY, SELECT_STRATEGY } from '../../enums/Commons/nested.enum'
 
-	import type { IListProps } from '../../interfaces/List/list.interface'
+	import type { IListProps, IListEmits, IListSlots } from '../../interfaces/List/list.interface'
 
-	import type { IListEmits, IListSlots } from '../../interfaces/List/list.interface'
 
 	import type { TFocusLocation } from '../../types/Commons/commons.type'
 

@@ -96,9 +96,8 @@
 
 	import { INLINE } from '../../enums/Commons/anchor.enum'
 
-	import type { IDrawerProps } from '../../interfaces/Drawer/drawer.interface'
+	import type { IDrawerProps, IDrawerEmits, IDrawerSlots } from '../../interfaces/Drawer/drawer.interface'
 
-	import type { IDrawerEmits, IDrawerSlots } from '../../interfaces/Drawer/drawer.interface'
 
 	import { int } from '../../utils/Commons/commons.util'
 

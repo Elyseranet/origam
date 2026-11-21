@@ -76,9 +76,8 @@
 
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
-	import type { IMediaScrubberProps, IMediaScrubberSlots } from '../../interfaces/Media/media-scrubber.interface'
+	import type { IMediaScrubberProps, IMediaScrubberSlots, IMediaScrubberEmits } from '../../interfaces/Media/media-scrubber.interface'
 
-	import type { IMediaScrubberEmits } from '../../interfaces/Media/media-scrubber.interface'
 
 	/*********************************************************
 	 * Global

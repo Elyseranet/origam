@@ -171,9 +171,8 @@
 	import { OTP_INPUT_FIELD_TYPE } from '../../enums/OtpInputField/otp-input-field.enum'
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { IOtpInputFieldProps, IOtpInputFieldSlots } from '../../interfaces/OtpInputField/otp-input-field.interface'
+	import type { IOtpInputFieldProps, IOtpInputFieldSlots, IOtpInputFieldEmits } from '../../interfaces/OtpInputField/otp-input-field.interface'
 
-	import type { IOtpInputFieldEmits } from '../../interfaces/OtpInputField/otp-input-field.interface'
 
 	import type { TOrigamField } from '../../types/Field/field.type'
 

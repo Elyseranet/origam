@@ -27,9 +27,8 @@
 	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IVirtualScrollItemProps } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
+	import type { IVirtualScrollItemProps, IVirtualScrollItemEmits, IVirtualScrollItemSlots } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
 
-	import type { IVirtualScrollItemEmits, IVirtualScrollItemSlots } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
 
 	/*********************************************************
 	 * inheritAttrs — #916 / #853

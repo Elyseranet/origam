@@ -54,9 +54,8 @@
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { VARIANT } from '../../enums/Commons/variant.enum'
 
-	import type { IRatingFieldItemProps, IRatingFieldItemSlots } from '../../interfaces/RatingField/rating-field-item.interface'
+	import type { IRatingFieldItemProps, IRatingFieldItemSlots, IRatingFieldItemEmits } from '../../interfaces/RatingField/rating-field-item.interface'
 
-	import type { IRatingFieldItemEmits } from '../../interfaces/RatingField/rating-field-item.interface'
 
 	import type { TOrigamBtn } from '../../types/Btn/btn.type'
 

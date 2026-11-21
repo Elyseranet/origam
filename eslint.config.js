@@ -166,5 +166,16 @@ export default typescriptEslint.config(
 			}]
 		}
 	},
+	{
+		// #1390 — Sonar typescript:S3863 ("imported multiple times"). A module is
+		// imported ONCE per file. A single `import type` next to a value import of
+		// the same module stays allowed: it is the repo's dominant style (2187
+		// `import type` lines vs 10 inline `type` specifiers) and Sonar does not
+		// flag it. Two `import type`, or two value imports, are duplicates.
+		files: ['packages/ds/src/**/*.{ts,vue}'],
+		rules: {
+			"no-duplicate-imports": ["error", { "allowSeparateTypeImports": true }]
+		}
+	},
 	eslintConfigPrettier
 );

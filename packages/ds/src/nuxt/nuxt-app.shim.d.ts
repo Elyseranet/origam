@@ -17,8 +17,7 @@
  * tsconfig.json maps `#app` → this file via `compilerOptions.paths`.
  */
 
-import type { App } from 'vue'
-import type { Ref } from 'vue'
+import type { App, Ref } from 'vue'
 
 declare module '#app' {
     // ── Core Nuxt app instance ────────────────────────────────────────────

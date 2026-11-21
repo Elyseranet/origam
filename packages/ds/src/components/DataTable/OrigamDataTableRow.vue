@@ -104,9 +104,8 @@
 	import { SIZES } from '../../enums/Commons/size.enum'
 
 	import type { IDataTableHeaderCellColumnSlot, IDataTableItemKey } from '../../interfaces/DataTable/items.interface'
-	import type { IDataTableRowProps } from '../../interfaces/DataTable/data-table-row.interface'
+	import type { IDataTableRowProps, IDataTableRowEmits, IDataTableRowSlots } from '../../interfaces/DataTable/data-table-row.interface'
 
-	import type { IDataTableRowEmits, IDataTableRowSlots } from '../../interfaces/DataTable/data-table-row.interface'
 
 	import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 	import { getObjectValueByPath } from '../../utils/Commons/commons.util'

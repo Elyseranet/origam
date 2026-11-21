@@ -94,9 +94,8 @@
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { TEXTAREA_TOOLBAR_COMMAND, TEXTAREA_TOOLBAR_POSITION } from '../../enums/TextareaField/textarea-field-rich-toolbar.enum'
 
-	import type { ITextareaFieldRichToolbarProps } from '../../interfaces/TextareaField/textarea-field-rich-toolbar.interface'
+	import type { ITextareaFieldRichToolbarProps, ITextareaFieldRichToolbarEmits, ITextareaFieldRichToolbarSlots } from '../../interfaces/TextareaField/textarea-field-rich-toolbar.interface'
 
-	import type { ITextareaFieldRichToolbarEmits, ITextareaFieldRichToolbarSlots } from '../../interfaces/TextareaField/textarea-field-rich-toolbar.interface'
 
 	import type { TTextareaToolbarCommand } from '../../types/TextareaField/textarea-field-rich-toolbar.type'
 

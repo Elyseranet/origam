@@ -46,12 +46,8 @@
 
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 
-  import type {
-    IColorPickerCanvasProps,
-    IColorPickerCanvasSlots
-  } from '../../interfaces/ColorPicker/color-picker-canvas.interface'
+  import type { IColorPickerCanvasProps, IColorPickerCanvasSlots, IColorPickerCanvasEmits } from '../../interfaces/ColorPicker/color-picker-canvas.interface'
 
-	import type { IColorPickerCanvasEmits } from '../../interfaces/ColorPicker/color-picker-canvas.interface'
 
 	import { clamp, convertToUnit, getEventCoordinates, int } from '../../utils/Commons/commons.util'
 

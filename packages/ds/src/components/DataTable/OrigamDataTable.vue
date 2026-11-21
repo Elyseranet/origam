@@ -174,11 +174,10 @@
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IDataTableGroup, IDataTableGroupableItem } from '../../interfaces/DataTable/group.interface'
-	import type { IDataTableProps } from '../../interfaces/DataTable/data-table.interface'
+	import type { IDataTableProps, IDataTableEmits, IDataTableSlots } from '../../interfaces/DataTable/data-table.interface'
 	import type { IDataTableSelectableItem } from '../../interfaces/DataTable/select.interface'
 	import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
 
-	import type { IDataTableEmits, IDataTableSlots } from '../../interfaces/DataTable/data-table.interface'
 
 	import type { TOrigamDataTableFooter } from '../../types/DataTable/data-table-footer.type'
 	import type { TOrigamDataTableHeaders } from '../../types/DataTable/data-table-headers.type'
