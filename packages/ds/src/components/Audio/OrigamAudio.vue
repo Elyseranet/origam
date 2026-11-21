@@ -275,7 +275,6 @@
 
 	import { UNSEEDED } from '../../consts/Commons/vmodel.const'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type {
 		IAudioEmits,
@@ -351,8 +350,8 @@
 	 * literal references (CLAUDE.md "no logic in templates" rule).
 	 ********************************************************/
 	const ICONS = {
-		LOADING: MDI_ICONS.LOADING,
-		ALERT: MDI_ICONS.ALERT_CIRCLE,
+		LOADING: 'mdi:mdi-loading',
+		ALERT: 'mdi:mdi-alert-circle',
 	}
 
 	/*********************************************************

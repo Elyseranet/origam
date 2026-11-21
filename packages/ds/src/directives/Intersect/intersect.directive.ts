@@ -40,9 +40,10 @@ export const Intersect = {
             : {options: {threshold: 0.1}}
 
         const observer = new IntersectionObserver((
-            entries: Array<IntersectionObserverEntry> = [],
+            initialEntries: Array<IntersectionObserverEntry> | undefined,
             observer: IntersectionObserver
         ) => {
+            const entries = initialEntries ?? []
             const _observe = el._observe?.[binding.instance!.$.uid]
             if (!_observe) return // Just in case, should never fire
 

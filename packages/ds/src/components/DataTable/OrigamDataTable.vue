@@ -170,7 +170,6 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IDataTableGroup, IDataTableGroupableItem } from '../../interfaces/DataTable/group.interface'
 	import type { IDataTableProps, IDataTableEmits, IDataTableSlots } from '../../interfaces/DataTable/data-table.interface'
@@ -210,8 +209,8 @@
 		// got NO visual feedback when clicking a sortable header. Match
 		// Vuetify's `v-data-table` defaults: a unicode-sort triangle
 		// (`mdi-arrow-up`) that flips to `mdi-arrow-down` for DESC.
-		sortAscIcon: MDI_ICONS.ARROW_UP,
-		sortDescIcon: MDI_ICONS.ARROW_DOWN
+		sortAscIcon: 'mdi:mdi-arrow-up',
+		sortDescIcon: 'mdi:mdi-arrow-down'
 	})
 
 	const emit = defineEmits<IDataTableEmits>()

@@ -1,7 +1,7 @@
 import { computed, onBeforeUnmount, onMounted, provide, ref, shallowRef, watch } from 'vue'
 import { useVModel } from './vModel.composable'
 import { LIST_OPEN_STRATEGY, MULTIPLE_OPEN_STRATEGY, ORIGAM_NESTED_KEY, SINGLE_OPEN_STRATEGY } from '../../consts/Commons/nested.const'
-import { OPEN_STRATEGY, SELECTED, SELECT_STRATEGY } from '../../enums'
+import { OPEN_STRATEGY, SELECTED, SELECT_STRATEGY } from '../../enums/Commons/nested.enum'
 import type { INestedProps } from '../../interfaces/Commons/nested.interface'
 import type { TNestedProvide } from '../../types/Commons/nested.type'
 import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'

@@ -1,4 +1,4 @@
-import { TEXTAREA_TOOLBAR_COMMAND } from '../../enums'
+import { TEXTAREA_TOOLBAR_COMMAND } from '../../enums/TextareaField/textarea-field-rich-toolbar.enum'
 import type { TTextareaToolbarCommand } from '../../types/TextareaField/textarea-field-rich-toolbar.type'
 
 /**

@@ -88,7 +88,7 @@ export function useValidation (props: IValidationProps, name = getCurrentInstanc
     })
     const isValid = computed(() => {
         if (props.error || props.errorMessages?.length) return false
-        if (!props.rules || !props.rules.length) return true
+        if (!props.rules?.length) return true
         if (isPristine.value) {
             return internalErrorMessages.value.length || validateOn.value.lazy ? undefined : true
         } else {

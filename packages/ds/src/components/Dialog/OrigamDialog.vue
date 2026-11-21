@@ -51,7 +51,7 @@
 					<template #header.append>
 						<slot name="header-append">
 							<origam-btn
-									:icon="MDI_ICONS.CLOSE"
+									:icon="'mdi:mdi-close'"
 									:rounded="0"
 									:aria-label="t(closeLabel)"
 									bg-color="transparent"
@@ -152,7 +152,6 @@
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { IN_BROWSER } from '../../consts/Commons/commons.const'
 	import vIntersect from '../../directives/Intersect/intersect.directive'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import type { IDialogProps, IDialogEmits, IDialogSlots } from '../../interfaces/Dialog/dialog.interface'
 
 	import type { TOrigamCard } from '../../types/Card/card.type'

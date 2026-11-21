@@ -1,4 +1,4 @@
-import { EMPTY_STATE_PRESET, MDI_ICONS } from '../../enums'
+import { EMPTY_STATE_PRESET } from '../../enums/EmptyState/empty-state.enum'
 import type { IEmptyStatePresetConfig } from "../../interfaces"
 import type { TEmptyStateAlign, TEmptyStatePreset, TEmptyStateSize } from '../../types'
 
@@ -28,23 +28,23 @@ export const EMPTY_STATE_ALIGNS: ReadonlyArray<TEmptyStateAlign> = [
 
 export const EMPTY_STATE_PRESET_CONFIG: Record<TEmptyStatePreset, IEmptyStatePresetConfig> = {
     [EMPTY_STATE_PRESET.NO_DATA]: {
-        icon: MDI_ICONS.DATABASE_OFF_OUTLINE,
+        icon: 'mdi:mdi-database-off-outline',
         intent: 'neutral'
     },
     [EMPTY_STATE_PRESET.NO_RESULTS]: {
-        icon: MDI_ICONS.MAGNIFY_CLOSE,
+        icon: 'mdi:mdi-magnify-close',
         intent: 'neutral'
     },
     [EMPTY_STATE_PRESET.ERROR]: {
-        icon: MDI_ICONS.ALERT_CIRCLE_OUTLINE,
+        icon: 'mdi:mdi-alert-circle-outline',
         intent: 'danger'
     },
     [EMPTY_STATE_PRESET.OFFLINE]: {
-        icon: MDI_ICONS.WIFI_OFF,
+        icon: 'mdi:mdi-wifi-off',
         intent: 'warning'
     },
     [EMPTY_STATE_PRESET.LOCKED]: {
-        icon: MDI_ICONS.LOCK_OUTLINE,
+        icon: 'mdi:mdi-lock-outline',
         intent: 'secondary'
     }
 }

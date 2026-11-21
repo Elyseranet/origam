@@ -3,7 +3,7 @@ import { DEFAULT_DISPLAY_OPTIONS } from '../../consts/Commons/display.const'
 
 import type { IDisplayOptions, IDisplayPlatform, IInternalDisplayOptions } from '../../interfaces/Commons/display.interface'
 
-import type { TSSROptions } from '../../types/Commons/display.type'
+import type { TBreakpoint, TSSROptions } from '../../types/Commons/display.type'
 
 import { mergeDeep } from './commons.util'
 
@@ -40,6 +40,21 @@ export function getClientHeight (ssr?: TSSROptions) {
     return IN_BROWSER && !ssr
         ? window.innerHeight
         : (typeof ssr === 'object' && ssr.clientHeight) || 0
+}
+
+/*********************************************************
+ * getBreakpointName
+ *
+ * @description
+ * Name of the active breakpoint from the exclusive per-breakpoint flags (`xxl` when none of the smaller ones matches).
+ ********************************************************/
+export function getBreakpointName (flags: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', boolean>): TBreakpoint {
+    if (flags.xs) return 'xs'
+    if (flags.sm) return 'sm'
+    if (flags.md) return 'md'
+    if (flags.lg) return 'lg'
+    if (flags.xl) return 'xl'
+    return 'xxl'
 }
 
 /**

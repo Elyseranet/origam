@@ -316,7 +316,6 @@
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 	import { FILTERS_MODE } from '../../enums/Commons/filters.enum'
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { SELECT_STRATEGY } from '../../enums/Commons/nested.enum'
 	import { SIZES } from '../../enums/Commons/size.enum'
 	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
@@ -359,7 +358,7 @@
 		itemChildren: 'children',
 		itemProps: 'props',
 		valueComparator: deepEqual,
-		menuIcon: MDI_ICONS.CHEVRON_DOWN,
+		menuIcon: 'mdi:mdi-chevron-down',
 		divider: ',',
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps,
 		filterKeys: () => ['title'],

@@ -202,7 +202,6 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IDataTableHeadersCellMobileProps, IDataTableHeadersCellMobileEmits, IDataTableHeadersCellMobileSlots } from '../../interfaces/DataTable/data-table-headers-cell-mobile.interface'
 	import type { IInternalListItem } from '../../interfaces/List/list-children.interface'
@@ -262,10 +261,10 @@
 
 		if (showSelectColumn == null) return
 
-		if (allSelected.value) return MDI_ICONS.CHECKBOX_MARKED_OUTLINE
-		if (someSelected.value) return MDI_ICONS.MINUS_BOX
+		if (allSelected.value) return 'mdi:mdi-checkbox-marked-outline'
+		if (someSelected.value) return 'mdi:mdi-minus-box'
 
-		return MDI_ICONS.CHECKBOX_BLANK_OUTLINE
+		return 'mdi:mdi-checkbox-blank-outline'
 	})
 
 	/*********************************************************

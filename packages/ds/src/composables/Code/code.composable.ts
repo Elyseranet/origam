@@ -4,7 +4,7 @@ import type { IUseCodeReturn } from '../../interfaces/Code/code.interface'
 import type { TCodeLangOpen, TShikiHighlighter, TShikiHighlighterLoader, TShikiModule } from '../../types/Code/code.type'
 
 import { CODE_CACHE_MAX_ENTRIES, CODE_DARK_THEME as DARK_THEME, CODE_LIGHT_THEME as LIGHT_THEME, ORIGAM_CODE_KEY, SUPPORTED_LANGS } from '../../consts/Code/code.const'
-import { CODE_LANG } from '../../enums'
+import { CODE_LANG } from '../../enums/Code/code.enum'
 
 /**
  * `useCode()` — singleton shiki highlighter.

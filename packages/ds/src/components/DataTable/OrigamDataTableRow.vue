@@ -45,7 +45,7 @@
 								<origam-btn
 										:aria-expanded="isExpanded(item)"
 										:aria-label="isExpanded(item) ? t('origam.data_table_row.collapse_row') : t('origam.data_table_row.expand_row')"
-										:icon="isExpanded(item) ? MDI_ICONS.CHEVRON_UP : MDI_ICONS.CHEVRON_DOWN"
+										:icon="isExpanded(item) ? 'mdi:mdi-chevron-up' : 'mdi:mdi-chevron-down'"
 										:size="SIZES.SMALL"
 										@click="handleBtnClick"
 								/>
@@ -100,7 +100,6 @@
 	import { useSort } from '../../composables/DataTable/sort.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { SIZES } from '../../enums/Commons/size.enum'
 
 	import type { IDataTableHeaderCellColumnSlot, IDataTableItemKey } from '../../interfaces/DataTable/items.interface'
