@@ -24,6 +24,8 @@ This project follows [Semantic Versioning](https://semver.org).
 - Le repli `MediaQueryList.addListener` / `removeListener` est retiré de la détection de `prefers-reduced-motion` : seul `addEventListener('change', …)` reste (Safari 14+, 2020). Un navigateur antérieur ne suit plus le changement de préférence à chaud.
 - Tests : `TU/composables/Commons/router.composable.spec.ts`, `TU/composables/Parallax/parallax.composable.spec.ts`.
 
+## [2.40.1] - 2026-11-21
+
 ### Fixed — `origam-img` ne plante plus quand son élément n'est pas monté (#1394)
 
 - `pollForSize` ne fait plus rien quand l'élément image est absent (`image.value` vaut `undefined`) : composant chargé en différé (`lazy-*`, `defineAsyncComponent`) dont le DOM n'est pas encore monté, auparavant `Cannot destructure property 'naturalHeight'` et page d'erreur. Test `TU/components/Img/img-lazy-1394.spec.ts`.
