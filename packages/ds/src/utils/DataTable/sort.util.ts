@@ -1,8 +1,58 @@
 import { SORT_DIRECTION } from '../../enums/Commons/sort.enum'
-import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
+import type { IDataTableSortItem, IDataTableSortItemsOptions } from '../../interfaces/DataTable/sort.interface'
 import type { IInternalItem } from '../../interfaces/List/list-children.interface'
-import type { TDataTableCompareFunction } from '../../types/DataTable/data-table.type'
+import type { TDataTableSortEntry } from '../../types/DataTable/data-table.type'
 import { isEmpty } from '../Commons/commons.util'
+
+function compareBySortItem<T extends IInternalItem> (
+    a: TDataTableSortEntry<T>,
+    b: TDataTableSortEntry<T>,
+    sortByItem: IDataTableSortItem,
+    options?: IDataTableSortItemsOptions<T>
+): number | undefined {
+    const sortKey = sortByItem.key
+    const sortOrder = sortByItem.order ?? SORT_DIRECTION.ASC
+
+    if (sortOrder === false) return undefined
+
+    const [first, second] = sortOrder === SORT_DIRECTION.DESC ? [b, a] : [a, b]
+    let sortA = first[1][sortKey]
+    let sortB = second[1][sortKey]
+    const sortARaw = first[0].raw
+    const sortBRaw = second[0].raw
+
+    let hasCustomResult = false
+
+    for (const [compare, valueA, valueB] of [
+        [options?.sortRawFunctions?.[sortKey], sortARaw, sortBRaw],
+        [options?.sortFunctions?.[sortKey], sortA, sortB]
+    ] as const) {
+        if (!compare) continue
+
+        const customResult = compare(valueA, valueB)
+
+        if (customResult == null) return undefined
+        hasCustomResult = true
+        if (customResult !== 0) return customResult
+    }
+
+    if (hasCustomResult) return undefined
+
+    // Dates should be compared numerically
+    if (sortA instanceof Date && sortB instanceof Date) {
+        return sortA.getTime() - sortB.getTime()
+    }
+
+    sortA = sortA != null ? sortA.toString().toLocaleLowerCase() : sortA
+    sortB = sortB != null ? sortB.toString().toLocaleLowerCase() : sortB
+
+    if (sortA === sortB) return undefined
+    if (isEmpty(sortA) && isEmpty(sortB)) return 0
+    if (isEmpty(sortA)) return -1
+    if (isEmpty(sortB)) return 1
+    if (!isNaN(sortA) && !isNaN(sortB)) return Number(sortA) - Number(sortB)
+    return sortA.localeCompare(sortB) // #1407 : suivre la langue active
+}
 
 /**
  * Sort items.
@@ -14,76 +64,21 @@ import { isEmpty } from '../Commons/commons.util'
 export function sortItems<T extends IInternalItem> (
     items: T[],
     sortByItems: Array<IDataTableSortItem>,
-    options?: {
-        transform?: (item: T) => Record<string, any>
-        sortFunctions?: Record<string, TDataTableCompareFunction>
-        sortRawFunctions?: Record<string, TDataTableCompareFunction>
-    }
+    options?: IDataTableSortItemsOptions<T>
 ): T[] {
     const transformedItems = items.map(item => (
         [item, options?.transform ? options.transform(item) : item as never] as const)
     )
 
-    return transformedItems.sort((a, b) => {
-        for (let i = 0; i < sortByItems.length; i++) {
-            let hasCustomResult = false
-            const sortKey = sortByItems[i].key
-            const sortOrder = sortByItems[i].order ?? SORT_DIRECTION.ASC
+    const sorted = transformedItems.sort((a, b) => {
+        for (const sortByItem of sortByItems) {
+            const result = compareBySortItem(a, b, sortByItem, options)
 
-            if (sortOrder === false) continue
-
-            let sortA = a[1][sortKey]
-            let sortB = b[1][sortKey]
-            let sortARaw = a[0].raw
-            let sortBRaw = b[0].raw
-
-            if (sortOrder === SORT_DIRECTION.DESC) {
-                const tempA = sortA
-                const tempB = sortB
-                sortA = tempB
-                sortB = tempA
-
-                const tempARaw = sortARaw
-                const tempBRaw = sortBRaw
-                sortARaw = tempBRaw
-                sortBRaw = tempARaw
-            }
-
-            if (options?.sortRawFunctions?.[sortKey]) {
-                const customResult = options.sortRawFunctions[sortKey](sortARaw, sortBRaw)
-
-                if (customResult == null) continue
-                hasCustomResult = true
-                if (customResult !== 0) return customResult
-            }
-
-            if (options?.sortFunctions?.[sortKey]) {
-                const customResult = options.sortFunctions[sortKey](sortA, sortB)
-
-                if (customResult == null) continue
-                hasCustomResult = true
-                if (customResult !== 0) return customResult
-            }
-
-            if (hasCustomResult) continue
-
-            // Dates should be compared numerically
-            if (sortA instanceof Date && sortB instanceof Date) {
-                return sortA.getTime() - sortB.getTime()
-            }
-
-            sortA = sortA != null ? sortA.toString().toLocaleLowerCase() : sortA
-            sortB = sortB != null ? sortB.toString().toLocaleLowerCase() : sortB
-
-            if (sortA !== sortB) {
-                if (isEmpty(sortA) && isEmpty(sortB)) return 0
-                if (isEmpty(sortA)) return -1
-                if (isEmpty(sortB)) return 1
-                if (!isNaN(sortA) && !isNaN(sortB)) return Number(sortA) - Number(sortB)
-                return sortA.localeCompare(sortB) // TODO - Work with language
-            }
+            if (result !== undefined) return result
         }
 
         return 0
-    }).map(([item]) => item)
+    })
+
+    return sorted.map(([item]) => item)
 }

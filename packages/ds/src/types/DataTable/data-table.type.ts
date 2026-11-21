@@ -11,6 +11,8 @@ import type { TDataTableRowSlotName } from './data-table-rows.type'
 
 export type TDataTableCompareFunction<T = any> = (a: T, b: T) => number | null
 
+export type TDataTableSortEntry<T> = readonly [T, Record<string, any>]
+
 export type TDataTableHeaderCell =
     | Record<string, any>
     | ((data: Pick<IDataTableItemKey<any>, 'index' | 'item' | 'internalItem' | 'value'>) => Record<string, any>)

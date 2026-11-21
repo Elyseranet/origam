@@ -388,17 +388,11 @@
 
 		&__prepend {
 			padding-top: var(--origam-input__prepend---padding-top, 8px);
-		}
-
-		&__append {
-			padding-top: var(--origam-input__append---padding-top, 8px);
-		}
-
-		&__prepend {
 			grid-area: prepend;
 		}
 
 		&__append {
+			padding-top: var(--origam-input__append---padding-top, 8px);
 			grid-area: append;
 		}
 
@@ -414,10 +408,6 @@
     &--is-ltr {
       direction: ltr;
     }
-
-		&--disabled {
-			pointer-events: none;
-		}
 
 		&--density-default {
 			--origam-input---density: var(--origam-input---density-default-density, 0px);
@@ -501,6 +491,8 @@
 		}
 
 		&--disabled {
+			pointer-events: none;
+
 			#{$this}__details,
 			#{$this}__prepend,
 			#{$this}__append {

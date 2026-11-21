@@ -2,6 +2,11 @@ import { ROUNDED } from '../../enums/Commons/rounded.enum'
 
 import type { TRounded } from '../../types/Commons/rounded.type'
 
+const RADIUS_NUMBER = '(?:\\d+(?:\\.\\d+)?)'
+const RADIUS_UNITS = 'px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr'
+const CUSTOM_RADIUS_FUNCTIONS = 'var|calc|clamp|min|max|env'
+const CUSTOM_RADIUS_UNITS = 'px|pt|pc|in|cm|mm|q|em|rem|ex|ch|cap|ic|lh|rlh|vw|vh|vi|vb|vmin|vmax|%'
+
 /**
  * Regex used to detect a free-form CSS border-radius string the consumer
  * can pass via `rounded="4px"` / `"4px 0 4px 0"` / etc. Each value can
@@ -11,7 +16,7 @@ import type { TRounded } from '../../types/Commons/rounded.type'
  *
  * Example matches: `4px`, `0`, `4px 0 4px 0`, `4px 4px 0 0`, `1.5rem`.
  */
-export const BORDER_RADIUS_REGEX = /^(?<radius>(?: ?(?:0|(?:[0-9]+(?:\.[0-9]+)?)(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr))){0,4})$/
+export const BORDER_RADIUS_REGEX = new RegExp(`^(?<radius>(?: ?(?:0|${RADIUS_NUMBER}(?:${RADIUS_UNITS}))){0,4})$`)
 
 /**
  * Detects a free-form custom `border-radius` value that `BORDER_RADIUS_REGEX`
@@ -26,7 +31,7 @@ export const BORDER_RADIUS_REGEX = /^(?<radius>(?: ?(?:0|(?:[0-9]+(?:\.[0-9]+)?)
  * Example matches: `var(--origam-radius---card)`, `calc(1rem + 2px)`,
  * `clamp(4px, 1vw, 16px)`, `12vw`, `var(--x, 8px)`.
  */
-export const CUSTOM_BORDER_RADIUS_REGEX = /^(?:var|calc|clamp|min|max|env)\(.*\)$|^-?(?:0|[0-9]*\.?[0-9]+)(?:px|pt|pc|in|cm|mm|q|em|rem|ex|ch|cap|ic|lh|rlh|vw|vh|vi|vb|vmin|vmax|%)$/i
+export const CUSTOM_BORDER_RADIUS_REGEX = new RegExp(`^(?:${CUSTOM_RADIUS_FUNCTIONS})\\(.*\\)$|^-?(?:0|\\d*\\.?\\d+)(?:${CUSTOM_RADIUS_UNITS})$`, 'i')
 
 /**
  * Whitelist of named radius variants. Mirrors `useDensity` /
