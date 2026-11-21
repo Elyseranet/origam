@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed — complexité cognitive : `scatterExtent` et `compareBySortItem` (#1398)
+
+- Refactor pur (comportement identique, figé par des tests de caractérisation) : `scatterExtent` (Chart, 27 → sous 15) et `compareBySortItem` (DataTable, 21 → sous 15) sont découpées en fonctions nommées. Débloque le quality gate Sonar du workflow `Build`.
+
 ### Fixed — `v-contrast` ne force plus de couleur sur un fond en dégradé (#1427)
 
 - `resolvePaintedBackground` ignorait `background-image` : sur un bouton en dégradé, la directive mesurait le fond de page et imposait le mauvais noir/blanc en `!important` (texte noir sur le dégradé geek clair). Elle s’abstient désormais dès qu’une image de fond est rencontrée avant le fond opaque.

@@ -745,27 +745,34 @@ const pushBarPaths = (out: Array<IChartPath>, frame: IChartBarPathFrame): void =
     }
 }
 
+type TScatterEntry = IChartSeries['data'][number]
+
+const scatterX = (entry: TScatterEntry): number => {
+    const xv = typeof entry === 'number' ? entry : entry.x
+    return typeof xv === 'number' ? xv : 0
+}
+
+const scatterZ = (entry: TScatterEntry): number | undefined =>
+    typeof entry !== 'number' && typeof entry.z === 'number' && Number.isFinite(entry.z) ? entry.z : undefined
+
+/** NaN-safe min / max (a NaN value never replaces the running bound). */
+const boundsOf = (values: Array<number>) => {
+    let min = Infinity
+    let max = -Infinity
+    for (const v of values) {
+        if (v < min) min = v
+        if (v > max) max = v
+    }
+    return { min, max }
+}
+
 /** X and Z extents across every scatter series (cohorts share the axes). */
 const scatterExtent = (scatterSeries: Array<IChartSeries>) => {
-    let xMin = Infinity
-    let xMax = -Infinity
-    let zMin = Infinity
-    let zMax = -Infinity
-    let hasZ = false
-    for (const sp of scatterSeries) {
-        for (const entry of sp.data) {
-            const xv = typeof entry === 'number' ? entry : entry.x
-            const x = typeof xv === 'number' ? xv : 0
-            if (x < xMin) xMin = x
-            if (x > xMax) xMax = x
-            if (typeof entry !== 'number' && typeof entry.z === 'number' && Number.isFinite(entry.z)) {
-                hasZ = true
-                if (entry.z < zMin) zMin = entry.z
-                if (entry.z > zMax) zMax = entry.z
-            }
-        }
-    }
-    return { xMin, xMax, zMin, zMax, hasZ }
+    const entries = scatterSeries.flatMap(sp => sp.data)
+    const { min: xMin, max: xMax } = boundsOf(entries.map(scatterX))
+    const zs = entries.map(scatterZ).filter((z): z is number => z !== undefined)
+    const { min: zMin, max: zMax } = boundsOf(zs)
+    return { xMin, xMax, zMin, zMax, hasZ: zs.length > 0 }
 }
 
 /*
