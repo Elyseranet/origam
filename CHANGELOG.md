@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
+
+- Cause : Btn/SelectionControl passaient un tuple façon Vuetify à `v-ripple` ; en template Vue les modifiers de directive sont statiques et le tableau n'est que la valeur, donc `binding.modifiers.center/circle` n'étaient jamais posés.
+- Correctif : `updateRipple` accepte aussi `center` / `circle` dans la valeur objet (`IRippleOptions`). `OrigamSelectionControl` : ripple centré + circulaire ; `OrigamBtn` en mode `icon` : centré (comportement d'origine du tuple). `OrigamChip` n'avait aucun modifier à l'origine (`[x, null]`) : inchangé.
+- Ne règle pas #1177 (feuille de style de `.origam-ripple__container`).
+
 ### Fixed — poids JS : `origam-chip` et le coeur `origam/core` n'embarquent plus l'enum MDI de 360 Ko (#1403)
 
 - Cause : l'enum `MDI_ICONS` (~7 000 membres) restait dans le bundle bien qu'inutilisé, car Rolldown ne retire pas l'IIFE d'un enum atteint par un barrel. Chemins : `OrigamChip`/`OrigamChipGroup` (et ~40 autres composants) l'importaient pour leurs icônes par défaut ; `origam-core.ts` et `consts/Commons/display.const.ts` passaient par les barrels `composables/index` (donc `createIcons` -> `mdi.const`) et `enums/index`.
