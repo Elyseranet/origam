@@ -1,4 +1,4 @@
-import { SIZES } from '../../enums'
+import { SIZES } from '../../enums/Commons/size.enum'
 
 import type { TSize } from '../../types/Commons/size.type'
 

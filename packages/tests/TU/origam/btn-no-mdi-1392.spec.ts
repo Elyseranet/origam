@@ -7,7 +7,7 @@
  * le garde. `consts/Commons/mdi.const.ts` étale `MDI_ICONS` (~7 000 alias,
  * ~430 Kio) dans un objet de premier niveau : le bundler ne peut pas l'écarter
  * à coup sûr. Aucun composant qui n'a besoin que de `useIcon` ne doit donc
- * l'atteindre.
+ * l'atteindre. Les imports `import type` sont ignorés (effacés à la compilation).
  ********************************************************/
 import { existsSync, readFileSync } from 'node:fs'
 import { dirname, normalize, resolve } from 'node:path'
@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
 const SRC = resolve(dirname(fileURLToPath(import.meta.url)), '../../../ds/src')
-const IMPORT = /(?:import|export)\s[^'"]*?from\s+['"]([^'"]+)['"]|import\s+['"]([^'"]+)['"]/g
+const IMPORT = /(?:import|export)\s(?!type\b)[^'"]*?from\s+['"]([^'"]+)['"]|import\s+['"]([^'"]+)['"]/g
 
 function reachable (entry: string): string[] {
     const seen = new Set<string>()
@@ -36,11 +36,14 @@ function reachable (entry: string): string[] {
 
 describe('graphe d\'imports sans icône (#1392)', () => {
     for (const entry of ['components/Btn/index.ts', 'components/Icon/index.ts', 'components/Avatar/index.ts']) {
-        it(`${entry} n'atteint ni mdi.const.ts ni createIcons`, () => {
+        it(`${entry} n'atteint ni mdi.const.ts, ni createIcons, ni le barrel enums, ni mdi.enum`, () => {
             const files = reachable(entry)
             expect(files.length).toBeGreaterThan(10) // témoin : le parcours a bien lieu
             expect(files).not.toContain('consts/Commons/mdi.const.ts')
             expect(files).not.toContain('composables/Icon/iconsFull.composable.ts')
+            // `enums/index.ts` re-exporte mdi.enum : un import par le barrel suffit à l'embarquer (#1393).
+            expect(files).not.toContain('enums/index.ts')
+            expect(files).not.toContain('enums/Commons/mdi.enum.ts')
         })
     }
 
