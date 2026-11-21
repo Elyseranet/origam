@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — OrigamRadio : le slot `#label` reçoit enfin ses props (#1359)
+
+- Cause : `OrigamRadio` et `OrigamRadioBtn` ré-exposaient `<slot name="label"/>` sans `v-bind` ; le scope `{ text, color, props: { id, onClick, … } }` d'`OrigamSelectionControl` était perdu, d'où un `TypeError` à l'accès de `props.id` et une radio sans nom accessible.
+- Correctif : le scope est transmis à chaque niveau ; types `IRadioSlots` / `IRadioBtnSlots` et doc mis à jour (utiliser `props.id` comme `for` du `<label>` personnalisé).
+
 ### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
 
 - Cause : Btn/SelectionControl passaient un tuple façon Vuetify à `v-ripple` ; en template Vue les modifiers de directive sont statiques et le tableau n'est que la valeur, donc `binding.modifiers.center/circle` n'étaient jamais posés.

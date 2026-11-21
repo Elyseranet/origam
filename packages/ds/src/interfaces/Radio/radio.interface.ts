@@ -17,6 +17,7 @@ import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRadioBtnProps } from './radio-btn.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 
+import type { TColor } from '../../types/Commons/color.type'
 import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface IRadioProps extends ICommonsComponentProps, IInputProps, IRadioBtnProps, IDensityProps, IPaddingProps, IMarginProps, IRoundedProps, IColorProps, IBorderProps, IElevationProps, IActiveProps, IHoverProps {
@@ -39,7 +40,7 @@ export interface IRadioSlots extends IAdjacentSlots {
      */
     default?: (data?: { id: string, messagesId: string, isDisabled: boolean, isReadonly: boolean, isValid: boolean | undefined }) => any
     input?: (data: { props: any, icon?: TIcon, model: any }) => any
-    label?: () => any
+    label?: (data: { text?: string, color?: TColor, props: any }) => any
     details?: (props: any) => any
     messages?: (data: { hasMessages: boolean, messages: Array<string> | Record<string, string> }) => any
     message?: (data: { message: any }) => any
