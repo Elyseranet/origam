@@ -204,7 +204,7 @@
 				}
 
 				if (firstSelectedIndex.value >= 0 && contentRef.value) {
-					// TODO: Is this too naive? Should we store element references in group composable?
+					// #1408 — Is this too naive? Should we store element references in group composable?
 					const selectedElement = contentRef.value.children[lastSelectedIndex.value] as HTMLElement
 
 					scrollToChildren(selectedElement, props.centerActive)
@@ -336,12 +336,10 @@
 			} else if (e.key === 'ArrowLeft') {
 				toFocus('prev')
 			}
-		} else {
-			if (e.key === 'ArrowDown') {
-				toFocus('next')
-			} else if (e.key === 'ArrowUp') {
-				toFocus('prev')
-			}
+		} else if (e.key === 'ArrowDown') {
+			toFocus('next')
+		} else if (e.key === 'ArrowUp') {
+			toFocus('prev')
 		}
 
 		if (e.key === 'Home') {

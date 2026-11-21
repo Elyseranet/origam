@@ -89,6 +89,7 @@ export * from './Commons/validation.util'
 export * from './QrCode/qr-code-adapters.util'
 
 export * from './Chart/path.util'
+export * from './Chart/chart-point.util'
 export * from './Chart/mercator.util'
 
 export * from './Commons/token-name.util'

@@ -13,6 +13,8 @@ export type TSliderFieldVariant = `${SLIDER_FIELD_VARIANT}`
 
 export type TAlways = boolean | 'always'
 
+export type TSliderFieldValue = number | string | Array<number> | Array<string>
+
 export type TSliderData = {
     value: number
 }

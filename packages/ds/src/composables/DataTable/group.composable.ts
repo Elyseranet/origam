@@ -62,7 +62,7 @@ export function provideGroupBy (options: {
                 if ('type' in item && item.type === 'group') {
                     arr.push(...dive(item))
                 } else {
-                    arr.push(item as T)
+                    arr.push(item)
                 }
             }
 
