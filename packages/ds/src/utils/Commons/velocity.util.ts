@@ -11,10 +11,6 @@ export function calculateImpulseVelocity (samples: Array<ISample>) {
         // if 0 or 1 points, velocity is zero
         return 0
     }
-    // if (samples[1].t > samples[0].t) {
-    //   // Algorithm will still work, but not perfectly
-    //   consoleWarn('Samples provided to calculateImpulseVelocity in the wrong order')
-    // }
     if (samples.length === 2) {
         // if 2 points, basic linear calculation
         if (samples[1].t === samples[0].t) {

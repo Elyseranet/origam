@@ -413,8 +413,8 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
     // Watch the direction / easing — if the CSS branch flips at runtime
     // (very unlikely but possible if a layer is added late), re-publish the
     // CSS variables and stop the rAF loop.
-    watch(cssScrollDriven, (v) => {
-        if (v) {
+    watch(cssScrollDriven, () => {
+        if (cssScrollDriven.value) {
             if (rafId != null) {
                 cancelAnimationFrame(rafId)
                 rafId = null

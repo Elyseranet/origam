@@ -11,6 +11,14 @@ import OrigamSliderField from '../../components/SliderField/OrigamSliderField.vu
  */
 export type TSliderFieldVariant = `${SLIDER_FIELD_VARIANT}`
 
+/*********************************************************
+ * TSliderFieldNumeric
+ *
+ * @description
+ * Raw numeric prop as received (`min` / `max` / `step`): a number, a numeric string, or nothing.
+ ********************************************************/
+export type TSliderFieldNumeric = string | number | null | undefined
+
 export type TAlways = boolean | 'always'
 
 export type TSliderData = {

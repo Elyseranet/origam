@@ -152,20 +152,24 @@ export function repositionScrollStrategy (data: IScrollStrategyData, _props: ISc
         })
     }
 
+    // If the position calculation is slow,
+    // defer updates until scrolling is finished.
+    // Browsers usually fire one scroll event per frame so
+    // we just wait until we've got two frames without an event
+    const deferUpdate = (e: Event) => {
+        cancelAnimationFrame(raf)
+        raf = requestAnimationFrame(() => {
+            raf = requestAnimationFrame(() => {
+                update(e)
+            })
+        })
+    }
+
     ric = (typeof requestIdleCallback === 'undefined' ? (cb: () => number) => cb() : requestIdleCallback)(() => {
         scope.run(() => {
             bindScroll(data.targetEl.value ?? data.contentEl.value, e => {
                 if (slow) {
-                    // If the position calculation is slow,
-                    // defer updates until scrolling is finished.
-                    // Browsers usually fire one scroll event per frame so
-                    // we just wait until we've got two frames without an event
-                    cancelAnimationFrame(raf)
-                    raf = requestAnimationFrame(() => {
-                        raf = requestAnimationFrame(() => {
-                            update(e)
-                        })
-                    })
+                    deferUpdate(e)
                 } else {
                     update(e)
                 }
