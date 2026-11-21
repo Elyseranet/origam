@@ -49,7 +49,7 @@
 				<origam-btn
 						v-if="clearable && normalizedValue > 0 && !disabled && !readonly"
 						:aria-label="t('origam.rating.clear')"
-						:icon="MDI_ICONS.CLOSE_CIRCLE_OUTLINE"
+						:icon="'mdi:mdi-close-circle-outline'"
 						:variant="VARIANT.TEXT"
 						class="origam-rating-field__clear"
 						data-cy="rating-field-clear"
@@ -187,7 +187,6 @@
 	import { BLOCK } from '../../enums/Commons/anchor.enum'
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { SIZES } from '../../enums/Commons/size.enum'
 	import { VARIANT } from '../../enums/Commons/variant.enum'
 

@@ -1,4 +1,4 @@
-import { QR_CODE_ERROR_CORRECTION_LEVEL } from '../../enums'
+import { QR_CODE_ERROR_CORRECTION_LEVEL } from '../../enums/QrCode/qr-code.enum'
 import type { TQrCodeErrorCorrectionLevel } from '../../types/QrCode/qr-code.type'
 
 /*********************************************************

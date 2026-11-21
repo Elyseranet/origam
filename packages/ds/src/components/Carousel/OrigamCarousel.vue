@@ -117,7 +117,6 @@
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { SIZES } from '../../enums/Commons/size.enum'
 
 	import { intentBgExpr, isCssColor, isIntent } from '../../utils/Commons/color.util'
@@ -139,7 +138,7 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<ICarouselProps>(), {
-		delimiterIcon: MDI_ICONS.CIRCLE,
+		delimiterIcon: 'mdi:mdi-circle',
 		height: 500,
 		interval: 6000,
 		continuous: true,
@@ -257,7 +256,7 @@
 	})
 
 	const playPauseIcon = computed(() => {
-		return isPaused.value ? MDI_ICONS.PLAY : MDI_ICONS.PAUSE
+		return isPaused.value ? 'mdi:mdi-play' : 'mdi:mdi-pause'
 	})
 
 	/*********************************************************

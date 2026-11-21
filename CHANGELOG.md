@@ -18,6 +18,13 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — poids JS : `origam-chip` et le coeur `origam/core` n'embarquent plus l'enum MDI de 360 Ko (#1403)
+
+- Cause : l'enum `MDI_ICONS` (~7 000 membres) restait dans le bundle bien qu'inutilisé, car Rolldown ne retire pas l'IIFE d'un enum atteint par un barrel. Chemins : `OrigamChip`/`OrigamChipGroup` (et ~40 autres composants) l'importaient pour leurs icônes par défaut ; `origam-core.ts` et `consts/Commons/display.const.ts` passaient par les barrels `composables/index` (donc `createIcons` -> `mdi.const`) et `enums/index`.
+- Correctif sans changement d'API : les icônes par défaut deviennent la chaîne `mdi:mdi-*` équivalente (même valeur que le membre d'enum) dans les composants et `EMPTY_STATE_PRESET_CONFIG` ; les imports de barrel `enums` (consts, utils, composables) et ceux d'`origam-core.ts` visent le fichier source. `OrigamBreadcrumbDivider` teste le préfixe `mdi:` au lieu de `Object.values(MDI_ICONS)` (un `mdi:` hors enum est désormais aussi traité comme icône).
+- Mesure (fixture Nuxt 4 minimale, `origam/nuxt` en `lite`, page avec `OrigamChip` texte seul, JS total du client) : 754 492 -> 403 614 octets (201 -> 127 Kio gzip) ; page sans composant : 650 014 -> 299 232 octets. Plus aucune occurrence de `mdi-ab-testing` dans le build.
+- Garde `TU/origam/btn-no-mdi-1392.spec.ts` étendue : aucun composant public, ni `origam-core.ts` ni `nuxt/create.core.ts`, n'atteint `mdi.enum`, `mdi.const` ou `enums/index`.
+
 ### Added — plafond CSS d'`OrigamBlockquote` (#1395)
 
 - Mesure : `OrigamBlockquote` seul pèse **7,9 Kio de CSS (~1 Kio gzip)**, sans duplication ni règle d'un autre composant. Les ~50 Ko d'`OrigamBlockquote.css` vus dans Elysera sont le CSS de tout ce qui est importé avec lui (Btn 18 Kio, Progress, Avatar, Img…), regroupé par Vite/Nuxt dans un fichier qui garde le nom du premier composant. Rien à réduire dans Blockquote.

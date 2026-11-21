@@ -249,7 +249,6 @@
 	import { useTypography } from '../../composables/Commons/typography.composable'
 	import { useVideoPlayer } from '../../composables/Video/video-player.composable'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { VIDEO_TRACK_KIND } from '../../enums/Video/video.enum'
 
 	import type { IVideoProps, IVideoEmits, IVideoSlots } from '../../interfaces/Video/video.interface'
@@ -318,16 +317,16 @@
 	 * Icon refs — single source of truth for the toolbar glyphs.
 	 ********************************************************/
 	const ICONS = {
-		PLAY: MDI_ICONS.PLAY,
-		PAUSE: MDI_ICONS.PAUSE,
-		LOADING: MDI_ICONS.LOADING,
-		ALERT: MDI_ICONS.ALERT_CIRCLE,
-		CAPTIONS: MDI_ICONS.CLOSED_CAPTION,
-		PIP: MDI_ICONS.PICTURE_IN_PICTURE_BOTTOM_RIGHT,
-		FULLSCREEN: MDI_ICONS.FULLSCREEN,
-		FULLSCREEN_EXIT: MDI_ICONS.FULLSCREEN_EXIT,
-		CHEVRON_LEFT: MDI_ICONS.CHEVRON_LEFT,
-		CHEVRON_RIGHT: MDI_ICONS.CHEVRON_RIGHT
+		PLAY: 'mdi:mdi-play',
+		PAUSE: 'mdi:mdi-pause',
+		LOADING: 'mdi:mdi-loading',
+		ALERT: 'mdi:mdi-alert-circle',
+		CAPTIONS: 'mdi:mdi-closed-caption',
+		PIP: 'mdi:mdi-picture-in-picture-bottom-right',
+		FULLSCREEN: 'mdi:mdi-fullscreen',
+		FULLSCREEN_EXIT: 'mdi:mdi-fullscreen-exit',
+		CHEVRON_LEFT: 'mdi:mdi-chevron-left',
+		CHEVRON_RIGHT: 'mdi:mdi-chevron-right'
 	}
 
 	/*********************************************************

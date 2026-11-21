@@ -5,7 +5,8 @@ import {
     PARALLAX_ELEMENT_MOVEMENT_DIVISOR
 } from '../../consts/Parallax/parallax-element.const'
 
-import { AXIS, PARALLAX_ELEMENT_TYPE } from '../../enums'
+import { AXIS } from '../../enums/Commons/drag.enum'
+import { PARALLAX_ELEMENT_TYPE } from '../../enums/Parallax/parallax-element.enum'
 
 import type { IParallaxElementProps } from '../../interfaces/Parallax/parallax-element.interface'
 
