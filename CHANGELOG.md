@@ -22,6 +22,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 - Cause : `labelProps` / `floatingLabelProps` recopiaient la prop `id` du champ sur les deux `<origam-label>` via `filterProps` ; l'input et les deux labels partageaient donc le même `id` (`label[for]` visait le premier label, pas le contrôle). `id` est désormais exclu du forward. Touche tous les champs construits sur `OrigamField`. Aucun changement d'API.
 
+### Fixed — `OrigamFileField` : anneau de focus sur la dropzone et attributs natifs sur l'`<input>` seul (#1383)
+
+- Focus : en mode `dragndrop`/`dropzone`, l'`<input type="file">` (opacity 0) porte le focus clavier mais la dropzone restait sans outline (`outline-style: none` mesuré dans Chromium). La dropzone peint désormais un anneau `:has(:focus-visible)`, aux tokens `--origam-color__border---focus` / `--origam-border__width---2` (même forme que `OrigamRatingFieldItem`).
+- Attributs : `OrigamFileField` n'avait pas `inheritAttrs: false` ; `aria-label` / `accept` se retrouvaient aussi sur le `<div>` racine en plus de l'`<input>`. Corrigé comme `OrigamTextField` (#818).
+- Non traité : `data-cy` reste sur le conteneur racine (convention `filterInputAttrs` partagée par TextField, Radio, etc.), à arbitrer séparément.
+
 ### Fixed — `OrigamCounter` : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)
 
 - Cause : `.origam-counter` est `flex: 0 1 auto` sans `white-space: nowrap` ; dans le flex `__details` d'`OrigamInput`, un texte d'aide long le faisait rétrécir et le texte passait à la ligne (mesuré dans un flex de 120 px : 3 boîtes de ligne).

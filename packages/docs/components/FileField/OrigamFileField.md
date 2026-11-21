@@ -137,6 +137,10 @@ The drag-and-drop mode uses two sub-components internally:
 
 Both are exposed via the `item` slot for full customisation.
 
+## Testing
+
+`data-cy` is set on the field's root container (via `filterInputAttrs`), like for all fields; to reach the input element: `[data-cy="x"] input`.
+
 ## Design tokens
 
 | Token | Description |
