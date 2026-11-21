@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamBtn` en chargement circulaire : le libellé reste visible (#1086)
+
+- Cause : `--loader-circular` posait `opacity: 0` sur `__content` / `__prepend` / `__append` et centrait le spinner en absolu par-dessus.
+- Correctif : le spinner est dans le flux, avant le libellé (`gap` 0.5em) ; libellé visible, nom accessible inchangé. Conséquence mesurée : le bouton s'élargit de la largeur du spinner + gap en chargement (le wireframe `2-action-in-progress` demandait une largeur stable, point à arbitrer, voir PR).
+
+### Fixed — `OrigamProgressLinear` : plus de `<div>` dans un `<button>` en chargement `line` (#1087)
+
+- Cause : l'arrière-plan, le flux, la zone de chargement et les barres de `OrigamProgressLinear` étaient des `<div>` ; `OrigamBtn` en `loading` de type `line` les rendait dans un `<button>` (contenu phrasé uniquement).
+- Correctif : ces quatre éléments passent en `<span>` (`__loader` reçoit `display: block`, les autres sont déjà positionnés en absolu). Le conteneur `__content` (slot consommateur) reste un `<div>`. Test : `OrigamBtn.loading-content-model.spec.ts`.
+
 ### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
 
 - Cause : Btn/SelectionControl passaient un tuple façon Vuetify à `v-ripple` ; en template Vue les modifiers de directive sont statiques et le tableau n'est que la valeur, donc `binding.modifiers.center/circle` n'étaient jamais posés.

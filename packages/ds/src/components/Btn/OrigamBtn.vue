@@ -1097,23 +1097,14 @@
 			}
 		}
 
-		// Circular spinner — centred absolutely over the
-		// (invisible-but-still-laid-out) label. The `inset: 0` +
-		// `margin: auto` pattern centres an absolutely-positioned
-		// element when it has intrinsic width/height (the spinner is
-		// 16-23 px square from its `size` prop). Hiding the label via
-		// opacity preserves the btn's natural width.
+		// Circular spinner — in flow, BEFORE the label: the label stays visible
+		// and keeps its accessible name (#1086, decision n°2 of #1073). The
+		// button grows by the spinner width + gap; `flex: none` stops the
+		// label column from squeezing it.
 		&--loader-circular {
-			#{$this}__content,
-			#{$this}__prepend,
-			#{$this}__append {
-				opacity: 0;
-			}
-
 			:deep(#{$this}__progress) {
-				position: absolute !important;
-				inset: 0 !important;
-				margin: auto !important;
+				flex: none;
+				margin-inline-end: 0.5em;
 				pointer-events: none;
 			}
 		}
