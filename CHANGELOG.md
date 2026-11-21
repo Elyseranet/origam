@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added — plafond CSS d'`OrigamBlockquote` (#1395)
+
+- Mesure : `OrigamBlockquote` seul pèse **7,9 Kio de CSS (~1 Kio gzip)**, sans duplication ni règle d'un autre composant. Les ~50 Ko d'`OrigamBlockquote.css` vus dans Elysera sont le CSS de tout ce qui est importé avec lui (Btn 18 Kio, Progress, Avatar, Img…), regroupé par Vite/Nuxt dans un fichier qui garde le nom du premier composant. Rien à réduire dans Blockquote.
+- Garde `TU/origam/blockquote-css-1395.spec.ts` (fixture `TU/fixtures/blockquote-only`) : <= 9 Kio bruts, <= 2 Kio gzip, aucun sélecteur d'un autre composant.
+
 ## [2.40.1] - 2026-11-21
 
 ### Fixed — `origam-img` ne plante plus quand son élément n'est pas monté (#1394)
