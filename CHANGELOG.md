@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamListItem` : anneau `:focus-visible` sur les lignes cliquables (#1358)
+
+- Cause : le focus clavier d'une ligne `link` ne produisait que le voile d'overlay (opacité 0,08, ~1,1:1), sans anneau (WCAG 1.4.11 / 2.4.7).
+- Correctif : `outline` 2px solid `--origam-color__border---focus` (même jeton sémantique que Btn et FileField, donc réglable par thème), décalé vers l'intérieur pour ne pas être rogné par le conteneur. Aucun nouveau jeton.
+
 ### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
 
 - Cause : Btn/SelectionControl passaient un tuple façon Vuetify à `v-ripple` ; en template Vue les modifiers de directive sont statiques et le tableau n'est que la valeur, donc `binding.modifiers.center/circle` n'étaient jamais posés.
