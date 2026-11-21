@@ -48,6 +48,26 @@ const hexToRgb = (hex: string): string => {
 test.describe('OrigamCounter', () => {
     test.setTimeout(120000)
 
+    // #1360 — dans un flex etroit (OrigamInput __details), le compteur ne doit jamais se couper.
+    test('ne se coupe pas sur deux lignes dans un flex etroit (#1360)', async ({ page }) => {
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const counter = sandbox.locator('.origam-counter').first()
+        await expect(counter).toBeVisible(VIS)
+        const lines = await counter.evaluate((el) => {
+            const box = document.createElement('div')
+            box.style.cssText = 'display:flex;gap:8px;width:120px'
+            const help = document.createElement('span')
+            help.textContent = 'Un texte d aide beaucoup trop long pour tenir sur une seule ligne'
+            el.replaceWith(box)
+            box.append(help, el)
+            const r = document.createRange()
+            r.selectNodeContents(el)
+            return r.getClientRects().length
+        })
+        expect(lines).toBe(1)
+    })
+
     // ------------------------------------------------------------------ //
     // DESIGN (index 0)                                                     //
     // init: { value: 50, max: 100, active: true, color: 'primary' }       //
