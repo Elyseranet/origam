@@ -22,10 +22,22 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '2 additions. See the full changelog for detail.',
+        summaryFallback: '1 addition and 2 fixes. See the full changelog for detail.',
         highlights: [
             { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'plafond CSS d\'OrigamBlockquote (#1395)' },
-            { type: 'added', textKey: 'changelog.versions.unreleased.h2', textFallback: 'jetons par mode, helper SSR origam/ssr, budget CSS (#1386)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'origam-img ne plante plus quand son élément n\'est pas monté (#1394)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'origam-btn n\'atteint plus le jeu d\'icônes MDI sans icône (#1392)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.40.0',
+        date: '2026-11-21',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2400.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2400.h1', textFallback: 'jetons par mode, helper SSR origam/ssr, budget CSS (#1386)' }
         ]
     },
     {

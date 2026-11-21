@@ -22,7 +22,7 @@ import {
 } from 'vue'
 import { IN_BROWSER, ON_REGEX } from '../../consts/Commons/commons.const'
 
-import { FOCUS_LOCATION } from '../../enums'
+import { FOCUS_LOCATION } from '../../enums/Commons/commons.enum'
 
 import { TClientPosition, TFn, TFocusLocation, TNotAUnion, TSelectItemKey, TTemplateRef, TWrapInArrayResult } from '../../types/Commons/commons.type'
 import { getLifeCycleTarget } from './getCurrentInstance.util'

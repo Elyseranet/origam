@@ -1,4 +1,4 @@
-import { ROUNDED } from '../../enums'
+import { ROUNDED } from '../../enums/Commons/rounded.enum'
 
 import type { TRounded } from '../../types/Commons/rounded.type'
 

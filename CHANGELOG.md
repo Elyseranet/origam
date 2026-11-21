@@ -23,6 +23,19 @@ This project follows [Semantic Versioning](https://semver.org).
 - Mesure : `OrigamBlockquote` seul pèse **7,9 Kio de CSS (~1 Kio gzip)**, sans duplication ni règle d'un autre composant. Les ~50 Ko d'`OrigamBlockquote.css` vus dans Elysera sont le CSS de tout ce qui est importé avec lui (Btn 18 Kio, Progress, Avatar, Img…), regroupé par Vite/Nuxt dans un fichier qui garde le nom du premier composant. Rien à réduire dans Blockquote.
 - Garde `TU/origam/blockquote-css-1395.spec.ts` (fixture `TU/fixtures/blockquote-only`) : <= 9 Kio bruts, <= 2 Kio gzip, aucun sélecteur d'un autre composant.
 
+### Fixed — `origam-img` ne plante plus quand son élément n'est pas monté (#1394)
+
+- `pollForSize` ne fait plus rien quand l'élément image est absent (`image.value` vaut `undefined`) : composant chargé en différé (`lazy-*`, `defineAsyncComponent`) dont le DOM n'est pas encore monté, auparavant `Cannot destructure property 'naturalHeight'` et page d'erreur. Test `TU/components/Img/img-lazy-1394.spec.ts`.
+
+### Fixed — `origam-btn` n'atteint plus le jeu d'icônes MDI sans icône (#1392)
+
+- `createIcons` (qui étale `MDI_ALIASES`, soit l'enum `MDI_ICONS` de ~7 000 alias, ~430 Kio) sort de `composables/Icon/icon.composable.ts` vers `iconsFull.composable.ts`. Avant, tout composant important `useIcon` (Btn, Avatar, Chip…) atteignait `mdi.const.ts` par le graphe d'imports, icône demandée ou non. `createIcons` reste exporté par `origam/composables` : API inchangée.
+- Les composants et helpers atteints depuis Btn, Icon et Avatar importent leurs enums par le fichier (`enums/Commons/loader.enum`) et non par le barrel `enums/index`, qui re-exporte `mdi.enum` : un import par le barrel suffisait à embarquer l'enum dans un build qui ne le tree-shake pas.
+- `createIcons` : importer depuis `origam/composables`. Le chemin profond `composables/Icon/icon.composable` ne l'exporte plus.
+- Garde `TU/origam/btn-no-mdi-1392.spec.ts` : le graphe d'imports de Btn, Icon et Avatar n'atteint ni `mdi.const.ts`, ni `createIcons`, ni `enums/index.ts`, ni `mdi.enum.ts`.
+
+## [2.40.0] - 2026-11-21
+
 ### Added — jetons par mode, helper SSR `origam/ssr`, budget CSS (#1386)
 
 - `origam/tokens/css/dark-pinned` (bloc `[data-mode="dark"]`) et `origam/tokens/css/dark-system` (bloc `@media (prefers-color-scheme: dark)`) : les deux moitiés de `dark.css`, générées dans `dist` au build (`scripts/lib/split-dark-sheet.mjs`). `dark.css`, `light.css` et `primitive.css` sont inchangés.

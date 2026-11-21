@@ -1,4 +1,4 @@
-import { STATUS_POSITION } from "../../enums"
+import { STATUS_POSITION } from '../../enums/Commons/status.enum'
 import type { IAdjacentProps } from '../../interfaces/Commons/adjacent.interface'
 import type { IStatusProps } from '../../interfaces/Commons/status.interface'
 import type { TColor } from '../../types/Commons/color.type'
