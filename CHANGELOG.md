@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added — budget JS d'une page à un seul composant (#1404)
+
+- Mesure : `createOrigamCore` + le thème du DS + un seul `origam-title` = **57,4 Kio gzip** de JS client (Vue compris, build Vite minifié). Il n'y a **pas** de registre global de réglages ou de jetons importé en bloc : un build Nuxt réel (module `lite`, `OrigamTitle`) place ~92 Ko minifiés d'Origam dans le chunk d'entrée, dont ~60 Ko de code que la page exerce (thème, résolveur PROPS-FIRST, icônes, display, directive contrast) ; le thème lui-même voyage dans le payload HTML, pas dans le chunk.
+- Ce que la page paie sans l'utiliser, mesuré par retrait : locale `fr` (-3,1 Kio gz), adaptateur de dates `createDate` (-2,8 Kio gz), tables de variantes Kbd/Blockquote (-0,6 Kio gz). Ce sont des instances/tables installées par `createOrigamCore` : les rendre optionnelles change l'API du mode core, décision laissée au propriétaire.
+- Garde `TU/origam/single-component-budget-1404.spec.ts` (fixture `TU/fixtures/single-component`) : <= 62 Kio gzip.
+
 ### Added — plafond CSS d'`OrigamBlockquote` (#1395)
 
 - Mesure : `OrigamBlockquote` seul pèse **7,9 Kio de CSS (~1 Kio gzip)**, sans duplication ni règle d'un autre composant. Les ~50 Ko d'`OrigamBlockquote.css` vus dans Elysera sont le CSS de tout ce qui est importé avec lui (Btn 18 Kio, Progress, Avatar, Img…), regroupé par Vite/Nuxt dans un fichier qui garde le nom du premier composant. Rien à réduire dans Blockquote.

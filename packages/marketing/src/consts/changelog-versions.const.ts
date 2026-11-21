@@ -22,10 +22,11 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 addition and 1 change. See the full changelog for detail.',
+        summaryFallback: '2 additions and 1 change. See the full changelog for detail.',
         highlights: [
-            { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'plafond CSS d\'OrigamBlockquote (#1395)' },
-            { type: 'changed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'rupture : useBackButton suit la convention des gardes vue-router, useParallaxRuntime n\'utilise plus addListener (#1390)' }
+            { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'budget JS d\'une page à un seul composant (#1404)' },
+            { type: 'added', textKey: 'changelog.versions.unreleased.h2', textFallback: 'plafond CSS d\'OrigamBlockquote (#1395)' },
+            { type: 'changed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'rupture : useBackButton suit la convention des gardes vue-router, useParallaxRuntime n\'utilise plus addListener (#1390)' }
         ]
     },
     {
