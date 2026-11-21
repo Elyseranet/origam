@@ -23,7 +23,7 @@
 			<origam-btn
 					:aria-label="cycleModeAriaLabel"
 					:disabled="disabled"
-					:icon="MDI_ICONS.UNFOLD_LESS_HORIZONTAL"
+					:icon="'mdi:mdi-unfold-less-horizontal'"
 					size="x-small"
 					@click="handleUpdateMode"
 			/>
@@ -44,7 +44,6 @@
 	import { COLOR_NULL, COLOR_PICKER_MODES } from '../../consts/ColorPicker/color-picker.const'
 
 	import { COLOR_MODES_NAMES } from '../../enums/ColorPicker/color-picker.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
   import type { IColorPickerEditProps, IColorPickerEditSlots, IColorPickerEditEmits } from '../../interfaces/ColorPicker/color-picker-edit.interface'
 

@@ -1,6 +1,6 @@
 import type { InjectionKey } from 'vue'
 
-import { CODE_LANG } from '../../enums'
+import { CODE_LANG } from '../../enums/Code/code.enum'
 
 import type { ICodeOptions } from '../../interfaces/Code/code.interface'
 

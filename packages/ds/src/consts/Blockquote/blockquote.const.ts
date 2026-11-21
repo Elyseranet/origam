@@ -1,4 +1,4 @@
-import { BLOCKQUOTE_LANG, BLOCKQUOTE_VARIANT } from '../../enums'
+import { BLOCKQUOTE_LANG, BLOCKQUOTE_VARIANT } from '../../enums/Blockquote/blockquote.enum'
 
 import type { IBlockquoteProps } from '../../interfaces/Blockquote/blockquote.interface'
 

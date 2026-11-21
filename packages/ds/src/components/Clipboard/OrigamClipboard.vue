@@ -139,7 +139,7 @@
 	 *
 	 * @description
 	 * Both sides are now props (`icon` / `copiedIcon`) instead of the
-	 * module-level `MDI_ICONS.CONTENT_COPY` constant this component used
+	 * module-level `'mdi:mdi-content-copy'` constant this component used
 	 * to hardcode: an icon a consumer could not pick was a dead surface,
 	 * and a theme could not reach it either.
 	 *

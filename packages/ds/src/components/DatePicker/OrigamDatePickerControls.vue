@@ -74,7 +74,6 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import { DATE_MODE } from '../../enums/DatePicker/date-picker.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IDatePickerControlsProps, IDatePickerControlsEmits, IDatePickerControlsSlots } from '../../interfaces/DatePicker/date-picker-controls.interface'
 
@@ -89,9 +88,9 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDatePickerControlsProps>(), {
-		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
-		prevIcon: MDI_ICONS.CHEVRON_LEFT,
-		modeIcon: MDI_ICONS.MENU_DOWN_OUTLINE,
+		nextIcon: 'mdi:mdi-chevron-right',
+		prevIcon: 'mdi:mdi-chevron-left',
+		modeIcon: 'mdi:mdi-menu-down-outline',
 		viewMode: DATE_MODE.MONTH
 	})
 

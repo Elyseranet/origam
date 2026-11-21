@@ -49,7 +49,6 @@
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IRadioBtnProps, IRadioBtnEmits, IRadioBtnSlots } from '../../interfaces/Radio/radio-btn.interface'
 
@@ -64,8 +63,8 @@
 	 ********************************************************/
 	const props = withDefaults(defineProps<IRadioBtnProps>(), {
 		density: DENSITY.DEFAULT,
-		trueIcon: MDI_ICONS.RADIOBOX_MARKED,
-		falseIcon: MDI_ICONS.RADIOBOX_BLANK
+		trueIcon: 'mdi:mdi-radiobox-marked',
+		falseIcon: 'mdi:mdi-radiobox-blank'
 	})
 
 	const emits = defineEmits<IRadioBtnEmits>()

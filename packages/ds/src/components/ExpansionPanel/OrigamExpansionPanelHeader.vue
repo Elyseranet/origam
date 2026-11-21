@@ -116,7 +116,6 @@
 	import vContrast from '../../directives/Contrast/contrast.directive'
 	import vRipple from '../../directives/Ripple/ripple.directive'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IExpansionPanelHeaderProps, IExpansionPanelHeaderEmits, IExpansionPanelHeaderSlots } from '../../interfaces/ExpansionPanel/expansion-panel-header.interface'
 
@@ -129,8 +128,8 @@
 	 ********************************************************/
 	const props = withDefaults(defineProps<IExpansionPanelHeaderProps>(), {
 		tag: 'button',
-		expandIcon: MDI_ICONS.CHEVRON_DOWN,
-		collapseIcon: MDI_ICONS.CHEVRON_UP
+		expandIcon: 'mdi:mdi-chevron-down',
+		collapseIcon: 'mdi:mdi-chevron-up'
 	})
 
 	defineEmits<IExpansionPanelHeaderEmits>()

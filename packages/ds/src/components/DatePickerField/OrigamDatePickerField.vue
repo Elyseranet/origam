@@ -200,7 +200,6 @@
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
 	import type { IDatePickerFieldEmits, IDatePickerFieldProps, IDatePickerFieldSlots } from '../../interfaces/DatePickerField/date-picker-field.interface'
@@ -227,7 +226,7 @@
 		border: true,
 		rounded: true,
 		modelValue: null,
-		appendInnerIcon: MDI_ICONS.CALENDAR_OUTLINE,
+		appendInnerIcon: 'mdi:mdi-calendar-outline',
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps,
 		closeText: 'origam.close',
 		openText: 'origam.open',

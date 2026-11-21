@@ -2,7 +2,8 @@ import { computed, ref, toValue } from 'vue'
 import type { MaybeRef, MaybeRefOrGetter, Ref } from 'vue'
 import { useEventListener } from './eventListener.composable'
 
-import { AXIS, CLIENT_POSITION } from '../../enums'
+import { AXIS } from '../../enums/Commons/drag.enum'
+import { CLIENT_POSITION } from '../../enums/Commons/commons.enum'
 
 import type { TAxis } from '../../types/Commons/axis.type'
 
