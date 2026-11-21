@@ -1051,10 +1051,6 @@
 			grid-area: prepend-inner;
 		}
 
-		&__clearable {
-			grid-area: clear;
-		}
-
 		&__append-inner {
 			grid-area: append-inner;
 		}
@@ -1081,6 +1077,7 @@
 		}
 
 		&__clearable {
+			grid-area: clear;
 			cursor: pointer;
 			opacity: var(--origam-field__clearable---opacity, 0);
 			overflow: hidden;

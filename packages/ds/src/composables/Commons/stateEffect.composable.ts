@@ -8,7 +8,7 @@ import { useOpacity } from './opacity.composable'
 import { usePadding } from './padding.composable'
 import { useRounded } from './rounded.composable'
 
-import { getForeground, intentBgExpr, isCssColor, isIntent, isParsableColor, isUtilityIntent, parseColor, rawBgExprWithState, tokenForegroundForIntent, tokenStylesForIntent, warnLegacyColor } from '../../utils/Commons/color.util'
+import { getForeground, isCssColor, isIntent, isParsableColor, isUtilityIntent, parseColor, rawBgExprWithState, tokenForegroundForIntent, tokenStylesForIntent, warnLegacyColor } from '../../utils/Commons/color.util'
 
 import type { IBorderProps } from '../../interfaces/Commons/border.interface'
 import type { IMarginProps } from '../../interfaces/Commons/margin.interface'
@@ -97,6 +97,56 @@ function pickEffective<T> (
 }
 
 const noopRef = computed(() => false)
+
+/**
+ * Display priority: normal → active → HOVER. Hover takes precedence over
+ * active, so a simultaneous press+hover lands on the hover surface.
+ */
+function resolveBgRole (isHover: boolean, isActive: boolean, hoverHasOwnBg: boolean, activeHasOwnBg: boolean): TBgFgRole {
+    if (isHover && !hoverHasOwnBg) return 'hover'
+    if (isActive && !activeHasOwnBg) return 'active'
+    return 'default'
+}
+
+/** Background declaration + the intent's fixed contrast fg (text never darkens with bg). */
+function resolveBackground (bgColor: TColor | undefined, bgRole: TBgFgRole): { bgDecl: string | null, bgIntentFg: string | null } {
+    if (bgColor && isIntent(bgColor)) {
+        const m = tokenStylesForIntent(bgColor, bgRole)
+        return {
+            bgDecl: `background-color: ${m['background-color']}`,
+            bgIntentFg: tokenStylesForIntent(bgColor, 'default').color
+        }
+    }
+    if (bgColor === 'transparent') {
+        return { bgDecl: `background-color: ${rawBgExprWithState('transparent', bgRole)}`, bgIntentFg: null }
+    }
+    if (bgColor && typeof bgColor === 'string' && isCssColor(bgColor)) {
+        warnLegacyColor('bgColor', bgColor)
+        return { bgDecl: `background-color: ${rawBgExprWithState(bgColor, bgRole)}`, bgIntentFg: null }
+    }
+    return { bgDecl: null, bgIntentFg: null }
+}
+
+function resolveForeground (color: TColor | undefined, bgColor: TColor | undefined, bgIntentFg: string | null): string | null {
+    if (color && isIntent(color)) {
+        // Color-clash auto-contrast: same intent on both axes →
+        // swap to bg's paired contrast token instead of intent's
+        // own hue (unreadable hue-on-hue otherwise).
+        const clash = bgIntentFg && bgColor && isIntent(bgColor) && color === bgColor
+        return `color: ${clash ? bgIntentFg : tokenForegroundForIntent(color)}`
+    }
+    if (color && typeof color === 'string' && isCssColor(color)) {
+        if (color !== 'transparent') warnLegacyColor('color', color)
+        return `color: ${color}`
+    }
+    if (color) return null
+    if (bgIntentFg) return `color: ${bgIntentFg}`
+    if (bgColor && typeof bgColor === 'string' && bgColor !== 'transparent' && isParsableColor(bgColor)) {
+        const parsed = parseColor(bgColor)
+        if (parsed.a == null || parsed.a === 1) return `color: ${getForeground(parsed)}`
+    }
+    return null
+}
 
 /*********************************************************
  * useStateEffect
@@ -227,66 +277,16 @@ export function useStateEffect (
         const hoverHasOwnBg  = hoverState.value?.bgColor != null && !sameIntent(hoverState.value.bgColor, props.bgColor)
         const activeHasOwnBg = activeState.value?.bgColor != null && !sameIntent(activeState.value.bgColor, props.bgColor)
 
-        const bgRole: TBgFgRole =
-            isHover.value && !hoverHasOwnBg ? 'hover' :
-            isActive.value && !activeHasOwnBg ? 'active' :
-            'default'
+        const bgRole = resolveBgRole(isHover.value, isActive.value, hoverHasOwnBg, activeHasOwnBg)
 
-        let bgDecl: string | null = null
-        let fgDecl: string | null = null
-        let bgIntentFg: string | null = null
-
-        // ── Background resolution ───────────────────────────────────
-        if (bgColor.value && isIntent(bgColor.value)) {
-            const m = tokenStylesForIntent(bgColor.value, bgRole)
-            bgDecl = `background-color: ${m['background-color']}`
-            // Intent's contrast fg is fixed across roles (text never darkens with bg)
-            bgIntentFg = tokenStylesForIntent(bgColor.value, 'default').color
-        } else if (bgColor.value === 'transparent') {
-            bgDecl = `background-color: ${rawBgExprWithState('transparent', bgRole)}`
-        } else if (bgColor.value && typeof bgColor.value === 'string' && isCssColor(bgColor.value)) {
-            warnLegacyColor('bgColor', bgColor.value)
-            bgDecl = `background-color: ${rawBgExprWithState(bgColor.value, bgRole)}`
-        }
-
-        // ── Foreground resolution ───────────────────────────────────
-        if (color.value && isIntent(color.value)) {
-            // Color-clash auto-contrast: same intent on both axes →
-            // swap to bg's paired contrast token instead of intent's
-            // own hue (unreadable hue-on-hue otherwise).
-            if (
-                bgIntentFg &&
-                bgColor.value &&
-                isIntent(bgColor.value) &&
-                color.value === bgColor.value
-            ) {
-                fgDecl = `color: ${bgIntentFg}`
-            } else {
-                fgDecl = `color: ${tokenForegroundForIntent(color.value)}`
-            }
-        } else if (color.value && typeof color.value === 'string' && isCssColor(color.value)) {
-            if (color.value !== 'transparent') warnLegacyColor('color', color.value)
-            fgDecl = `color: ${color.value}`
-        } else if (!color.value && bgIntentFg) {
-            fgDecl = `color: ${bgIntentFg}`
-        } else if (!color.value && bgColor.value && typeof bgColor.value === 'string'
-                   && bgColor.value !== 'transparent' && isParsableColor(bgColor.value)) {
-            const parsed = parseColor(bgColor.value)
-            if (parsed.a == null || parsed.a === 1) {
-                fgDecl = `color: ${getForeground(parsed)}`
-            }
-        }
+        const { bgDecl, bgIntentFg } = resolveBackground(bgColor.value, bgRole)
+        const fgDecl = resolveForeground(color.value, bgColor.value, bgIntentFg)
 
         const styles: string[] = []
         if (bgDecl) styles.push(bgDecl)
         if (fgDecl) styles.push(fgDecl)
         return styles
     })
-
-    // Silence unused-var warning — `intentBgExpr` is re-exported for
-    // back-compat from this composable so consumers can opt out and
-    // hand-roll the expression. Future: drop once nobody imports it.
-    void intentBgExpr
 
     // ── Other axes — delegate to existing composables via Ref overloads
     // Border goes through the props-object overload (not the bare Ref) so

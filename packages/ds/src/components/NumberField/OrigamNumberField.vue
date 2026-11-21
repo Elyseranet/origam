@@ -628,11 +628,9 @@
 				inputText.value = correctPrecision(model.value + props.step, inferredPrecision)
 				emits('increment', model.value)
 			}
-		} else {
-			if (canDecrease.value) {
-				inputText.value = correctPrecision(model.value - props.step, inferredPrecision)
-				emits('decrement', model.value)
-			}
+		} else if (canDecrease.value) {
+			inputText.value = correctPrecision(model.value - props.step, inferredPrecision)
+			emits('decrement', model.value)
 		}
 	}
 

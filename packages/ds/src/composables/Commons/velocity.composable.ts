@@ -64,11 +64,11 @@ export function useVelocity () {
                 const {x, y} = this
                 const [absX, absY] = [Math.abs(x), Math.abs(y)]
 
-                return absX > absY && x >= 0 ? 'right'
-                    : absX > absY && x <= 0 ? 'left'
-                        : absY > absX && y >= 0 ? 'down'
-                            : absY > absX && y <= 0 ? 'up'
-                                : oops()
+                if (absX > absY && x >= 0) return 'right'
+                if (absX > absY && x <= 0) return 'left'
+                if (absY > absX && y >= 0) return 'down'
+                if (absY > absX && y <= 0) return 'up'
+                return oops()
             }
         }
     }
