@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamChip` : la prop `density` agit enfin sur la hauteur (#1105)
+
+- Cause : le SCSS écrivait `--origam-chip---density` (`-8px` en compact) mais aucun `height` ne la lisait ; `compact` et `default` rendaient la même hauteur (24px mesuré sur `size=small`, Chromium).
+- Correctif : les cinq `height` de palier sont `calc(height-palier + var(--origam-chip---density, 0px))`, comme `OrigamBtn`. Ajout de `&--density-comfortable` (`+8px`, miroir de Btn ; la classe était émise sans règle). Entrée retirée de la baseline `token-var-channels-dormant`.
+- Rupture de rendu assumée : `density="compact"` / `"comfortable"` change maintenant la hauteur.
+
 ### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
 
 - Cause : Btn/SelectionControl passaient un tuple façon Vuetify à `v-ripple` ; en template Vue les modifiers de directive sont statiques et le tableau n'est que la valeur, donc `binding.modifiers.center/circle` n'étaient jamais posés.
