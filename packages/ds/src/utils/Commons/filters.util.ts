@@ -1,6 +1,7 @@
+import type { IFilterItemsOptions } from '../../interfaces/Commons/filters.interface'
 import type { IInternalItem } from '../../interfaces/List/list-children.interface'
 
-import type { TFilterFunction, TFilterKeyFunctions, TFilterKeys, TFilterMatch, TFilterMode } from '../../types/Commons/filters.type'
+import type { TFilterFunction, TFilterMatch } from '../../types/Commons/filters.type'
 
 import { getPropertyFromItem, wrapInArray } from './commons.util'
 
@@ -16,6 +17,108 @@ export function defaultFilter (value: string | number, query: string | number) {
     return value.toString().toLocaleLowerCase().indexOf(query.toString().toLocaleLowerCase())
 }
 
+/*********************************************************
+ * isMatch
+ *
+ * @description
+ * Is the value a real match (neither `-1` nor `false`).
+ ********************************************************/
+function isMatch (match: TFilterMatch) {
+    return match !== -1 && match !== false
+}
+
+/**
+ * Match every key of an object item; returns `false` when `filterMode: 'every'` rules the item out.
+ */
+function matchObjectKeys (
+    item: IInternalItem,
+    transformed: Record<string, unknown>,
+    query: string,
+    keys: string[] | false,
+    filter: TFilterFunction,
+    options: IFilterItemsOptions | undefined,
+    customMatches: Record<string, TFilterMatch>,
+    defaultMatches: Record<string, TFilterMatch>
+) {
+    const filterKeys = keys || Object.keys(transformed)
+
+    for (const key of filterKeys) {
+        const value = getPropertyFromItem(transformed, key)
+        const keyFilter = options?.customKeyFilter?.[key]
+
+        const match = keyFilter
+            ? keyFilter(value, query, item)
+            : filter(value, query, item)
+
+        if (isMatch(match)) {
+            if (keyFilter) customMatches[key] = match
+            else defaultMatches[key] = match
+        } else if (options?.filterMode === 'every') {
+            return false
+        }
+    }
+
+    return true
+}
+
+/*********************************************************
+ * satisfiesFilterMode
+ *
+ * @description
+ * Does the number of matches satisfy the `union` / `intersection` filter mode.
+ ********************************************************/
+function satisfiesFilterMode (
+    filterMode: IFilterItemsOptions['filterMode'],
+    defaultMatchesLength: number,
+    customMatchesLength: number,
+    customFiltersLength: number
+) {
+    if (!defaultMatchesLength && !customMatchesLength) return false
+
+    if (filterMode === 'union') {
+        return customMatchesLength === customFiltersLength || !!defaultMatchesLength
+    }
+
+    if (filterMode === 'intersection') {
+        return customMatchesLength === customFiltersLength && !!defaultMatchesLength
+    }
+
+    return true
+}
+
+/*********************************************************
+ * matchItem
+ *
+ * @description
+ * Matches of one item against the query, or `null` when the item is filtered out.
+ ********************************************************/
+function matchItem (
+    item: IInternalItem,
+    transformed: Record<string, unknown>,
+    query: string,
+    keys: string[] | false,
+    filter: TFilterFunction,
+    options: IFilterItemsOptions | undefined,
+    customFiltersLength: number
+) {
+    const customMatches: Record<string, TFilterMatch> = {}
+    const defaultMatches: Record<string, TFilterMatch> = {}
+
+    if (typeof item === 'object') {
+        if (!matchObjectKeys(item, transformed, query, keys, filter, options, customMatches, defaultMatches)) return null
+    } else {
+        const match = filter(item, query, item)
+        if (isMatch(match)) defaultMatches.title = match
+    }
+
+    const defaultMatchesLength = Object.keys(defaultMatches).length
+    const customMatchesLength = Object.keys(customMatches).length
+
+    if (!satisfiesFilterMode(options?.filterMode, defaultMatchesLength, customMatchesLength, customFiltersLength)) return null
+
+    return {...defaultMatches, ...customMatches}
+}
+
 /**
  * Filter items.
  *
@@ -26,13 +129,7 @@ export function defaultFilter (value: string | number, query: string | number) {
 export function filterItems (
     items: readonly (readonly [item: IInternalItem, transformed: Record<string, unknown>])[] | readonly IInternalItem[],
     query: string,
-    options?: {
-        customKeyFilter?: TFilterKeyFunctions
-        default?: TFilterFunction
-        filterKeys?: TFilterKeys
-        filterMode?: TFilterMode
-        noFilter?: boolean
-    }
+    options?: IFilterItemsOptions
 ) {
     const array: { index: number, matches: Record<string, TFilterMatch> }[] = []
     // always ensure we fall back to a functioning filter
@@ -42,61 +139,14 @@ export function filterItems (
 
     if (!items?.length) return array
 
-    loop:
-        for (let i = 0; i < items.length; i++) {
-            const [item, transformed = item] = wrapInArray(items[i]) as readonly [IInternalItem, Record<string, unknown>]
-            const customMatches: Record<string, TFilterMatch> = {}
-            const defaultMatches: Record<string, TFilterMatch> = {}
-            let match: TFilterMatch = -1
+    for (let i = 0; i < items.length; i++) {
+        const [item, transformed = item] = wrapInArray(items[i]) as readonly [IInternalItem, Record<string, unknown>]
+        const matches = query && !options?.noFilter
+            ? matchItem(item, transformed as Record<string, unknown>, query, keys, filter, options, customFiltersLength)
+            : {}
 
-            if (query && !options?.noFilter) {
-                if (typeof item === 'object') {
-                    const filterKeys = keys || Object.keys(transformed)
-
-                    for (const key of filterKeys) {
-                        const value = getPropertyFromItem(transformed, key)
-                        const keyFilter = options?.customKeyFilter?.[key]
-
-                        match = keyFilter
-                            ? keyFilter(value, query, item)
-                            : filter(value, query, item)
-
-                        if (match !== -1 && match !== false) {
-                            if (keyFilter) customMatches[key] = match
-                            else defaultMatches[key] = match
-                        } else if (options?.filterMode === 'every') {
-                            continue loop
-                        }
-                    }
-                } else {
-                    match = filter(item, query, item)
-                    if (match !== -1 && match !== false) {
-                        defaultMatches.title = match
-                    }
-                }
-
-                const defaultMatchesLength = Object.keys(defaultMatches).length
-                const customMatchesLength = Object.keys(customMatches).length
-
-                if (!defaultMatchesLength && !customMatchesLength) continue
-
-                if (
-                    options?.filterMode === 'union' &&
-                    customMatchesLength !== customFiltersLength &&
-                    !defaultMatchesLength
-                ) continue
-
-                if (
-                    options?.filterMode === 'intersection' &&
-                    (
-                        customMatchesLength !== customFiltersLength ||
-                        !defaultMatchesLength
-                    )
-                ) continue
-            }
-
-            array.push({index: i, matches: {...defaultMatches, ...customMatches}})
-        }
+        if (matches) array.push({index: i, matches})
+    }
 
     return array
 }

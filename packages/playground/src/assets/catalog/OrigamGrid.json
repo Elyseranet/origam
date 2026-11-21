@@ -39,7 +39,7 @@
     {
       "name": "gap",
       "label": "gap",
-      "tsType": "string | number | undefined",
+      "tsType": "TGridGap | undefined",
       "runtimeType": null,
       "required": false,
       "defaultValue": "md",
@@ -51,7 +51,7 @@
     {
       "name": "columnGap",
       "label": "columnGap",
-      "tsType": "string | number | undefined",
+      "tsType": "TGridGap | undefined",
       "runtimeType": null,
       "required": false,
       "hasFactoryDefault": false,
@@ -62,7 +62,7 @@
     {
       "name": "rowGap",
       "label": "rowGap",
-      "tsType": "string | number | undefined",
+      "tsType": "TGridGap | undefined",
       "runtimeType": null,
       "required": false,
       "hasFactoryDefault": false,

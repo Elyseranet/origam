@@ -296,6 +296,18 @@ export function applyThemes (themes: IOrigamTheme[]): string[] {
     return ids
 }
 
+/*********************************************************
+ * mergeThemeMeta
+ *
+ * @description
+ * First non-empty `label` / `description` / `swatch` wins.
+ ********************************************************/
+function mergeThemeMeta (meta: { label?: string, description?: string, swatch?: string }, theme: IOrigamTheme) {
+    if (meta.label === undefined && theme.label) meta.label = theme.label
+    if (meta.description === undefined && theme.description) meta.description = theme.description
+    if (meta.swatch === undefined && theme.swatch) meta.swatch = theme.swatch
+}
+
 /**
  * Collapse an `IOrigamTheme[]` into the distinct-brand summary exposed to
  * consumers: one entry per `name`, listing every concrete mode that brand was
@@ -319,10 +331,7 @@ export function installedThemesFromList (themes: IOrigamTheme[]): TInstalledThem
         if (theme.mode === 'light' || theme.mode === 'dark') {
             modesByName.get(theme.name)!.add(theme.mode)
         }
-        const meta = metaByName.get(theme.name)!
-        if (meta.label === undefined && theme.label) meta.label = theme.label
-        if (meta.description === undefined && theme.description) meta.description = theme.description
-        if (meta.swatch === undefined && theme.swatch) meta.swatch = theme.swatch
+        mergeThemeMeta(metaByName.get(theme.name)!, theme)
     }
 
     return order.map((name) => {

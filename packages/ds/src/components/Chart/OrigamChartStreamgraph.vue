@@ -413,6 +413,8 @@
 	/*********************************************************
 	 * Y scale — map data values to SVG coordinates
 	 ********************************************************/
+	const shareOf = (value: number, total: number): number => total > 0 ? value / total : 0
+
 	const dataExtents = computed(() => {
 		const layers = numericValues.value
 		const n = columnCount.value
@@ -429,13 +431,12 @@
 			const total = layers.reduce((s, layer) => s + layer[i], 0)
 			let cumulative = 0
 			for (let j = 0; j < L; j++) {
-				const v = isExpand
-					? (total > 0 ? layers[j][i] / total : 0)
-					: layers[j][i]
+				const v = isExpand ? shareOf(layers[j][i], total) : layers[j][i]
+				const step = isExpand ? v * plot.value.height : v
 
 				const bot = offsets[i] + cumulative
-				const top = bot + (isExpand ? v * plot.value.height : v)
-				cumulative += isExpand ? v * plot.value.height : v
+				const top = bot + step
+				cumulative += step
 
 				yMin = Math.min(yMin, bot)
 				yMax = Math.max(yMax, top)
@@ -531,6 +532,15 @@
 	/*********************************************************
 	 * Ribbon geometry computation
 	 ********************************************************/
+	const stackedBelow = (layers: Array<Array<number>>, j: number, i: number, total: number, isExpand: boolean): number => {
+		let cumulative = 0
+		for (let k = 0; k < j; k++) {
+			cumulative += isExpand ? shareOf(layers[k][i], total) * plot.value.height : layers[k][i]
+		}
+
+		return cumulative
+	}
+
 	const ribbons = computed<Array<IChartStreamgraphRibbon>>(() => {
 		const layers = numericValues.value
 		const n = columnCount.value
@@ -550,19 +560,10 @@
 			for (let i = 0; i < n; i++) {
 				const total = layers.reduce((sum, layer) => sum + layer[i], 0)
 
-				let cumulative = 0
-				for (let k = 0; k < j; k++) {
-					if (isExpand) {
-						cumulative += total > 0 ? (layers[k][i] / total) * plot.value.height : 0
-					} else {
-						cumulative += layers[k][i]
-					}
-				}
+				const cumulative = stackedBelow(layers, j, i, total, isExpand)
 
 				const rawV = layers[j][i]
-				const v = isExpand
-					? (total > 0 ? (rawV / total) * plot.value.height : 0)
-					: rawV
+				const v = isExpand ? shareOf(rawV, total) * plot.value.height : rawV
 
 				const botData = offsets[i] + cumulative
 				const topData = botData + v

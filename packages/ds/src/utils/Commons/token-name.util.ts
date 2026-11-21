@@ -104,39 +104,47 @@ function markedComponentVarName (path: ReadonlyArray<string>): string {
     return propParts.length === 0 ? name : `${name}---${propParts.join('-')}`
 }
 
+/*********************************************************
+ * componentTokenVarName
+ *
+ * @description
+ * CSS variable name (WITHOUT the leading `--`) of a token coming from a component source.
+ ********************************************************/
+function componentTokenVarName (path: ReadonlyArray<string>): string {
+    if (path.includes(TOKEN_GROUP_CHILD) || path.includes(TOKEN_GROUP_STATE)) {
+        return markedComponentVarName(path)
+    }
+
+    const [blockName, ...rest] = path
+
+    if (rest.length === 0) {
+        return `origam-${blockName}`
+    }
+
+    if (rest.length > 1 && TOKEN_INTENT_STATES.has(rest[0])) {
+        const [state, ...propParts] = rest
+        return `origam-${blockName}--${state}---${propParts.join('-')}`
+    }
+
+    if (rest.length > 1 && isBemChildKey(rest[0])) {
+        const [child, ...propParts] = rest
+        if (propParts.length > 1 && TOKEN_INTENT_STATES.has(propParts[0])) {
+            const [state, ...innerProp] = propParts
+            return `origam-${blockName}__${child}--${state}---${innerProp.join('-')}`
+        }
+        return `origam-${blockName}__${child}---${propParts.join('-')}`
+    }
+
+    return `origam-${blockName}---${rest.join('-')}`
+}
+
 /**
  * Resolve a token path to its origam CSS variable name (WITHOUT the leading
  * `--`). `isComponent` is `true` when the token originates from a
  * `tokens/component/*.json` source; `false` for primitive / semantic tokens.
  */
 export function tokenPathToCssVarName (path: ReadonlyArray<string>, isComponent: boolean): string {
-    if (isComponent) {
-        if (path.includes(TOKEN_GROUP_CHILD) || path.includes(TOKEN_GROUP_STATE)) {
-            return markedComponentVarName(path)
-        }
-
-        const [blockName, ...rest] = path
-
-        if (rest.length === 0) {
-            return `origam-${blockName}`
-        }
-
-        if (rest.length > 1 && TOKEN_INTENT_STATES.has(rest[0])) {
-            const [state, ...propParts] = rest
-            return `origam-${blockName}--${state}---${propParts.join('-')}`
-        }
-
-        if (rest.length > 1 && isBemChildKey(rest[0])) {
-            const [child, ...propParts] = rest
-            if (propParts.length > 1 && TOKEN_INTENT_STATES.has(propParts[0])) {
-                const [state, ...innerProp] = propParts
-                return `origam-${blockName}__${child}--${state}---${innerProp.join('-')}`
-            }
-            return `origam-${blockName}__${child}---${propParts.join('-')}`
-        }
-
-        return `origam-${blockName}---${rest.join('-')}`
-    }
+    if (isComponent) return componentTokenVarName(path)
 
     if (path.length === 2) {
         return `origam-${path[0]}---${path[1]}`

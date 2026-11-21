@@ -419,15 +419,6 @@
       }
     }
 
-    &__thumb {
-      transition: none;
-
-      @media (forced-colors: active) {
-        border: 1px solid;
-        color: buttontext;
-      }
-    }
-
     .origam-selection-control {
       min-height: calc(var(--origam-switch__selection-control---min-height, 56px) + var(--origam-input---density, 0px));
 
