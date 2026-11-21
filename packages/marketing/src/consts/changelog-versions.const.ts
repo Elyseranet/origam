@@ -22,9 +22,10 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 fix. See the full changelog for detail.',
+        summaryFallback: '2 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'origam-btn n\'atteint plus le jeu d\'icônes MDI sans icône (#1392)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'origam-img ne plante plus quand son élément n\'est pas monté (#1394)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'origam-btn n\'atteint plus le jeu d\'icônes MDI sans icône (#1392)' }
         ]
     },
     {
