@@ -1,8 +1,8 @@
 {
   "kind": "const",
-  "exportedAt": "2026-11-18T16:12:23.157Z",
-  "sourceCommit": "fe36f02cc",
-  "entryCount": 447,
+  "exportedAt": "2026-11-21T16:23:49.178Z",
+  "sourceCommit": "100ed5044",
+  "entryCount": 448,
   "entries": [
     {
       "entry": {
@@ -15450,7 +15450,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/consts/Commons/mdi.const.ts",
+        "source_file": "packages/ds/src/consts/Commons/mdi-core.const.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -15531,7 +15531,7 @@
         "icon": null,
         "description_key": "consts.catalog.mdi_aliases.description",
         "description_fallback": "Semantic icon aliases for the MDI icon set. Spreads all MDI_ICONS enum values and adds named overrides (collapse, complete, cancel, close, delete, clear, success, info, warning, error, prev, next, checkboxOn/Off/Indeterminate, delimiter, sortAsc/Desc, expand, menu, subgroup, dropdown, radioOn/Off, edit, ratingEmpty/Full/Half, loading, first, last, unfold, file, plus, minus, calendar, eyeDropper, eyeOff, eyeOn). Pass alongside MDI to the icons.aliases option.",
-        "definition": "export const MDI_ALIASES: IIconAliases = {\n    ...MDI_ICONS,\n    collapse: 'mdi-chevron-up',\n    complete: 'mdi-check',\n    cancel: 'mdi-close-circle',\n    close: 'mdi-close',\n    delete: 'mdi-close-circle',\n    clear: 'mdi-close-circle',\n    success: 'mdi-check-circle',\n    info: 'mdi-information',\n    warning: 'mdi-alert-circle',\n    error: 'mdi-close-circle',\n    prev: 'mdi-chevron-left',\n    next: 'mdi-chevron-right',\n    checkboxOn: 'mdi-checkbox-marked',\n    checkboxOff: 'mdi-checkbox-blank-outline',\n    checkboxIndeterminate: 'mdi-minus-box',\n    delimiter: 'mdi-circle',\n    sortAsc: 'mdi-arrow-up',\n    sortDesc: 'mdi-arrow-down',\n    expand: 'mdi-chevron-down',\n    menu: 'mdi-menu',\n    subgroup: 'mdi-menu-down',\n    dropdown: 'mdi-menu-down',\n    radioOn: 'mdi-radiobox-marked',\n    radioOff: 'mdi-radiobox-blank',\n    edit: 'mdi-pencil',\n    ratingEmpty: 'mdi-star-outline',\n    ratingFull: 'mdi-star',\n    ratingHalf: 'mdi-star-half-full',\n    loading: 'mdi-cached',\n    first: 'mdi-page-first',\n    last: 'mdi-page-last',\n    unfold: 'mdi-unfold-more-horizontal',\n    file: 'mdi-paperclip',\n    plus: 'mdi-plus',\n    minus: 'mdi-minus',\n    calendar: 'mdi-calendar',\n    eyeDropper: 'mdi-eyedropper',\n    eyeOff: 'mdi-eye-off-outline',\n    eyeOn: 'mdi-eye-outline'\n}",
+        "definition": "export const MDI_ALIASES: IIconAliases = {\n    ...MDI_ICONS,\n    ...MDI_CORE_ALIASES\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -15550,30 +15550,108 @@
         "edited_by_user": false
       },
       "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "consts.detail.mdi_aliases.example",
+          "title_fallback": "Using a semantic alias in a component",
+          "code": "import { createOrigam, MDI, MDI_ALIASES } from 'origam'\n\nconst origam = createOrigam({\n  icons: {\n    defaultSet: 'mdi',\n    sets: { mdi: MDI },\n    aliases: MDI_ALIASES\n  }\n})\n\n// Then in templates, use the semantic alias name:\n// <origam-icon icon=\"$success\" />",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": null,
+          "to_name": "MDI",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": "icon",
+          "to_name": "OrigamIcon",
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": null,
+          "to_name": "useIcon",
+          "prop_name": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "mdi-core-aliases",
+        "name": "MDI_CORE_ALIASES",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const MDI_CORE_ALIASES: IIconAliases = {\n    collapse: 'mdi-chevron-up',\n    complete: 'mdi-check',\n    cancel: 'mdi-close-circle',\n    close: 'mdi-close',\n    delete: 'mdi-close-circle',\n    clear: 'mdi-close-circle',\n    success: 'mdi-check-circle',\n    info: 'mdi-information',\n    warning: 'mdi-alert-circle',\n    error: 'mdi-close-circle',\n    prev: 'mdi-chevron-left',\n    next: 'mdi-chevron-right',\n    checkboxOn: 'mdi-checkbox-marked',\n    checkboxOff: 'mdi-checkbox-blank-outline',\n    checkboxIndeterminate: 'mdi-minus-box',\n    delimiter: 'mdi-circle',\n    sortAsc: 'mdi-arrow-up',\n    sortDesc: 'mdi-arrow-down',\n    expand: 'mdi-chevron-down',\n    menu: 'mdi-menu',\n    subgroup: 'mdi-menu-down',\n    dropdown: 'mdi-menu-down',\n    radioOn: 'mdi-radiobox-marked',\n    radioOff: 'mdi-radiobox-blank',\n    edit: 'mdi-pencil',\n    ratingEmpty: 'mdi-star-outline',\n    ratingFull: 'mdi-star',\n    ratingHalf: 'mdi-star-half-full',\n    loading: 'mdi-cached',\n    first: 'mdi-page-first',\n    last: 'mdi-page-last',\n    unfold: 'mdi-unfold-more-horizontal',\n    file: 'mdi-paperclip',\n    plus: 'mdi-plus',\n    minus: 'mdi-minus',\n    calendar: 'mdi-calendar',\n    eyeDropper: 'mdi-eyedropper',\n    eyeOff: 'mdi-eye-off-outline',\n    eyeOn: 'mdi-eye-outline'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/consts/Commons/mdi-core.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
       "values": [
         {
           "value": "collapse: 'mdi-chevron-up'",
           "position": 0,
-          "description_key": "consts.detail.mdi_aliases.collapse",
-          "description_fallback": "Collapse / hide action icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "complete: 'mdi-check'",
           "position": 1,
-          "description_key": "consts.detail.mdi_aliases.complete",
-          "description_fallback": "Completed / confirmed state icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "cancel: 'mdi-close-circle'",
           "position": 2,
-          "description_key": "consts.detail.mdi_aliases.cancel",
-          "description_fallback": "Cancel action icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "close: 'mdi-close'",
           "position": 3,
-          "description_key": "consts.detail.mdi_aliases.close",
-          "description_fallback": "Close / dismiss icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "delete: 'mdi-close-circle'",
@@ -15590,8 +15668,8 @@
         {
           "value": "success: 'mdi-check-circle'",
           "position": 6,
-          "description_key": "consts.detail.mdi_aliases.success",
-          "description_fallback": "Success state icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "info: 'mdi-information'",
@@ -15602,14 +15680,14 @@
         {
           "value": "warning: 'mdi-alert-circle'",
           "position": 8,
-          "description_key": "consts.detail.mdi_aliases.warning",
-          "description_fallback": "Warning state icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "error: 'mdi-close-circle'",
           "position": 9,
-          "description_key": "consts.detail.mdi_aliases.error",
-          "description_fallback": "Error state icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "prev: 'mdi-chevron-left'",
@@ -15650,20 +15728,20 @@
         {
           "value": "sortAsc: 'mdi-arrow-up'",
           "position": 16,
-          "description_key": "consts.detail.mdi_aliases.sort_asc",
-          "description_fallback": "Sort ascending icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "sortDesc: 'mdi-arrow-down'",
           "position": 17,
-          "description_key": "consts.detail.mdi_aliases.sort_desc",
-          "description_fallback": "Sort descending icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "expand: 'mdi-chevron-down'",
           "position": 18,
-          "description_key": "consts.detail.mdi_aliases.expand",
-          "description_fallback": "Expand / show-more icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "menu: 'mdi-menu'",
@@ -15722,8 +15800,8 @@
         {
           "value": "loading: 'mdi-cached'",
           "position": 28,
-          "description_key": "consts.detail.mdi_aliases.loading",
-          "description_fallback": "Loading / refresh spinner icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "first: 'mdi-page-first'",
@@ -15790,49 +15868,10 @@
       "returns": [],
       "emits": [],
       "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "consts.detail.mdi_aliases.example",
-          "title_fallback": "Using a semantic alias in a component",
-          "code": "import { createOrigam, MDI, MDI_ALIASES } from 'origam'\n\nconst origam = createOrigam({\n  icons: {\n    defaultSet: 'mdi',\n    sets: { mdi: MDI },\n    aliases: MDI_ALIASES\n  }\n})\n\n// Then in templates, use the semantic alias name:\n// <origam-icon icon=\"$success\" />",
-          "lang": "typescript"
-        }
-      ],
+      "examples": [],
       "directiveArgs": [],
       "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": null,
-          "to_name": "MDI",
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": "icon",
-          "to_name": "OrigamIcon",
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": null,
-          "to_name": "useIcon",
-          "prop_name": null,
-          "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
+      "relations": []
     },
     {
       "entry": {

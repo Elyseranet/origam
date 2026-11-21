@@ -1,7 +1,7 @@
 {
   "kind": "type",
-  "exportedAt": "2026-11-18T16:12:23.364Z",
-  "sourceCommit": "fe36f02cc",
+  "exportedAt": "2026-11-21T16:23:49.428Z",
+  "sourceCommit": "100ed5044",
   "entryCount": 511,
   "entries": [
     {
@@ -8638,13 +8638,13 @@
           "description_fallback": null
         },
         {
-          "value": "bold",
+          "value": "medium",
           "position": 1,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "medium",
+          "value": "bold",
           "position": 2,
           "description_key": null,
           "description_fallback": null
@@ -11747,14 +11747,92 @@
       "props": [],
       "values": [
         {
-          "value": "string",
+          "value": "time",
           "position": 0,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "IMaskOptions",
+          "value": "TAnyString",
           "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "phone:fr",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "phone:us",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "phone:international",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "iban",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "siret",
+          "position": 6,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "creditcard",
+          "position": 7,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "date:iso",
+          "position": 8,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "date:fr",
+          "position": 9,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "date:us",
+          "position": 10,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "time:12h",
+          "position": 11,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "postcode:fr",
+          "position": 12,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "postcode:us",
+          "position": 13,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "IMaskOptions",
+          "position": 14,
           "description_key": null,
           "description_fallback": null
         }
@@ -23243,22 +23321,22 @@
       "props": [],
       "values": [
         {
-          "value": "fixed",
-          "position": 0,
-          "description_key": "types.detail.position.fixed",
-          "description_fallback": "Positioned relative to the viewport — stays put during scroll. Used by AppBars and FABs."
-        },
-        {
           "value": "static",
-          "position": 1,
+          "position": 0,
           "description_key": "types.detail.position.static",
           "description_fallback": "Default CSS flow position — top/right/bottom/left have no effect."
         },
         {
           "value": "relative",
-          "position": 2,
+          "position": 1,
           "description_key": "types.detail.position.relative",
           "description_fallback": "Positioned relative to its normal flow position — creates a new stacking context."
+        },
+        {
+          "value": "fixed",
+          "position": 2,
+          "description_key": "types.detail.position.fixed",
+          "description_fallback": "Positioned relative to the viewport — stays put during scroll. Used by AppBars and FABs."
         },
         {
           "value": "absolute",
@@ -24037,14 +24115,38 @@
       "props": [],
       "values": [
         {
-          "value": "string",
+          "value": "number",
           "position": 0,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "number",
+          "value": "none",
           "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TAnyString",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "default",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "dense",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "comfortable",
+          "position": 5,
           "description_key": null,
           "description_fallback": null
         }
@@ -26555,16 +26657,16 @@
           "description_fallback": "Opens the link editor for the current selection — inserts or edits an anchor tag."
         },
         {
-          "value": "bold",
-          "position": 1,
-          "description_key": "types.detail.textarea_toolbar_command.bold",
-          "description_fallback": "Toggles bold on the current selection. Keyboard shortcut: Ctrl/Cmd+B."
-        },
-        {
           "value": "italic",
-          "position": 2,
+          "position": 1,
           "description_key": "types.detail.textarea_toolbar_command.italic",
           "description_fallback": "Toggles italic on the current selection. Keyboard shortcut: Ctrl/Cmd+I."
+        },
+        {
+          "value": "bold",
+          "position": 2,
+          "description_key": "types.detail.textarea_toolbar_command.bold",
+          "description_fallback": "Toggles bold on the current selection. Keyboard shortcut: Ctrl/Cmd+B."
         },
         {
           "value": "underline",

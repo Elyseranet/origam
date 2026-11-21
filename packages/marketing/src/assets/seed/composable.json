@@ -1,7 +1,7 @@
 {
   "kind": "composable",
-  "exportedAt": "2026-11-18T16:12:23.127Z",
-  "sourceCommit": "fe36f02cc",
+  "exportedAt": "2026-11-21T16:23:49.138Z",
+  "sourceCommit": "100ed5044",
   "entryCount": 148,
   "entries": [
     {
@@ -957,7 +957,7 @@
         },
         {
           "name": "cb",
-          "type": "(next: NavigationGuardNext) => void",
+          "type": "() => boolean | void",
           "required": true,
           "default_value": null,
           "position": 1,
@@ -3074,7 +3074,7 @@
       "params": [
         {
           "name": "feature",
-          "type": "TCssFeatureName | string",
+          "type": "TCssFeatureName | TAnyString",
           "required": true,
           "default_value": null,
           "position": 0,

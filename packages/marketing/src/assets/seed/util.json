@@ -1,8 +1,8 @@
 {
   "kind": "util",
-  "exportedAt": "2026-11-18T16:12:23.391Z",
-  "sourceCommit": "fe36f02cc",
-  "entryCount": 395,
+  "exportedAt": "2026-11-21T16:23:49.470Z",
+  "sourceCommit": "100ed5044",
+  "entryCount": 397,
   "entries": [
     {
       "entry": {
@@ -25761,6 +25761,72 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "render-theme-css",
+        "name": "renderThemeCss",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function renderThemeCss(themes: readonly IOrigamTheme[], options?: IRenderThemeCssOptions = {}): string",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/theme-ssr.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "themes",
+          "type": "readonly IOrigamTheme[]",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "options",
+          "type": "IRenderThemeCssOptions",
+          "required": false,
+          "default_value": "{}",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "string",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "reposition-scroll-strategy",
         "name": "repositionScrollStrategy",
         "category": "Commons",
@@ -32515,6 +32581,63 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "trim-blank-lines",
+        "name": "trimBlankLines",
+        "category": "Code",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function trimBlankLines(text: string): string",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Code/trim-blank-lines.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "text",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "string",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
