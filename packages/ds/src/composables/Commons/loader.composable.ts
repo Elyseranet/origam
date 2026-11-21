@@ -1,5 +1,5 @@
 import { computed, type ComputedRef } from 'vue'
-import { LOADER_KIND } from '../../enums'
+import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 import type { ILoaderProps, IResolvedLoader } from '../../interfaces/Commons/loader.interface'
 import type { TLoaderConfig, TLoaderKind } from '../../types/Commons/loader.type'
 import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'

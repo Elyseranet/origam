@@ -1,5 +1,5 @@
 import { computed, nextTick, onScopeDispose, Ref, watch } from 'vue'
-import { AXIS } from '../../enums'
+import { AXIS } from '../../enums/Commons/drag.enum'
 
 import type { IBox } from '../../interfaces/Commons/box.interface'
 import type { ILocationStrategyData, ILocationStrategyProps } from '../../interfaces/Commons/location.interface'

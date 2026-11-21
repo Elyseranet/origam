@@ -18,6 +18,13 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `origam-btn` n'atteint plus le jeu d'icônes MDI sans icône (#1392)
+
+- `createIcons` (qui étale `MDI_ALIASES`, soit l'enum `MDI_ICONS` de ~7 000 alias, ~430 Kio) sort de `composables/Icon/icon.composable.ts` vers `iconsFull.composable.ts`. Avant, tout composant important `useIcon` (Btn, Avatar, Chip…) atteignait `mdi.const.ts` par le graphe d'imports, icône demandée ou non. `createIcons` reste exporté par `origam/composables` : API inchangée.
+- Les composants et helpers atteints depuis Btn, Icon et Avatar importent leurs enums par le fichier (`enums/Commons/loader.enum`) et non par le barrel `enums/index`, qui re-exporte `mdi.enum` : un import par le barrel suffisait à embarquer l'enum dans un build qui ne le tree-shake pas.
+- `createIcons` : importer depuis `origam/composables`. Le chemin profond `composables/Icon/icon.composable` ne l'exporte plus.
+- Garde `TU/origam/btn-no-mdi-1392.spec.ts` : le graphe d'imports de Btn, Icon et Avatar n'atteint ni `mdi.const.ts`, ni `createIcons`, ni `enums/index.ts`, ni `mdi.enum.ts`.
+
 ## [2.40.0] - 2026-11-21
 
 ### Added — jetons par mode, helper SSR `origam/ssr`, budget CSS (#1386)
