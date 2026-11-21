@@ -68,10 +68,9 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import vClickOutside from '../../directives/ClickOutside/clickOutside.directive'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import type { IAvatarGroupProps } from '../../interfaces/Avatar/avatar-group.interface'
+	import type { IAvatarGroupProps, IAvatarGroupEmits, IAvatarGroupSlots } from '../../interfaces/Avatar/avatar-group.interface'
 	import type { IAvatarProps } from '../../interfaces/Avatar/avatar.interface'
 
-	import type { IAvatarGroupEmits, IAvatarGroupSlots } from '../../interfaces/Avatar/avatar-group.interface'
 	import { omitUndefined } from '../../utils/Commons/commons.util'
 
 	import type { ComputedRef, StyleValue, VNodeProps } from 'vue'

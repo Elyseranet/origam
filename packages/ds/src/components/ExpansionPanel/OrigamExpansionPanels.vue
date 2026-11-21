@@ -137,9 +137,8 @@
 
 	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 
-	import type { IExpansionPanelsProps } from '../../interfaces/ExpansionPanel/expansion-panels.interface'
+	import type { IExpansionPanelsProps, IExpansionPanelsEmits, IExpansionPanelsSlots } from '../../interfaces/ExpansionPanel/expansion-panels.interface'
 
-	import type { IExpansionPanelsEmits, IExpansionPanelsSlots } from '../../interfaces/ExpansionPanel/expansion-panels.interface'
 
 	/*********************************************************
 	 * Global

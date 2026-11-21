@@ -46,12 +46,8 @@
 	import { COLOR_MODES_NAMES } from '../../enums/ColorPicker/color-picker.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-  import type {
-    IColorPickerEditProps,
-    IColorPickerEditSlots
-  } from '../../interfaces/ColorPicker/color-picker-edit.interface'
+  import type { IColorPickerEditProps, IColorPickerEditSlots, IColorPickerEditEmits } from '../../interfaces/ColorPicker/color-picker-edit.interface'
 
-	import type { IColorPickerEditEmits } from '../../interfaces/ColorPicker/color-picker-edit.interface'
 
 	import { computed, StyleValue } from "vue"
 

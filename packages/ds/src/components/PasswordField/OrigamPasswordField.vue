@@ -329,10 +329,9 @@
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
-	import type { IPasswordFieldProps, IPasswordFieldSlots } from '../../interfaces/PasswordField/password-field.interface'
+	import type { IPasswordFieldProps, IPasswordFieldSlots, IPasswordFieldEmits } from '../../interfaces/PasswordField/password-field.interface'
 	import type { IPasswordRequirement } from '../../interfaces/PasswordField/password-requirement.interface'
 
-	import type { IPasswordFieldEmits } from '../../interfaces/PasswordField/password-field.interface'
 	import type { TOrigamField } from '../../types/Field/field.type'
 	import type { TOrigamInput } from '../../types/Input/input.type'
 	import type { TOrigamMenu } from '../../types/Menu/menu.type'

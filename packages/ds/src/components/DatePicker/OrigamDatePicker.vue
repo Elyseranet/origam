@@ -119,9 +119,8 @@
 	import { DATE_MODE } from '../../enums/DatePicker/date-picker.enum'
 
 	import type { IDatePickerControlsProps } from '../../interfaces/DatePicker/date-picker-controls.interface'
-	import type { IDatePickerProps } from '../../interfaces/DatePicker/date-picker.interface'
+	import type { IDatePickerProps, IDatePickerEmits, IDatePickerSlots } from '../../interfaces/DatePicker/date-picker.interface'
 
-	import type { IDatePickerEmits, IDatePickerSlots } from '../../interfaces/DatePicker/date-picker.interface'
 
 	import type { TOrigamDatePickerControls } from '../../types/DatePicker/date-picker-controls.type'
 	import type { TOrigamDatePickerHeader } from '../../types/DatePicker/date-picker-header.type'

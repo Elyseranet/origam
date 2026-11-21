@@ -139,9 +139,8 @@
 
 	import { JUSTIFY } from '../../enums/Commons/justify.enum'
 
-	import type { IDialogConfirmationProps } from '../../interfaces/Dialog/dialog-confirmation.interface'
+	import type { IDialogConfirmationProps, IDialogConfirmationEmits, IDialogConfirmationSlots } from '../../interfaces/Dialog/dialog-confirmation.interface'
 
-	import type { IDialogConfirmationEmits, IDialogConfirmationSlots } from '../../interfaces/Dialog/dialog-confirmation.interface'
 
 	import type { TOrigamDialog } from '../../types/Dialog/dialog.type'
 

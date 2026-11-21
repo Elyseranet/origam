@@ -114,9 +114,8 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { ICardHeaderProps } from '../../interfaces/Card/card-header.interface'
+	import type { ICardHeaderProps, ICardHeaderEmits, ICardHeaderSlots } from '../../interfaces/Card/card-header.interface'
 
-	import type { ICardHeaderEmits, ICardHeaderSlots } from '../../interfaces/Card/card-header.interface'
 
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
 

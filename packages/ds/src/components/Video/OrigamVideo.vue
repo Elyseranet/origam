@@ -252,10 +252,9 @@
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { VIDEO_TRACK_KIND } from '../../enums/Video/video.enum'
 
-	import type { IVideoProps } from '../../interfaces/Video/video.interface'
+	import type { IVideoProps, IVideoEmits, IVideoSlots } from '../../interfaces/Video/video.interface'
 	import type { IVideoSource } from '../../interfaces/Video/video-track.interface'
 
-	import type { IVideoEmits, IVideoSlots } from '../../interfaces/Video/video.interface'
 
 	import type { TQualityOption } from '../../types/Media/quality-option.type'
 

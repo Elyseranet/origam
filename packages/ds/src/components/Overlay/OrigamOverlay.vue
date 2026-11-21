@@ -85,9 +85,8 @@
 	import { LOCATION_STRATEGIES } from '../../enums/Commons/location.enum'
 	import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
 
-	import type { IOverlayProps } from '../../interfaces/Overlay/overlay.interface'
+	import type { IOverlayProps, IOverlayEmits, IOverlaySlots } from '../../interfaces/Overlay/overlay.interface'
 
-	import type { IOverlayEmits, IOverlaySlots } from '../../interfaces/Overlay/overlay.interface'
 
 	import type { TOrigamOverlayScrim } from '../../types/Overlay/overlay-scrim.type'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'

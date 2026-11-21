@@ -92,9 +92,8 @@
 
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 
-	import type { IDatePickerHeaderProps } from '../../interfaces/DatePicker/date-picker-header.interface'
+	import type { IDatePickerHeaderProps, IDatePickerHeaderEmits, IDatePickerHeaderSlots } from '../../interfaces/DatePicker/date-picker-header.interface'
 
-	import type { IDatePickerHeaderEmits, IDatePickerHeaderSlots } from '../../interfaces/DatePicker/date-picker-header.interface'
 
 	import { hasEvent } from '../../utils/Commons/commons.util'
 	import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'

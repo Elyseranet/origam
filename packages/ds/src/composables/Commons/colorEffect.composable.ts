@@ -1,7 +1,7 @@
 import type { ComputedRef, Ref } from 'vue'
 import { computed, ref } from 'vue'
 import type { IBgColorProps, IColorProps } from '../../interfaces/Commons/color.interface'
-import type { TBgFgRole } from '../../types/Commons/color.type'
+import type { TBgFgRole, TColor } from '../../types/Commons/color.type'
 import type { TIntent } from '../../types/Commons/intent.type'
 // Explicit `.ts` extension: a stale sibling `color.util.js` lingers in
 // the source tree (legacy build artefact) and the module resolver picks
@@ -23,7 +23,6 @@ import {
     warnLegacyColor,
 } from '../../utils/Commons/color.util'
 import { isGradient, resolveGradient } from '../../utils/Commons/gradient.util'
-import type { TColor } from '../../types/Commons/color.type'
 
 /*********************************************************
  * trackReactiveDependency

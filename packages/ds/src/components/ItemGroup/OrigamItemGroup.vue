@@ -30,9 +30,8 @@
 
 	import { omitUndefined } from '../../utils/Commons/commons.util'
 
-	import type { IItemGroupProps } from '../../interfaces/ItemGroup/item-group.interface'
+	import type { IItemGroupProps, IItemGroupEmits, IItemGroupSlots } from '../../interfaces/ItemGroup/item-group.interface'
 
-	import type { IItemGroupEmits, IItemGroupSlots } from '../../interfaces/ItemGroup/item-group.interface'
 
 	/*********************************************************
 	 * Global

@@ -73,9 +73,8 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { ICheckboxProps, ICheckboxSlots } from '../../interfaces/Checkbox/checkbox.interface'
+	import type { ICheckboxProps, ICheckboxSlots, ICheckboxEmits } from '../../interfaces/Checkbox/checkbox.interface'
 
-	import type { ICheckboxEmits } from '../../interfaces/Checkbox/checkbox.interface'
 
 	import type { TOrigamCheckboxBtn } from '../../types/Checkbox/checkbox-btn.type'
 	import type { TOrigamInput } from '../../types/Input/input.type'

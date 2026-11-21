@@ -433,13 +433,9 @@
 	import { CHART_TYPE } from '../../enums/Chart/chart.enum'
 
 	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
-	import type { IChartProps } from '../../interfaces/Chart/chart.interface'
+	import type { IChartProps, IChartEmits, IChartSlots } from '../../interfaces/Chart/chart.interface'
 	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
-	import type {
-		IChartEmits,
-		IChartSlots
-	} from '../../interfaces/Chart/chart.interface'
 
 	import type { TChartCartesianKind } from '../../types/Chart/chart-cartesian.type'
 	import type { TChartPolarKind } from '../../types/Chart/chart-polar.type'

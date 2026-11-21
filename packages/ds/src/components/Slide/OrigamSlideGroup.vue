@@ -84,9 +84,8 @@
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IGoToOptions } from '../../interfaces/Commons/goTo.interface'
-	import type { ISlideGroupProps } from '../../interfaces/Slide/slide-group.interface'
+	import type { ISlideGroupProps, ISlideGroupEmits, ISlideGroupSlots } from '../../interfaces/Slide/slide-group.interface'
 
-	import type { ISlideGroupEmits, ISlideGroupSlots } from '../../interfaces/Slide/slide-group.interface'
 	import { calculateCenteredTarget, calculateUpdatedTarget, getClientSize, getOffsetSize, getScrollPosition, getScrollSize } from '../../utils/Slide/slide-group.util'
 	import { focusableChildren } from '../../utils/Commons/commons.util'
 

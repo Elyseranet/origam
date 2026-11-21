@@ -64,9 +64,8 @@
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
 
-	import type { IClipboardProps } from '../../interfaces/Clipboard/clipboard.interface'
+	import type { IClipboardProps, IClipboardEmits, IClipboardSlots } from '../../interfaces/Clipboard/clipboard.interface'
 
-	import type { IClipboardEmits, IClipboardSlots } from '../../interfaces/Clipboard/clipboard.interface'
 
 	/*********************************************************
 	 * Global

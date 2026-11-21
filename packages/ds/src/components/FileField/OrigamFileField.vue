@@ -402,9 +402,8 @@
   import { DENSITY } from '../../enums/Commons/density.enum'
   import { FILE_FIELD_DISPLAY } from '../../enums/FileField/file-field.enum'
   import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-  import type { IFileFieldProps, IFileFieldSlots } from '../../interfaces/FileField/file-field.interface'
+  import type { IFileFieldProps, IFileFieldSlots, IFileFieldEmits } from '../../interfaces/FileField/file-field.interface'
 
-	import type { IFileFieldEmits } from '../../interfaces/FileField/file-field.interface'
   import type { TOrigamField } from '../../types/Field/field.type'
   import type { TOrigamInput } from '../../types/Input/input.type'
   import { filterInputAttrs } from '../../utils/Input/input.util'

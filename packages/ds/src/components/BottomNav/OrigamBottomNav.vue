@@ -68,10 +68,9 @@
 	import { BLOCK } from '../../enums/Commons/anchor.enum'
 	import { MODE } from '../../enums/Commons/mode.enum'
 
-	import type { IBottomNavProps } from '../../interfaces/BottomNav/bottom-nav.interface'
+	import type { IBottomNavProps, IBottomNavEmits, IBottomNavSlots } from '../../interfaces/BottomNav/bottom-nav.interface'
 	import type { IBreadcrumbItemProps } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
 
-	import type { IBottomNavEmits, IBottomNavSlots } from '../../interfaces/BottomNav/bottom-nav.interface'
 	import type { TOrigamBtn } from '../../types/Btn/btn.type'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 

@@ -53,9 +53,8 @@
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ISwitchTrackProps, ISwitchTrackSlots } from '../../interfaces/Switch/switch-track.interface'
+	import type { ISwitchTrackProps, ISwitchTrackSlots, ISwitchTrackEmits } from '../../interfaces/Switch/switch-track.interface'
 
-	import type { ISwitchTrackEmits } from '../../interfaces/Switch/switch-track.interface'
 
 	const props = withDefaults(defineProps<ISwitchTrackProps>(), {
 		modelValue: false,

@@ -148,9 +148,8 @@
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import type { IConfirmWrapperProps, IConfirmWrapperSlots } from '../../interfaces/ConfirmWrapper/confirm-wrapper.interface'
+	import type { IConfirmWrapperProps, IConfirmWrapperSlots, IConfirmWrapperEmits } from '../../interfaces/ConfirmWrapper/confirm-wrapper.interface'
 
-	import type { IConfirmWrapperEmits } from '../../interfaces/ConfirmWrapper/confirm-wrapper.interface'
 	import type { TOrigamLabel } from '../../types/Label/label.type'
 	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
