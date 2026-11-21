@@ -271,7 +271,7 @@
 		}
 	}
 	const handleClick = (event: MouseEvent, value: unknown) => {
-		// TODO - Add rules when ctrl | cmd + shift & multiple
+		// #1407 : règles à ajouter pour ctrl | cmd + shift & multiple
 		// Add another range or reduce the range targeted
 
 		if (event.shiftKey && (props.multiple || props.range)) {

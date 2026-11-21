@@ -258,7 +258,7 @@ export function useWatermark (
             observer.disconnect()
             observer = null
         }
-        if (layer && host && host.contains(layer)) {
+        if (layer && host?.contains(layer)) {
             host.removeChild(layer)
         }
         layer = null

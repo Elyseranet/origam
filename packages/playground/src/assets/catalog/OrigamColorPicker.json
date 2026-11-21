@@ -90,7 +90,10 @@
       "name": "modelValue",
       "label": "modelValue",
       "tsType": "string | Record<string, unknown> | null | undefined",
-      "runtimeType": null,
+      "runtimeType": [
+        "Object",
+        "String"
+      ],
       "required": false,
       "hasFactoryDefault": false,
       "control": "text",
