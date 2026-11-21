@@ -34,7 +34,7 @@
     {
       "name": "defaultCountryFill",
       "label": "defaultCountryFill",
-      "tsType": "string | undefined",
+      "tsType": "\"success\" | \"info\" | \"warning\" | TAnyString | \"ghost\" | \"primary\" | \"neutral\" | \"secondary\" | \"danger\" | undefined",
       "runtimeType": null,
       "required": false,
       "defaultValue": "rgba(0,0,0,0.08)",
@@ -46,7 +46,7 @@
     {
       "name": "borderColor",
       "label": "borderColor",
-      "tsType": "string | undefined",
+      "tsType": "\"success\" | \"info\" | \"warning\" | TAnyString | \"ghost\" | \"primary\" | \"neutral\" | \"secondary\" | \"danger\" | undefined",
       "runtimeType": null,
       "required": false,
       "defaultValue": "neutral",
@@ -58,7 +58,7 @@
     {
       "name": "lineColor",
       "label": "lineColor",
-      "tsType": "string | undefined",
+      "tsType": "\"success\" | \"info\" | \"warning\" | TAnyString | \"ghost\" | \"primary\" | \"neutral\" | \"secondary\" | \"danger\" | undefined",
       "runtimeType": null,
       "required": false,
       "defaultValue": "primary",
