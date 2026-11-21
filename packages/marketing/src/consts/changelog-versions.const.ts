@@ -18,14 +18,15 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 addition and 1 change. See the full changelog for detail.',
+        version: '2.41.0',
+        date: '2026-11-21',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2410.summary',
+        summaryFallback: '1 addition, 1 change and 1 fix. See the full changelog for detail.',
         highlights: [
-            { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'plafond CSS d\'OrigamBlockquote (#1395)' },
-            { type: 'changed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'rupture : useBackButton suit la convention des gardes vue-router, useParallaxRuntime n\'utilise plus addListener (#1390)' }
+            { type: 'fixed', textKey: 'changelog.versions.v2410.h1', textFallback: 'Quality Gate Sonar vert sur le nouveau code (#1390)' },
+            { type: 'added', textKey: 'changelog.versions.v2410.h2', textFallback: 'plafond CSS d\'OrigamBlockquote (#1395)' },
+            { type: 'changed', textKey: 'changelog.versions.v2410.h3', textFallback: 'rupture : useBackButton suit la convention des gardes vue-router, useParallaxRuntime n\'utilise plus addListener (#1390)' }
         ]
     },
     {
