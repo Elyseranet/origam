@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `origam-img` ne plante plus quand son élément n'est pas monté (#1394)
+
+- `pollForSize` ne fait plus rien quand l'élément image est absent (`image.value` vaut `undefined`) : composant chargé en différé (`lazy-*`, `defineAsyncComponent`) dont le DOM n'est pas encore monté, auparavant `Cannot destructure property 'naturalHeight'` et page d'erreur. Test `TU/components/Img/img-lazy-1394.spec.ts`.
+
 ### Added — jetons par mode, helper SSR `origam/ssr`, budget CSS (#1386)
 
 - `origam/tokens/css/dark-pinned` (bloc `[data-mode="dark"]`) et `origam/tokens/css/dark-system` (bloc `@media (prefers-color-scheme: dark)`) : les deux moitiés de `dark.css`, générées dans `dist` au build (`scripts/lib/split-dark-sheet.mjs`). `dark.css`, `light.css` et `primitive.css` sont inchangés.

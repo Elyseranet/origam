@@ -328,7 +328,9 @@
 		bootFrames.clear()
 	})
 
-	const pollForSize = (img: HTMLImageElement, timeout: number | null = 100) => {
+	const pollForSize = (img: HTMLImageElement | undefined, timeout: number | null = 100) => {
+		if (!img) return
+
 		const poll = () => {
 			clearTimeout(timer)
 			if (vm.isUnmounted) return
