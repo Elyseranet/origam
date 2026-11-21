@@ -91,7 +91,6 @@
 
 	import { useLocale } from '../../composables/Commons/locale.composable'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { TEXTAREA_TOOLBAR_COMMAND, TEXTAREA_TOOLBAR_POSITION } from '../../enums/TextareaField/textarea-field-rich-toolbar.enum'
 
 	import type { ITextareaFieldRichToolbarProps, ITextareaFieldRichToolbarEmits, ITextareaFieldRichToolbarSlots } from '../../interfaces/TextareaField/textarea-field-rich-toolbar.interface'
@@ -119,18 +118,18 @@
 	const linkApplyLabel = computed(() => t('origam.textarea.rich.link.apply'))
 
 	const ICON_MAP: Record<TTextareaToolbarCommand, string> = {
-		[TEXTAREA_TOOLBAR_COMMAND.BOLD]: MDI_ICONS.FORMAT_BOLD,
-		[TEXTAREA_TOOLBAR_COMMAND.ITALIC]: MDI_ICONS.FORMAT_ITALIC,
-		[TEXTAREA_TOOLBAR_COMMAND.UNDERLINE]: MDI_ICONS.FORMAT_UNDERLINE,
-		[TEXTAREA_TOOLBAR_COMMAND.LINK]: MDI_ICONS.LINK_VARIANT,
-		[TEXTAREA_TOOLBAR_COMMAND.LIST_BULLET]: MDI_ICONS.FORMAT_LIST_BULLETED,
-		[TEXTAREA_TOOLBAR_COMMAND.LIST_ORDERED]: MDI_ICONS.FORMAT_LIST_NUMBERED,
-		[TEXTAREA_TOOLBAR_COMMAND.HEADING]: MDI_ICONS.FORMAT_HEADER_1,
-		[TEXTAREA_TOOLBAR_COMMAND.HEADING_1]: MDI_ICONS.FORMAT_HEADER_1,
-		[TEXTAREA_TOOLBAR_COMMAND.HEADING_2]: MDI_ICONS.FORMAT_HEADER_2,
-		[TEXTAREA_TOOLBAR_COMMAND.HEADING_3]: MDI_ICONS.FORMAT_HEADER_3,
-		[TEXTAREA_TOOLBAR_COMMAND.CODE_INLINE]: MDI_ICONS.CODE_TAGS,
-		[TEXTAREA_TOOLBAR_COMMAND.CLEAR_FORMAT]: MDI_ICONS.FORMAT_CLEAR
+		[TEXTAREA_TOOLBAR_COMMAND.BOLD]: 'mdi:mdi-format-bold',
+		[TEXTAREA_TOOLBAR_COMMAND.ITALIC]: 'mdi:mdi-format-italic',
+		[TEXTAREA_TOOLBAR_COMMAND.UNDERLINE]: 'mdi:mdi-format-underline',
+		[TEXTAREA_TOOLBAR_COMMAND.LINK]: 'mdi:mdi-link-variant',
+		[TEXTAREA_TOOLBAR_COMMAND.LIST_BULLET]: 'mdi:mdi-format-list-bulleted',
+		[TEXTAREA_TOOLBAR_COMMAND.LIST_ORDERED]: 'mdi:mdi-format-list-numbered',
+		[TEXTAREA_TOOLBAR_COMMAND.HEADING]: 'mdi:mdi-format-header-1',
+		[TEXTAREA_TOOLBAR_COMMAND.HEADING_1]: 'mdi:mdi-format-header-1',
+		[TEXTAREA_TOOLBAR_COMMAND.HEADING_2]: 'mdi:mdi-format-header-2',
+		[TEXTAREA_TOOLBAR_COMMAND.HEADING_3]: 'mdi:mdi-format-header-3',
+		[TEXTAREA_TOOLBAR_COMMAND.CODE_INLINE]: 'mdi:mdi-code-tags',
+		[TEXTAREA_TOOLBAR_COMMAND.CLEAR_FORMAT]: 'mdi:mdi-format-clear'
 	}
 
 	const LABEL_KEY: Record<TTextareaToolbarCommand, [string, string]> = {
@@ -176,7 +175,7 @@
 		'origam-rich-toolbar__btn--active': isActive(item)
 	})
 
-	const iconFor = (item: TTextareaToolbarCommand) => ICON_MAP[item] ?? MDI_ICONS.FORMAT_BOLD
+	const iconFor = (item: TTextareaToolbarCommand) => ICON_MAP[item] ?? 'mdi:mdi-format-bold'
 
 	const labelFor = (item: TTextareaToolbarCommand) => {
 		const entry = LABEL_KEY[item]

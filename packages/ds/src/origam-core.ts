@@ -1,36 +1,30 @@
-import {
-    createDate,
-    createDefaults,
-    createDisplay,
-    createGoTo,
-    createIconsCore,
-    createLocale,
-    installThemePropsResolver,
-    resolveVariantPresetRegistry,
-    themedPropKeysUnion
-} from './composables'
+import { createDate } from './composables/Commons/date.composable'
+import { createDefaults } from './composables/Commons/defaults.composable'
+import { createDisplay } from './composables/Commons/display.composable'
+import { createGoTo } from './composables/Commons/goTo.composable'
+import { createLocale } from './composables/Commons/locale.composable'
+import { installThemePropsResolver, resolveVariantPresetRegistry, themedPropKeysUnion } from './composables/Commons/theme-props-resolver.composable'
+import { createIconsCore } from './composables/Icon/icon.composable'
 
-import {
-    IN_BROWSER,
-    ORIGAM_CODE_KEY,
-    ORIGAM_DATE_ADAPTER_KEY,
-    ORIGAM_DATE_OPTIONS_KEY,
-    ORIGAM_DEFAULTS_KEY,
-    ORIGAM_DISPLAY_KEY,
-    ORIGAM_GO_TO_KEY,
-    ORIGAM_ICONS_KEY,
-    ORIGAM_LOCALE_KEY,
-    ORIGAM_SSR_STYLES_KEY,
-    ORIGAM_THEME_DEFAULTS_KEY,
-    ORIGAM_THEMES_KEY,
-    VARIANT_PRESETS
-} from './consts'
+import { ORIGAM_CODE_KEY } from './consts/Code/code.const'
+import { IN_BROWSER } from './consts/Commons/commons.const'
+import { ORIGAM_DATE_ADAPTER_KEY, ORIGAM_DATE_OPTIONS_KEY } from './consts/Commons/date.const'
+import { ORIGAM_DEFAULTS_KEY } from './consts/Commons/defaults.const'
+import { ORIGAM_DISPLAY_KEY } from './consts/Commons/display.const'
+import { ORIGAM_GO_TO_KEY } from './consts/Commons/goTo.const'
+import { ORIGAM_LOCALE_KEY } from './consts/Commons/locale.const'
+import { ORIGAM_SSR_STYLES_KEY } from './consts/Commons/ssr-style.const'
+import { ORIGAM_THEME_DEFAULTS_KEY, ORIGAM_THEMES_KEY } from './consts/Commons/theme.const'
+import { VARIANT_PRESETS } from './consts/Commons/variant-preset.const'
+import { ORIGAM_ICONS_KEY } from './consts/Icon/icon.const'
 
 import { setContrastConfig } from './directives/Contrast/contrast.directive'
 
 import type { IDefault, IDisplayInstance, INuxtAwareApp, IOrigamOptions, IOrigamTheme } from './interfaces'
 import type { TIconOptions, TModeResolved, TVariantPresetRegistry } from './types'
-import { applyThemes, installedThemesFromList, mergeDeep, registerSsrStyleCollector } from './utils'
+import { applyThemes, installedThemesFromList } from './utils/Commons/apply-theme.util'
+import { mergeDeep } from './utils/Commons/commons.util'
+import { registerSsrStyleCollector } from './utils/Commons/ssr-styles.util'
 
 import { App, ComponentPublicInstance, defineComponent, effectScope, InjectionKey, nextTick, reactive } from 'vue'
 

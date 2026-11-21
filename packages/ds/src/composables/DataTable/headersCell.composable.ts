@@ -1,5 +1,5 @@
 import { useSort } from './sort.composable'
-import { SORT_DIRECTION } from '../../enums'
+import { SORT_DIRECTION } from '../../enums/Commons/sort.enum'
 import type { IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
 import type { IHeaderCellProps } from '../../interfaces/DataTable/header-cell-base.interface'
 

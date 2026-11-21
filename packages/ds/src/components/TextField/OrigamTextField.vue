@@ -207,7 +207,6 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
 	import type { ITextFieldProps, ITextFieldSlots, ITextFieldEmits } from '../../interfaces/TextField/text-field.interface'
@@ -255,7 +254,7 @@
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
 		density: DENSITY.DEFAULT,
-		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
+		clearIcon: 'mdi:mdi-close-circle-outline',
 		rounded: true
 	})
 	const emits = defineEmits<ITextFieldEmits>()

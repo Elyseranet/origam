@@ -25,7 +25,7 @@
 					:aria-label="label"
 			>
 				<origam-btn
-						:icon="MDI_ICONS.MINUS"
+						:icon="'mdi:mdi-minus'"
 						:disabled="!canDecrease"
 						size="small"
 						data-cy="numberfield-compact-decrement"
@@ -52,7 +52,7 @@
 						@keydown="handleKeydown"
 				/>
 				<origam-btn
-						:icon="MDI_ICONS.PLUS"
+						:icon="'mdi:mdi-plus'"
 						:disabled="!canIncrease"
 						size="small"
 						data-cy="numberfield-compact-increment"
@@ -303,7 +303,6 @@
 	import { UNSEEDED } from '../../consts/Commons/vmodel.const'
 
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
 	import type { INumberFieldProps, INumberFieldSlots, INumberFieldEmits } from '../../interfaces/NumberField/number-field.interface'
@@ -327,8 +326,8 @@
 		max: Number.MAX_SAFE_INTEGER,
 		step: 1,
 		precision: 0,
-		incrementIcon: MDI_ICONS.PLUS,
-		decrementIcon: MDI_ICONS.MINUS,
+		incrementIcon: 'mdi:mdi-plus',
+		decrementIcon: 'mdi:mdi-minus',
 		holdDelay: 500,
 		holdRepeat: 50,
 		border: true,

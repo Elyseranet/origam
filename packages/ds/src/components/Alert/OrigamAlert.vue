@@ -137,7 +137,6 @@
   import { useTypography } from '../../composables/Commons/typography.composable'
 
   import { DENSITY } from '../../enums/Commons/density.enum'
-  import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
   import { STATUS } from '../../enums/Commons/status.enum'
 
   import type { IAlertProps, IAlertEmits, IAlertSlots } from '../../interfaces/Alert/alert.interface'
@@ -152,7 +151,7 @@
   const props = withDefaults(defineProps<IAlertProps>(), {
     tag: 'div',
     density: DENSITY.DEFAULT,
-    closeIcon: MDI_ICONS.CLOSE,
+    closeIcon: 'mdi:mdi-close',
     closeLabel: 'origam.close',
     modelValue: true,
     hover: false

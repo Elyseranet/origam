@@ -51,7 +51,6 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { VARIANT } from '../../enums/Commons/variant.enum'
 
 	import type { IRatingFieldItemProps, IRatingFieldItemSlots, IRatingFieldItemEmits } from '../../interfaces/RatingField/rating-field-item.interface'
@@ -68,8 +67,8 @@
 	const props = withDefaults(defineProps<IRatingFieldItemProps>(), {
 		index: -1,
 		showStar: true,
-		emptyIcon: MDI_ICONS.STAR_OUTLINE,
-		fullIcon: MDI_ICONS.STAR,
+		emptyIcon: 'mdi:mdi-star-outline',
+		fullIcon: 'mdi:mdi-star',
 		tag: 'div',
 		itemAriaLabel: 'origam.rating.aria_label.item'
 	})

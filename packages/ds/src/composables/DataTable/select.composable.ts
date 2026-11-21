@@ -2,7 +2,7 @@ import { useVModel } from '../Commons/vModel.composable'
 
 import { allSelectStrategy, ORIGAM_DATA_TABLE_SELECT_KEY, pageSelectStrategy, singleSelectStrategy } from '../../consts/DataTable/data-table.const'
 
-import { DATATABLE_SELECT_STRATEGY } from '../../enums'
+import { DATATABLE_SELECT_STRATEGY } from '../../enums/DataTable/data-table.enum'
 
 import type { IDataTableProvideSelection, IDataTableSelectableItem, IDataTableSelectProps } from '../../interfaces/DataTable/select.interface'
 

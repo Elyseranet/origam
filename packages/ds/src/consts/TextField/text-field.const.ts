@@ -1,5 +1,5 @@
 import type { IMaskOptions } from '../../interfaces/Commons/mask.interface'
-import { BUILT_IN_PATTERN, PATTERN_VALIDATOR, TEXT_FIELD_TYPE } from '../../enums'
+import { BUILT_IN_PATTERN, PATTERN_VALIDATOR, TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 import type { TBuiltInPattern, TTextFieldType } from '../../types/TextField/text-field.type'
 
 

@@ -193,7 +193,6 @@
 	import { EASING } from '../../enums/Transition/transition.enum'
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 	import { VARIANT_INPUT } from '../../enums/Commons/variant.enum'
 
@@ -214,7 +213,7 @@
 		variant: VARIANT_INPUT.OUTLINED,
 		density: DENSITY.DEFAULT,
 		centerAffix: true,
-		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE
+		clearIcon: 'mdi:mdi-close-circle-outline'
 	})
 	defineEmits<IFieldEmits>()
 

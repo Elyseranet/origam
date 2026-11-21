@@ -81,7 +81,6 @@
 	import { ORIGAM_SLIDE_GROUP_KEY } from '../../consts/Slide/slide-group.const'
 
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IGoToOptions } from '../../interfaces/Commons/goTo.interface'
 	import type { ISlideGroupProps, ISlideGroupEmits, ISlideGroupSlots } from '../../interfaces/Slide/slide-group.interface'
@@ -106,8 +105,8 @@
 		direction: DIRECTION.HORIZONTAL,
 		// Affix icons were swapped: prev pointed RIGHT, next pointed LEFT.
 		// Reversed so the chevrons match the scroll direction they trigger.
-		prevIcon: MDI_ICONS.CHEVRON_LEFT,
-		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
+		prevIcon: 'mdi:mdi-chevron-left',
+		nextIcon: 'mdi:mdi-chevron-right',
 		selectedClass: 'origam-slide-group-item--active'
 	})
 
