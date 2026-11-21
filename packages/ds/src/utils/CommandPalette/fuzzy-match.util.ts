@@ -75,9 +75,7 @@ const isSubsequence = (query: string, haystack: string): boolean => {
  * prefix / first-position bonuses (we want "Settings" to outrank
  * "Reset password" for query "set" even though both subseqs match).
  */
-const scoreOne = (query: string, label: string, haystack: string): number => {
-    if (query.length === 0) return 0
-
+const longestConsecutiveRun = (query: string, haystack: string): number => {
     let qi = 0
     let consecutive = 0
     let bestConsecutive = 0
@@ -100,20 +98,28 @@ const scoreOne = (query: string, label: string, haystack: string): number => {
         }
     }
 
-    let score = bestConsecutive * SCORE_CONSECUTIVE
+    return bestConsecutive
+}
 
+const labelBonus = (query: string, label: string): number => {
     const firstLabelHit = label.indexOf(query.charAt(0))
 
-    if (firstLabelHit !== -1) {
-        // Higher reward for first-char match early in the label.
-        score += Math.max(0, SCORE_FIRST_LABEL_POS - firstLabelHit)
+    if (firstLabelHit === -1) return 0
 
-        if (label.startsWith(query)) {
-            score += SCORE_LABEL_PREFIX
-        }
+    // Higher reward for first-char match early in the label.
+    let bonus = Math.max(0, SCORE_FIRST_LABEL_POS - firstLabelHit)
+
+    if (label.startsWith(query)) {
+        bonus += SCORE_LABEL_PREFIX
     }
 
-    return score
+    return bonus
+}
+
+const scoreOne = (query: string, label: string, haystack: string): number => {
+    if (query.length === 0) return 0
+
+    return longestConsecutiveRun(query, haystack) * SCORE_CONSECUTIVE + labelBonus(query, label)
 }
 
 /**

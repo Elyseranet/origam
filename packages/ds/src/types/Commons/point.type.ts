@@ -1,5 +1,5 @@
 declare class As<T extends string> {
-    private as: T
+    private readonly as: T
 }
 
 export type TPoint = { x: number, y: number }

@@ -79,12 +79,12 @@ export function hoverShow (e: THoverEvent) {
     if (isTouchEvent(e)) {
         element._hover.touched = true
         element._hover.isTouch = true
-    } else {
+    } else if (element._hover.isTouch) {
         // It's possible for touch events to fire
         // as mouse events on Android/iOS, this
         // will skip the event call if it has
         // already been registered as touch
-        if (element._hover.isTouch) return
+        return
     }
 
     if (element._hover.class) {

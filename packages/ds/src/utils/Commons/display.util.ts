@@ -69,7 +69,7 @@ export function getPlatform (ssr?: TSSROptions): IDisplayPlatform {
         : 'ssr'
 
     const match = (regexp: RegExp) => {
-        return Boolean(userAgent.match(regexp))
+        return regexp.test(userAgent)
     }
 
     const android = match(/android/i)

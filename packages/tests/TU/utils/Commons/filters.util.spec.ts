@@ -205,6 +205,23 @@ describe('filterItems', () => {
         })
     })
 
+    describe('filterMode: intersection / union truth table (#1398)', () => {
+        // customKeyFilter on `meta` ; default filter on `name`.
+        const run = (mode: 'union' | 'intersection', defaultHit: boolean, customHit: boolean) =>
+            filterItems([makeTuple({ name: defaultHit ? 'alice' : 'zzz', meta: customHit ? 'alice' : 'zzz' })], 'alice', {
+                filterMode: mode,
+                filterKeys: ['name', 'meta'],
+                customKeyFilter: { meta: (v: any, q: any) => v === q ? 0 : -1 }
+            }).length
+
+        it.each([
+            ['union', true, true, 1], ['union', true, false, 1], ['union', false, true, 1], ['union', false, false, 0],
+            ['intersection', true, true, 1], ['intersection', true, false, 0], ['intersection', false, true, 0], ['intersection', false, false, 0]
+        ] as const)('%s default=%s custom=%s -> %s item(s)', (mode, d, c, n) => {
+            expect(run(mode, d, c)).toBe(n)
+        })
+    })
+
     describe('index reporting', () => {
         it('reports correct 0-based indices for matching items', () => {
             const items = [

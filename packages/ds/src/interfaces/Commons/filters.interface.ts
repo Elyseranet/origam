@@ -12,3 +12,11 @@ export interface IFiltersProps {
     filterMode?: TFilterMode
     noFilter?: boolean,
 }
+
+export interface IFilterItemsOptions {
+    customKeyFilter?: TFilterKeyFunctions
+    default?: TFilterFunction
+    filterKeys?: TFilterKeys
+    filterMode?: TFilterMode
+    noFilter?: boolean
+}

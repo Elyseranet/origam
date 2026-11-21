@@ -11,7 +11,7 @@ export function binaryClosest (arr: ArrayLike<number>, val: number) {
     let item = null
     let target = -1
 
-    if (arr[high]! < val) {
+    if (arr[high] < val) {
         return high
     }
 

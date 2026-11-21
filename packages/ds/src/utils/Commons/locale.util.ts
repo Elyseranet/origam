@@ -21,7 +21,7 @@ function callI18nT (
 ): string {
     if (typeof key !== 'string' || !key) return key as unknown as string
     if (!params.length) return fn(key)
-    const list = params.map(p => p == null ? '' : p)
+    const list = params.map(p => p ?? '')
     return fn(key, list)
 }
 
