@@ -22,6 +22,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 - Cause : `labelProps` / `floatingLabelProps` recopiaient la prop `id` du champ sur les deux `<origam-label>` via `filterProps` ; l'input et les deux labels partageaient donc le même `id` (`label[for]` visait le premier label, pas le contrôle). `id` est désormais exclu du forward. Touche tous les champs construits sur `OrigamField`. Aucun changement d'API.
 
+### Fixed — `OrigamCounter` : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)
+
+- Cause : `.origam-counter` est `flex: 0 1 auto` sans `white-space: nowrap` ; dans le flex `__details` d'`OrigamInput`, un texte d'aide long le faisait rétrécir et le texte passait à la ligne (mesuré dans un flex de 120 px : 3 boîtes de ligne).
+- Correctif : `white-space: nowrap` sur la racine — c'est le texte d'aide qui se replie. Aucun changement d'API.
+
 ### Fixed — `origam-card` cliquable : l'overlay n'est plus opaque au repos (#1276)
 
 La règle `.origam-card > * { opacity: var(--origam-card---opacity) }` s'appliquait aussi au `<span class="origam-card__overlay">` et écrasait son opacité (0 au repos) : une carte avec `to` / `link` s'affichait noire. Elle exclut désormais l'overlay et l'underlay ; le contenu garde son opacité (0,6 si désactivée). Mesuré en Chromium : overlay 1 avant, 0 au repos et 0,12 au survol après.

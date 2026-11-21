@@ -22,12 +22,13 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 addition and 3 fixes. See the full changelog for detail.',
+        summaryFallback: '1 addition and 4 fixes. See the full changelog for detail.',
         highlights: [
             { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamField : les labels ne reprennent plus l\'id de l\'input (#1149)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'origam-card cliquable : l\'overlay n\'est plus opaque au repos (#1276)' },
-            { type: 'added', textKey: 'changelog.versions.unreleased.h3', textFallback: 'budget JS d\'une page à un seul composant (#1404)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'poids JS : origam-chip et le coeur origam/core n\'embarquent plus l\'enum MDI de 360 Ko (#1403)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamCounter : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'origam-card cliquable : l\'overlay n\'est plus opaque au repos (#1276)' },
+            { type: 'added', textKey: 'changelog.versions.unreleased.h4', textFallback: 'budget JS d\'une page à un seul composant (#1404)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'poids JS : origam-chip et le coeur origam/core n\'embarquent plus l\'enum MDI de 360 Ko (#1403)' }
         ]
     },
     {
