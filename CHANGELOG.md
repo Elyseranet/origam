@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamPasswordField` : `aria-invalid` / `aria-describedby` suivent la validation du consommateur (#1110)
+
+- Cause : `filterInputAttrs(attrs)` était appelé une fois dans `setup()` ; les attributs posés après le montage n'atteignaient jamais l'`<input>`.
+- Correctif : la distribution est un `computed` sur `attrs`, comme `OrigamTextField` (#938).
+
+### Fixed — `OrigamPasswordField` : la règle de longueur n'est plus imposée par défaut (#1334)
+
+- Cause : `minLength` valait 8 par défaut et une règle de validation était toujours ajoutée, même sans `requirements`, et même à vide.
+- Correctif : la règle de longueur n'est construite que si `min-length` est fourni explicitement, ou avec `requirements` / `strengthBar` (défaut 8 alors). Une valeur vide n'échoue plus sur les règles d'exigence : elle est laissée à `rules` / `required`. **Rupture assumée** : `min-length` n'a plus de défaut de prop.
+- Non traité : message de la règle surchargeable par champ (nécessite une nouvelle prop, à arbitrer).
+
 ### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
 
 - Cause : Btn/SelectionControl passaient un tuple façon Vuetify à `v-ripple` ; en template Vue les modifiers de directive sont statiques et le tableau n'est que la valeur, donc `binding.modifiers.center/circle` n'étaient jamais posés.

@@ -322,7 +322,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { BORDER_PROP_KEYS } from '../../consts/Commons/border.const'
-	import { DEFAULT_PASSWORD_REQUIREMENTS, REQUIREMENT_MIN_LENGTH, REQUIREMENT_NUMBER, REQUIREMENT_SPECIAL, REQUIREMENT_TINY, REQUIREMENT_UPPERCASE } from '../../consts/PasswordField/password-field.const'
+	import { DEFAULT_MIN_LENGTH, DEFAULT_PASSWORD_REQUIREMENTS, REQUIREMENT_MIN_LENGTH, REQUIREMENT_NUMBER, REQUIREMENT_SPECIAL, REQUIREMENT_TINY, REQUIREMENT_UPPERCASE } from '../../consts/PasswordField/password-field.const'
 	import vIntersect from '../../directives/Intersect/intersect.directive'
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
@@ -350,7 +350,6 @@
 	 *     so consumers don't have to repeat the regex in their `rules`.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IPasswordFieldProps>(), {
-		minLength: 8,
 		eager: true,
 		offIcon: 'mdi:mdi-eye-off',
 		onIcon: 'mdi:mdi-eye-outline',
@@ -515,7 +514,7 @@
 	 ********************************************************/
 	const infos = computed(() => {
 		const localeInfos: { [key: string]: any } = {
-			minLength: REQUIREMENT_MIN_LENGTH(props.minLength)
+			minLength: REQUIREMENT_MIN_LENGTH(props.minLength ?? DEFAULT_MIN_LENGTH)
 		}
 
 		if (props.needTiny) localeInfos.tiny = REQUIREMENT_TINY
@@ -649,11 +648,19 @@
 	const enrichedRules = computed(() => {
 		const base = Array.isArray(props.rules) ? [...props.rules] : []
 
+		/*********************************************************
+		 * #1334 — the length rule is opt-in: explicit `minLength`, `requirements`
+		 * or `strengthBar`. An empty value is left to the caller's `rules` / `required`.
+		 ********************************************************/
+		const lengthEnforced = props.minLength != null || props.requirements === true || !!props.strengthBar
+
 		Object.keys(infos.value).forEach((key) => {
+			if (key === 'minLength' && !lengthEnforced) return
+
 			const info = infos.value[key]
 
 			base.push((value: any) => {
-				return info.reg.test(value || '') ||
+				return !value || info.reg.test(value) ||
 						t('origam.validation.must_contains', {value: info.message})
 			})
 		})
@@ -664,7 +671,13 @@
 	/*********************************************************
 	 * Props passed down
 	 ********************************************************/
-	const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
+	/*********************************************************
+	 * #1110 — computed, not a setup snapshot: attrs set after mount
+	 * (aria-invalid…) must reach the <input>.
+	 ********************************************************/
+	const filteredAttrs = computed(() => filterInputAttrs(attrs))
+	const rootAttrs = computed(() => filteredAttrs.value[0])
+	const inputAttrs = computed(() => filteredAttrs.value[1])
 	/*********************************************************
 	 * inputProps
 	 *

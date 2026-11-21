@@ -22,14 +22,14 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 addition and 5 fixes. See the full changelog for detail.',
+        summaryFallback: '1 addition and 7 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'v-ripple : center / circle enfin appliqués (#1378)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamFileField : anneau de focus sur la dropzone et attributs natifs sur l\'<input> seul (#1383)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamCounter : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'origam-card cliquable : l\'overlay n\'est plus opaque au repos (#1276)' },
-            { type: 'added', textKey: 'changelog.versions.unreleased.h5', textFallback: 'budget JS d\'une page à un seul composant (#1404)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'poids JS : origam-chip et le coeur origam/core n\'embarquent plus l\'enum MDI de 360 Ko (#1403)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamPasswordField : aria-invalid / aria-describedby suivent la validation du consommateur (#1110)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamPasswordField : la règle de longueur n\'est plus imposée par défaut (#1334)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'v-ripple : center / circle enfin appliqués (#1378)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamFileField : anneau de focus sur la dropzone et attributs natifs sur l\'<input> seul (#1383)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamCounter : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'origam-card cliquable : l\'overlay n\'est plus opaque au repos (#1276)' }
         ]
     },
     {

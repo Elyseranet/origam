@@ -127,6 +127,11 @@ export const DEFAULT_PASSWORD_REQUIREMENTS: IPasswordRequirement[] = [
  * length per-instance.
  ********************************************************/
 
+/*********************************************************
+ * Length shown / enforced when `requirements` is on and no `minLength` is given.
+ ********************************************************/
+export const DEFAULT_MIN_LENGTH = 8
+
 export const REQUIREMENT_MIN_LENGTH = (length: number) => ({
     key: 'minLength',
     message: `${length} characters`,

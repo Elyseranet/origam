@@ -47,7 +47,7 @@ export interface IPasswordFieldProps extends ITextFieldProps {
      * Useful for forms that want the requirements always visible.
      */
     persistentRequirements?: boolean
-    /** Minimum password length (default 8) — drives the `minLength` rule. */
+    /** Minimum length. Enforced only when set explicitly, or with `requirements` / `strengthBar` (default 8 there). */
     minLength?: number
     /** Require at least one lowercase letter. */
     needTiny?: boolean
