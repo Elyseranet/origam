@@ -475,6 +475,14 @@
     return Array.isArray(m) ? (m as Array<File>) : []
   })
 
+  /*********************************************************
+   * inheritAttrs: false — #1383
+   *
+   * @description
+   * `filterInputAttrs(attrs)` already redistributes every attr (root vs <input>); same as TextField (#818).
+   ********************************************************/
+  defineOptions({ inheritAttrs: false })
+
   const emits = defineEmits<IFileFieldEmits>()
 
   defineSlots<IFileFieldSlots>()
@@ -1022,6 +1030,17 @@
       position: relative;
       text-align: center;
       transition: border-color var(--origam-file-field---transition-duration, 200ms) ease, background-color var(--origam-file-field---transition-duration, 200ms) ease;
+
+      /*********************************************************
+       * Focus ring — #1383
+       *
+       * @description
+       * The real <input> is opacity:0 and owns the focus: paint the ring on the visible dropzone.
+       ********************************************************/
+      &:has(:focus-visible) {
+        outline: var(--origam-border__width---2, 2px) solid var(--origam-color__border---focus, currentColor);
+        outline-offset: var(--origam-space---1, 4px);
+      }
 
       &:hover {
         border-color: var(--origam-file-field__dropzone---color-hover, var(--origam-color__border---strong));
