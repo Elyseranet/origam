@@ -141,6 +141,24 @@ test.describe('OrigamFileField — PDF P3 11 modes', () => {
         await expect(zone).not.toHaveClass(/origam-file-field__dropzone--dragging/)
     })
 
+    test('#1383 — Dropzone: keyboard focus on the input paints a visible ring on the dropzone', async ({ page }) => {
+        await navigateToVariant(page, 'Prop — dropzone (empty)')
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const root = sandbox.locator('[data-cy="file-field-dropzone-empty"]')
+        const zone = root.locator('.origam-file-field__dropzone')
+        await expect(zone).toBeVisible({ timeout: 5000 })
+
+        // Keyboard round-trip so :focus-visible matches (not a bare programmatic focus).
+        await root.locator('input[type="file"]').focus()
+        await page.keyboard.press('Shift+Tab')
+        await page.keyboard.press('Tab')
+        await expect(root.locator('input[type="file"]')).toBeFocused()
+
+        await expect(zone).not.toHaveCSS('outline-style', 'none')
+        await expect(zone).not.toHaveCSS('outline-width', '0px')
+    })
+
     test('Mode 6 — Dropzone dragging: dragenter toggles --dragging', async ({ page }) => {
         // The story has no dedicated "dragging" variant — we reuse the empty
         // dropzone variant and fire a synthetic dragenter to trigger the state.
