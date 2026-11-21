@@ -90,11 +90,12 @@ export function animate (
      * transitioning element stays stuck (pointer-events/visibility left
      * mid-toggle).
      ********************************************************/
-    const resolvedOptions = prefersReducedMotion()
-        ? (options == null || typeof options === 'number'
+    let resolvedOptions = options
+    if (prefersReducedMotion()) {
+        resolvedOptions = options == null || typeof options === 'number'
             ? REDUCED_MOTION_ANIMATION_DURATION
-            : {...options, duration: REDUCED_MOTION_ANIMATION_DURATION})
-        : options
+            : {...options, duration: REDUCED_MOTION_ANIMATION_DURATION}
+    }
 
     let animation: Animation
     try {

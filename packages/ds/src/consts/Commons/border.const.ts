@@ -79,7 +79,12 @@ const BORDER_STYLE_ALTERNATION = Object.values(BORDER_STYLE).join('|')
 
 const BORDER_LENGTH_UNITS = '(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr)?'
 
-const BORDER_COLOR_GROUP = '(?<color>(?: ?(?:(?:(?:#)(?:[a-f0-9]{3}|[a-f0-9]{6}))|(?:var\\(--[^)]+\\))|(?:(?:rgb|hsl|rgba)a?\\(.*\\))|(?:[A-Za-z]+))){0,4})'
+const BORDER_COLOR_HEX = '(?:(?:#)(?:[a-f0-9]{3}|[a-f0-9]{6}))'
+const BORDER_COLOR_VAR = '(?:var\\(--[^)]+\\))'
+const BORDER_COLOR_FUNCTION = '(?:(?:rgb|hsl|rgba)a?\\(.*\\))'
+const BORDER_COLOR_NAMED = '(?:[A-Za-z]+)'
+
+const BORDER_COLOR_GROUP = `(?<color>(?: ?(?:${BORDER_COLOR_HEX}|${BORDER_COLOR_VAR}|${BORDER_COLOR_FUNCTION}|${BORDER_COLOR_NAMED})){0,4})`
 
 export const BORDER_REGEX = new RegExp(
     '^'

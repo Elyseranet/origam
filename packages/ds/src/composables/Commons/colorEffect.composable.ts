@@ -361,10 +361,9 @@ export function useColorEffect (
         // component spec ("hover -20 %, active -30 %") holds. There is no
         // per-state override anymore (see the composable's JSDoc) — the
         // role is purely a function of `isHover` / `isActive`.
-        const bgRole: TBgFgRole =
-            isHover.value ? 'hover' :
-            isActive.value ? 'active' :
-            'default'
+        let bgRole: TBgFgRole = 'default'
+        if (isHover.value) bgRole = 'hover'
+        else if (isActive.value) bgRole = 'active'
 
         /*********************************************************
          * Resolution du fond, puis du premier plan

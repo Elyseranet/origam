@@ -80,12 +80,10 @@ export function useBackButton (router: Router | undefined, cb: (next: Navigation
                                 next()
                             }
                         })
+                    } else if (popped) {
+                        cb(next)
                     } else {
-                        if (popped) {
-                            cb(next)
-                        } else {
-                            next()
-                        }
+                        next()
                     }
                     inTransition = true
                 })

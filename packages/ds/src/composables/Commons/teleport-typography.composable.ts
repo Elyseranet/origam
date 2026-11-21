@@ -47,7 +47,7 @@ export function useTeleportTypography (
 
         if (!root || typeof root.querySelector !== 'function') return undefined
 
-        return (root.querySelector(measureSelector) ?? root) as HTMLElement
+        return root.querySelector(measureSelector) ?? root
     }
 
     const sync = () => {

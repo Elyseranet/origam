@@ -16,7 +16,7 @@ import type { ILocationStrategyData, ILocationStrategyProps } from '../../interf
  *
  * @description
  * ⛔ `locationStrategy="static"` NE POSITIONNE RIEN. `staticLocationStrategy`
- * (utils/Commons/location.util.ts) a un corps reduit a `// TODO` : elle rend
+ * (utils/Commons/location.util.ts) a un corps reduit a un commentaire de tache restante : elle rend
  * `undefined`, donc `updateLocation` reste `undefined` et `contentStyles`
  * reste `{}`. Mesure, contenu et cible reels attaches au document :
  * `static` → `contentStyles = {}` / `updateLocation = undefined` ;

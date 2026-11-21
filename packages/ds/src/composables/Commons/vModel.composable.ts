@@ -76,7 +76,7 @@ export function useVModel<
      ********************************************************/
     const internal = ref(UNSEEDED) as Ref<Props[Prop] | typeof UNSEEDED>
     const seed = () => (props[prop] !== undefined ? props[prop] : toValue(defaultValue)) as Props[Prop]
-    const internalValue = () => (internal.value === UNSEEDED ? seed() : internal.value as Props[Prop])
+    const internalValue = () => (internal.value === UNSEEDED ? seed() : internal.value)
     const kebabProp = toKebabCase(prop)
     const checkKebab = kebabProp !== prop
 

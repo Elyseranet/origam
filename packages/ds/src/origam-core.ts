@@ -118,7 +118,7 @@ export function createOrigamCore (origam: IOrigamOptions = {}) {
     // brand / mode changes — never mutate in place, or the `useDefaults`
     // computeds won't re-evaluate.
     const defaultsRef = createDefaults({})
-    defaultsRef.value = activeDefaultsFor(allThemes, allThemes[0]?.name ?? '', undefined)
+    defaultsRef.value = activeDefaultsFor(allThemes, allThemes[0]?.name ?? '')
 
     // ADR-005 — the union of every prop key ANY registered theme names (not
     // only the brand×mode active at mount, see `themedPropKeysUnion`'s own

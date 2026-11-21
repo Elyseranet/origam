@@ -24,6 +24,7 @@ import type {
 import type { TPoint } from '../../types/Commons/point.type'
 
 import type { Ref } from 'vue'
+import type { TAnyString } from '../../types/Commons/commons.type'
 
 // `IColorProps` exposes `color` / `bgColor` hooks. The Parallax SCSS
 // already reads `var(--origam-parallax---background-color)` and
@@ -143,7 +144,7 @@ export interface IParallaxProvide {
  */
 export interface IParallaxLayerProvide {
     direction: Ref<TParallaxDirection>
-    easing: Ref<TParallaxEasing | string>
+    easing: Ref<TParallaxEasing | TAnyString>
     disabled: Ref<boolean>
     /**
      * Live scroll progress, normalised to `[0, 1]`. `0` = host just entered
@@ -189,7 +190,7 @@ export interface IParallaxLayerProvide {
 export interface IUseParallaxRuntimeOptions {
     target: Ref<HTMLElement | undefined>
     direction: Ref<TParallaxDirection>
-    easing: Ref<TParallaxEasing | string>
+    easing: Ref<TParallaxEasing | TAnyString>
     threshold: Ref<number>
     disabled: Ref<boolean>
     /**

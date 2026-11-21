@@ -163,7 +163,11 @@ export function classicSelectStrategy (mandatory?: boolean): TStrategySelect {
                 const everySelected = childrenIds.every(cid => selected.get(cid) === SELECTED.ON)
                 const noneSelected = childrenIds.every(cid => !selected.has(cid) || selected.get(cid) === SELECTED.OFF)
 
-                selected.set(parent, everySelected ? SELECTED.ON : noneSelected ? SELECTED.OFF : SELECTED.INDETERMINATE)
+                let parentState = SELECTED.INDETERMINATE
+                if (everySelected) parentState = SELECTED.ON
+                else if (noneSelected) parentState = SELECTED.OFF
+
+                selected.set(parent, parentState)
 
                 parent = parents.get(parent)
             }

@@ -11,6 +11,7 @@ import { convertToUnit } from '../../utils/Commons/commons.util'
 import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 import { formatRoundedStylesVar, isCustomBorderRadius } from '../../utils/Commons/rounded.util'
 import { resolveRoundedCornerValue } from '../../utils/Commons/spacing.util'
+import type { TAnyString } from '../../types/Commons/commons.type'
 
 /**
  * Whether `value` names a rung for which a global utility class exists in
@@ -153,7 +154,7 @@ export function useRounded (
      * would have made the corners unreachable for every value of
      * `rounded` except "unset".
      */
-    const shorthandStyles = (rounded: boolean | number | string | TRounded | null | undefined): Array<string> => {
+    const shorthandStyles = (rounded: boolean | number | TAnyString | TRounded | null | undefined): Array<string> => {
         const styles: Array<string> = []
 
         // Boolean / empty / nullish — the legacy class chrome handles it.

@@ -40,7 +40,7 @@ import type {
  * The two axes are meant to contrast: a dark body (`color`) reads against
  * a coloured accent (`accentColor`).
  *
- * @deprecated `bgColor` — renamed to `accentColor` (see ROADMAP.md,
+ * Deprecated prop `bgColor` — renamed to `accentColor` (see ROADMAP.md,
  * "Renommer `bgColor` → `accentColor`"). `bgColor` keeps working as an
  * alias (`accentColor ?? bgColor`, `accentColor` wins) and warns once via
  * `warnDeprecatedProp`. Removal targeted for v3.0.0. Only Blockquote

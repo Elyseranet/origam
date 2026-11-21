@@ -2,6 +2,7 @@ import type { BUILT_IN_PATTERN, PATTERN_VALIDATOR } from '../../enums/TextField/
 import type { IMaskOptions } from '../../interfaces/Commons/mask.interface'
 import OrigamTextField from '../../components/TextField/OrigamTextField.vue'
 import { MASK_TOKEN_KIND, TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
+import type { TAnyString } from '../Commons/commons.type'
 
 export type TTextFieldType = `${TEXT_FIELD_TYPE}`
 
@@ -21,7 +22,7 @@ export type TBuiltInPattern = typeof BUILT_IN_PATTERN[keyof typeof BUILT_IN_PATT
  * pattern string (with `#`, `A`, `*`, literals), or a full
  * options object.
  */
-export type TMask = TBuiltInPattern | string | IMaskOptions | null
+export type TMask = TBuiltInPattern | TAnyString | IMaskOptions | null
 
 /**
  * Token kinds recognised by the in-house token-walker.

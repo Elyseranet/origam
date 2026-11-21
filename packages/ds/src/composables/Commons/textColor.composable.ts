@@ -16,9 +16,13 @@ export function useTextColor<T extends Record<K, TColor>, K extends string> (
     props: T | Ref<TColor>,
     name?: K
 ) {
-    const colors = computed(() => ({
-        text: isRef(props) ? props.value : (name ? props[name] : null)
-    }))
+    const colors = computed(() => {
+        let text: TColor = null
+        if (isRef(props)) text = props.value
+        else if (name) text = props[name]
+
+        return {text}
+    })
 
     const {colorClasses: textColorClasses, colorStyles: textColorStyles} = useColor(colors)
 
