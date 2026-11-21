@@ -121,7 +121,7 @@
     {
       "name": "modelValue",
       "label": "modelValue",
-      "tsType": "string | number | string[] | number[] | undefined",
+      "tsType": "TSliderFieldValue | undefined",
       "runtimeType": [
         "Number",
         "String",
@@ -1521,13 +1521,13 @@
     {
       "name": "start",
       "label": "start",
-      "payloadType": "[value: string | number | string[] | number[]]",
+      "payloadType": "[value: TSliderFieldValue]",
       "source": "types"
     },
     {
       "name": "end",
       "label": "end",
-      "payloadType": "[value: string | number | string[] | number[]]",
+      "payloadType": "[value: TSliderFieldValue]",
       "source": "types"
     },
     {

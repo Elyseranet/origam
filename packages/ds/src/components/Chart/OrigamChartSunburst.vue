@@ -321,6 +321,18 @@
 		return `color-mix(in srgb, ${ parentColor } calc(100% - ${ pct }%), white)`
 	}
 
+	const nodeColorFor = (datum: IChartSunburstDatum, depth: number, parentColor: string): string => {
+		if (datum.color) return resolveColor(datum.color)
+
+		return depth === 0 ? parentColor : childColor(parentColor, depth)
+	}
+
+	const labelModeForSpan = (arcSpan: number): TChartSunburstLabelMode => {
+		if (arcSpan >= LABEL_ANGLE_INLINE) return 'inline'
+
+		return arcSpan >= LABEL_ANGLE_ROTATED ? 'rotated' : 'leader'
+	}
+
 	/*********************************************************
 	 * Tree value resolution — fill in missing internal values
 	 ********************************************************/
@@ -490,21 +502,12 @@
 			const innerR = holeR + (depth) * (ringWidth + props.ringPadding)
 			const outerR = innerR + ringWidth
 
-			const nodeColor = datum.color
-				? resolveColor(datum.color)
-				: depth === 0
-					? parentColor
-					: childColor(parentColor, depth)
+			const nodeColor = nodeColorFor(datum, depth, parentColor)
 
 			const d = arcPath(innerR, outerR, parentStartAngle, parentEndAngle)
 
 			const arcSpan = parentEndAngle - parentStartAngle
-			const labelMode: TChartSunburstLabelMode =
-				arcSpan >= LABEL_ANGLE_INLINE
-					? 'inline'
-					: arcSpan >= LABEL_ANGLE_ROTATED
-						? 'rotated'
-						: 'leader'
+			const labelMode = labelModeForSpan(arcSpan)
 
 			result.push({
 				id: nodePath,
