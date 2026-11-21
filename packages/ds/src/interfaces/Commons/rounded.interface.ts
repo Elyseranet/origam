@@ -1,3 +1,4 @@
+import type { TBoxValue } from '../../types/Commons/box-value.type'
 import type { TRounded } from '../../types/Commons/rounded.type'
 
 /**
@@ -37,19 +38,19 @@ export interface IRoundedProps {
      *  - **CSS value** (`'4px'`, `'4px 0 4px 0'`, `100`) → emits inline
      *    `border-radius` declarations via `useRounded.roundedStyles`.
      */
-    rounded?: boolean | number | string | TRounded | null | undefined
+    rounded?: TBoxValue | TRounded | null
     /**
      * Top-right corner only. Takes the same vocabulary as `rounded`
      * (`8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`), minus `shaped` /
      * `shaped-invert` which are asymmetric by definition.
      */
-    roundedTopRight?: boolean | number | string
+    roundedTopRight?: TBoxValue
     /** Top-left corner only. Same vocabulary as `roundedTopRight`. */
-    roundedTopLeft?: boolean | number | string
+    roundedTopLeft?: TBoxValue
     /** Bottom-left corner only. Same vocabulary as `roundedTopRight`. */
-    roundedBottomLeft?: boolean | number | string
+    roundedBottomLeft?: TBoxValue
     /** Bottom-right corner only. Same vocabulary as `roundedTopRight`. */
-    roundedBottomRight?: boolean | number | string
+    roundedBottomRight?: TBoxValue
     /*********************************************************
      * Logical per-corner radius — rung 2 (issue #1013)
      *
@@ -80,8 +81,8 @@ export interface IRoundedProps {
      * overrides `rounded` for its corner and is beaten by the matching
      * PHYSICAL corner prop.
      ********************************************************/
-    roundedStartStart?: boolean | number | string
-    roundedStartEnd?: boolean | number | string
-    roundedEndStart?: boolean | number | string
-    roundedEndEnd?: boolean | number | string
+    roundedStartStart?: TBoxValue
+    roundedStartEnd?: TBoxValue
+    roundedEndStart?: TBoxValue
+    roundedEndEnd?: TBoxValue
 }

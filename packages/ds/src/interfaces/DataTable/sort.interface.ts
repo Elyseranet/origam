@@ -1,4 +1,5 @@
 import type { IInternalDataTableHeader } from './data-table-header.interface'
+import type { IInternalItem } from '../List/list-children.interface'
 
 import type { TDataTableCompareFunction } from '../../types/DataTable/data-table.type'
 import type { TSortDirection } from '../../types/Commons/sort.type'
@@ -21,4 +22,10 @@ export interface IDataTableProvideSort {
     sortBy: Ref<Array<IDataTableSortItem>>
     toggleSort: (column: IInternalDataTableHeader) => void
     isSorted: (column: IInternalDataTableHeader) => boolean
+}
+
+export interface IDataTableSortItemsOptions<T extends IInternalItem = IInternalItem> {
+    transform?: (item: T) => Record<string, any>
+    sortFunctions?: Record<string, TDataTableCompareFunction>
+    sortRawFunctions?: Record<string, TDataTableCompareFunction>
 }

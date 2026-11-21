@@ -17,7 +17,8 @@ import type { TChartLegendPosition } from '../../types/Chart/chart-legend.type'
 import type {
     TChartSmoothing,
     TChartStacking,
-    TChartType
+    TChartType,
+    TPathPoint
 } from '../../types/Chart/chart.type'
 import type { TIntent } from '../../types/Commons/intent.type'
 
@@ -305,4 +306,84 @@ export interface IUseChartOptions {
      * plots everything against the primary left axis.
      */
     secondaryYAxis?: () => IChartSecondaryYAxis | undefined
+}
+
+export interface IChartYRange {
+    min: number
+    max: number
+}
+
+export interface IChartNormalisedPoint {
+    x: number | string
+    y: number
+    z?: number
+    dataIndex: number
+}
+
+export interface IChartIndexedSeries {
+    s: IChartSeries
+    i: number
+}
+
+export interface IChartPlotRect {
+    x0: number
+    y0: number
+    x1: number
+    y1: number
+    cx: number
+    cy: number
+}
+
+export interface IChartSeriesPathFrame {
+    series: IChartSeries
+    seriesIdx: number
+    color: string
+    kind: TChartType
+    normalised: Array<IChartNormalisedPoint>
+    yFn: (value: number) => number
+}
+
+export interface IChartLinePathFrame extends IChartSeriesPathFrame {
+    pts: Array<TPathPoint>
+    smoothing: TChartSmoothing
+    baseline: number
+}
+
+export interface IChartLineGeometry {
+    dLine: string
+    areaMode: boolean | 'monotone' | 'stepped'
+}
+
+export interface IChartBarPathFrame extends IChartSeriesPathFrame {
+    plot: IChartPlotRect
+    groupCount: number
+    visibleCount: number
+    visibleIdxInGroup: number
+    stacked: boolean
+    isPercent: boolean
+    stackOffsets: Array<number>
+    percentShares?: Array<number>
+    yRange: IChartYRange
+}
+
+export interface IChartScatterPathFrame extends IChartSeriesPathFrame {
+    plot: IChartPlotRect
+    scatterSeries: Array<IChartSeries>
+}
+
+export interface IChartRadarPathFrame extends IChartSeriesPathFrame {
+    plot: IChartPlotRect
+    axes: number
+    yRange: IChartYRange
+}
+
+export interface IChartPieFrame {
+    series: Array<IChartSeries>
+    pieSeriesList: Array<IChartSeries>
+    plot: IChartPlotRect
+    isDonut: boolean
+    donutHoleSize: number
+    scheme: Array<TIntent | string>
+    hidden: Set<string>
+    categories: Array<string>
 }

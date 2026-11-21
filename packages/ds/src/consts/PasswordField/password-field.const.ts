@@ -152,7 +152,7 @@ export const REQUIREMENT_NUMBER = {
     key: 'number',
     message: 'a number',
     icon: '1',
-    reg: /(?=.*[0-9])/
+    reg: /(?=.*\d)/
 } as const
 
 export const REQUIREMENT_SPECIAL = {

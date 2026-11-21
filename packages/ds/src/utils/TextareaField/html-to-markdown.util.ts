@@ -1,3 +1,5 @@
+import { MARKDOWN_WRAPPERS } from '../../consts/TextareaField/textarea-field.const'
+
 /**
  * Lightweight HTML → Markdown converter used by `OrigamTextareaField`
  * when `output="markdown"`. The input is expected to be pre-sanitised
@@ -39,21 +41,13 @@ function walk(node: Node): string {
     const tag = el.tagName.toLowerCase()
     const inner = Array.from(el.childNodes).map(walk).join('')
 
+    if (Object.hasOwn(MARKDOWN_WRAPPERS, tag)) return MARKDOWN_WRAPPERS[tag](inner)
+
+    return renderSpecialTag(el, tag, inner)
+}
+
+function renderSpecialTag(el: Element, tag: string, inner: string): string {
     switch (tag) {
-        case 'strong':
-        case 'b':
-            return inner ? `**${inner}**` : ''
-
-        case 'em':
-        case 'i':
-            return inner ? `*${inner}*` : ''
-
-        case 'u':
-            return inner ? `<u>${inner}</u>` : ''
-
-        case 'code':
-            return inner ? `\`${inner}\`` : ''
-
         case 'a': {
             const href = el.getAttribute('href') ?? ''
             if (!inner) return ''
@@ -64,26 +58,11 @@ function walk(node: Node): string {
         case 'br':
             return '\n'
 
-        case 'p':
-            return inner ? `\n\n${inner}\n\n` : ''
-
-        case 'h1':
-            return inner ? `\n\n# ${inner}\n\n` : ''
-
-        case 'h2':
-            return inner ? `\n\n## ${inner}\n\n` : ''
-
-        case 'h3':
-            return inner ? `\n\n### ${inner}\n\n` : ''
-
         case 'ul':
             return '\n' + listItems(el, '- ') + '\n'
 
         case 'ol':
             return '\n' + listItems(el, (idx) => `${idx + 1}. `) + '\n'
-
-        case 'li':
-            return inner
 
         default:
             return inner

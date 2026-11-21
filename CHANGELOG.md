@@ -22,6 +22,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 - Cause : `labelProps` / `floatingLabelProps` recopiaient la prop `id` du champ sur les deux `<origam-label>` via `filterProps` ; l'input et les deux labels partageaient donc le même `id` (`label[for]` visait le premier label, pas le contrôle). `id` est désormais exclu du forward. Touche tous les champs construits sur `OrigamField`. Aucun changement d'API.
 
+### Fixed — `origam-card` cliquable : l'overlay n'est plus opaque au repos (#1276)
+
+La règle `.origam-card > * { opacity: var(--origam-card---opacity) }` s'appliquait aussi au `<span class="origam-card__overlay">` et écrasait son opacité (0 au repos) : une carte avec `to` / `link` s'affichait noire. Elle exclut désormais l'overlay et l'underlay ; le contenu garde son opacité (0,6 si désactivée). Mesuré en Chromium : overlay 1 avant, 0 au repos et 0,12 au survol après.
+
 ### Added — budget JS d'une page à un seul composant (#1404)
 
 - #1404 supposait un registre de jetons/réglages dans `origam/core`. Mesure : le chunk de 202 Ko vu dans Elysera est l'entry Nuxt (nuxt, i18n, router, consts du site), sans module Origam. Le vrai poids Origam était l'enum `MDI_ICONS` (~360 Ko), corrigé par #1403/#1406.
