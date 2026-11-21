@@ -168,6 +168,7 @@
 
 		color: var(--origam-counter---color);
 		flex: 0 1 auto;
+		white-space: nowrap;
 		font-size: calc(var(--origam-counter---font-size, 12px) + var(--origam-counter---density));
 		font-weight: var(--origam-counter---font-weight);
 		letter-spacing: var(--origam-counter---letter-spacing);
