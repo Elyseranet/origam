@@ -22,9 +22,10 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 addition. See the full changelog for detail.',
+        summaryFallback: '2 additions. See the full changelog for detail.',
         highlights: [
-            { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'jetons par mode, helper SSR origam/ssr, budget CSS (#1386)' }
+            { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'plafond CSS d\'OrigamBlockquote (#1395)' },
+            { type: 'added', textKey: 'changelog.versions.unreleased.h2', textFallback: 'jetons par mode, helper SSR origam/ssr, budget CSS (#1386)' }
         ]
     },
     {
