@@ -410,7 +410,7 @@
 	 * `autofocus` is set. Avoids stealing focus from off-screen forms.
 	 ********************************************************/
 	const handleIntersect = (isIntersecting: boolean, entries: IntersectionObserverEntry[]) => {
-		if (!props.autofocus || !isIntersecting) return
+		if (!props.autofocus || !isIntersecting) { return }
 
 		;(entries[0].target as HTMLInputElement)?.focus?.()
 	}

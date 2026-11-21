@@ -528,7 +528,7 @@
 	}
 
 	const isInvalidValue = (value: string) => {
-		return props.type === OTP_INPUT_FIELD_TYPE.NUMBER && /[^0-9]/g.test(value)
+		return props.type === OTP_INPUT_FIELD_TYPE.NUMBER && /\D/g.test(value)
 	}
 
 	watch(model, (val) => {

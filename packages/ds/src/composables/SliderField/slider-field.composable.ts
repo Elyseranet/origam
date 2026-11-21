@@ -1,4 +1,5 @@
 import type { ISliderFieldProps } from '../../interfaces/SliderField/slider-field.interface'
+import type { TSliderFieldNumeric } from '../../types/SliderField/slider-field.type'
 
 import { clamp, getDecimals } from '../../utils/Commons/commons.util'
 
@@ -19,13 +20,13 @@ import { computed } from 'vue'
  ********************************************************/
 export function useSteps (props: ISliderFieldProps) {
     const min = computed(() => {
-        return parseFloat((props.min as string | number | null | undefined) ?? 0 as unknown as string)
+        return parseFloat((props.min as TSliderFieldNumeric) ?? 0 as unknown as string)
     })
     const max = computed(() => {
-        return parseFloat((props.max as string | number | null | undefined) ?? 100 as unknown as string)
+        return parseFloat((props.max as TSliderFieldNumeric) ?? 100 as unknown as string)
     })
     const step = computed(() => {
-        const step = (props.step as string | number | null | undefined) ?? 0
+        const step = (props.step as TSliderFieldNumeric) ?? 0
 
         return +step > 0 ? parseFloat(step as unknown as string) : 0
     })

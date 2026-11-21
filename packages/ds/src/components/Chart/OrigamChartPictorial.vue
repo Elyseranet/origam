@@ -330,6 +330,7 @@
 	} from '../../interfaces/Chart/chart-pictorial.interface'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
+	import { chartSafeValue } from '../../utils/Chart/chart-point.util'
 
 	import type { TIntent } from '../../types/Commons/intent.type'
 	import { CHART_PICTORIAL_MODE } from '../../enums/Chart/chart-pictorial.enum'
@@ -579,11 +580,7 @@
 				const s = props.series[serIdx]
 				if (!s) continue
 
-				const raw = s.data[catIdx]
-				const value = raw == null
-					? 0
-					: typeof raw === 'number' ? raw : (raw as { y: number }).y
-				const safeValue = Number.isFinite(value) && value >= 0 ? value : 0
+				const safeValue = chartSafeValue(s.data[catIdx])
 				const filledSlots = Math.round(safeValue / effectiveIconsPerUnit.value)
 				const colIdx = catIdx * seriesCount.value + serIdx
 				const isHidden = hiddenSeries.value.has(s.name)
@@ -674,11 +671,7 @@
 				const s = props.series[serIdx]
 				if (!s) continue
 				const isHidden = hiddenSeries.value.has(s.name)
-				const raw = s.data[catIdx]
-				const value = raw == null
-					? 0
-					: typeof raw === 'number' ? raw : (raw as { y: number }).y
-				const safeValue = Number.isFinite(value) && value >= 0 ? value : 0
+				const safeValue = chartSafeValue(s.data[catIdx])
 				const colIdx = catIdx * seriesLen + serIdx
 
 				result.push({

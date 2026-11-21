@@ -39,7 +39,7 @@ export function resolveHeightPx (height: number | string): number {
 
     const value = String(height).trim()
     // Numeric string with optional unit
-    const match = value.match(/^([\d.]+)(px|vh|vw|%|rem|em)?$/i)
+    const match = /^([\d.]+)(px|vh|vw|%|rem|em)?$/i.exec(value)
     if (!match) return 0
     const num = parseFloat(match[1])
     const unit = (match[2] ?? 'px').toLowerCase()
@@ -110,7 +110,6 @@ export function resolveHeightPx (height: number | string): number {
  ********************************************************/
 export function useSheetSwipe (options: ISheetSwipeOptions): ISheetSwipeReturn {
     const {
-        el,
         handle,
         snapPoints,
         defaultSnap,
@@ -173,11 +172,9 @@ export function useSheetSwipe (options: ISheetSwipeOptions): ISheetSwipeReturn {
 
         // Fast flick → step one snap in the gesture direction.
         if (speed >= FAST_FLICK_THRESHOLD) {
-            const nextIdx = goingUp
-                ? Math.min(snaps.length - 1, currentIdx + 1)
-                : goingDown
-                    ? Math.max(0, currentIdx - 1)
-                    : currentIdx
+            let nextIdx = currentIdx
+            if (goingUp) nextIdx = Math.min(snaps.length - 1, currentIdx + 1)
+            else if (goingDown) nextIdx = Math.max(0, currentIdx - 1)
             const candidate = snaps[nextIdx]
             return enforcePersistent(candidate.id, snaps)
         }
@@ -328,13 +325,6 @@ export function useSheetSwipe (options: ISheetSwipeOptions): ISheetSwipeReturn {
     onBeforeUnmount(() => {
         unbind()
     })
-
-    // Avoid an unused-variable warning when the consumer never reads `el`.
-    // The ref is documented as part of the contract so we can grow into
-    // height-based assertions later (e.g. read computed bounds for snap
-    // resolution against the actual rendered sheet rather than the
-    // snap-point preset).
-    void el
 
     return {
         currentSnap,

@@ -32,34 +32,32 @@ export function getOffset<T extends TPoint> (a: T, b: T) {
     } as TOffset
 }
 
+/*********************************************************
+ * resolveAnchorCoord
+ *
+ * @description
+ * Resolve one anchor coordinate: `start` -> 0, `center` -> size / 2, `end` -> size, anything else is returned as is.
+ ********************************************************/
+function resolveAnchorCoord (value: unknown, start: string, end: string, size: number): number {
+    if (value === start) return 0
+    if (value === 'center') return size / 2
+    if (value === end) return size
+
+    return value as number
+}
+
 /** Convert an anchor object to a point in local space */
 export function anchorToPoint (anchor: TParsedAnchor, box: IBox): TViewportPoint {
-    if (anchor.side === 'top' || anchor.side === 'bottom') {
-        const {side, align} = anchor
+    const {side, align} = anchor
 
-        const x: number =
-            align === 'left' ? 0
-                : align === 'center' ? box.width / 2
-                    : align === 'right' ? box.width
-                        : align
-        const y: number =
-            side === 'top' ? 0
-                : side === 'bottom' ? box.height
-                    : side
+    if (side === 'top' || side === 'bottom') {
+        const x = resolveAnchorCoord(align, 'left', 'right', box.width)
+        const y = side === 'top' ? 0 : box.height
 
         return elementToViewport({x, y} as TElementPoint, box)
-    } else if (anchor.side === 'left' || anchor.side === 'right') {
-        const {side, align} = anchor
-
-        const x: number =
-            side === 'left' ? 0
-                : side === 'right' ? box.width
-                    : side
-        const y: number =
-            align === 'top' ? 0
-                : align === 'center' ? box.height / 2
-                    : align === 'bottom' ? box.height
-                        : align
+    } else if (side === 'left' || side === 'right') {
+        const x = side === 'left' ? 0 : box.width
+        const y = resolveAnchorCoord(align, 'top', 'bottom', box.height)
 
         return elementToViewport({x, y} as TElementPoint, box)
     }

@@ -524,11 +524,8 @@ return [ out, props.style as StyleValue ]
 	const sliceAriaLabel = (path: IChartPath) => {
 		const idx = path.dataIndex ?? 0
 		const entry = path.series.data[idx] ?? path.series.data[0]
-		const y = entry == null
-			? NaN
-			: typeof entry === 'number'
-				? entry
-				: entry.y
+		let y = NaN
+		if (entry != null) y = typeof entry === 'number' ? entry : entry.y
 		const cat = activeCategories.value[idx] ?? path.series.name ?? idx
 		return `${ cat }: ${ formatY(y) }`
 	}

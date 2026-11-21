@@ -175,12 +175,9 @@
 		if (parallax.event.value !== PARALLAX_EVENT.SCROLL) {
 			movementX = props.axis === AXIS.Y ? 0 : x
 			movementY = props.axis === AXIS.X ? 0 : y
-		} else if (parallax.event.value === PARALLAX_EVENT.SCROLL) {
+		} else {
 			movementX = props.axis === AXIS.X ? y : 0
 			movementY = props.axis === AXIS.Y || !props.axis ? y : 0
-		} else if (props.cycle > 0) {
-			movementX = props.axis === AXIS.X ? x : 0
-			movementY = props.axis === AXIS.Y ? y : 0
 		}
 
 		return {

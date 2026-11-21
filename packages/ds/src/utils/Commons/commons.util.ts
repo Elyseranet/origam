@@ -241,7 +241,7 @@ export function chunk (str: string, size = 1) {
  * @returns …
  */
 export function has<T extends string> (obj: object, key: Array<T>): obj is Record<T, unknown> {
-    return key.every(k => Object.prototype.hasOwnProperty.call(obj, k))
+    return key.every(k => Object.hasOwn(obj, k))
 }
 
 /**
@@ -568,7 +568,7 @@ export function getNextElement (elements: Array<HTMLElement>, location?: 'next' 
     do {
         idx += inc
         _el = elements[idx]
-    } while ((!_el || _el.offsetParent == null || !(condition?.(_el) ?? true)) && idx < elements.length && idx >= 0)
+    } while ((_el?.offsetParent == null || !(condition?.(_el) ?? true)) && idx < elements.length && idx >= 0)
     return _el
 }
 
@@ -704,8 +704,7 @@ export function defer (timeout: number, cb: () => void) {
 export function matchesSelector (el: Element | undefined, selector: string): boolean | null {
     const supportsSelector = IN_BROWSER &&
         typeof CSS !== 'undefined' &&
-        typeof CSS.supports !== 'undefined' &&
-        CSS.supports(`selector(${selector})`)
+        CSS.supports?.(`selector(${selector})`)
 
     if (!supportsSelector) return null
 
