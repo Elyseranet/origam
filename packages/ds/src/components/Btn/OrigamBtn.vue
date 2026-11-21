@@ -422,14 +422,14 @@
 		// dump: depth 2 was a <button> with bg rgb(239,239,239) and
 		// border "2px outset rgb(0,0,0)" — straight UA defaults.
 		const cfg = loaderConfig.value
-		return Object.assign({
+		return {
 					size: '23',
 					indeterminate: cfg.indeterminate,
 					modelValue: cfg.modelValue,
-					type: loaderKind.value === 'line' ? PROGRESS_TYPE.LINEAR : PROGRESS_TYPE.CIRCULAR
-				},
-				origamProgressRef.value?.filterProps(props as Partial<ExtractPropTypes<IProgressProps>>, ['class', 'style', 'id', 'tag', 'size', 'type']) ?? {},
-				cfg.overrides)
+					type: loaderKind.value === 'line' ? PROGRESS_TYPE.LINEAR : PROGRESS_TYPE.CIRCULAR,
+				...origamProgressRef.value?.filterProps(props as Partial<ExtractPropTypes<IProgressProps>>, ['class', 'style', 'id', 'tag', 'size', 'type']),
+				...cfg.overrides
+		}
 	})
 
 	/*********************************************************
@@ -1130,6 +1130,7 @@
 			#{$this}__content {
 				flex-direction: column;
 				line-height: 1.25;
+				white-space: normal;
 			}
 
 			#{$this}__prepend,
@@ -1147,10 +1148,6 @@
 			#{$this}__append,
 			#{$this}__content > :deep(.origam-icon--end) {
 				margin-top: 4px;
-			}
-
-			#{$this}__content {
-				white-space: normal;
 			}
 
 			&#{$this}--size-x-small {

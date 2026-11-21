@@ -42,7 +42,7 @@ export interface IColorPickerProps extends ICommonsComponentProps, IBorderProps,
     hideInputs?: boolean
     showSwatches?: boolean
     swatchesMaxHeight?: string | number
-    modelValue?: Record<string, unknown> | string | undefined | null
+    modelValue?: Record<string, unknown> | string | null
 }
 
 export interface IColorPickerMode {

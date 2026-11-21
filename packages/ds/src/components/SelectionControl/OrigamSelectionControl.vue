@@ -162,7 +162,9 @@
   const modelValue = useVModel(props, 'modelValue')
 
   const trueValue = computed(() => {
-    return props.trueValue !== undefined ? props.trueValue : props.value !== undefined ? props.value : true
+    if (props.trueValue !== undefined) return props.trueValue
+    if (props.value !== undefined) return props.value
+    return true
   })
   const falseValue = computed(() => {
     return props.falseValue !== undefined ? props.falseValue : false

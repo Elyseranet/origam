@@ -204,7 +204,7 @@
 
 		element.style[sizeProperty] = '0'
 
-		void element.offsetHeight // force reflow
+		element.getBoundingClientRect() // force reflow
 
 		element.style.transition = initialStyle.transition
 
@@ -221,11 +221,7 @@
 
 		resetStyles(element)
 	}
-	const handleEnterCancelled = (el: Element) => {
-		const element = el as IHTMLExpandElement
-
-		resetStyles(element)
-	}
+	const handleEnterCancelled = handleAfterEnter
 	const handleLeave = (el: Element) => {
 		const element = el as IHTMLExpandElement
 
@@ -262,7 +258,7 @@
 
 		element.style.overflow = 'hidden'
 		element.style[sizeProperty] = `${element[offsetProperty]}px`
-		void element.offsetHeight // force reflow
+		element.getBoundingClientRect() // force reflow
 
 		/*********************************************************
 		 * handleLeave — hideOnLeave
@@ -285,11 +281,7 @@
 
 		onAfterLeave(element)
 	}
-	const handleLeaveCancelled = (el: Element) => {
-		const element = el as IHTMLExpandElement
-
-		onAfterLeave(element)
-	}
+	const handleLeaveCancelled = handleAfterLeave
 
 	/*********************************************************
 	 * Expose

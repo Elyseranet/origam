@@ -299,8 +299,8 @@
 	}
 
 	function onVolumeChangeFromScrubber (value: number): void {
-		if (value > 0 && state.value.muted.value) methods.value.toggleMute()
-		else if (value === 0 && !state.value.muted.value) methods.value.toggleMute()
+		const muted = state.value.muted.value
+		if ((value > 0 && muted) || (value === 0 && !muted)) methods.value.toggleMute()
 		methods.value.setVolume(value)
 	}
 

@@ -65,24 +65,18 @@
 		&-enter-active {
 			transition-duration: var(--origam-transition--snack-enter-active---transition-duration);
 			transition-timing-function: var(--origam-transition--snack-enter-active---transition-timing-function);
+			transition-property: opacity, transform;
 		}
 
 		&-leave-active {
 			transition-duration: var(--origam-transition--snack-leave-active---transition-duration);
 			transition-timing-function: var(--origam-transition--snack-leave-active---transition-timing-function);
-		}
-
-		&-enter-active {
-			transition-property: opacity, transform;
+			transition-property: opacity;
 		}
 
 		&-enter-from {
 			opacity: 0;
 			transform: scale(.8);
-		}
-
-		&-leave-active {
-			transition-property: opacity;
 		}
 
 		&-leave-to {
