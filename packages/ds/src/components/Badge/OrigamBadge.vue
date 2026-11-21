@@ -186,16 +186,17 @@
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, prependIcon, appendIcon)
+	const sideOffset = (side: string): number => {
+		if (['top', 'bottom'].includes(side)) return +(props.offsetY ?? 0)
+		if (['left', 'right'].includes(side)) return +(props.offsetX ?? 0)
+		return 0
+	}
 	const {locationStyles} = useLocation(props, true, side => {
 		const base = props.floating
 				? (props.dot ? 2 : 4)
 				: (props.dot ? 8 : 12)
 
-		return base + (
-				['top', 'bottom'].includes(side) ? +(props.offsetY ?? 0)
-						: ['left', 'right'].includes(side) ? +(props.offsetX ?? 0)
-								: 0
-		)
+		return base + sideOffset(side)
 	})
 
 	/*********************************************************

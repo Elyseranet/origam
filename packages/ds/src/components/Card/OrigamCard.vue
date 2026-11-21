@@ -713,7 +713,8 @@
 			position: var(--origam-card__underlay---position, absolute);
 		}
 
-		> * {
+		// Content only: the overlay owns its opacity (scrim, 0 at rest).
+		> *:not(#{$this}__overlay):not(#{$this}__underlay) {
 			opacity: var(--origam-card---opacity);
 		}
 

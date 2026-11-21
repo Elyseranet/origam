@@ -24,6 +24,10 @@ This project follows [Semantic Versioning](https://semver.org).
 - Correctif : `globalTop` est un `computed` sur `GLOBAL_STACK` (réactif), donc synchrone ; plus de timer. Sans changement d'API.
 - Test : `stack.composable.spec.ts` — rouge sur le commit parent, vert après.
 
+### Fixed — `origam-card` cliquable : l'overlay n'est plus opaque au repos (#1276)
+
+La règle `.origam-card > * { opacity: var(--origam-card---opacity) }` s'appliquait aussi au `<span class="origam-card__overlay">` et écrasait son opacité (0 au repos) : une carte avec `to` / `link` s'affichait noire. Elle exclut désormais l'overlay et l'underlay ; le contenu garde son opacité (0,6 si désactivée). Mesuré en Chromium : overlay 1 avant, 0 au repos et 0,12 au survol après.
+
 ### Added — budget JS d'une page à un seul composant (#1404)
 
 - #1404 supposait un registre de jetons/réglages dans `origam/core`. Mesure : le chunk de 202 Ko vu dans Elysera est l'entry Nuxt (nuxt, i18n, router, consts du site), sans module Origam. Le vrai poids Origam était l'enum `MDI_ICONS` (~360 Ko), corrigé par #1403/#1406.
