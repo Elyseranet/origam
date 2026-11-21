@@ -21,7 +21,7 @@ This project follows [Semantic Versioning](https://semver.org).
 ### Fixed — `OrigamBtn` en chargement circulaire : le libellé reste visible (#1086)
 
 - Cause : `--loader-circular` posait `opacity: 0` sur `__content` / `__prepend` / `__append` et centrait le spinner en absolu par-dessus.
-- Correctif : le spinner est dans le flux, avant le libellé (`gap` 0.5em) ; libellé visible, nom accessible inchangé. Conséquence mesurée : le bouton s'élargit de la largeur du spinner + gap en chargement (le wireframe `2-action-in-progress` demandait une largeur stable, point à arbitrer, voir PR).
+- Correctif : le libellé reste visible, nom accessible inchangé. Avec une icône/un avatar `prepend`, ou sur un bouton `icon`, le spinner PREND LA PLACE de l'élément (même boîte : largeur identique au repos, mesuré 73,95 px -> 73,95 px). Sans, il s'ajoute avant le libellé et le bouton s'élargit (56,7 -> 85,7 px).
 
 ### Fixed — `OrigamProgressLinear` : plus de `<div>` dans un `<button>` en chargement `line` (#1087)
 

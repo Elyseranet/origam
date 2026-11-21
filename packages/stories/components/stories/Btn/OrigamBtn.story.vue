@@ -169,6 +169,15 @@
 				<origam-btn :loading="{ type: 'circular' }" text="Circular"         bg-color="info" data-cy="btn-loading-circular-override"/>
 				<origam-btn :loading="{ type: 'circular' }" text="Circular success" bg-color="success" data-cy="btn-loading-circular-success"/>
 			</div>
+			<!-- #1086: the circular spinner REPLACES a prepend icon / the icon of an icon button (same width as at rest) -->
+			<div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-top: 16px;">
+				<origam-btn text="Save" prepend-icon="mdi-content-save" data-cy="btn-rest-prepend"/>
+				<origam-btn :loading="{ type: 'circular' }" text="Save" prepend-icon="mdi-content-save" data-cy="btn-loading-prepend"/>
+				<origam-btn icon="mdi-content-save" aria-label="Save" data-cy="btn-rest-icon"/>
+				<origam-btn :loading="{ type: 'circular' }" icon="mdi-content-save" aria-label="Save" data-cy="btn-loading-icon"/>
+				<origam-btn text="Save" data-cy="btn-rest-plain"/>
+				<origam-btn :loading="{ type: 'circular' }" text="Save" data-cy="btn-loading-plain"/>
+			</div>
 		</Variant>
 
 		<Variant title="Events - click">

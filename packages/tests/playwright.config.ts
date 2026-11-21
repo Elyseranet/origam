@@ -28,6 +28,8 @@ const GREEN_SPECS = [
     'chart-responsive-size.spec.ts',
     // #1222 — verifiee verte et stable avant inscription : 10/10 (--repeat-each=5, E2E_STATIC=1, chromium, port isole).
     'btn-text-active.spec.ts',
+    // #1086 — verifiee verte et stable avant inscription : 15/15 (--repeat-each=5, E2E_STATIC=1, chromium, port isole).
+    'btn-loading-circular-label.spec.ts',
     // #1179 — verifiee verte et stable avant inscription : 9/9 puis 45/45 sous
     // `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
     'code-group.spec.ts',

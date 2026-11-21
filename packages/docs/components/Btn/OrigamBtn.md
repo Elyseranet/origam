@@ -103,10 +103,12 @@ For one-off custom colors, use a `:style` binding instead of `color`:
 
 `loading` is `true`, a number (`0..100`, determinate), or
 `{ type: 'circular' | 'line', … }`. The label **stays rendered** (the
-accessible name is unchanged and the width does not move); an indicator is
-laid over it. The button is `aria-busy="true"` **and**
+accessible name is unchanged and an indicator
+is shown with it. The button is `aria-busy="true"` **and**
 `aria-disabled="true"` - never the native `disabled`, so it keeps focus -
 and ignores clicks (pointer, Enter and Space alike) until the action ends.
+
+In a circular loading the spinner **replaces** the `prepend` (or, on an icon button, the icon) in the same box, so the width does not move; without either, it is added before the label and the button grows by its width.
 
 `{ type: 'skeleton' }` is **refused at compile time** (`TControlLoadingValue`):
 a button that is mid-action is not a placeholder. Use `OrigamSkeleton` for
