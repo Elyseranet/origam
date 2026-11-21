@@ -10,7 +10,7 @@ import { convertToUnit } from './commons.util'
  * design-system spacing ladder. Anchored, digits only: `"4px"` is NOT a
  * scale step (it is already a CSS length and passes through verbatim).
  */
-const SCALE_STEP_REGEX = /^[0-9]+$/
+const SCALE_STEP_REGEX = /^\d+$/
 
 /**
  * Resolve ONE directional spacing value (`paddingTop`, `marginInline`, …)

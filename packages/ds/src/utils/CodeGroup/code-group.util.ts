@@ -70,7 +70,7 @@ export function extractCodeGroupText (node: VNode): string {
  ********************************************************/
 export function resolveCodeGroupSlotItems (nodes: VNode[] | undefined): ICodeGroupResolvedItem[] {
     return flattenCodeGroupVNodes(nodes).map((vnode, index) => {
-        const attrs = (vnode.props ?? {}) as Record<string, unknown>
+        const attrs = (vnode.props ?? {}) as Record<string, string | number | undefined>
         const label = String(attrs.label ?? attrs.filename ?? index + 1)
 
         return {

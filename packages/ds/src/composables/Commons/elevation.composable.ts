@@ -73,7 +73,9 @@ function isUtilityRung (value: unknown): boolean {
 function shadowVar (rung: string): string {
     const fallback = SHADOW_RUNG_FALLBACK[rung]
 
-    return `var(${SHADOW_TOKEN_PREFIX}${rung}${fallback ? `, ${fallback}` : ''})`
+    const fallbackArg = fallback ? `, ${fallback}` : ''
+
+    return `var(${SHADOW_TOKEN_PREFIX}${rung}${fallbackArg})`
 }
 
 const _bgWarned = new WeakSet<object>()

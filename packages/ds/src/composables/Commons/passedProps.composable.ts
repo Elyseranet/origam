@@ -42,7 +42,7 @@ export function usePassedProps<T extends object> (
     const vm = getCurrentInstance(instanceLabel)
 
     return (key) => {
-        const vnodeProps = vm.vnode.props || {}
+        const vnodeProps = vm.vnode.props ?? {}
         for (const k in vnodeProps) {
             // A key present in `vnode.props` with the value `undefined` does
             // NOT count as passed. Vue does not omit a dynamically-bound key

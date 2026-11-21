@@ -16,9 +16,13 @@ export function useBackgroundColor<T extends Record<K, TColor>, K extends string
     props: T | Ref<TColor>,
     name?: K
 ) {
-    const colors = computed(() => ({
-        background: isRef(props) ? props.value : (name ? props[name] : null)
-    }))
+    const colors = computed(() => {
+        let background: TColor = null
+        if (isRef(props)) background = props.value
+        else if (name) background = props[name]
+
+        return {background}
+    })
 
     const {colorClasses: backgroundColorClasses, colorStyles: backgroundColorStyles} = useColor(colors)
 

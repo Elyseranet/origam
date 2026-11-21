@@ -22,7 +22,7 @@ import { onBeforeUnmount, readonly, ref, watch } from 'vue'
  ********************************************************/
 export function useResizeObserver<T extends Element = HTMLElement> (callback?: ResizeObserverCallback, box: 'content' | 'border' = 'content'): IResizeState<T> {
     const contentRect = ref<DOMRectReadOnly>()
-    const resizeRef = ref<T | null>() as IResizeState<T>['resizeRef']
+    const resizeRef = ref<T | null>()
 
     if (IN_BROWSER) {
         const observer = new ResizeObserver((entries: Array<ResizeObserverEntry>) => {

@@ -224,6 +224,7 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
              * fonction interne n'aurait rien retire au score.
              ********************************************************/
             const isHorizontalPosition = () => position.value === 'left' || position.value === 'right'
+            const fixedSize = () => elementSize.value ? `${convertToUnit(elementSize.value)}` : undefined
 
             const baseItemStyles = (): CSSProperties => {
                 const isOpposite = position.value === 'right' || position.value === 'bottom'
@@ -243,17 +244,13 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
 
                 return {
                     'height':
-                        isHorizontal ? `calc(100% - ${convertToUnit(item.top)} - ${convertToUnit(item.bottom)})`
-                            : elementSize.value ? `${convertToUnit(elementSize.value)}`
-                                : undefined,
+                        isHorizontal ? `calc(100% - ${convertToUnit(item.top)} - ${convertToUnit(item.bottom)})` : fixedSize(),
                     left: isOppositeHorizontal ? undefined : convertToUnit(item.left),
                     right: isOppositeHorizontal ? convertToUnit(item.right) : undefined,
                     top: position.value !== 'bottom' ? convertToUnit(item.top) : undefined,
                     bottom: position.value !== 'top' ? convertToUnit(item.bottom) : undefined,
                     'width':
-                        !isHorizontal ? `calc(100% - ${convertToUnit(item.left)} - ${convertToUnit(item.right)})`
-                            : elementSize.value ? `${convertToUnit(elementSize.value)}`
-                                : undefined
+                        !isHorizontal ? `calc(100% - ${convertToUnit(item.left)} - ${convertToUnit(item.right)})` : fixedSize()
                 }
             }
 

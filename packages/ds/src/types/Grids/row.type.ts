@@ -1,4 +1,5 @@
 import OrigamRow from '../../components/Grids/OrigamRow.vue'
+import type { TAnyString } from '../Commons/commons.type'
 import {
     FLEX_DIRECTION,
     ROW_GUTTER
@@ -24,6 +25,6 @@ export type TRowGutterRung = `${ROW_GUTTER}`
  * libre par une declaration en ligne — meme partage que `color` /
  * `rounded` ailleurs dans le DS.
  ********************************************************/
-export type TRowGutter = TRowGutterRung | string | number
+export type TRowGutter = TRowGutterRung | TAnyString | number
 
 export type TOrigamRow = InstanceType<typeof OrigamRow>

@@ -561,7 +561,7 @@ l'ancien.
 ## `useBackButton`
 
 ```ts
-export function useBackButton (router: Router | undefined, cb: (next: NavigationGuardNext) => void)
+export function useBackButton (router: Router | undefined, cb: () => boolean | void)
 ```
 
 Wires a `popstate` listener + router navigation guard so a consumer

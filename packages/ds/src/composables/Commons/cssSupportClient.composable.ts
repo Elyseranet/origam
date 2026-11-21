@@ -4,6 +4,7 @@ import { FEATURE_QUERIES } from '../../consts/Commons/css-support.const'
 import type { IUseCssSupportClientOptions } from '../../interfaces/Commons/css-support.interface'
 import type { TCssFeatureName } from '../../types/Commons/css-support.type'
 import { rawSupports } from '../../utils/Commons/css-support.util'
+import type { TAnyString } from '../../types/Commons/commons.type'
 
 // ────────────────────────────────────────────────────────────────────────────
 // `useCssSupportClient` — hydration-safe variant
@@ -51,7 +52,7 @@ import { rawSupports } from '../../utils/Commons/css-support.util'
  *   //   <div v-else>…JS fallback path…</div>
  ********************************************************/
 export function useCssSupportClient (
-    feature: TCssFeatureName | string,
+    feature: TCssFeatureName | TAnyString,
     options: IUseCssSupportClientOptions = {}
 ): Ref<boolean> {
     const { defaultValue = false } = options

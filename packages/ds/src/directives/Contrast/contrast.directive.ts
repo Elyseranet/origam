@@ -52,7 +52,7 @@ function srgbToRgb (color: string): string | null {
  * (which only understand `rgba?\(…\)`) can read. See #869.
  ********************************************************/
 function hexToRgb (hex: string): string | null {
-    const m = hex.match(/^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i)
+    const m = /^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.exec(hex)
     if (!m) return null
     const h = m[1].length <= 4 ? [...m[1]].map(c => c + c).join('') : m[1]
     const r = parseInt(h.slice(0, 2), 16)

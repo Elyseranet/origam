@@ -88,12 +88,14 @@ export function useTouch ({isActive, isTemporary, width, touchless, position}: {
         const touchX = e.changedTouches[0].clientX
         const touchY = e.changedTouches[0].clientY
 
-        const inTouchZone: boolean =
-            position.value === 'left' ? touchX < TOUCH_EDGE_ZONE_PX
-                : position.value === 'right' ? touchX > document.documentElement.clientWidth - TOUCH_EDGE_ZONE_PX
-                    : position.value === 'top' ? touchY < TOUCH_EDGE_ZONE_PX
-                        : position.value === 'bottom' ? touchY > document.documentElement.clientHeight - TOUCH_EDGE_ZONE_PX
-                            : oops()
+        let inTouchZone: boolean
+        switch (position.value) {
+            case 'left': inTouchZone = touchX < TOUCH_EDGE_ZONE_PX; break
+            case 'right': inTouchZone = touchX > document.documentElement.clientWidth - TOUCH_EDGE_ZONE_PX; break
+            case 'top': inTouchZone = touchY < TOUCH_EDGE_ZONE_PX; break
+            case 'bottom': inTouchZone = touchY > document.documentElement.clientHeight - TOUCH_EDGE_ZONE_PX; break
+            default: inTouchZone = oops()
+        }
 
         const inElement: boolean = isActive.value && (
             position.value === 'left' ? touchX < width.value

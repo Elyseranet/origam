@@ -14,10 +14,15 @@ import { useColor } from './color.composable'
  ********************************************************/
 export function useBothColor<T extends Record<K, TColor>, K extends string> (bgColorProps: T | Ref<TColor> | ComputedRef<TColor>, colorProps: T | Ref<TColor> | ComputedRef<TColor>, name?: K) {
     const bothColors = computed(() => {
-        return {
-            text: isRef(colorProps) ? colorProps.value : (name ? colorProps[name] : null),
-            background: isRef(bgColorProps) ? bgColorProps.value : (name ? bgColorProps[name] : null)
-        }
+        let text: TColor = null
+        if (isRef(colorProps)) text = colorProps.value
+        else if (name) text = colorProps[name]
+
+        let background: TColor = null
+        if (isRef(bgColorProps)) background = bgColorProps.value
+        else if (name) background = bgColorProps[name]
+
+        return {text, background}
     })
 
     return useColor(bothColors)

@@ -20,8 +20,8 @@ import { addWindowListener, clamp, getPosition, tryOnScopeDispose } from '../../
  *
  * @description
  * ⛔ Seul l'axe `X` (`AXIS.X`) est reellement gere : `isVertical` est
- * commente en mort dans le code et un `// TODO - Rework for both axis`
- * l'annonce explicitement. Passer `AXIS.Y` fait juste tomber dans la
+ * commente en mort dans le code et un commentaire de rework (« Rework for
+ * both axis ») l'annonce explicitement. Passer `AXIS.Y` fait juste tomber dans la
  * branche verticale de `getPosition` sans etre teste par ce composable.
  *
  * @description
@@ -61,6 +61,13 @@ export function useDragResizer (el: MaybeRef<HTMLElement | undefined>, value: Re
         resizing.value = false
     }
 
+    const moveHandler = (start: number, initialStart: number) => (e: MouseEvent | TouchEvent) => {
+        const clickOffset = getPosition(e, isHorizontal.value ? CLIENT_POSITION.X : CLIENT_POSITION.Y)
+        const delta = clickOffset - start
+
+        value.value = clamp(initialStart + delta, toValue(min), toValue(max))
+    }
+
     const onMouseDown = (e: MouseEvent) => {
         e.preventDefault()
         e.stopPropagation()
@@ -70,12 +77,7 @@ export function useDragResizer (el: MaybeRef<HTMLElement | undefined>, value: Re
 
         resizing.value = true
 
-        const onMouseMove = (e: MouseEvent) => {
-            const clickOffset = getPosition(e, isHorizontal.value ? CLIENT_POSITION.X : CLIENT_POSITION.Y)
-            const delta = clickOffset - start
-
-            value.value = clamp(initialStart + delta, toValue(min), toValue(max))
-        }
+        const onMouseMove = moveHandler(start, initialStart)
         const onMouseUp = onDragEnd
 
         removeListeners.push(...[
@@ -92,12 +94,7 @@ export function useDragResizer (el: MaybeRef<HTMLElement | undefined>, value: Re
 
         resizing.value = true
 
-        const onTouchMove = (e: TouchEvent) => {
-            const clickOffset = getPosition(e, isHorizontal.value ? CLIENT_POSITION.X : CLIENT_POSITION.Y)
-            const delta = clickOffset - start
-
-            value.value = clamp(initialStart + delta, toValue(min), toValue(max))
-        }
+        const onTouchMove = moveHandler(start, initialStart)
         const onTouchEnd = onDragEnd
 
         removeListeners.push(...[

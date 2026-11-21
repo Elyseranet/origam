@@ -7,6 +7,7 @@ import type { IChartSeries } from './chart-series.interface'
 
 import type { TChartMapMode } from '../../types/Chart/chart-map.type'
 import type { TIntent } from '../../types/Commons/intent.type'
+import type { TAnyString } from '../../types/Commons/commons.type'
 
 /**
  * A single choropleth data point keyed by ISO-3166-1 alpha-2 code.
@@ -31,7 +32,7 @@ export interface IChartMapRouteDatum {
     /** Optional flow weight — drives the stroke width via `Math.log(value + 1) * 1.5`. */
     value?: number
     /** Overrides `lineColor` for this route specifically. */
-    color?: TIntent | string
+    color?: TIntent | TAnyString
 }
 
 /**
@@ -112,20 +113,20 @@ export interface IChartMapProps extends IChartBaseProps {
      * own background. Swapping the default would trade an adaptive
      * behaviour for a fixed one, not just move a pixel.
      */
-    defaultCountryFill?: TIntent | string
+    defaultCountryFill?: TIntent | TAnyString
     /**
      * Stroke colour applied to all country path outlines.
      * Supports intent names and raw CSS strings, resolved the same way as
      * `lineColor` (#411 — was a hardcoded literal the theme could not reach).
      * Default `'neutral'`.
      */
-    borderColor?: TIntent | string
+    borderColor?: TIntent | TAnyString
     /**
      * Default stroke colour for flight-route arcs.
      * Overridden per route via `IChartMapRouteDatum.color`.
      * Default `'primary'`.
      */
-    lineColor?: TIntent | string
+    lineColor?: TIntent | TAnyString
     /**
      * Radius in SVG pixels of the endpoint circles on each route.
      * Default `4`.

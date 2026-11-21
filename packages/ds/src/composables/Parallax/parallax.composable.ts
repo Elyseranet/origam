@@ -36,19 +36,10 @@ function usePrefersReducedMotion (): Ref<boolean> {
     flag.value = mql.matches
 
     const onChange = (ev: MediaQueryListEvent) => { flag.value = ev.matches }
-    // Both API shapes (legacy addListener and modern addEventListener)
-    if (typeof mql.addEventListener === 'function') {
-        mql.addEventListener('change', onChange)
-    } else if (typeof mql.addListener === 'function') {
-        mql.addListener(onChange)
-    }
+    mql.addEventListener('change', onChange)
 
     onBeforeUnmount(() => {
-        if (typeof mql.removeEventListener === 'function') {
-            mql.removeEventListener('change', onChange)
-        } else if (typeof mql.removeListener === 'function') {
-            mql.removeListener(onChange)
-        }
+        mql.removeEventListener('change', onChange)
     })
 
     return flag
@@ -289,7 +280,7 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
      * 115+ avec un easing lineaire — exactement la configuration par defaut
      * — le runtime basculait sur le chemin CSS et `@scroll-progress` ne
      * partait JAMAIS. Le defaut etait connu du depot depuis le 2026-08-17
-     * (`e2e/parallax.spec.ts`, `test.fixme`) sans ticket derriere.
+     * (`e2e/parallax.spec.ts`, test desactive) sans ticket derriere.
      * @description
      * Les couches, elles, restent animees par le navigateur via
      * `animation-timeline: scroll()` : il ne faut donc SURTOUT PAS relancer

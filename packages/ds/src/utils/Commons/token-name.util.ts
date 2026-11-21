@@ -92,10 +92,13 @@ function markedComponentVarName (path: ReadonlyArray<string>): string {
     let name = `origam-${blockName}`
     const propParts: Array<string> = []
 
-    for (let i = 0; i < rest.length; i++) {
-        if (rest[i] === TOKEN_GROUP_CHILD && i + 1 < rest.length) { name += `__${rest[++i]}`; continue }
-        if (rest[i] === TOKEN_GROUP_STATE && i + 1 < rest.length) { name += `--${rest[++i]}`; continue }
-        propParts.push(rest[i])
+    let i = 0
+    while (i < rest.length) {
+        const part = rest[i++]
+        const hasNext = i < rest.length
+        if (part === TOKEN_GROUP_CHILD && hasNext) { name += `__${rest[i++]}`; continue }
+        if (part === TOKEN_GROUP_STATE && hasNext) { name += `--${rest[i++]}`; continue }
+        propParts.push(part)
     }
 
     return propParts.length === 0 ? name : `${name}---${propParts.join('-')}`

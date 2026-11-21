@@ -201,10 +201,10 @@ export function bracketSurfaceVars (input: IBracketSurfaceInput): Record<string,
     ] as const
 
     BLOCK_EDGES.forEach(({edge, widthProp, colorProp}) => {
-        const width = resolveBracketBorderWidth(input[widthProp] as TBracketBorder)
+        const width = resolveBracketBorderWidth(input[widthProp])
         if (width) vars[`--origam-bracket-match---border-${edge}-width`] = width
 
-        const edgeColor = resolveBracketBorderColor(input[colorProp] as TBracketColor)
+        const edgeColor = resolveBracketBorderColor(input[colorProp])
         if (edgeColor) vars[`--origam-bracket-match---border-${edge}-color`] = edgeColor
     })
 

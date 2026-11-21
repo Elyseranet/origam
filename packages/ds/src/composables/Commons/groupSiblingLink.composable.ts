@@ -1,4 +1,4 @@
-import type { ComponentInternalInstance, InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue'
 import { onMounted, shallowRef } from 'vue'
 import type { IGroupProvide } from '../../interfaces/Commons/group.interface'
 import { findChildrenWithProvide } from '../../utils/Commons/commons.util'
@@ -49,7 +49,7 @@ export function useGroupSiblingLink (
         const ownProviders = findChildrenWithProvide(ownKey, parentSubTree)
         const siblingProviders = findChildrenWithProvide(siblingKey, parentSubTree)
 
-        const ownIndex = ownProviders.indexOf(vm as ComponentInternalInstance)
+        const ownIndex = ownProviders.indexOf(vm)
 
         if (ownIndex === -1) return
 
