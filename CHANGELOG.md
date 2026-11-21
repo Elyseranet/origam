@@ -25,6 +25,8 @@ This project follows [Semantic Versioning](https://semver.org).
 - `createIcons` : importer depuis `origam/composables`. Le chemin profond `composables/Icon/icon.composable` ne l'exporte plus.
 - Garde `TU/origam/btn-no-mdi-1392.spec.ts` : le graphe d'imports de Btn, Icon et Avatar n'atteint ni `mdi.const.ts`, ni `createIcons`, ni `enums/index.ts`, ni `mdi.enum.ts`.
 
+## [2.40.0] - 2026-11-21
+
 ### Added — jetons par mode, helper SSR `origam/ssr`, budget CSS (#1386)
 
 - `origam/tokens/css/dark-pinned` (bloc `[data-mode="dark"]`) et `origam/tokens/css/dark-system` (bloc `@media (prefers-color-scheme: dark)`) : les deux moitiés de `dark.css`, générées dans `dist` au build (`scripts/lib/split-dark-sheet.mjs`). `dark.css`, `light.css` et `primitive.css` sont inchangés.
