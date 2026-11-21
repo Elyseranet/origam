@@ -396,7 +396,7 @@
 	 ********************************************************/
 
 	const labelProps = computed(() => {
-		const defaultLabelProps = origamLabelRef.value?.filterProps(props, ['text', 'class', 'style'])
+		const defaultLabelProps = origamLabelRef.value?.filterProps(props, ['text', 'class', 'style', 'id'])
 
 		return {
 			class: ['origam-field__label'],
@@ -432,7 +432,7 @@
 		return !props.singleLine && !!(props.label || slots.floatingLabel)
 	})
 	const floatingLabelProps = computed(() => {
-		const defaultFloatingLabelProps = origamFloatingLabelRef.value?.filterProps(props, ['text', 'class', 'style'])
+		const defaultFloatingLabelProps = origamFloatingLabelRef.value?.filterProps(props, ['text', 'class', 'style', 'id'])
 
 		return {
 			class: ['origam-field__label', 'origam-field__label--floating'],

@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamField` : les labels ne reprennent plus l'`id` de l'input (#1149)
+
+- Cause : `labelProps` / `floatingLabelProps` recopiaient la prop `id` du champ sur les deux `<origam-label>` via `filterProps` ; l'input et les deux labels partageaient donc le même `id` (`label[for]` visait le premier label, pas le contrôle). `id` est désormais exclu du forward. Touche tous les champs construits sur `OrigamField`. Aucun changement d'API.
+
 ### Fixed — poids JS : `origam-chip` et le coeur `origam/core` n'embarquent plus l'enum MDI de 360 Ko (#1403)
 
 - Cause : l'enum `MDI_ICONS` (~7 000 membres) restait dans le bundle bien qu'inutilisé, car Rolldown ne retire pas l'IIFE d'un enum atteint par un barrel. Chemins : `OrigamChip`/`OrigamChipGroup` (et ~40 autres composants) l'importaient pour leurs icônes par défaut ; `origam-core.ts` et `consts/Commons/display.const.ts` passaient par les barrels `composables/index` (donc `createIcons` -> `mdi.const`) et `enums/index`.
