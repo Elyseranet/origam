@@ -2,6 +2,8 @@ import { MASK_TOKEN_KIND } from '../../enums/TextField/text-field.enum'
 
 import type { IMaskApplyResult, IMaskToken } from '../../interfaces/Commons/mask.interface'
 
+import type { TMaskTokenKind } from '../../types/TextField/text-field.type'
+
 /**
  * Token-walker that converts a raw input string into a
  * formatted display string for a given mask pattern.
@@ -95,6 +97,19 @@ function stripLiterals (raw: string, pattern: string): string {
     return out
 }
 
+/*********************************************************
+ * matchesKind
+ *
+ * @description
+ * Does the character fit a consumer slot of this kind?
+ ********************************************************/
+function matchesKind (kind: TMaskTokenKind, c: string): boolean {
+    if (kind === MASK_TOKEN_KIND.DIGIT) return isDigit(c)
+    if (kind === MASK_TOKEN_KIND.LETTER) return isLetter(c)
+
+    return kind === MASK_TOKEN_KIND.ANY
+}
+
 /**
  * Walk the pattern and consume the (pre-stripped) input
  * char-by-char. Mismatching characters are dropped.
@@ -131,15 +146,7 @@ export function applyMask (value: string, pattern: string): IMaskApplyResult {
         let matched: string | null = null
         while (consumed < stripped.length) {
             const c = stripped[consumed++]
-            if (tok.kind === MASK_TOKEN_KIND.DIGIT && isDigit(c)) {
-                matched = c
-                break
-            }
-            if (tok.kind === MASK_TOKEN_KIND.LETTER && isLetter(c)) {
-                matched = c
-                break
-            }
-            if (tok.kind === MASK_TOKEN_KIND.ANY) {
+            if (matchesKind(tok.kind, c)) {
                 matched = c
                 break
             }

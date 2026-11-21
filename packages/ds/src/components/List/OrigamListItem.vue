@@ -386,7 +386,9 @@
 		]
 	})
 	const listItemTabIndex = computed(() => {
-		return isClickable.value ? (list ? -2 : 0) : undefined
+		if (!isClickable.value) return undefined
+
+		return list ? -2 : 0
 	})
 
 	const setActiveLink = () => {
@@ -751,10 +753,6 @@
 			opacity: var(--origam-list-item---opacity, 0.6);
 		}
 
-		&--link {
-			cursor: var(--origam-list-item---cursor, pointer);
-		}
-
 		&--one-line {
 			#{$this}__subtitle {
 				-webkit-line-clamp: 1;
@@ -813,6 +811,8 @@
 		}
 
 		&--link {
+			cursor: var(--origam-list-item---cursor, pointer);
+
 			&:hover,
 			&:focus-visible {
 				> #{$this}__overlay {
