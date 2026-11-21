@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamCounter` : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)
+
+- Cause : `.origam-counter` est `flex: 0 1 auto` sans `white-space: nowrap` ; dans le flex `__details` d'`OrigamInput`, un texte d'aide long le faisait rétrécir et le texte passait à la ligne (mesuré dans un flex de 120 px : 3 boîtes de ligne).
+- Correctif : `white-space: nowrap` sur la racine — c'est le texte d'aide qui se replie. Aucun changement d'API.
+
 ### Fixed — poids JS : `origam-chip` et le coeur `origam/core` n'embarquent plus l'enum MDI de 360 Ko (#1403)
 
 - Cause : l'enum `MDI_ICONS` (~7 000 membres) restait dans le bundle bien qu'inutilisé, car Rolldown ne retire pas l'IIFE d'un enum atteint par un barrel. Chemins : `OrigamChip`/`OrigamChipGroup` (et ~40 autres composants) l'importaient pour leurs icônes par défaut ; `origam-core.ts` et `consts/Commons/display.const.ts` passaient par les barrels `composables/index` (donc `createIcons` -> `mdi.const`) et `enums/index`.
