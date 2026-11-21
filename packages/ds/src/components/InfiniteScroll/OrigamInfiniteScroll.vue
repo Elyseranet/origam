@@ -137,9 +137,8 @@
 	import { INFINITE_SCROLL_MODE, INFINITE_SCROLL_SIDE, INFINITE_SCROLL_STATUS } from '../../enums/InfiniteScroll/infinite-scroll.enum'
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { IInfiniteScrollProps } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
+	import type { IInfiniteScrollProps, IInfiniteScrollEmits, IInfiniteScrollSlots } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
 
-	import type { IInfiniteScrollEmits, IInfiniteScrollSlots } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
 
 	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types/InfiniteScroll/infinite-scroll.type'
 

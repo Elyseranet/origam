@@ -381,10 +381,9 @@
 	const resolvedLoopMode = computed<TAudioLoopMode>(() => loopModeModel.value)
 
 	function cycleLoopMode (): void {
-		const next: TAudioLoopMode =
-			loopModeModel.value === 'none' ? 'all'
-				: loopModeModel.value === 'all' ? 'one'
-					: 'none'
+		let next: TAudioLoopMode = 'none'
+		if (loopModeModel.value === 'none') next = 'all'
+		else if (loopModeModel.value === 'all') next = 'one'
 		loopModeModel.value = next
 	}
 
@@ -559,7 +558,6 @@
 		if (item.key.startsWith('quality-') && typeof item.value === 'string') {
 			emit('quality-change', item.value)
 			configMenuOpen.value = false
-			return
 		}
 	}
 

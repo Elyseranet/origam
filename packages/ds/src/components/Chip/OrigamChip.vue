@@ -161,8 +161,7 @@
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { SIZES } from '../../enums/Commons/size.enum'
 
-	import type { IChipProps } from '../../interfaces/Chip/chip.interface'
-	import type { IChipEmits, IChipSlots } from '../../interfaces/Chip/chip.interface'
+	import type { IChipProps, IChipEmits, IChipSlots } from '../../interfaces/Chip/chip.interface'
 
 	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 

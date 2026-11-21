@@ -173,7 +173,8 @@
 		if (!isLastItem(index)) return false
 
 		const ownConfig = typeof item === 'string' ? undefined : item.active
-		const config = ownConfig !== undefined ? ownConfig : (wasPropPassed('active') ? props.active : undefined)
+		const inheritedConfig = wasPropPassed('active') ? props.active : undefined
+		const config = ownConfig !== undefined ? ownConfig : inheritedConfig
 
 		return config && typeof config === 'object' ? {...config, enabled: true} : true
 	}

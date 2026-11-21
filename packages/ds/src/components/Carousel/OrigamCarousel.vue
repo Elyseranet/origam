@@ -122,10 +122,9 @@
 
 	import { intentBgExpr, isCssColor, isIntent } from '../../utils/Commons/color.util'
 
-	import type { ICarouselProps } from '../../interfaces/Carousel/carousel.interface'
+	import type { ICarouselProps, ICarouselEmits, ICarouselSlots } from '../../interfaces/Carousel/carousel.interface'
 	import type { IGroupProvide } from '../../interfaces/Commons/group.interface'
 
-	import type { ICarouselEmits, ICarouselSlots } from '../../interfaces/Carousel/carousel.interface'
 
 	import type { TOrigamWindow } from '../../types/Window/window.type'
 

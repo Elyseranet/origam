@@ -197,9 +197,8 @@
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 	import { VARIANT_INPUT } from '../../enums/Commons/variant.enum'
 
-	import type { IFieldProps, IFieldSlots } from '../../interfaces/Field/field.interface'
+	import type { IFieldProps, IFieldSlots, IFieldEmits } from '../../interfaces/Field/field.interface'
 
-	import type { IFieldEmits } from '../../interfaces/Field/field.interface'
 
 	import type { TOrigamLabel } from '../../types/Label/label.type'
 

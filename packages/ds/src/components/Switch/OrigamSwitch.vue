@@ -147,9 +147,8 @@
   import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
   import { SIZES } from '../../enums/Commons/size.enum'
 
-  import type { ISwitchProps } from '../../interfaces/Switch/switch.interface'
+  import type { ISwitchProps, ISwitchEmits, ISwitchSlots } from '../../interfaces/Switch/switch.interface'
 
-  import type { ISwitchEmits, ISwitchSlots } from '../../interfaces/Switch/switch.interface'
 
   import type { TOrigamInput } from '../../types/Input/input.type'
   import type { TOrigamSelectionControl } from '../../types/SelectionControl/selection-control.type'

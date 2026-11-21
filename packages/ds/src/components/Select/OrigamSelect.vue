@@ -323,9 +323,8 @@
 
 	import type { IInternalListItem } from '../../interfaces/List/list-children.interface'
 	import type { IItemProps } from '../../interfaces/Commons/item.interface'
-	import type { ISelectProps } from '../../interfaces/Select/select.interface'
+	import type { ISelectProps, ISelectEmits, ISelectSlots } from '../../interfaces/Select/select.interface'
 
-	import type { ISelectEmits, ISelectSlots } from '../../interfaces/Select/select.interface'
 
 	import type { TOrigamChip } from '../../types/Chip/chip.type'
 	import type { TOrigamList } from '../../types/List/list.type'

@@ -140,9 +140,8 @@
   import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
   import { STATUS } from '../../enums/Commons/status.enum'
 
-  import type { IAlertProps } from '../../interfaces/Alert/alert.interface'
+  import type { IAlertProps, IAlertEmits, IAlertSlots } from '../../interfaces/Alert/alert.interface'
 
-  import type { IAlertEmits, IAlertSlots } from '../../interfaces/Alert/alert.interface'
 
   /*********************************************************
    * Global

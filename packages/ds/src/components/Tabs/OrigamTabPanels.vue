@@ -37,10 +37,9 @@
 
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
-	import type { ITabPanelsProps } from '../../interfaces/Tabs/tab-panels.interface'
+	import type { ITabPanelsProps, ITabPanelsEmits, ITabPanelsSlots } from '../../interfaces/Tabs/tab-panels.interface'
 	import type { ITouchHandlers } from '../../interfaces/Commons/touch.interface'
 
-	import type { ITabPanelsEmits, ITabPanelsSlots } from '../../interfaces/Tabs/tab-panels.interface'
 
 	/*********************************************************
 	 * Global

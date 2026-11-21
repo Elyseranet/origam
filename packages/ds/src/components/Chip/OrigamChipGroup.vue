@@ -36,9 +36,8 @@
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IChipGroupProps } from '../../interfaces/Chip/chip-group.interface'
+	import type { IChipGroupProps, IChipGroupEmits, IChipGroupSlots } from '../../interfaces/Chip/chip-group.interface'
 
-	import type { IChipGroupEmits, IChipGroupSlots } from '../../interfaces/Chip/chip-group.interface'
 
 	import type { TOrigamSlideGroup } from '../../types/Slide/slide-group.type'
 

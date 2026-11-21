@@ -506,7 +506,7 @@
 	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
-	import { useChart } from '../../composables/Chart/chart.composable'
+	import { useChart, computeAnnotationGeometry, computePlotBandGeometry, computePlotLineGeometry } from '../../composables/Chart/chart.composable'
 	import { useChartZoom } from '../../composables/Chart/chart-zoom.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -515,11 +515,6 @@
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 
-	import {
-		computeAnnotationGeometry,
-		computePlotBandGeometry,
-		computePlotLineGeometry
-	} from '../../composables/Chart/chart.composable'
 
 	import { CHART_RANGE_SELECTOR_DEFAULT_BUTTONS, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {

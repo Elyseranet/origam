@@ -195,9 +195,8 @@
 	import { IN_BROWSER } from '../../consts/Commons/commons.const'
 
 	import type { ICommand } from '../../interfaces/CommandPalette/command.interface'
-	import type { ICommandPaletteProps, ICommandPaletteSlots } from '../../interfaces/CommandPalette/command-palette.interface'
+	import type { ICommandPaletteProps, ICommandPaletteSlots, ICommandPaletteEmits } from '../../interfaces/CommandPalette/command-palette.interface'
 
-	import type { ICommandPaletteEmits } from '../../interfaces/CommandPalette/command-palette.interface'
 
 	import type { IRenderedGroup } from '../../interfaces/CommandPalette/command-palette-rendered-group.interface'
 

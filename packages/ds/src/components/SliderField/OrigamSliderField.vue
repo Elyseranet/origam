@@ -433,9 +433,8 @@
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 	import { SLIDER_FIELD_VARIANT } from '../../enums/SliderField/slider-field.enum'
 
-	import type { ISliderFieldProps } from '../../interfaces/SliderField/slider-field.interface'
+	import type { ISliderFieldProps, ISliderFieldEmits, ISliderFieldSlots } from '../../interfaces/SliderField/slider-field.interface'
 
-	import type { ISliderFieldEmits, ISliderFieldSlots } from '../../interfaces/SliderField/slider-field.interface'
 
 	import type { TOrigamInput } from '../../types/Input/input.type'
 	import type { TTick } from '../../types/SliderField/slider-field.type'

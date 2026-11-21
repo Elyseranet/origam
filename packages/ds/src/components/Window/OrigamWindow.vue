@@ -8,14 +8,14 @@
 			:style="windowStyles"
 			v-bind="landmarkAttrs"
 	>
-		<p
+		<output
 				class="origam-window__live-region"
 				role="status"
 				aria-atomic="true"
 				aria-live="polite"
 		>
 			{{ slideAnnouncement }}
-		</p>
+		</output>
 
 		<div
 				:style="windowContainerStyles"
@@ -105,9 +105,8 @@
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { ITouchHandlers } from '../../interfaces/Commons/touch.interface'
-	import type { IWindowProps } from '../../interfaces/Window/window.interface'
+	import type { IWindowProps, IWindowEmits, IWindowSlots } from '../../interfaces/Window/window.interface'
 
-	import type { IWindowEmits, IWindowSlots } from '../../interfaces/Window/window.interface'
 
 	/*********************************************************
 	 * Global

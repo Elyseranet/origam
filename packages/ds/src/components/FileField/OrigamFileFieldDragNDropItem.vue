@@ -69,9 +69,8 @@
   import { useStyle } from '../../composables/Commons/style.composable'
   import { useTypography } from '../../composables/Commons/typography.composable'
   import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-  import type { IFileFieldDragNDropItemProps, IFileFieldDragNDropItemSlots } from '../../interfaces/FileField/file-field-dragndrop-item.interface'
+  import type { IFileFieldDragNDropItemProps, IFileFieldDragNDropItemSlots, IFileFieldDragNDropItemEmits } from '../../interfaces/FileField/file-field-dragndrop-item.interface'
 
-	import type { IFileFieldDragNDropItemEmits } from '../../interfaces/FileField/file-field-dragndrop-item.interface'
   import { humanReadableFileSize } from '../../utils/Commons/commons.util'
 
   /*********************************************************

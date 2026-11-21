@@ -12,11 +12,11 @@
 				v-if="slots.top || isSkeletonLoading"
 				#top
 		>
-			<span
+			<output
 					v-if="isSkeletonLoading"
 					class="origam-data-table__announcement"
 					role="status"
-			>{{ skeletonAnnouncement }}</span>
+			>{{ skeletonAnnouncement }}</output>
 			<slot name="top"/>
 		</template>
 
@@ -174,11 +174,10 @@
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IDataTableGroup, IDataTableGroupableItem } from '../../interfaces/DataTable/group.interface'
-	import type { IDataTableProps } from '../../interfaces/DataTable/data-table.interface'
+	import type { IDataTableProps, IDataTableEmits, IDataTableSlots } from '../../interfaces/DataTable/data-table.interface'
 	import type { IDataTableSelectableItem } from '../../interfaces/DataTable/select.interface'
 	import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
 
-	import type { IDataTableEmits, IDataTableSlots } from '../../interfaces/DataTable/data-table.interface'
 
 	import type { TOrigamDataTableFooter } from '../../types/DataTable/data-table-footer.type'
 	import type { TOrigamDataTableHeaders } from '../../types/DataTable/data-table-headers.type'
@@ -351,9 +350,9 @@
 	 * Skeleton announcement
 	 *
 	 * @description
-	 * While the rows are placeholders the table makes ONE announcement: a single visually hidden `role="status"` in the `top` slot of `<OrigamTable>`.
+	 * While the rows are placeholders the table makes ONE announcement: a single visually hidden `<output>` (implicit `role="status"`) in the `top` slot of `<OrigamTable>`.
 	 * @description
-	 * That slot sits NEXT TO the `<table>`, where a `<span>` is valid HTML: inside the `<table>` only `<caption>` / `<tbody>`… are allowed and a `<tr>` cannot hold a live region.
+	 * That slot sits NEXT TO the `<table>`, where an `<output>` is valid HTML: inside the `<table>` only `<caption>` / `<tbody>`… are allowed and a `<tr>` cannot hold a live region.
 	 * @description
 	 * `<caption>` belongs to the consumer (`caption` prop), so it is not borrowed.
 	 * @description
