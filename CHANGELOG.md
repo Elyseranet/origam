@@ -25,6 +25,15 @@ This project follows [Semantic Versioning](https://semver.org).
 - Mesure (fixture Nuxt 4 minimale, `origam/nuxt` en `lite`, page avec `OrigamChip` texte seul, JS total du client) : 754 492 -> 403 614 octets (201 -> 127 Kio gzip) ; page sans composant : 650 014 -> 299 232 octets. Plus aucune occurrence de `mdi-ab-testing` dans le build.
 - Garde `TU/origam/btn-no-mdi-1392.spec.ts` étendue : aucun composant public, ni `origam-core.ts` ni `nuxt/create.core.ts`, n'atteint `mdi.enum`, `mdi.const` ou `enums/index`.
 
+## [2.41.0] - 2026-11-21
+
+### Fixed — Quality Gate Sonar vert sur le nouveau code (#1390)
+
+- `new_violations` : **279 → 0** (mesure SonarQube après #1402, Quality Gate `OK`). 180 imports dupliqués fusionnés (S3863, #1399), ~45 défauts TypeScript (ternaires imbriqués, assertions inutiles, `TAnyString`, API dépréciées, #1401, #1402), 11 défauts de template (`<output>` natif, code commenté, CSS dupliqué, #1400, #1402). Aucun changement de rendu ni de prop hors la rupture `useBackButton` décrite plus bas.
+- 25 alertes vérifiées comme faux positifs et 10 interfaces d'emits (convention du dépôt) sont marquées dans Sonar, chacune avec sa justification.
+- Garde : règle ESLint `no-duplicate-imports` sur `packages/ds/src` (un `import type` séparé d'un import valeur reste autorisé).
+
+
 ### Added — plafond CSS d'`OrigamBlockquote` (#1395)
 
 - Mesure : `OrigamBlockquote` seul pèse **7,9 Kio de CSS (~1 Kio gzip)**, sans duplication ni règle d'un autre composant. Les ~50 Ko d'`OrigamBlockquote.css` vus dans Elysera sont le CSS de tout ce qui est importé avec lui (Btn 18 Kio, Progress, Avatar, Img…), regroupé par Vite/Nuxt dans un fichier qui garde le nom du premier composant. Rien à réduire dans Blockquote.
