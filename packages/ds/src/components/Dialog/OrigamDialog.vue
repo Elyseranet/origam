@@ -160,9 +160,8 @@
 	import { IN_BROWSER } from '../../consts/Commons/commons.const'
 	import vIntersect from '../../directives/Intersect/intersect.directive'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-	import type { IDialogProps } from '../../interfaces/Dialog/dialog.interface'
+	import type { IDialogProps, IDialogEmits, IDialogSlots } from '../../interfaces/Dialog/dialog.interface'
 
-	import type { IDialogEmits, IDialogSlots } from '../../interfaces/Dialog/dialog.interface'
 	import type { TOrigamCard } from '../../types/Card/card.type'
 	import type { TOrigamOverlay } from '../../types/Overlay/overlay.type'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'

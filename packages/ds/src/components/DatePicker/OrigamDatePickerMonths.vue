@@ -29,9 +29,8 @@
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IDatePickerMonthsProps } from '../../interfaces/DatePicker/date-picker-months.interface'
+	import type { IDatePickerMonthsProps, IDatePickerMonthsEmits, IDatePickerMonthsSlots } from '../../interfaces/DatePicker/date-picker-months.interface'
 
-	import type { IDatePickerMonthsEmits, IDatePickerMonthsSlots } from '../../interfaces/DatePicker/date-picker-months.interface'
 
 	import { convertToUnit, createRange, int } from '../../utils/Commons/commons.util'
 

@@ -149,11 +149,10 @@
 	import { SIZES } from '../../enums/Commons/size.enum'
 
 	import type { IAdjacentProps } from '../../interfaces/Commons/adjacent.interface'
-	import type { IBtnProps } from '../../interfaces/Btn/btn.interface'
+	import type { IBtnProps, IBtnEmits, IBtnSlots } from '../../interfaces/Btn/btn.interface'
 	import type { IProgressProps } from '../../interfaces/Progress/progress.interface'
 	import type { IStatusProps } from '../../interfaces/Commons/status.interface'
 
-	import type { IBtnEmits, IBtnSlots } from '../../interfaces/Btn/btn.interface'
 
 	import type { TOrigamProgress } from '../../types/Progress/progress.type'
 

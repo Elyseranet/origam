@@ -116,9 +116,8 @@
 
 	import { IMG_STATE } from '../../enums/Img/img.enum'
 
-	import type { IImgProps, ISrcObject } from '../../interfaces/Img/img.interface'
+	import type { IImgProps, ISrcObject, IImgEmits, IImgSlots } from '../../interfaces/Img/img.interface'
 
-	import type { IImgEmits, IImgSlots } from '../../interfaces/Img/img.interface'
 
 	import type { TImgState } from '../../types/Img/img.type'
 

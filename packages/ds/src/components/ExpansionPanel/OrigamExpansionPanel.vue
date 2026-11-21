@@ -130,9 +130,8 @@
 	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { IExpansionPanelProps } from '../../interfaces/ExpansionPanel/expansion-panel.interface'
+	import type { IExpansionPanelProps, IExpansionPanelEmits, IExpansionPanelSlots } from '../../interfaces/ExpansionPanel/expansion-panel.interface'
 
-	import type { IExpansionPanelEmits, IExpansionPanelSlots } from '../../interfaces/ExpansionPanel/expansion-panel.interface'
 
 	import type { TOrigamExpansionPanelContent } from '../../types/ExpansionPanel/expansion-panel-content.type'
 	import type { TOrigamExpansionPanelHeader } from '../../types/ExpansionPanel/expansion-panel-header.type'

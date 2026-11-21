@@ -118,9 +118,8 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IRadioProps } from '../../interfaces/Radio/radio.interface'
+	import type { IRadioProps, IRadioEmits, IRadioSlots } from '../../interfaces/Radio/radio.interface'
 
-	import type { IRadioEmits, IRadioSlots } from '../../interfaces/Radio/radio.interface'
 
 	import type { TOrigamInput } from '../../types/Input/input.type'
 	import type { TOrigamRadioBtn } from '../../types/Radio/radio-btn.type'

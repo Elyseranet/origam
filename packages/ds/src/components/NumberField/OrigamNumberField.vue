@@ -306,9 +306,8 @@
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { INumberFieldProps, INumberFieldSlots } from '../../interfaces/NumberField/number-field.interface'
+	import type { INumberFieldProps, INumberFieldSlots, INumberFieldEmits } from '../../interfaces/NumberField/number-field.interface'
 
-	import type { INumberFieldEmits } from '../../interfaces/NumberField/number-field.interface'
 
 	import type { TOrigamInput } from '../../types/Input/input.type'
 	import type { TOrigamTextField } from '../../types/TextField/text-field.type'

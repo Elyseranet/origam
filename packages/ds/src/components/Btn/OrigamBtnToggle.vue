@@ -42,9 +42,8 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IBtnToggleProps } from '../../interfaces/Btn/btn-toggle.interface'
+	import type { IBtnToggleProps, IBtnToggleEmits, IBtnToggleSlots } from '../../interfaces/Btn/btn-toggle.interface'
 
-	import type { IBtnToggleEmits, IBtnToggleSlots } from '../../interfaces/Btn/btn-toggle.interface'
 
 	import type { TOrigamBtnGroup } from '../../types/Btn/btn-group.type'
 

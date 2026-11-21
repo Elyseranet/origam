@@ -77,9 +77,8 @@
 	import { LIST_ITEM_ROLE } from '../../enums/List/list-item.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IListActivatorProps, IListGroupProps } from '../../interfaces/List/list-group.interface'
+	import type { IListActivatorProps, IListGroupProps, IListGroupEmits, IListGroupSlots } from '../../interfaces/List/list-group.interface'
 
-	import type { IListGroupEmits, IListGroupSlots } from '../../interfaces/List/list-group.interface'
 
 	/*********************************************************
 	 * Global

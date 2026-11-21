@@ -51,12 +51,8 @@
 
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-  import type {
-    IColorPickerSwatchesProps,
-    IColorPickerSwatchesSlots
-  } from '../../interfaces/ColorPicker/color-picker-swatches.interface'
+  import type { IColorPickerSwatchesProps, IColorPickerSwatchesSlots, IColorPickerSwatchesEmits } from '../../interfaces/ColorPicker/color-picker-swatches.interface'
 
-	import type { IColorPickerSwatchesEmits } from '../../interfaces/ColorPicker/color-picker-swatches.interface'
 	import type { TColorType, TRGBA } from '../../types/Commons/color.type'
 
 	import { convertToUnit, deepEqual } from '../../utils/Commons/commons.util'

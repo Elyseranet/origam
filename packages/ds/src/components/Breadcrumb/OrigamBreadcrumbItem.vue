@@ -87,9 +87,8 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IBreadcrumbItemProps } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
+	import type { IBreadcrumbItemProps, IBreadcrumbItemEmits, IBreadcrumbItemSlots } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
 
-	import type { IBreadcrumbItemEmits, IBreadcrumbItemSlots } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
 
 	import { computed, ComputedRef, StyleValue, toRef, useAttrs } from 'vue'
 

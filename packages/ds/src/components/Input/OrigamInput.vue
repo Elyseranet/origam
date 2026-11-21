@@ -125,9 +125,8 @@
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
-	import type { IInputProps, IInputSlots } from '../../interfaces/Input/input.interface'
+	import type { IInputProps, IInputSlots, IInputEmits } from '../../interfaces/Input/input.interface'
 
-	import type { IInputEmits } from '../../interfaces/Input/input.interface'
 
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 	import { wrapInArray } from '../../utils/Commons/commons.util'

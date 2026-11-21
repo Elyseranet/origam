@@ -58,9 +58,8 @@
 	import { LOCATION_STRATEGIES } from '../../enums/Commons/location.enum'
 	import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
 
-	import type { ITooltipProps } from '../../interfaces/Tooltip/tooltip.interface'
+	import type { ITooltipProps, ITooltipEmits, ITooltipSlots } from '../../interfaces/Tooltip/tooltip.interface'
 
-	import type { ITooltipEmits, ITooltipSlots } from '../../interfaces/Tooltip/tooltip.interface'
 
 	import type { TAnchor } from '../../types/Commons/anchor.type'
 	import type { TOrigamOverlay } from '../../types/Overlay/overlay.type'

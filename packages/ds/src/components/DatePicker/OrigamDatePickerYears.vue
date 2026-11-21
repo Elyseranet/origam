@@ -28,9 +28,8 @@
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IDatePickerYearsProps } from '../../interfaces/DatePicker/date-picker-years.interface'
+	import type { IDatePickerYearsProps, IDatePickerYearsEmits, IDatePickerYearsSlots } from '../../interfaces/DatePicker/date-picker-years.interface'
 
-	import type { IDatePickerYearsEmits, IDatePickerYearsSlots } from '../../interfaces/DatePicker/date-picker-years.interface'
 	import type { TTemplateRef } from '../../types/Commons/commons.type'
 	import { convertToUnit, createRange, int, templateRef } from '../../utils/Commons/commons.util'
 

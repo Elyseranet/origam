@@ -28,9 +28,8 @@
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
-	import type { IOverlayScrimProps } from '../../interfaces/Overlay/overlay-scrim.interface'
+	import type { IOverlayScrimProps, IOverlayScrimEmits, IOverlayScrimSlots } from '../../interfaces/Overlay/overlay-scrim.interface'
 
-	import type { IOverlayScrimEmits, IOverlayScrimSlots } from '../../interfaces/Overlay/overlay-scrim.interface'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 	/*********************************************************

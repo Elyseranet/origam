@@ -69,9 +69,8 @@
   import { useStyle } from '../../composables/Commons/style.composable'
   import { useTypography } from '../../composables/Commons/typography.composable'
   import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-  import type { IFileFieldListItemProps, IFileFieldListItemSlots } from '../../interfaces/FileField/file-field-list-item.interface'
+  import type { IFileFieldListItemProps, IFileFieldListItemSlots, IFileFieldListItemEmits } from '../../interfaces/FileField/file-field-list-item.interface'
 
-	import type { IFileFieldListItemEmits } from '../../interfaces/FileField/file-field-list-item.interface'
   import { humanReadableFileSize } from '../../utils/Commons/commons.util'
 
   /*********************************************************

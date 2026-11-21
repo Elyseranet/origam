@@ -43,9 +43,8 @@
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 	import { TAB_VARIANT } from '../../enums/Tabs/tab.enum'
 
-	import type { ITabsProps } from '../../interfaces/Tabs/tabs.interface'
+	import type { ITabsProps, ITabsEmits, ITabsSlots } from '../../interfaces/Tabs/tabs.interface'
 
-	import type { ITabsEmits, ITabsSlots } from '../../interfaces/Tabs/tabs.interface'
 
 	/*********************************************************
 	 * Global

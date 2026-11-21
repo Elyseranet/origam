@@ -72,9 +72,8 @@
 	import { useTypography } from '../../composables/Commons/typography.composable'
 	import { useValidation } from '../../composables/Commons/validation.composable'
 
-	import type { IFormProps, IFormSlots, ISubmitEventPromise } from '../../interfaces/Form/form.interface'
+	import type { IFormProps, IFormSlots, ISubmitEventPromise, IFormEmits } from '../../interfaces/Form/form.interface'
 
-	import type { IFormEmits } from '../../interfaces/Form/form.interface'
 
 	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'

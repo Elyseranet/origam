@@ -218,9 +218,8 @@
 	import { INLINE_EDIT_ACTION } from '../../enums/InlineEdit/inline-edit.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IInlineEditProps } from '../../interfaces/InlineEdit/inline-edit.interface'
+	import type { IInlineEditProps, IInlineEditEmits, IInlineEditSlots } from '../../interfaces/InlineEdit/inline-edit.interface'
 
-	import type { IInlineEditEmits, IInlineEditSlots } from '../../interfaces/InlineEdit/inline-edit.interface'
 
 	/*********************************************************
 	 * Global

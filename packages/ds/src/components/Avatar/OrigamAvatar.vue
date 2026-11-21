@@ -60,10 +60,9 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { IAvatarProps } from '../../interfaces/Avatar/avatar.interface'
+	import type { IAvatarProps, IAvatarEmits, IAvatarSlots } from '../../interfaces/Avatar/avatar.interface'
 	import type { ISrcObject } from '../../interfaces/Img/img.interface'
 
-	import type { IAvatarEmits, IAvatarSlots } from '../../interfaces/Avatar/avatar.interface'
 	import { isEmpty } from '../../utils/Commons/commons.util'
 	import { isIntent, tokenStylesForIntent } from '../../utils/Commons/color.util'
 

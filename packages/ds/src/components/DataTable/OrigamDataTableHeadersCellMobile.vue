@@ -204,10 +204,9 @@
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IDataTableHeadersCellMobileProps } from '../../interfaces/DataTable/data-table-headers-cell-mobile.interface'
+	import type { IDataTableHeadersCellMobileProps, IDataTableHeadersCellMobileEmits, IDataTableHeadersCellMobileSlots } from '../../interfaces/DataTable/data-table-headers-cell-mobile.interface'
 	import type { IInternalListItem } from '../../interfaces/List/list-children.interface'
 
-	import type { IDataTableHeadersCellMobileEmits, IDataTableHeadersCellMobileSlots } from '../../interfaces/DataTable/data-table-headers-cell-mobile.interface'
 
 	import { computed, mergeProps, useSlots } from 'vue'
 

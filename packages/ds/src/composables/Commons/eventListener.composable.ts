@@ -1,6 +1,5 @@
-import type { Ref } from 'vue'
+import type { Ref, MaybeRefOrGetter } from 'vue'
 import { watch } from 'vue'
-import type { MaybeRefOrGetter } from 'vue'
 import { noop, tryOnScopeDispose } from '../../utils/Commons/commons.util'
 import { resolveUnref, unrefElement } from '../../utils/Commons/eventListener.util'
 

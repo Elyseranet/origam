@@ -82,12 +82,8 @@
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-  import type {
-    IColorPickerPreviewProps,
-    IColorPickerPreviewSlots
-  } from '../../interfaces/ColorPicker/color-picker-preview.interface'
+  import type { IColorPickerPreviewProps, IColorPickerPreviewSlots, IColorPickerPreviewEmits } from '../../interfaces/ColorPicker/color-picker-preview.interface'
 
-	import type { IColorPickerPreviewEmits } from '../../interfaces/ColorPicker/color-picker-preview.interface'
 
 	import type { THSVA } from '../../types/Commons/color.type'
 

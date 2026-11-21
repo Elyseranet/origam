@@ -72,9 +72,8 @@
 	import { BLOCK } from '../../enums/Commons/anchor.enum'
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IAppBarProps } from '../../interfaces/App/app-bar.interface'
+	import type { IAppBarProps, IAppBarEmits, IAppBarSlots } from '../../interfaces/App/app-bar.interface'
 
-	import type { IAppBarEmits, IAppBarSlots } from '../../interfaces/App/app-bar.interface'
 
 	import type { TOrigamToolbar } from '../../types/Toolbar/toolbar.type'
 

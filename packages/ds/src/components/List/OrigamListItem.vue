@@ -149,9 +149,8 @@
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 	import { LIST_ITEM_ROLE } from '../../enums/List/list-item.enum'
 
-	import type { IListItemProps } from '../../interfaces/List/list-item.interface'
+	import type { IListItemProps, IListItemEmits, IListItemSlots } from '../../interfaces/List/list-item.interface'
 
-	import type { IListItemEmits, IListItemSlots } from '../../interfaces/List/list-item.interface'
 
 	import type { TListItemSlot } from '../../types/List/list-item.type'
 
