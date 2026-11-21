@@ -23,8 +23,8 @@ export function updateRipple (el: IRippleHtmlElement, binding: IRippleDirectiveB
 
     el._ripple = el._ripple ?? {}
     el._ripple.enabled = enabled
-    el._ripple.centered = modifiers.center
-    el._ripple.circle = modifiers.circle
+    el._ripple.centered = modifiers.center || (isObject(value) && value.center)
+    el._ripple.circle = modifiers.circle || (isObject(value) && value.circle)
     if (isObject(value) && value.class) {
         el._ripple.class = value.class
     }

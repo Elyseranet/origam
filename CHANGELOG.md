@@ -22,6 +22,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 - Cause : `labelProps` / `floatingLabelProps` recopiaient la prop `id` du champ sur les deux `<origam-label>` via `filterProps` ; l'input et les deux labels partageaient donc le même `id` (`label[for]` visait le premier label, pas le contrôle). `id` est désormais exclu du forward. Touche tous les champs construits sur `OrigamField`. Aucun changement d'API.
 
+### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
+
+- Cause : Btn/SelectionControl passaient un tuple façon Vuetify à `v-ripple` ; en template Vue les modifiers de directive sont statiques et le tableau n'est que la valeur, donc `binding.modifiers.center/circle` n'étaient jamais posés.
+- Correctif : `updateRipple` accepte aussi `center` / `circle` dans la valeur objet (`IRippleOptions`). `OrigamSelectionControl` : ripple centré + circulaire ; `OrigamBtn` en mode `icon` : centré (comportement d'origine du tuple). `OrigamChip` n'avait aucun modifier à l'origine (`[x, null]`) : inchangé.
+- Ne règle pas #1177 (feuille de style de `.origam-ripple__container`).
+
 ### Fixed — `OrigamFileField` : anneau de focus sur la dropzone et attributs natifs sur l'`<input>` seul (#1383)
 
 - Focus : en mode `dragndrop`/`dropzone`, l'`<input type="file">` (opacity 0) porte le focus clavier mais la dropzone restait sans outline (`outline-style: none` mesuré dans Chromium). La dropzone peint désormais un anneau `:has(:focus-visible)`, aux tokens `--origam-color__border---focus` / `--origam-border__width---2` (même forme que `OrigamRatingFieldItem`).
