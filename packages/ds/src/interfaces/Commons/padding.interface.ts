@@ -1,3 +1,4 @@
+import type { TBoxValue } from '../../types/Commons/box-value.type'
 /**
  * Inner-spacing surface.
  *
@@ -33,19 +34,19 @@ export interface IPaddingProps {
      * design rung; `"8px 16px"` → block / inline; `true` → the legacy
      * `--padded` class.
      */
-    padding?: boolean | number | string
+    padding?: TBoxValue
     /** Overrides `padding` and `paddingBlock` for the top edge. */
-    paddingTop?: boolean | number | string
+    paddingTop?: TBoxValue
     /** Overrides `padding` and `paddingInline` for the left edge. */
-    paddingLeft?: boolean | number | string
+    paddingLeft?: TBoxValue
     /** Overrides `padding` and `paddingBlock` for the bottom edge. */
-    paddingBottom?: boolean | number | string
+    paddingBottom?: TBoxValue
     /** Overrides `padding` and `paddingInline` for the right edge. */
-    paddingRight?: boolean | number | string
+    paddingRight?: TBoxValue
     /** Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`. */
-    paddingBlock?: boolean | number | string
+    paddingBlock?: TBoxValue
     /** Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`. */
-    paddingInline?: boolean | number | string
+    paddingInline?: TBoxValue
     /*********************************************************
      * Logical per-side padding — rung 3 (issue #1013)
      *
@@ -71,8 +72,8 @@ export interface IPaddingProps {
      * reading-order offset — an indent, a gutter beside an accent rule —
      * rather than a genuinely physical one.
      ********************************************************/
-    paddingInlineStart?: boolean | number | string
-    paddingInlineEnd?: boolean | number | string
-    paddingBlockStart?: boolean | number | string
-    paddingBlockEnd?: boolean | number | string
+    paddingInlineStart?: TBoxValue
+    paddingInlineEnd?: TBoxValue
+    paddingBlockStart?: TBoxValue
+    paddingBlockEnd?: TBoxValue
 }

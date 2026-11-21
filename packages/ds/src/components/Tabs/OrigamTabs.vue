@@ -191,7 +191,7 @@
 		const start = offset > 0 ? 0 : list.length - 1
 		const end = offset > 0 ? list.length : -1
 
-		for (let i = start; i !== end; i += offset) {
+		for (let i = start; offset > 0 ? i < end : i > end; i += offset) {
 			const item = list[i]
 			if (!item.disabled) {
 				select(item.id, true)

@@ -110,7 +110,7 @@
     {
       "name": "margin",
       "label": "margin",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -125,7 +125,7 @@
     {
       "name": "marginTop",
       "label": "marginTop",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -140,7 +140,7 @@
     {
       "name": "marginLeft",
       "label": "marginLeft",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -155,7 +155,7 @@
     {
       "name": "marginBottom",
       "label": "marginBottom",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -170,7 +170,7 @@
     {
       "name": "marginRight",
       "label": "marginRight",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -185,7 +185,7 @@
     {
       "name": "marginBlock",
       "label": "marginBlock",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -200,7 +200,7 @@
     {
       "name": "marginInline",
       "label": "marginInline",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -215,7 +215,7 @@
     {
       "name": "marginInlineStart",
       "label": "marginInlineStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -230,7 +230,7 @@
     {
       "name": "marginInlineEnd",
       "label": "marginInlineEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -244,7 +244,7 @@
     {
       "name": "marginBlockStart",
       "label": "marginBlockStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -258,7 +258,7 @@
     {
       "name": "marginBlockEnd",
       "label": "marginBlockEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",

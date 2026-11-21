@@ -1,12 +1,13 @@
+import type { TBoxValue } from '../../types/Commons/box-value.type'
 import { TColor } from '../../types/Commons/color.type'
 import { TDirectionBoth } from '../../types/Commons/anchor.type'
 
 export interface IBorderProps {
     border?: boolean | number | string | TDirectionBoth | Array<TDirectionBoth>
-    borderTop?: boolean | number | string
-    borderLeft?: boolean | number | string
-    borderBottom?: boolean | number | string
-    borderRight?: boolean | number | string
+    borderTop?: TBoxValue
+    borderLeft?: TBoxValue
+    borderBottom?: TBoxValue
+    borderRight?: TBoxValue
     /**
      * Logical-axis shorthand for the block-start + block-end edges (top +
      * bottom in the default horizontal-tb writing mode). Resolves to the
@@ -18,13 +19,13 @@ export interface IBorderProps {
      * `borderBottom` still wins over it for that specific edge — see
      * `useBorder` JSDoc for the full precedence table.
      */
-    borderBlock?: boolean | number | string
+    borderBlock?: TBoxValue
     /**
      * Logical-axis shorthand for the inline-start + inline-end edges (left
      * + right in LTR). Same grammar and precedence rules as `borderBlock`,
      * mapped onto `border-inline-{width,style,color}`.
      */
-    borderInline?: boolean | number | string
+    borderInline?: TBoxValue
     /*********************************************************
      * borderInlineStart
      *
@@ -58,7 +59,7 @@ export interface IBorderProps {
      * une largeur fractionnaire (`"0.5rem solid red"`) ne parse pas et
      * n'emet RIEN — mesure dans `BORDER_LOGICAL_SIDE_MAP`.
      ********************************************************/
-    borderInlineStart?: boolean | number | string
+    borderInlineStart?: TBoxValue
     /*********************************************************
      * borderInlineEnd
      *
@@ -68,7 +69,7 @@ export interface IBorderProps {
      * `border-inline-end-{width,style,color}`. Meme grammaire, memes
      * regles de precedence (un `borderRight` physique l'emporte en LTR).
      ********************************************************/
-    borderInlineEnd?: boolean | number | string
+    borderInlineEnd?: TBoxValue
     /*********************************************************
      * borderBlockStart
      *
@@ -79,7 +80,7 @@ export interface IBorderProps {
      * grammaire, memes regles de precedence (un `borderTop` physique
      * l'emporte).
      ********************************************************/
-    borderBlockStart?: boolean | number | string
+    borderBlockStart?: TBoxValue
     /*********************************************************
      * borderBlockEnd
      *
@@ -90,7 +91,7 @@ export interface IBorderProps {
      * grammaire, memes regles de precedence (un `borderBottom` physique
      * l'emporte).
      ********************************************************/
-    borderBlockEnd?: boolean | number | string
+    borderBlockEnd?: TBoxValue
     borderColor?: string
     borderStyle?: string
     /**

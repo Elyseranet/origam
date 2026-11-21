@@ -255,7 +255,7 @@
     {
       "name": "roundedTopRight",
       "label": "roundedTopRight",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -270,7 +270,7 @@
     {
       "name": "roundedTopLeft",
       "label": "roundedTopLeft",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -285,7 +285,7 @@
     {
       "name": "roundedBottomLeft",
       "label": "roundedBottomLeft",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -300,7 +300,7 @@
     {
       "name": "roundedBottomRight",
       "label": "roundedBottomRight",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -315,7 +315,7 @@
     {
       "name": "roundedStartStart",
       "label": "roundedStartStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -330,7 +330,7 @@
     {
       "name": "roundedStartEnd",
       "label": "roundedStartEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -344,7 +344,7 @@
     {
       "name": "roundedEndStart",
       "label": "roundedEndStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -358,7 +358,7 @@
     {
       "name": "roundedEndEnd",
       "label": "roundedEndEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -387,7 +387,7 @@
     {
       "name": "borderTop",
       "label": "borderTop",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -401,7 +401,7 @@
     {
       "name": "borderLeft",
       "label": "borderLeft",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -415,7 +415,7 @@
     {
       "name": "borderBottom",
       "label": "borderBottom",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -429,7 +429,7 @@
     {
       "name": "borderRight",
       "label": "borderRight",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -443,7 +443,7 @@
     {
       "name": "borderBlock",
       "label": "borderBlock",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -458,7 +458,7 @@
     {
       "name": "borderInline",
       "label": "borderInline",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -473,7 +473,7 @@
     {
       "name": "borderInlineStart",
       "label": "borderInlineStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -488,7 +488,7 @@
     {
       "name": "borderInlineEnd",
       "label": "borderInlineEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -503,7 +503,7 @@
     {
       "name": "borderBlockStart",
       "label": "borderBlockStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -518,7 +518,7 @@
     {
       "name": "borderBlockEnd",
       "label": "borderBlockEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -670,7 +670,7 @@
     {
       "name": "padding",
       "label": "padding",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -685,7 +685,7 @@
     {
       "name": "paddingTop",
       "label": "paddingTop",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -700,7 +700,7 @@
     {
       "name": "paddingLeft",
       "label": "paddingLeft",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -715,7 +715,7 @@
     {
       "name": "paddingBottom",
       "label": "paddingBottom",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -730,7 +730,7 @@
     {
       "name": "paddingRight",
       "label": "paddingRight",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -745,7 +745,7 @@
     {
       "name": "paddingBlock",
       "label": "paddingBlock",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -760,7 +760,7 @@
     {
       "name": "paddingInline",
       "label": "paddingInline",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -775,7 +775,7 @@
     {
       "name": "paddingInlineStart",
       "label": "paddingInlineStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -790,7 +790,7 @@
     {
       "name": "paddingInlineEnd",
       "label": "paddingInlineEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -804,7 +804,7 @@
     {
       "name": "paddingBlockStart",
       "label": "paddingBlockStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -818,7 +818,7 @@
     {
       "name": "paddingBlockEnd",
       "label": "paddingBlockEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -832,7 +832,7 @@
     {
       "name": "margin",
       "label": "margin",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -847,7 +847,7 @@
     {
       "name": "marginTop",
       "label": "marginTop",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -862,7 +862,7 @@
     {
       "name": "marginLeft",
       "label": "marginLeft",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -877,7 +877,7 @@
     {
       "name": "marginBottom",
       "label": "marginBottom",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -892,7 +892,7 @@
     {
       "name": "marginRight",
       "label": "marginRight",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -907,7 +907,7 @@
     {
       "name": "marginBlock",
       "label": "marginBlock",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -922,7 +922,7 @@
     {
       "name": "marginInline",
       "label": "marginInline",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -937,7 +937,7 @@
     {
       "name": "marginInlineStart",
       "label": "marginInlineStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -952,7 +952,7 @@
     {
       "name": "marginInlineEnd",
       "label": "marginInlineEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -966,7 +966,7 @@
     {
       "name": "marginBlockStart",
       "label": "marginBlockStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -980,7 +980,7 @@
     {
       "name": "marginBlockEnd",
       "label": "marginBlockEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
