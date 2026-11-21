@@ -5,7 +5,7 @@ import { ORIGAM_DISPLAY_KEY } from '../../consts/Commons/display.const'
 import type { IDisplayInstance, IDisplayOptions, IDisplayProps } from '../../interfaces/Commons/display.interface'
 import type { TSSROptions } from '../../types/Commons/display.type'
 
-import { getClientHeight, getClientWidth, getPlatform, parseDisplayOptions } from '../../utils/Commons/display.util'
+import { getBreakpointName, getClientHeight, getClientWidth, getPlatform, parseDisplayOptions } from '../../utils/Commons/display.util'
 import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
@@ -103,13 +103,7 @@ export function createDisplay (options?: IDisplayOptions, ssr?: TSSROptions): ID
         const lg = width.value < thresholds.xl && !(md || sm || xs)
         const xl = width.value < thresholds.xxl && !(lg || md || sm || xs)
         const xxl = width.value >= thresholds.xxl
-        const name =
-            xs ? 'xs'
-                : sm ? 'sm'
-                    : md ? 'md'
-                        : lg ? 'lg'
-                            : xl ? 'xl'
-                                : 'xxl'
+        const name = getBreakpointName({xs, sm, md, lg, xl})
         const breakpointValue = typeof mobileBreakpoint === 'number' ? mobileBreakpoint : thresholds[mobileBreakpoint]
         const mobile = width.value < breakpointValue
 

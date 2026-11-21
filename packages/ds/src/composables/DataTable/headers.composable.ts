@@ -7,6 +7,49 @@ import type { TFilterKeyFunctions } from '../../types/Commons/filters.type'
 import type { TDataTableCompareFunction } from '../../types/DataTable/data-table.type'
 import { convertToInternalHeaders, extractKeys, getHeaderDepth, parseFixedColumns, parseHeaderItems } from '../../utils/DataTable/headers.util'
 
+function addSyntheticColumns (
+    items: Array<IDataTableHeader>,
+    keys: ReturnType<typeof extractKeys>,
+    options: Parameters<typeof createHeaders>[1]
+) {
+    if (options?.groupBy?.value?.length && !keys.has('data-table-group')) {
+        items.unshift({key: 'data-table-group', title: 'Group'})
+    }
+
+    if (options?.showSelect?.value && !keys.has('data-table-select')) {
+        items.unshift({key: 'data-table-select'})
+    }
+
+    if (options?.showExpand?.value && !keys.has('data-table-expand')) {
+        items.push({key: 'data-table-expand'})
+    }
+}
+
+function registerHeaderFunctions (
+    flatHeaders: Array<IInternalDataTableHeader>,
+    sortFunctions: Record<string, TDataTableCompareFunction>,
+    sortRawFunctions: Record<string, TDataTableCompareFunction>,
+    filterFunctions: TFilterKeyFunctions
+) {
+    for (const header of flatHeaders) {
+        if (!header.key) continue
+
+        if (header.sortable) {
+            if (header.sort) {
+                sortFunctions[header.key] = header.sort
+            }
+
+            if (header.sortRaw) {
+                sortRawFunctions[header.key] = header.sortRaw
+            }
+        }
+
+        if (header.filter) {
+            filterFunctions[header.key] = header.filter
+        }
+    }
+}
+
 /*********************************************************
  * createHeaders
  *
@@ -22,7 +65,7 @@ import { convertToInternalHeaders, extractKeys, getHeaderDepth, parseFixedColumn
 export function createHeaders (
     props: IDataTableHeaderProps,
     options?: {
-        groupBy?: Ref<Array<IDataTableSortItem>> | undefined
+        groupBy?: Ref<Array<IDataTableSortItem>>
         showSelect?: Ref<boolean>
         showExpand?: Ref<boolean>
     }
@@ -40,17 +83,7 @@ export function createHeaders (
         const items: Array<IDataTableHeader> = _headers.slice()
         const keys = extractKeys(items)
 
-        if (options?.groupBy?.value?.length && !keys.has('data-table-group')) {
-            items.unshift({key: 'data-table-group', title: 'Group'})
-        }
-
-        if (options?.showSelect?.value && !keys.has('data-table-select')) {
-            items.unshift({key: 'data-table-select'})
-        }
-
-        if (options?.showExpand?.value && !keys.has('data-table-expand')) {
-            items.push({key: 'data-table-expand'})
-        }
+        addSyntheticColumns(items, keys, options)
 
         const internalHeaders: Array<IInternalDataTableHeader> = convertToInternalHeaders(items)
 
@@ -64,23 +97,7 @@ export function createHeaders (
 
         const flatHeaders = parsed.headers.flat(1)
 
-        for (const header of flatHeaders) {
-            if (!header.key) continue
-
-            if (header.sortable) {
-                if (header.sort) {
-                    sortFunctions.value[header.key] = header.sort
-                }
-
-                if (header.sortRaw) {
-                    sortRawFunctions.value[header.key] = header.sortRaw
-                }
-            }
-
-            if (header.filter) {
-                filterFunctions.value[header.key] = header.filter
-            }
-        }
+        registerHeaderFunctions(flatHeaders, sortFunctions.value, sortRawFunctions.value, filterFunctions.value)
     })
 
     const data = {headers, columns, sortFunctions, sortRawFunctions, filterFunctions}

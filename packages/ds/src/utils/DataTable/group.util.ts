@@ -66,7 +66,7 @@ export function flattenItems<T extends IDataTableGroupableItem> (items: Array<(T
     const flatItems: Array<(T | IDataTableGroup<T>)> = []
 
     for (const item of items) {
-        // TODO: make this better
+        // #1407 : type guard dédié à prévoir
         if ('type' in item && item.type === 'group') {
             if (item.value != null) {
                 flatItems.push(item)

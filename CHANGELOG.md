@@ -22,6 +22,40 @@ This project follows [Semantic Versioning](https://semver.org).
 
 - `resolvePaintedBackground` ignorait `background-image` : sur un bouton en dégradé, la directive mesurait le fond de page et imposait le mauvais noir/blanc en `!important` (texte noir sur le dégradé geek clair). Elle s’abstient désormais dès qu’une image de fond est rencontrée avant le fond opaque.
 
+### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
+
+- Cause : Btn/SelectionControl passaient un tuple façon Vuetify à `v-ripple` ; en template Vue les modifiers de directive sont statiques et le tableau n'est que la valeur, donc `binding.modifiers.center/circle` n'étaient jamais posés.
+- Correctif : `updateRipple` accepte aussi `center` / `circle` dans la valeur objet (`IRippleOptions`). `OrigamSelectionControl` : ripple centré + circulaire ; `OrigamBtn` en mode `icon` : centré (comportement d'origine du tuple). `OrigamChip` n'avait aucun modifier à l'origine (`[x, null]`) : inchangé.
+- Ne règle pas #1177 (feuille de style de `.origam-ripple__container`).
+
+### Fixed — `OrigamFileField` : anneau de focus sur la dropzone et attributs natifs sur l'`<input>` seul (#1383)
+
+- Focus : en mode `dragndrop`/`dropzone`, l'`<input type="file">` (opacity 0) porte le focus clavier mais la dropzone restait sans outline (`outline-style: none` mesuré dans Chromium). La dropzone peint désormais un anneau `:has(:focus-visible)`, aux tokens `--origam-color__border---focus` / `--origam-border__width---2` (même forme que `OrigamRatingFieldItem`).
+- Attributs : `OrigamFileField` n'avait pas `inheritAttrs: false` ; `aria-label` / `accept` se retrouvaient aussi sur le `<div>` racine en plus de l'`<input>`. Corrigé comme `OrigamTextField` (#818).
+- Non traité : `data-cy` reste sur le conteneur racine (convention `filterInputAttrs` partagée par TextField, Radio, etc.), à arbitrer séparément.
+
+### Fixed — `OrigamCounter` : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)
+
+- Cause : `.origam-counter` est `flex: 0 1 auto` sans `white-space: nowrap` ; dans le flex `__details` d'`OrigamInput`, un texte d'aide long le faisait rétrécir et le texte passait à la ligne (mesuré dans un flex de 120 px : 3 boîtes de ligne).
+- Correctif : `white-space: nowrap` sur la racine — c'est le texte d'aide qui se replie. Aucun changement d'API.
+
+### Fixed — `origam-card` cliquable : l'overlay n'est plus opaque au repos (#1276)
+
+La règle `.origam-card > * { opacity: var(--origam-card---opacity) }` s'appliquait aussi au `<span class="origam-card__overlay">` et écrasait son opacité (0 au repos) : une carte avec `to` / `link` s'affichait noire. Elle exclut désormais l'overlay et l'underlay ; le contenu garde son opacité (0,6 si désactivée). Mesuré en Chromium : overlay 1 avant, 0 au repos et 0,12 au survol après.
+
+### Added — budget JS d'une page à un seul composant (#1404)
+
+- #1404 supposait un registre de jetons/réglages dans `origam/core`. Mesure : le chunk de 202 Ko vu dans Elysera est l'entry Nuxt (nuxt, i18n, router, consts du site), sans module Origam. Le vrai poids Origam était l'enum `MDI_ICONS` (~360 Ko), corrigé par #1403/#1406.
+- Fixture Vite (`createOrigamCore` + thème du DS + un `origam-title`) : **57,4 Kio gzip** avant #1406, **57,7 Kio** après (elle ne tirait déjà pas l'enum). Retirables mais non retirés : locale `fr` (-3,1 Kio gz), adaptateur de dates (-2,8), tables de variantes (-0,6) ; les rendre optionnels changerait l'API du mode core.
+- Garde `TU/origam/single-component-budget-1404.spec.ts` (fixture `TU/fixtures/single-component`) : <= 63 Kio gzip, ni police MDI ni `MDI_ICONS`.
+
+### Fixed — poids JS : `origam-chip` et le coeur `origam/core` n'embarquent plus l'enum MDI de 360 Ko (#1403)
+
+- Cause : l'enum `MDI_ICONS` (~7 000 membres) restait dans le bundle bien qu'inutilisé, car Rolldown ne retire pas l'IIFE d'un enum atteint par un barrel. Chemins : `OrigamChip`/`OrigamChipGroup` (et ~40 autres composants) l'importaient pour leurs icônes par défaut ; `origam-core.ts` et `consts/Commons/display.const.ts` passaient par les barrels `composables/index` (donc `createIcons` -> `mdi.const`) et `enums/index`.
+- Correctif sans changement d'API : les icônes par défaut deviennent la chaîne `mdi:mdi-*` équivalente (même valeur que le membre d'enum) dans les composants et `EMPTY_STATE_PRESET_CONFIG` ; les imports de barrel `enums` (consts, utils, composables) et ceux d'`origam-core.ts` visent le fichier source. `OrigamBreadcrumbDivider` teste le préfixe `mdi:` au lieu de `Object.values(MDI_ICONS)` (un `mdi:` hors enum est désormais aussi traité comme icône).
+- Mesure (fixture Nuxt 4 minimale, `origam/nuxt` en `lite`, page avec `OrigamChip` texte seul, JS total du client) : 754 492 -> 403 614 octets (201 -> 127 Kio gzip) ; page sans composant : 650 014 -> 299 232 octets. Plus aucune occurrence de `mdi-ab-testing` dans le build.
+- Garde `TU/origam/btn-no-mdi-1392.spec.ts` étendue : aucun composant public, ni `origam-core.ts` ni `nuxt/create.core.ts`, n'atteint `mdi.enum`, `mdi.const` ou `enums/index`.
+
 ## [2.41.0] - 2026-11-21
 
 ### Fixed — Quality Gate Sonar vert sur le nouveau code (#1390)

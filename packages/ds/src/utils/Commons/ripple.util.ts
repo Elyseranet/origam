@@ -23,8 +23,8 @@ export function updateRipple (el: IRippleHtmlElement, binding: IRippleDirectiveB
 
     el._ripple = el._ripple ?? {}
     el._ripple.enabled = enabled
-    el._ripple.centered = modifiers.center
-    el._ripple.circle = modifiers.circle
+    el._ripple.centered = modifiers.center || (isObject(value) && value.center)
+    el._ripple.circle = modifiers.circle || (isObject(value) && value.circle)
     if (isObject(value) && value.class) {
         el._ripple.class = value.class
     }
@@ -145,12 +145,12 @@ export function rippleShow (e: TRippleEvent) {
     if (isTouchEvent(e)) {
         element._ripple.touched = true
         element._ripple.isTouch = true
-    } else {
+    } else if (element._ripple.isTouch) {
         // It's possible for touch events to fire
         // as mouse events on Android/iOS, this
         // will skip the event call if it has
         // already been registered as touch
-        if (element._ripple.isTouch) return
+        return
     }
 
     value.center = element._ripple.centered || isKeyboardEvent(e)

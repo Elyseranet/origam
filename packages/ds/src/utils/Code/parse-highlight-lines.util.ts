@@ -1,3 +1,28 @@
+/*********************************************************
+ * parseSegment
+ *
+ * @description
+ * Lines of one comma-separated segment: a single number or a `a-b` range (either order); invalid input yields none.
+ ********************************************************/
+function parseSegment (segment: string): number[] {
+    if (!segment) return []
+
+    if (segment.includes('-')) {
+        const [rawStart, rawEnd] = segment.split('-').map((s) => s.trim())
+        const start = Number.parseInt(rawStart, 10)
+        const end = Number.parseInt(rawEnd, 10)
+        if (!Number.isFinite(start) || !Number.isFinite(end)) return []
+        if (start < 1 || end < 1) return []
+        const [lo, hi] = start <= end ? [start, end] : [end, start]
+        const range: number[] = []
+        for (let i = lo; i <= hi; i++) range.push(i)
+        return range
+    }
+
+    const single = Number.parseInt(segment, 10)
+    return Number.isFinite(single) && single >= 1 ? [single] : []
+}
+
 /**
  * Parse the `highlight-lines` prop of `<OrigamCode>` into a Set of 1-based
  * line numbers.
@@ -37,22 +62,7 @@ export function parseHighlightLines (input: number[] | string | null | undefined
 
     const out = new Set<number>()
     for (const rawSegment of trimmed.split(',')) {
-        const segment = rawSegment.trim()
-        if (!segment) continue
-
-        if (segment.includes('-')) {
-            const [rawStart, rawEnd] = segment.split('-').map((s) => s.trim())
-            const start = Number.parseInt(rawStart, 10)
-            const end = Number.parseInt(rawEnd, 10)
-            if (!Number.isFinite(start) || !Number.isFinite(end)) continue
-            if (start < 1 || end < 1) continue
-            const [lo, hi] = start <= end ? [start, end] : [end, start]
-            for (let i = lo; i <= hi; i++) out.add(i)
-            continue
-        }
-
-        const single = Number.parseInt(segment, 10)
-        if (Number.isFinite(single) && single >= 1) out.add(single)
+        for (const line of parseSegment(rawSegment.trim())) out.add(line)
     }
 
     return Array.from(out).sort((a, b) => a - b)

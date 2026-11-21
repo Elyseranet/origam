@@ -33,10 +33,8 @@
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IBreadcrumbDividerEmits, IBreadcrumbDividerProps, IBreadcrumbDividerSlots } from '../../interfaces/Breadcrumb/breadcrumb-divider.interface'
-	import type { TValueOf } from '../../types/Commons/commons.type'
 
 	import { computed, StyleValue, toRef } from 'vue'
 
@@ -70,7 +68,7 @@
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	const isIcon = computed(() => {
-		return typeof props.divider !== 'string' || Object.values(MDI_ICONS).includes(props.divider as TValueOf<typeof MDI_ICONS>)
+		return typeof props.divider !== 'string' || props.divider.startsWith('mdi:')
 	})
 
 	/*********************************************************

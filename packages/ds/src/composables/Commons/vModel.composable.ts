@@ -86,7 +86,7 @@ export function useVModel<
     // "Cannot convert undefined or null to object". The `?? {}` fallback
     // mirrors origam's `?.hasOwnProperty(...)` pattern but keeps the
     // prototype-pollution-safe `.call()` form used elsewhere in origam.
-    const has = (key: string) => Object.prototype.hasOwnProperty.call(vm.vnode.props ?? {}, key)
+    const has = (key: string) => Object.hasOwn(vm.vnode.props ?? {}, key)
 
     const isControlled = checkKebab
         ? computed(() => {

@@ -33,7 +33,7 @@ let normCtx: CanvasRenderingContext2D | null | undefined
  * design tokens resolve to exactly this form in several themes.
  */
 function srgbToRgb (color: string): string | null {
-    const m = color.match(/color\(\s*srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\s*\)/i)
+    const m = /color\(\s*srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\s*\)/i.exec(color)
     if (!m) return null
     const ch = (v: string) => Math.round(Math.min(1, Math.max(0, parseFloat(v))) * 255)
     const r = ch(m[1]), g = ch(m[2]), b = ch(m[3])
@@ -123,7 +123,7 @@ type TRgba = { r: number; g: number; b: number; a: number }
 
 function rgbaParts (rgb: string | null): TRgba | null {
     if (!rgb) return null
-    const m = rgb.match(/rgba?\(([^)]+)\)/i)
+    const m = /rgba?\(([^)]+)\)/i.exec(rgb)
     if (!m) return null
     const p = m[1].split(',').map(s => parseFloat(s.trim()))
     if (p.length < 3 || p.slice(0, 3).some(Number.isNaN)) return null

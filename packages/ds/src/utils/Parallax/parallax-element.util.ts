@@ -1,8 +1,14 @@
-import { PARALLAX_EVENT } from '../../enums'
+import { PARALLAX_EVENT } from '../../enums/Parallax/parallax.enum'
 
 import type { IParallaxElementCicle, IParallaxElementMovement } from '../../interfaces/Parallax/parallax-element.interface'
 
 import type { TPoint } from '../../types/Commons/point.type'
+
+function clampMovement (movement: number, min?: number, max?: number): number {
+    if (max && movement > max) return max
+    if (min && movement < min) return min
+    return movement
+}
 
 /**
  * Element movement.
@@ -19,20 +25,12 @@ export function elementMovement (action: IParallaxElementMovement) {
         originY = -originY / 2
     }
 
-    let movementX = (x - originX / 50) * strength
-    let movementY = (y - originY / 50) * strength
-
-    if (minX || maxX) {
-        movementX = maxX && movementX > maxX ? maxX : minX && movementX < minX ? minX : movementX
-    }
-
-    if (minY || maxY) {
-        movementY = maxY && movementY > maxY ? maxY : minY && movementY < minY ? minY : movementY
-    }
+    const movementX = (x - originX / 50) * strength
+    const movementY = (y - originY / 50) * strength
 
     return {
-        x: movementX,
-        y: movementY,
+        x: clampMovement(movementX, minX, maxX),
+        y: clampMovement(movementY, minY, maxY),
         target
     }
 }

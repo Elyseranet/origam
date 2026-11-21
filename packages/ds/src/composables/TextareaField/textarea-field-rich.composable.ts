@@ -1,6 +1,6 @@
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 
-import { TEXTAREA_TOOLBAR_COMMAND } from '../../enums'
+import { TEXTAREA_TOOLBAR_COMMAND } from '../../enums/TextareaField/textarea-field-rich-toolbar.enum'
 
 import type { ITextareaRichActiveState, IUseTextareaRichOptions } from '../../interfaces/TextareaField/textarea-field-rich.interface'
 
@@ -55,7 +55,7 @@ export function useTextareaRich(options: IUseTextareaRichOptions) {
             // Only update when the selection actually lives inside our host.
             const sel = document.getSelection()
             if (!sel || sel.rangeCount === 0) return
-            const node = sel.anchorNode as Node | null
+            const node = sel.anchorNode
             if (!node || !hostRef.value?.contains(node)) return
             syncActiveState()
         }

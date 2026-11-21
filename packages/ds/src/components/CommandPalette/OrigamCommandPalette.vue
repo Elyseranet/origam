@@ -200,6 +200,7 @@
 
 	import type { IRenderedGroup } from '../../interfaces/CommandPalette/command-palette-rendered-group.interface'
 
+	import { consoleWarn } from '../../utils/Commons/console.util'
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	import { fuzzyMatch, type IFuzzyMatchResult } from '../../utils/CommandPalette/fuzzy-match.util'
@@ -556,8 +557,12 @@
 		}
 	}
 
+	function warnPerformFailure (error: unknown): void {
+		consoleWarn(`<OrigamCommandPalette> command perform() rejected: ${String(error)}`)
+	}
+
 	function handleItemClick (cmd: ICommand): void {
-		void selectCommand(cmd)
+		selectCommand(cmd).catch(warnPerformFailure)
 	}
 
 	function handleItemHover (cmd: ICommand): void {
@@ -567,7 +572,7 @@
 
 	function handleEnter (): void {
 		const cmd = flatResults.value[activeIndex.value]
-		if (cmd) void selectCommand(cmd)
+		if (cmd) selectCommand(cmd).catch(warnPerformFailure)
 	}
 
 	function handleEscape (): void {

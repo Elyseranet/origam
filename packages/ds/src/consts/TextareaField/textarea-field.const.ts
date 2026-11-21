@@ -1,4 +1,4 @@
-import { TEXTAREA_TOOLBAR_COMMAND } from '../../enums'
+import { TEXTAREA_TOOLBAR_COMMAND } from '../../enums/TextareaField/textarea-field-rich-toolbar.enum'
 import type { TTextareaToolbarCommand } from '../../types/TextareaField/textarea-field-rich-toolbar.type'
 
 /**
@@ -101,3 +101,16 @@ export const ALLOWED_URL_SCHEMES: ReadonlyArray<string> = [
  * without re-opening the door to arbitrary class spraying.
  */
 export const ALLOWED_CLASS_PREFIX = 'origam-rich--'
+
+export const MARKDOWN_WRAPPERS: Readonly<Record<string, (inner: string) => string>> = {
+    strong: (inner) => inner ? `**${inner}**` : '',
+    b: (inner) => inner ? `**${inner}**` : '',
+    em: (inner) => inner ? `*${inner}*` : '',
+    i: (inner) => inner ? `*${inner}*` : '',
+    u: (inner) => inner ? `<u>${inner}</u>` : '',
+    code: (inner) => inner ? `\`${inner}\`` : '',
+    p: (inner) => inner ? `\n\n${inner}\n\n` : '',
+    h1: (inner) => inner ? `\n\n# ${inner}\n\n` : '',
+    h2: (inner) => inner ? `\n\n## ${inner}\n\n` : '',
+    h3: (inner) => inner ? `\n\n### ${inner}\n\n` : ''
+}

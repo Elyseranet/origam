@@ -75,7 +75,6 @@
 	import { omitUndefined } from '../../utils/Commons/commons.util'
 
 	import { LIST_ITEM_ROLE } from '../../enums/List/list-item.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IListActivatorProps, IListGroupProps, IListGroupEmits, IListGroupSlots } from '../../interfaces/List/list-group.interface'
 
@@ -86,8 +85,8 @@
 
 	const props = withDefaults(defineProps<IListGroupProps>(), {
 		tag: 'div',
-		expandIcon: MDI_ICONS.CHEVRON_DOWN,
-		collapseIcon: MDI_ICONS.CHEVRON_UP
+		expandIcon: 'mdi:mdi-chevron-down',
+		collapseIcon: 'mdi:mdi-chevron-up'
 	})
 
 	const emits = defineEmits<IListGroupEmits>()

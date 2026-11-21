@@ -67,6 +67,15 @@ export function convertToInternalHeaders (items: Array<IDataTableHeader>) {
 export function parseFixedColumns (items: Array<IInternalDataTableHeader>) {
     let seenFixed = false
 
+    const markFixedLeaf = (item: IInternalDataTableHeader) => {
+        if (!seenFixed) {
+            item.lastFixed = true
+        } else if (isNaN(+item.width!)) {
+            consoleError(`Multiple fixed columns should have a static width (key: ${item.key})`)
+        }
+        seenFixed = true
+    }
+
     const setFixed = (item: IInternalDataTableHeader, parentFixed = false) => {
         if (!item) return
 
@@ -74,27 +83,14 @@ export function parseFixedColumns (items: Array<IInternalDataTableHeader>) {
             item.fixed = true
         }
 
-        if (item.fixed) {
-            if (item.children) {
-                for (let i = item.children.length - 1; i >= 0; i--) {
-                    setFixed(item.children[i], true)
-                }
-            } else {
-                if (!seenFixed) {
-                    item.lastFixed = true
-                } else if (isNaN(+item.width!)) {
-                    consoleError(`Multiple fixed columns should have a static width (key: ${item.key})`)
-                }
-                seenFixed = true
+        if (item.children) {
+            for (let i = item.children.length - 1; i >= 0; i--) {
+                setFixed(item.children[i], !!item.fixed)
             }
+        } else if (item.fixed) {
+            markFixedLeaf(item)
         } else {
-            if (item.children) {
-                for (let i = item.children.length - 1; i >= 0; i--) {
-                    setFixed(item.children[i])
-                }
-            } else {
-                seenFixed = false
-            }
+            seenFixed = false
         }
     }
 
@@ -137,12 +133,11 @@ export function parseHeaderItems (items: Array<IInternalDataTableHeader>, maxDep
     const queue = priorityQueue(items)
 
     while (queue.size() > 0) {
-        let rowSize = queue.count()
-        let fraction = 1
+        const rowSize = queue.count()
 
         const row: Array<IInternalDataTableHeader> = []
 
-        while (rowSize > 0) {
+        for (let fraction = 1; fraction <= rowSize; fraction++) {
             const {element: item, priority} = queue.dequeue()!
             const diff = maxDepth - currentDepth - getHeaderDepth(item)
 
@@ -159,9 +154,6 @@ export function parseHeaderItems (items: Array<IInternalDataTableHeader>, maxDep
                     queue.enqueue(child, currentDepth + diff + sort)
                 }
             }
-
-            fraction += 1
-            rowSize -= 1
         }
         currentDepth += 1
         headers.push(row)
@@ -232,8 +224,8 @@ export function priorityQueue<T> (arr: T[] = []) {
             if (!queue.length) return 0
 
             const whole = Math.floor(queue[0].priority)
-            for (let i = 0; i < queue.length; i++) {
-                if (Math.floor(queue[i].priority) === whole) count += 1
+            for (const {priority} of queue) {
+                if (Math.floor(priority) === whole) count += 1
             }
 
             return count

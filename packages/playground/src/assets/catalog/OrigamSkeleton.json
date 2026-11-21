@@ -155,7 +155,7 @@
     {
       "name": "roundedTopRight",
       "label": "roundedTopRight",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -170,7 +170,7 @@
     {
       "name": "roundedTopLeft",
       "label": "roundedTopLeft",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -185,7 +185,7 @@
     {
       "name": "roundedBottomLeft",
       "label": "roundedBottomLeft",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -200,7 +200,7 @@
     {
       "name": "roundedBottomRight",
       "label": "roundedBottomRight",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -215,7 +215,7 @@
     {
       "name": "roundedStartStart",
       "label": "roundedStartStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -230,7 +230,7 @@
     {
       "name": "roundedStartEnd",
       "label": "roundedStartEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -244,7 +244,7 @@
     {
       "name": "roundedEndStart",
       "label": "roundedEndStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -258,7 +258,7 @@
     {
       "name": "roundedEndEnd",
       "label": "roundedEndEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",

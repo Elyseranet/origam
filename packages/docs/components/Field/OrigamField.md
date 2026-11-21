@@ -263,6 +263,10 @@ The same state is reflected on the root as `origam-field--focused`. If you
 genuinely need the raw DOM events at field level, listen for `focusin` /
 `focusout`, which do bubble.
 
+## Targeting in tests (`data-cy`)
+
+`data-cy` (and every `data-*`, `class`, `style`, `id`) is set on the field's root container, via `filterInputAttrs`, for all fields. To reach the input element: `[data-cy="x"] input`.
+
 ## Design tokens
 
 | CSS variable | Default | Description |

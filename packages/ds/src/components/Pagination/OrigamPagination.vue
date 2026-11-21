@@ -197,7 +197,6 @@
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { VARIANT } from '../../enums/Commons/variant.enum'
 
 	import type { IPaginationProps, IPaginationEmits, IPaginationSlots } from '../../interfaces/Pagination/pagination.interface'
@@ -212,10 +211,10 @@
 	 * Props, emits and filterProps for the Pagination component.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IPaginationProps>(), {
-		prevIcon: MDI_ICONS.CHEVRON_LEFT,
-		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
-		firstIcon: MDI_ICONS.CHEVRON_DOUBLE_LEFT,
-		lastIcon: MDI_ICONS.CHEVRON_DOUBLE_RIGHT,
+		prevIcon: 'mdi:mdi-chevron-left',
+		nextIcon: 'mdi:mdi-chevron-right',
+		firstIcon: 'mdi:mdi-chevron-double-left',
+		lastIcon: 'mdi:mdi-chevron-double-right',
 		tag: 'nav',
 		ellipsis: '...',
 		length: 1,

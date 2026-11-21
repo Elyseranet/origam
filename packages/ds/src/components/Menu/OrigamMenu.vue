@@ -60,7 +60,7 @@
 								>
 									<template #activator="{props}">
 										<origam-list-item
-												:append-icon="MDI_ICONS.CHEVRON_RIGHT"
+												:append-icon="'mdi:mdi-chevron-right'"
 												class="origam-menu__item"
 												v-bind="{...props, ...menuItemProps(item)}"
 										/>
@@ -99,7 +99,6 @@
 	import { INLINE } from '../../enums/Commons/anchor.enum'
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 	import { LOCATION_STRATEGIES } from '../../enums/Commons/location.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
 
 	import type { IItemProps } from '../../interfaces/Commons/item.interface'

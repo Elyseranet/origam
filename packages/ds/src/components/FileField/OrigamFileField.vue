@@ -401,7 +401,6 @@
   import { useVModel } from '../../composables/Commons/vModel.composable'
   import { DENSITY } from '../../enums/Commons/density.enum'
   import { FILE_FIELD_DISPLAY } from '../../enums/FileField/file-field.enum'
-  import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
   import type { IFileFieldProps, IFileFieldSlots, IFileFieldEmits } from '../../interfaces/FileField/file-field.interface'
 
   import type { TOrigamField } from '../../types/Field/field.type'
@@ -421,11 +420,11 @@
    * Slots for the component.
    ********************************************************/
   const props = withDefaults(defineProps<IFileFieldProps>(), {
-    prependInnerIcon: MDI_ICONS.PAPERCLIP,
-    dragndropIcon: MDI_ICONS.CLOUD_UPLOAD_OUTLINE,
-    fileIcon: MDI_ICONS.FILE,
-    removeIcon: MDI_ICONS.CLOSE,
-    downloadIcon: MDI_ICONS.DOWNLOAD,
+    prependInnerIcon: 'mdi:mdi-paperclip',
+    dragndropIcon: 'mdi:mdi-cloud-upload-outline',
+    fileIcon: 'mdi:mdi-file',
+    removeIcon: 'mdi:mdi-close',
+    downloadIcon: 'mdi:mdi-download',
     showSize: false,
     clearable: true,
     centerAffix: true,
@@ -475,6 +474,14 @@
     const m = model.value
     return Array.isArray(m) ? (m as Array<File>) : []
   })
+
+  /*********************************************************
+   * inheritAttrs: false — #1383
+   *
+   * @description
+   * `filterInputAttrs(attrs)` already redistributes every attr (root vs <input>); same as TextField (#818).
+   ********************************************************/
+  defineOptions({ inheritAttrs: false })
 
   const emits = defineEmits<IFileFieldEmits>()
 
@@ -1023,6 +1030,17 @@
       position: relative;
       text-align: center;
       transition: border-color var(--origam-file-field---transition-duration, 200ms) ease, background-color var(--origam-file-field---transition-duration, 200ms) ease;
+
+      /*********************************************************
+       * Focus ring — #1383
+       *
+       * @description
+       * The real <input> is opacity:0 and owns the focus: paint the ring on the visible dropzone.
+       ********************************************************/
+      &:has(:focus-visible) {
+        outline: var(--origam-border__width---2, 2px) solid var(--origam-color__border---focus, currentColor);
+        outline-offset: var(--origam-space---1, 4px);
+      }
 
       &:hover {
         border-color: var(--origam-file-field__dropzone---color-hover, var(--origam-color__border---strong));

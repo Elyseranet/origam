@@ -137,7 +137,7 @@ function buildSvg (
         : ''
 
     let logoMarkup = ''
-    if (options.logo && options.logo.src) {
+    if (options.logo?.src) {
         const ratio = options.logo.size ?? QR_CODE_DEFAULT_LOGO_SIZE
         const padding = options.logo.padding ?? QR_CODE_DEFAULT_LOGO_PADDING
         const logoBg = options.logo.background
@@ -213,7 +213,7 @@ export function useQrCode (
 
     const normalisedOptions: ComputedRef<IQrCodeResolvedOptions> = computed(() => {
         const raw = isRef(options) || typeof options === 'function' ? toValue(options) : options
-        const opts = (raw ?? {}) as IUseQrCodeOptions
+        const opts: IUseQrCodeOptions = raw ?? {}
 
         const ratio = opts.logo?.size ?? QR_CODE_DEFAULT_LOGO_SIZE
         if (opts.logo?.src && ratio > QR_CODE_OVERLAY_MAX_RATIO && typeof console !== 'undefined') {

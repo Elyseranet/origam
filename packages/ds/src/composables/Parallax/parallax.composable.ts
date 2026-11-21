@@ -13,7 +13,7 @@ import {
     PARALLAX_LAYER_VAR_SPEED
 } from '../../consts/Parallax/parallax-layer.const'
 
-import { PARALLAX_DIRECTION, PARALLAX_EASING } from '../../enums'
+import { PARALLAX_DIRECTION, PARALLAX_EASING } from '../../enums/Parallax/parallax.enum'
 
 import type { IParallaxLayerRegistry } from '../../interfaces/Parallax/parallax-layer.interface'
 import type { IUseParallaxRuntimeOptions } from '../../interfaces/Parallax/parallax.interface'
@@ -413,8 +413,8 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
     // Watch the direction / easing — if the CSS branch flips at runtime
     // (very unlikely but possible if a layer is added late), re-publish the
     // CSS variables and stop the rAF loop.
-    watch(cssScrollDriven, (v) => {
-        if (v) {
+    watch(cssScrollDriven, () => {
+        if (cssScrollDriven.value) {
             if (rafId != null) {
                 cancelAnimationFrame(rafId)
                 rafId = null

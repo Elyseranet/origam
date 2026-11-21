@@ -50,6 +50,39 @@ export function pickColumnsForWidth (
  *
  * No DOM access. Fully deterministic. Easy to unit-test.
  */
+/** Index of the shortest column (ties → leftmost — `<` not `<=`). */
+function shortestColumn (columnHeights: ReadonlyArray<number>): number {
+    let col = 0
+    let min = columnHeights[0]
+    for (let c = 1; c < columnHeights.length; c++) {
+        if (columnHeights[c] < min) {
+            min = columnHeights[c]
+            col = c
+        }
+    }
+    return col
+}
+
+/** Column height without its trailing gap (an empty column stays 0). */
+function columnContentHeight (columnHeight: number, gap: number): number {
+    return columnHeight > 0 ? columnHeight - gap : 0
+}
+
+/**
+ * Centre alignment: shift each column's items by half the unused
+ * height. Computed per-column because columns rarely have the same
+ * accumulated height.
+ */
+function centerColumns (items: IMasonryItemRect[], columnHeights: ReadonlyArray<number>, gap: number, maxHeight: number): void {
+    const columnUsed = new Array<number>(columnHeights.length).fill(0)
+    for (const item of items) {
+        const colHeight = columnContentHeight(columnHeights[item.column], gap)
+        const shift = Math.max(0, (maxHeight - colHeight) / 2)
+        if (columnUsed[item.column] === 0) columnUsed[item.column] = shift
+        item.top += columnUsed[item.column]
+    }
+}
+
 export function bucketFill (
     heights: ReadonlyArray<number>,
     containerWidth: number,
@@ -64,15 +97,7 @@ export function bucketFill (
     const items: IMasonryItemRect[] = []
 
     for (let i = 0; i < heights.length; i++) {
-        // Find shortest column (ties → leftmost — `>` not `>=`).
-        let col = 0
-        let min = columnHeights[0]
-        for (let c = 1; c < cols; c++) {
-            if (columnHeights[c] < min) {
-                min = columnHeights[c]
-                col = c
-            }
-        }
+        const col = shortestColumn(columnHeights)
         const left = col * (itemWidth + gap)
         const top = columnHeights[col]
         const height = Math.max(0, heights[i])
@@ -91,25 +116,13 @@ export function bucketFill (
 
     // Subtract the trailing gap (one per non-empty column) so the
     // container hugs the last item.
-    let maxHeight = 0
-    for (let c = 0; c < cols; c++) {
-        const h = columnHeights[c] > 0 ? columnHeights[c] - gap : 0
-        if (h > maxHeight) maxHeight = h
-    }
+    const maxHeight = columnHeights.reduce((max, h) => {
+        const content = columnContentHeight(h, gap)
+        return content > max ? content : max
+    }, 0)
 
-    // Centre alignment: shift each column's items by half the unused
-    // height. Computed per-column because columns rarely have the same
-    // accumulated height.
     if (align === 'center' && maxHeight > 0) {
-        const columnUsed = new Array<number>(cols).fill(0)
-        for (const item of items) {
-            const colHeight = (columnHeights[item.column] > 0)
-                ? columnHeights[item.column] - gap
-                : 0
-            const shift = Math.max(0, (maxHeight - colHeight) / 2)
-            if (columnUsed[item.column] === 0) columnUsed[item.column] = shift
-            item.top += columnUsed[item.column]
-        }
+        centerColumns(items, columnHeights, gap, maxHeight)
     }
 
     return {

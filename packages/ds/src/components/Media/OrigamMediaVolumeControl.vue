@@ -59,7 +59,6 @@
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useTextColor } from '../../composables/Commons/textColor.composable'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IMediaVolumeControlEmits, IMediaVolumeControlProps, IMediaVolumeControlSlots } from '../../interfaces/Media/media-volume-control.interface'
 
@@ -72,10 +71,10 @@
 	defineSlots<IMediaVolumeControlSlots>()
 
 	const ICONS = {
-		VOLUME_HIGH: MDI_ICONS.VOLUME_HIGH,
-		VOLUME_MEDIUM: MDI_ICONS.VOLUME_MEDIUM,
-		VOLUME_LOW: MDI_ICONS.VOLUME_LOW,
-		VOLUME_OFF: MDI_ICONS.VOLUME_OFF
+		VOLUME_HIGH: 'mdi:mdi-volume-high',
+		VOLUME_MEDIUM: 'mdi:mdi-volume-medium',
+		VOLUME_LOW: 'mdi:mdi-volume-low',
+		VOLUME_OFF: 'mdi:mdi-volume-off'
 	}
 
 	/*********************************************************

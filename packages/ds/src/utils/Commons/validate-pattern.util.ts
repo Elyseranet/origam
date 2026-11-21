@@ -1,4 +1,4 @@
-import { PATTERN_VALIDATOR } from '../../enums'
+import { PATTERN_VALIDATOR } from '../../enums/TextField/text-field.enum'
 
 import type { TPatternValidator, TPatternValidatorName } from '../../types/TextField/text-field.type'
 

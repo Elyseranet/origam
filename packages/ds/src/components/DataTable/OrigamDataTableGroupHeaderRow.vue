@@ -65,7 +65,6 @@
 	import { useSelection } from '../../composables/DataTable/select.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTextColor } from '../../composables/Commons/textColor.composable'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IDataTableGroupHeaderRowEmits, IDataTableGroupHeaderRowProps, IDataTableGroupHeaderRowSlots } from '../../interfaces/DataTable/group.interface'
 
@@ -114,7 +113,7 @@
 		return extractRows([props.item])
 	})
 	const groupIcon = computed(() => {
-		return isGroupOpen(props.item) ? MDI_ICONS.CHEVRON_DOWN : MDI_ICONS.CHEVRON_RIGHT
+		return isGroupOpen(props.item) ? 'mdi:mdi-chevron-down' : 'mdi:mdi-chevron-right'
 	})
 
 	/*********************************************************

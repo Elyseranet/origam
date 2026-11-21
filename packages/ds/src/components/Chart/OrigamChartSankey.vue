@@ -201,8 +201,8 @@
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
+	import { buildSankeyLinkSpecs, groupSankeyColumns, orderSankeyColumns, sankeyNodeHeight, sankeyRibbonPath, stackSankeyBands, sumSankeyFlows } from '../../utils/Chart/sankey-layout.util'
 
-	import type { TChartSankeyLinkSpec } from '../../types/Chart/chart-sankey.type'
 	import type { TIntent } from '../../types/Commons/intent.type'
 
 	/*********************************************************
@@ -400,16 +400,7 @@
 
 		const totalColumns = Math.max(...Array.from(columns.values())) + 1
 
-		const incomingSum = new Map<string, number>()
-		const outgoingSum = new Map<string, number>()
-		for (const name of nodeNames) {
-			incomingSum.set(name, 0)
-			outgoingSum.set(name, 0)
-		}
-		for (const d of data) {
-			outgoingSum.set(d.from, (outgoingSum.get(d.from) ?? 0) + d.value)
-			incomingSum.set(d.to, (incomingSum.get(d.to) ?? 0) + d.value)
-		}
+		const { incomingSum, outgoingSum } = sumSankeyFlows(data, nodeNames)
 
 		const nodeValues = new Map<string, number>()
 		for (const name of nodeNames) {
@@ -425,63 +416,8 @@
 
 		const colXStep = totalColumns > 1 ? (plotWidth - props.nodeWidth) / (totalColumns - 1) : 0
 
-		const byColumn = new Map<number, Array<string>>()
-		for (const [name, col] of columns.entries()) {
-			if (!byColumn.has(col)) byColumn.set(col, [])
-			byColumn.get(col)!.push(name)
-		}
-
-		/*
-		 * Barycentric node ordering — sort each column so each node
-		 * sits near the average position of its neighbours. Two
-		 * sweeps (left-to-right then right-to-left, applied twice)
-		 * are enough to minimise crossings on the typical 3-5
-		 * column funnel without paying for a full LP solver.
-		 */
-		const orderIndex = new Map<string, number>()
-		const sortedColumns = Array.from(byColumn.keys()).sort((a, b) => a - b)
-		for (const col of sortedColumns) {
-			const names = byColumn.get(col)!
-			names.forEach((n, i) => orderIndex.set(n, i))
-		}
-
-		const predecessors = new Map<string, Array<string>>()
-		const successors = new Map<string, Array<string>>()
-		for (const name of nodeNames) {
-			predecessors.set(name, [])
-			successors.set(name, [])
-		}
-		for (const { from, to } of edges) {
-			successors.get(from)!.push(to)
-			predecessors.get(to)!.push(from)
-		}
-
-		const barycenter = (neighbours: Array<string>): number => {
-			if (!neighbours.length) return Number.POSITIVE_INFINITY
-			let sum = 0
-			let count = 0
-			for (const n of neighbours) {
-				const idx = orderIndex.get(n)
-				if (idx !== undefined) { sum += idx; count++ }
-			}
-			return count ? sum / count : Number.POSITIVE_INFINITY
-		}
-
-		const sweep = (direction: 'down' | 'up') => {
-			const cols = direction === 'down' ? sortedColumns : [...sortedColumns].reverse()
-			for (const col of cols) {
-				const names = byColumn.get(col)!
-				if (names.length < 2) continue
-				const neighbours = direction === 'down' ? predecessors : successors
-				names.sort((a, b) => barycenter(neighbours.get(a)!) - barycenter(neighbours.get(b)!))
-				names.forEach((n, i) => orderIndex.set(n, i))
-			}
-		}
-
-		for (let pass = 0; pass < 2; pass++) {
-			sweep('down')
-			sweep('up')
-		}
+		const byColumn = groupSankeyColumns(columns)
+		orderSankeyColumns(byColumn, edges, nodeNames)
 
 		const nodes: Array<IChartSankeyNode> = []
 
@@ -495,7 +431,7 @@
 
 			for (const name of names) {
 				const val = nodeValues.get(name) ?? 0
-				const nodeH = colTotal > 0 ? (val / colTotal) * availableHeight : availableHeight / names.length
+				const nodeH = sankeyNodeHeight(val, colTotal, availableHeight, names.length)
 				const colIndex = col
 
 				nodes.push({
@@ -531,97 +467,9 @@
 			nodeMap.set(node.name, node)
 		}
 
-		const incomingSum = new Map<string, number>()
-		const outgoingSum = new Map<string, number>()
-		for (const name of nodeMap.keys()) {
-			incomingSum.set(name, 0)
-			outgoingSum.set(name, 0)
-		}
-		for (const d of data) {
-			outgoingSum.set(d.from, (outgoingSum.get(d.from) ?? 0) + d.value)
-			incomingSum.set(d.to, (incomingSum.get(d.to) ?? 0) + d.value)
-		}
-
-		/*
-		 * Pre-compute per-link source / target band heights and
-		 * sort the links so ribbons leave each source in target-Y
-		 * order and arrive at each target in source-Y order. Without
-		 * this sort, ribbons cross themselves on the same node and
-		 * produce the swirl-from-hell visual.
-		 */
-		const specs: Array<TChartSankeyLinkSpec> = []
-		for (let i = 0; i < data.length; i++) {
-			const d = data[i]
-			const sourceNode = nodeMap.get(d.from)
-			const targetNode = nodeMap.get(d.to)
-			if (!sourceNode || !targetNode) continue
-
-			const srcOutTotal = outgoingSum.get(d.from) ?? 1
-			const tgtInTotal = incomingSum.get(d.to) ?? 1
-			const srcBandH = srcOutTotal > 0 ? (d.value / srcOutTotal) * sourceNode.height : 0
-			const tgtBandH = tgtInTotal > 0 ? (d.value / tgtInTotal) * targetNode.height : 0
-
-			const linkColor = d.color
-				? resolveColor(d.color)
-				: (sourceNode.color ?? 'currentColor')
-
-			specs.push({
-				index: i,
-				from: d.from,
-				to: d.to,
-				value: d.value,
-				color: linkColor,
-				srcBandH,
-				tgtBandH,
-				srcY: sourceNode.y,
-				tgtY: targetNode.y
-			})
-		}
-
-		/*
-		 * Assign source-side Y offsets: for each source node, sort
-		 * its outgoing links by target Y ascending so the topmost
-		 * link leaves the node from the top of its outgoing band.
-		 * We store the band TOP (not its centre) — the ribbon is
-		 * drawn as a filled path with explicit top + bottom edges,
-		 * so we need the exact vertical extent.
-		 */
-		const srcOffsetMap = new Map<number, { yTop: number, srcBandH: number }>()
-		const bySource = new Map<string, Array<TChartSankeyLinkSpec>>()
-		for (const s of specs) {
-			if (!bySource.has(s.from)) bySource.set(s.from, [])
-			bySource.get(s.from)!.push(s)
-		}
-		for (const [from, group] of bySource.entries()) {
-			group.sort((a, b) => a.tgtY - b.tgtY)
-			const source = nodeMap.get(from)!
-			let acc = source.y
-			for (const link of group) {
-				srcOffsetMap.set(link.index, { yTop: acc, srcBandH: link.srcBandH })
-				acc += link.srcBandH
-			}
-		}
-
-		/*
-		 * Same on the receiving side. Incoming bands stack from
-		 * the target's top edge, sorted by source Y so the topmost
-		 * band on the target came from the topmost source.
-		 */
-		const tgtOffsetMap = new Map<number, { yTop: number, tgtBandH: number }>()
-		const byTarget = new Map<string, Array<TChartSankeyLinkSpec>>()
-		for (const s of specs) {
-			if (!byTarget.has(s.to)) byTarget.set(s.to, [])
-			byTarget.get(s.to)!.push(s)
-		}
-		for (const [to, group] of byTarget.entries()) {
-			group.sort((a, b) => a.srcY - b.srcY)
-			const target = nodeMap.get(to)!
-			let acc = target.y
-			for (const link of group) {
-				tgtOffsetMap.set(link.index, { yTop: acc, tgtBandH: link.tgtBandH })
-				acc += link.tgtBandH
-			}
-		}
+		const specs = buildSankeyLinkSpecs(data, nodeMap, sumSankeyFlows(data, nodeMap.keys()), resolveColor)
+		const srcOffsetMap = stackSankeyBands(specs, nodeMap, 'source')
+		const tgtOffsetMap = stackSankeyBands(specs, nodeMap, 'target')
 
 		/*
 		 * Filled ribbon path — two Bezier curves (top + bottom)
@@ -643,20 +491,7 @@
 			const x0 = sourceNode.x + props.nodeWidth
 			const x1 = targetNode.x
 
-			const y0Top = srcOff.yTop
-			const y0Bot = srcOff.yTop + srcOff.srcBandH
-			const y1Top = tgtOff.yTop
-			const y1Bot = tgtOff.yTop + tgtOff.tgtBandH
-
-			const cp = (x1 - x0) * 0.5
-
-			const pathD = [
-				`M ${ x0 },${ y0Top }`,
-				`C ${ x0 + cp },${ y0Top } ${ x1 - cp },${ y1Top } ${ x1 },${ y1Top }`,
-				`L ${ x1 },${ y1Bot }`,
-				`C ${ x1 - cp },${ y1Bot } ${ x0 + cp },${ y0Bot } ${ x0 },${ y0Bot }`,
-				'Z'
-			].join(' ')
+			const pathD = sankeyRibbonPath(x0, x1, srcOff, tgtOff)
 
 			links.push({
 				index: s.index,

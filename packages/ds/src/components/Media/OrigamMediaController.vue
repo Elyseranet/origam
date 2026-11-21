@@ -173,7 +173,6 @@
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import { formatMediaTime } from '../../utils/Media/format-time.util'
 
@@ -235,16 +234,16 @@
 	 * Icon refs — single source of truth for every transport glyph.
 	 ********************************************************/
 	const ICONS = {
-		PLAY: MDI_ICONS.PLAY,
-		PAUSE: MDI_ICONS.PAUSE,
-		PREVIOUS: MDI_ICONS.SKIP_PREVIOUS,
-		NEXT: MDI_ICONS.SKIP_NEXT,
-		LOOP: MDI_ICONS.REPEAT,
-		LOOP_ONE: MDI_ICONS.REPEAT_ONCE,
-		SHUFFLE: MDI_ICONS.SHUFFLE,
-		COG: MDI_ICONS.COG,
-		CAST: MDI_ICONS.CAST,
-		DOWNLOAD: MDI_ICONS.DOWNLOAD
+		PLAY: 'mdi:mdi-play',
+		PAUSE: 'mdi:mdi-pause',
+		PREVIOUS: 'mdi:mdi-skip-previous',
+		NEXT: 'mdi:mdi-skip-next',
+		LOOP: 'mdi:mdi-repeat',
+		LOOP_ONE: 'mdi:mdi-repeat-once',
+		SHUFFLE: 'mdi:mdi-shuffle',
+		COG: 'mdi:mdi-cog',
+		CAST: 'mdi:mdi-cast',
+		DOWNLOAD: 'mdi:mdi-download'
 	}
 
 	/*********************************************************
@@ -300,8 +299,8 @@
 	}
 
 	function onVolumeChangeFromScrubber (value: number): void {
-		if (value > 0 && state.value.muted.value) methods.value.toggleMute()
-		else if (value === 0 && !state.value.muted.value) methods.value.toggleMute()
+		const muted = state.value.muted.value
+		if ((value > 0 && muted) || (value === 0 && !muted)) methods.value.toggleMute()
 		methods.value.setVolume(value)
 	}
 

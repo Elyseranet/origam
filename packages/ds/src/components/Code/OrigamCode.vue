@@ -113,6 +113,7 @@
 
 	import { parseHighlightLines } from '../../utils/Code/parse-highlight-lines.util'
 	import { trimBlankLines } from '../../utils/Code/trim-blank-lines.util'
+	import { warnAsyncRejection } from '../../utils/Commons/console.util'
 
 	/*********************************************************
 	 * Global
@@ -292,6 +293,8 @@
 		return new Set(arr)
 	})
 
+	const onRebuildRejection = (err: unknown): void => warnAsyncRejection('OrigamCode', err)
+
 	async function rebuild () {
 		const token = ++_renderToken
 		isHighlighting.value = true
@@ -359,7 +362,7 @@
 
 	watch(
 		[formattedCode, () => props.lang],
-		() => { void rebuild() },
+		() => { rebuild().catch(onRebuildRejection) },
 		{ immediate: false }
 	)
 
@@ -374,7 +377,7 @@
 		})
 	})
 
-	onMounted(() => { void rebuild() })
+	onMounted(() => { rebuild().catch(onRebuildRejection) })
 
 	/*********************************************************
 	 * Copy-to-clipboard with feedback.

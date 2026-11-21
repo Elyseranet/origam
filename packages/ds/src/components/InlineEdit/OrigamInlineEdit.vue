@@ -40,7 +40,7 @@
 					data-cy="origam-inline-edit-actions-display"
 			>
 				<origam-btn
-						:icon="MDI_ICONS.PENCIL_OUTLINE"
+						:icon="'mdi:mdi-pencil-outline'"
 						class="origam-inline-edit__action-btn origam-inline-edit__action-btn--edit"
 						:disabled="disabled"
 						:aria-label="editActionLabel"
@@ -91,7 +91,7 @@
 								:is-pending="isPending"
 						>
 							<origam-btn
-									:icon="MDI_ICONS.CHECK"
+									:icon="'mdi:mdi-check'"
 									class="origam-inline-edit__action-btn origam-inline-edit__action-btn--confirm"
 									:disabled="disabled || isPending"
 									:aria-label="confirmActionLabel"
@@ -103,7 +103,7 @@
 									@click="handleConfirm"
 							/>
 							<origam-btn
-									:icon="MDI_ICONS.CLOSE"
+									:icon="'mdi:mdi-close'"
 									class="origam-inline-edit__action-btn origam-inline-edit__action-btn--cancel"
 									:disabled="disabled"
 									:aria-label="cancelActionLabel"
@@ -146,7 +146,7 @@
 								:is-pending="isPending"
 						>
 							<origam-btn
-									:icon="MDI_ICONS.CHECK"
+									:icon="'mdi:mdi-check'"
 									class="origam-inline-edit__action-btn origam-inline-edit__action-btn--confirm"
 									:disabled="disabled || isPending"
 									:aria-label="confirmActionLabel"
@@ -158,7 +158,7 @@
 									@click="handleConfirm"
 							/>
 							<origam-btn
-									:icon="MDI_ICONS.CLOSE"
+									:icon="'mdi:mdi-close'"
 									class="origam-inline-edit__action-btn origam-inline-edit__action-btn--cancel"
 									:disabled="disabled"
 									:aria-label="cancelActionLabel"
@@ -216,9 +216,10 @@
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
 	import { INLINE_EDIT_ACTION } from '../../enums/InlineEdit/inline-edit.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IInlineEditProps, IInlineEditEmits, IInlineEditSlots } from '../../interfaces/InlineEdit/inline-edit.interface'
+
+	import { warnAsyncRejection } from '../../utils/Commons/console.util'
 
 
 	/*********************************************************
@@ -458,7 +459,7 @@
 
 	const handleConfirm = (): void => {
 		noteTransition(false)
-		void confirm()
+		confirm().catch((err: unknown) => warnAsyncRejection('OrigamInlineEdit', err))
 	}
 
 	const handleCancel = (): void => {

@@ -81,7 +81,6 @@
 	import { ORIGAM_SLIDE_GROUP_KEY } from '../../consts/Slide/slide-group.const'
 
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IGoToOptions } from '../../interfaces/Commons/goTo.interface'
 	import type { ISlideGroupProps, ISlideGroupEmits, ISlideGroupSlots } from '../../interfaces/Slide/slide-group.interface'
@@ -106,8 +105,8 @@
 		direction: DIRECTION.HORIZONTAL,
 		// Affix icons were swapped: prev pointed RIGHT, next pointed LEFT.
 		// Reversed so the chevrons match the scroll direction they trigger.
-		prevIcon: MDI_ICONS.CHEVRON_LEFT,
-		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
+		prevIcon: 'mdi:mdi-chevron-left',
+		nextIcon: 'mdi:mdi-chevron-right',
 		selectedClass: 'origam-slide-group-item--active'
 	})
 
@@ -204,7 +203,7 @@
 				}
 
 				if (firstSelectedIndex.value >= 0 && contentRef.value) {
-					// TODO: Is this too naive? Should we store element references in group composable?
+					// #1408 — Is this too naive? Should we store element references in group composable?
 					const selectedElement = contentRef.value.children[lastSelectedIndex.value] as HTMLElement
 
 					scrollToChildren(selectedElement, props.centerActive)
@@ -336,12 +335,10 @@
 			} else if (e.key === 'ArrowLeft') {
 				toFocus('prev')
 			}
-		} else {
-			if (e.key === 'ArrowDown') {
-				toFocus('next')
-			} else if (e.key === 'ArrowUp') {
-				toFocus('prev')
-			}
+		} else if (e.key === 'ArrowDown') {
+			toFocus('next')
+		} else if (e.key === 'ArrowUp') {
+			toFocus('prev')
 		}
 
 		if (e.key === 'Home') {

@@ -10,12 +10,29 @@ import type { IChartPlotBand } from '../../interfaces/Chart/chart-plot-band.inte
 import type { IChartPlotLine } from '../../interfaces/Chart/chart-plot-line.interface'
 import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
 import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
-import type { IChartLegendItem, IChartPath, IChartScales, IChartTick, IUseChartOptions } from '../../interfaces/Chart/chart.interface'
+import type {
+    IChartBarPathFrame,
+    IChartIndexedSeries,
+    IChartLegendItem,
+    IChartLineGeometry,
+    IChartLinePathFrame,
+    IChartNormalisedPoint,
+    IChartPath,
+    IChartPieFrame,
+    IChartRadarPathFrame,
+    IChartScales,
+    IChartScatterPathFrame,
+    IChartSeriesPathFrame,
+    IChartTick,
+    IChartYRange,
+    IUseChartOptions
+} from '../../interfaces/Chart/chart.interface'
 
 import type { TChartSmoothing, TChartStacking, TChartType } from '../../types/Chart/chart.type'
 import type { TIntent } from '../../types/Commons/intent.type'
 
-import { CHART_SMOOTHING, CHART_STACKING, CHART_TYPE, INTENT } from '../../enums'
+import { CHART_SMOOTHING, CHART_STACKING, CHART_TYPE } from '../../enums/Chart/chart.enum'
+import { INTENT } from '../../enums/Commons/intent.enum'
 
 import {
     arcPath,
@@ -378,7 +395,7 @@ export const computeAnnotationGeometry = (
  * (number form). Categorical `x` strings are mapped to their
  * `categories` index later by the X scale.
  */
-const toPoints = (series: IChartSeries): Array<{ x: number | string, y: number, z?: number, dataIndex: number }> => {
+const toPoints = (series: IChartSeries): Array<IChartNormalisedPoint> => {
     if (!series.data?.length) return []
     return series.data.map((entry, i) => {
         if (typeof entry === 'number') {
@@ -403,7 +420,7 @@ const computeYRange = (
     stacking: TChartStacking,
     yMinOverride?: number,
     yMaxOverride?: number
-): { min: number, max: number } => {
+): IChartYRange => {
     const visible = series.filter((s) => s.visible !== false)
     if (!visible.length) return { min: 0, max: 1 }
 
@@ -411,29 +428,50 @@ const computeYRange = (
         return { min: CHART_PERCENT_MIN, max: CHART_PERCENT_MAX }
     }
 
-    if (stacked) {
-        const dataLengths = visible.map((s) => s.data.length)
-        const maxLength = Math.max(...dataLengths)
-        let stackMax = 0
-        let stackMin = 0
-        for (let i = 0; i < maxLength; i++) {
-            let positive = 0
-            let negative = 0
-            for (const s of visible) {
-                const entry = s.data[i]
-                const y = typeof entry === 'number' ? entry : entry?.y ?? 0
-                if (y >= 0) positive += y
-                else negative += y
-            }
-            stackMax = Math.max(stackMax, positive)
-            stackMin = Math.min(stackMin, negative)
-        }
-        return {
-            min: yMinOverride ?? stackMin,
-            max: yMaxOverride ?? stackMax
-        }
-    }
+    return stacked
+        ? stackedYRange(visible, yMinOverride, yMaxOverride)
+        : plainYRange(visible, yMinOverride, yMaxOverride)
+}
 
+/**
+ * Y value of one data entry — a bare number, or the `y` of the object form.
+ */
+const entryValue = (entry: number | { y: number } | undefined): number =>
+    typeof entry === 'number' ? entry : entry?.y ?? 0
+
+/**
+ * Stacked range: positive and negative values accumulate separately per
+ * data index, the range spans the tallest stack either way.
+ */
+const stackedYRange = (
+    visible: Array<IChartSeries>,
+    yMinOverride?: number,
+    yMaxOverride?: number
+): IChartYRange => {
+    const maxLength = Math.max(...visible.map((s) => s.data.length))
+    let stackMax = 0
+    let stackMin = 0
+    for (let i = 0; i < maxLength; i++) {
+        let positive = 0
+        let negative = 0
+        for (const s of visible) {
+            const y = entryValue(s.data[i])
+            if (y >= 0) positive += y
+            else negative += y
+        }
+        stackMax = Math.max(stackMax, positive)
+        stackMin = Math.min(stackMin, negative)
+    }
+    return {
+        min: yMinOverride ?? stackMin,
+        max: yMaxOverride ?? stackMax
+    }
+}
+
+/**
+ * Min / max of every raw Y value across the given series.
+ */
+const dataYExtent = (visible: Array<IChartSeries>): IChartYRange => {
     let min = Number.POSITIVE_INFINITY
     let max = Number.NEGATIVE_INFINITY
     for (const s of visible) {
@@ -443,6 +481,19 @@ const computeYRange = (
             if (y > max) max = y
         }
     }
+    return { min, max }
+}
+
+/**
+ * Non-stacked range: data extent (anchored on 0 at the bottom), padded when
+ * degenerate so the line doesn't sit on the axis.
+ */
+const plainYRange = (
+    visible: Array<IChartSeries>,
+    yMinOverride?: number,
+    yMaxOverride?: number
+): IChartYRange => {
+    let { min, max } = dataYExtent(visible)
     if (!Number.isFinite(min)) min = 0
     if (!Number.isFinite(max)) max = 1
     if (min === max) {
@@ -453,6 +504,447 @@ const computeYRange = (
         min: yMinOverride ?? Math.min(0, min),
         max: yMaxOverride ?? max
     }
+}
+
+const indexVisibleSeries = (series: Array<IChartSeries>): Array<IChartIndexedSeries> =>
+    series
+        .map((s, i) => ({ s, i }))
+        .filter(({ s }) => s.visible !== false)
+
+const maxDataLength = (visible: Array<IChartIndexedSeries>): number =>
+    Math.max(...visible.map(({ s }) => s.data.length), 0)
+
+/** Sum of the strictly positive values of one data index. */
+const positiveColumnTotal = (visible: Array<IChartIndexedSeries>, dataIdx: number): number => {
+    let total = 0
+    for (const { s } of visible) {
+        const y = entryValue(s.data[dataIdx])
+        if (y > 0) total += y
+    }
+    return total
+}
+
+const setSeriesSlot = (map: Map<number, Array<number>>, seriesIdx: number, dataIdx: number, value: number): void => {
+    if (!map.has(seriesIdx)) map.set(seriesIdx, [])
+    map.get(seriesIdx)![dataIdx] = value
+}
+
+/** Stack offsets in percentage points (0–100) of the column total. */
+const fillPercentStackOffsets = (
+    offsets: Map<number, Array<number>>,
+    visible: Array<IChartIndexedSeries>
+): void => {
+    const length = maxDataLength(visible)
+    for (let dataIdx = 0; dataIdx < length; dataIdx++) {
+        const safeTot = positiveColumnTotal(visible, dataIdx) || 1
+        let runningPct = 0
+        for (const { s, i } of visible) {
+            const y = entryValue(s.data[dataIdx])
+            setSeriesSlot(offsets, i, dataIdx, runningPct)
+            if (y > 0) runningPct += (y / safeTot) * CHART_PERCENT_MAX
+        }
+    }
+}
+
+/** Stack offsets in raw data units, positive and negative stacks apart. */
+const fillSignedStackOffsets = (
+    offsets: Map<number, Array<number>>,
+    visible: Array<IChartIndexedSeries>
+): void => {
+    const length = maxDataLength(visible)
+    for (let dataIdx = 0; dataIdx < length; dataIdx++) {
+        let runningPositive = 0
+        let runningNegative = 0
+        for (const { s, i } of visible) {
+            const y = entryValue(s.data[dataIdx])
+            setSeriesSlot(offsets, i, dataIdx, y >= 0 ? runningPositive : runningNegative)
+            if (y >= 0) runningPositive += y
+            else runningNegative += y
+        }
+    }
+}
+
+const isLineFamily = (kind: TChartType): boolean =>
+    kind === CHART_TYPE.LINE
+    || kind === CHART_TYPE.AREA
+    || kind === CHART_TYPE.SPLINE
+    || kind === CHART_TYPE.STEPPED_LINE
+
+/**
+ * Resolve the stroke `d` and the matching area mode per topology.
+ * `spline` defaults to monotone smoothing unless the consumer explicitly
+ * picks another mode. `stepped-line` is its own topology (no smoothing
+ * applies).
+ */
+const lineGeometry = (kind: TChartType, smoothing: TChartSmoothing, pts: Array<TPathPoint>): IChartLineGeometry => {
+    if (kind === CHART_TYPE.STEPPED_LINE) return { dLine: steppedPath(pts), areaMode: 'stepped' }
+
+    const effectiveSmoothing: TChartSmoothing =
+        kind === CHART_TYPE.SPLINE && smoothing === CHART_SMOOTHING.NONE
+            ? CHART_SMOOTHING.MONOTONE
+            : smoothing
+
+    if (effectiveSmoothing === CHART_SMOOTHING.MONOTONE) return { dLine: monotonePath(pts), areaMode: 'monotone' }
+    if (effectiveSmoothing === CHART_SMOOTHING.CURVE) return { dLine: smoothPath(pts), areaMode: true }
+    return { dLine: linePath(pts), areaMode: false }
+}
+
+/** line / area / spline / stepped-line: stroke, optional fill, point markers. */
+const pushLinePaths = (out: Array<IChartPath>, frame: IChartLinePathFrame): void => {
+    const { series, seriesIdx, color, kind, pts, smoothing, baseline } = frame
+    const { dLine, areaMode } = lineGeometry(kind, smoothing, pts)
+
+    /*
+     * Length policy per topology. The animation reveals the
+     * stroke via `stroke-dasharray: length; dashoffset: length`
+     * → 0, so under-counting the length truncates the visible
+     * portion of the stroke (the stepped-line tail-cut bug).
+     * `stepped-line` uses the Manhattan helper because its
+     * `d` includes both horizontal AND vertical legs.
+     */
+    const length = kind === CHART_TYPE.STEPPED_LINE
+        ? steppedPathLength(pts)
+        : computePathLength(pts)
+
+    if (kind === CHART_TYPE.AREA) {
+        out.push({
+            seriesIndex: seriesIdx,
+            kind: 'path',
+            d: areaPath(pts, baseline, areaMode),
+            color,
+            series,
+            pathLength: length,
+            variant: 'fill'
+        })
+    }
+
+    out.push({
+        seriesIndex: seriesIdx,
+        kind: 'path',
+        d: dLine,
+        color,
+        series,
+        pathLength: length,
+        variant: kind === CHART_TYPE.AREA ? 'stroke' : undefined
+    })
+
+    // One descriptor per data point — `<circle>` markers and the hover hit zones.
+    for (let dataIdx = 0; dataIdx < pts.length; dataIdx++) {
+        out.push({
+            seriesIndex: seriesIdx,
+            kind: 'circle',
+            circle: {
+                cx: pts[dataIdx][0],
+                cy: pts[dataIdx][1],
+                r: CHART_POINT_MARKER_RADIUS
+            },
+            color,
+            series,
+            dataIndex: dataIdx
+        })
+    }
+}
+
+/** Linear projection of a value onto the plot's X span, clamped to the plot. */
+const projectToPlotX = (v: number, min: number, span: number, x0: number, x1: number): number => {
+    const ratio = (v - min) / span
+    const px = x0 + ratio * (x1 - x0)
+    if (px < x0) return x0
+    if (px > x1) return x1
+    return px
+}
+
+/** Thickness of one bar inside its slot (shared by the series of a group unless stacked). */
+const barThickness = (frame: IChartBarPathFrame, slotPx: number): number =>
+    frame.stacked
+        ? slotPx * CHART_BAR_SLOT_FILL_RATIO
+        : (slotPx * CHART_BAR_SLOT_FILL_RATIO) / Math.max(1, frame.visibleCount)
+
+/** Start of the bar along the categorical axis, given the slot centre. */
+const barBandStart = (frame: IChartBarPathFrame, slotCenter: number, slotPx: number, thickness: number): number =>
+    frame.stacked
+        ? slotCenter - thickness / 2
+        : slotCenter - (slotPx * CHART_BAR_SLOT_FILL_RATIO) / 2 + frame.visibleIdxInGroup * thickness
+
+/*
+ * Column slots use the "band" scale (each slot occupies `slotPx` of the
+ * plot, centred on its midpoint), NOT the edge-to-edge `idx / (slots-1)`
+ * mapping used by `scales.x` for line / scatter / spline. Without this the
+ * first column for `dataIdx=0` would be centred on `x0` (the Y-axis) and
+ * half of it would overflow to the LEFT of the axis.
+ */
+const columnRect = (frame: IChartBarPathFrame, dataIdx: number, slotPx: number, renderY: number, offset: number) => {
+    const centerX = frame.plot.x0 + (dataIdx + 0.5) * slotPx
+    const barWidth = barThickness(frame, slotPx)
+    const top = frame.yFn(renderY + offset)
+    const base = frame.yFn(offset)
+    return {
+        x: barBandStart(frame, centerX, slotPx, barWidth),
+        y: Math.min(top, base),
+        width: barWidth,
+        height: Math.abs(base - top)
+    }
+}
+
+/*
+ * Horizontal bar — categorical axis runs along Y (top-to-bottom), value
+ * axis runs along X. Same "band" centring as column.
+ */
+const horizontalBarRect = (
+    frame: IChartBarPathFrame,
+    dataIdx: number,
+    slotPx: number,
+    renderY: number,
+    offset: number,
+    horizSpan: number
+) => {
+    const { x0, x1, y0, y1 } = frame.plot
+    const slots = Math.max(1, frame.groupCount)
+    const slotCenterY = slots === 1
+        ? (y0 + y1) / 2
+        : y0 + (dataIdx + 0.5) * slotPx
+    const barHeight = barThickness(frame, slotPx)
+    const rightPx = projectToPlotX(renderY + offset, frame.yRange.min, horizSpan, x0, x1)
+    const basePx = projectToPlotX(offset, frame.yRange.min, horizSpan, x0, x1)
+    return {
+        x: Math.min(rightPx, basePx),
+        y: barBandStart(frame, slotCenterY, slotPx, barHeight),
+        width: Math.abs(rightPx - basePx),
+        height: barHeight
+    }
+}
+
+/** bar / column: one `<rect>` per data point. */
+const pushBarPaths = (out: Array<IChartPath>, frame: IChartBarPathFrame): void => {
+    const { plot, kind, groupCount, series, seriesIdx, color, normalised, stacked, isPercent } = frame
+    const slotPx = kind === CHART_TYPE.COLUMN
+        ? (plot.x1 - plot.x0) / Math.max(1, groupCount)
+        : (plot.y1 - plot.y0) / Math.max(1, groupCount)
+    // `yRange` already absorbs `yMin`/`yMax` overrides + stacked accumulation.
+    const horizSpan = Math.max(CHART_EPSILON, frame.yRange.max - frame.yRange.min)
+
+    for (let dataIdx = 0; dataIdx < normalised.length; dataIdx++) {
+        // In percent mode, convert the raw data value to its percentage
+        // share of the column total at this data index, since the stack
+        // offsets are stored in percent units too.
+        const renderY = isPercent
+            ? (frame.percentShares?.[dataIdx] ?? 0)
+            : normalised[dataIdx].y
+        const offset = stacked ? frame.stackOffsets[dataIdx] ?? 0 : 0
+
+        out.push({
+            seriesIndex: seriesIdx,
+            kind: 'rect',
+            rect: kind === CHART_TYPE.COLUMN
+                ? columnRect(frame, dataIdx, slotPx, renderY, offset)
+                : horizontalBarRect(frame, dataIdx, slotPx, renderY, offset, horizSpan),
+            color,
+            series,
+            dataIndex: dataIdx
+        })
+    }
+}
+
+/** X and Z extents across every scatter series (cohorts share the axes). */
+const scatterExtent = (scatterSeries: Array<IChartSeries>) => {
+    let xMin = Infinity
+    let xMax = -Infinity
+    let zMin = Infinity
+    let zMax = -Infinity
+    let hasZ = false
+    for (const sp of scatterSeries) {
+        for (const entry of sp.data) {
+            const xv = typeof entry === 'number' ? entry : entry.x
+            const x = typeof xv === 'number' ? xv : 0
+            if (x < xMin) xMin = x
+            if (x > xMax) xMax = x
+            if (typeof entry !== 'number' && typeof entry.z === 'number' && Number.isFinite(entry.z)) {
+                hasZ = true
+                if (entry.z < zMin) zMin = entry.z
+                if (entry.z > zMax) zMax = entry.z
+            }
+        }
+    }
+    return { xMin, xMax, zMin, zMax, hasZ }
+}
+
+/*
+ * Scatter — (x, y) dots with optional `z` third dimension that drives the
+ * dot RADIUS (bubble-style variant of the standard scatter plot).
+ *
+ *   - X scale: linear projection of the data's X range onto the plot.
+ *     `scales.x` treats numeric values as "0..count-1 indices into the slot
+ *     grid", and scatter X values can exceed the data count freely, so the
+ *     range is scoped to the actual data span across ALL visible scatter
+ *     series.
+ *
+ *   - Radius: if a point carries `z`, scale it linearly into
+ *     `[MIN_R..MAX_R]` from the global Z range. When no point in the chart
+ *     has `z`, all dots keep the default fixed radius.
+ */
+const pushScatterPaths = (out: Array<IChartPath>, frame: IChartScatterPathFrame): void => {
+    const { plot, series, seriesIdx, color, normalised, yFn } = frame
+    const { xMin, xMax, zMin, zMax, hasZ } = scatterExtent(frame.scatterSeries)
+    const xSpan = Math.max(CHART_EPSILON, xMax - xMin)
+    const zSpan = Math.max(CHART_EPSILON, zMax - zMin)
+    const radiusFor = (z: number | undefined): number => {
+        if (!hasZ || typeof z !== 'number' || !Number.isFinite(z)) return CHART_SCATTER_DEFAULT_RADIUS
+        const ratio = zSpan === 0 ? 0.5 : (z - zMin) / zSpan
+        return CHART_SCATTER_MIN_RADIUS + ratio * (CHART_SCATTER_MAX_RADIUS - CHART_SCATTER_MIN_RADIUS)
+    }
+
+    for (let dataIdx = 0; dataIdx < normalised.length; dataIdx++) {
+        const p = normalised[dataIdx]
+        const cxRaw = typeof p.x === 'number' ? p.x : Number(p.x)
+        out.push({
+            seriesIndex: seriesIdx,
+            kind: 'circle',
+            circle: {
+                cx: projectToPlotX(Number.isFinite(cxRaw) ? cxRaw : 0, xMin, xSpan, plot.x0, plot.x1),
+                cy: yFn(p.y),
+                r: radiusFor(p.z)
+            },
+            color,
+            series,
+            dataIndex: dataIdx
+        })
+    }
+}
+
+/** radar: one polygon plus a marker per axis. */
+const pushRadarPaths = (out: Array<IChartPath>, frame: IChartRadarPathFrame): void => {
+    const { plot, axes, series, seriesIdx, color, normalised, yRange } = frame
+    if (!axes) return
+    const radius = Math.max(
+        CHART_RADAR_MIN_RADIUS,
+        Math.min(plot.x1 - plot.x0, plot.y1 - plot.y0) / 2 - CHART_RADAR_RADIUS_INSET
+    )
+    const pts: Array<TPathPoint> = normalised.map((p, i) => {
+        const yRangeSize = Math.max(CHART_EPSILON, yRange.max - yRange.min)
+        const ratio = (p.y - yRange.min) / yRangeSize
+        const angle = (i / axes) * Math.PI * 2
+        return polarToCartesian(plot.cx, plot.cy, radius * ratio, angle)
+    })
+    out.push({
+        seriesIndex: seriesIdx,
+        kind: 'polygon',
+        d: polygonPath(pts),
+        color,
+        series
+    })
+    // Point markers on each axis.
+    for (let i = 0; i < pts.length; i++) {
+        out.push({
+            seriesIndex: seriesIdx,
+            kind: 'circle',
+            circle: { cx: pts[i][0], cy: pts[i][1], r: CHART_RADAR_MARKER_RADIUS },
+            color,
+            series,
+            dataIndex: i
+        })
+    }
+}
+
+/** Slice label: the category, else the point's `x`, else "Slice N". */
+const pieSliceLabel = (cats: Array<string>, i: number, entry: number | { x: number | string, y: number } | undefined): string => {
+    if (cats[i] != null) return String(cats[i])
+    if (entry != null && typeof entry === 'object') return String(entry.x)
+    return `${ CHART_SLICE_LABEL_PREFIX } ${ i + 1 }`
+}
+
+/*
+ * Single source of truth for category colours — categories across rings
+ * share the colour so the user instantly sees which slice corresponds to
+ * which category at every depth.
+ */
+const pieSliceColor = (scheme: Array<TIntent | string>, dataIdx: number, series: IChartSeries): string => {
+    if (series.color) return resolveColor(series.color)
+    return resolveColor(scheme[dataIdx % scheme.length])
+}
+
+/**
+ * Drawable slices of one ring (finite, strictly positive values). Per-label
+ * hidden slices are skipped only in the single-ring mode, where the legend
+ * addresses slices by category name; in multi-ring mode it addresses whole
+ * rings (`series.visible`).
+ */
+const pieRingSlices = (
+    data: Array<number | { x: number | string, y: number }>,
+    isSingleRing: boolean,
+    hidden: Set<string>,
+    cats: Array<string>
+): Array<{ v: number, i: number }> => {
+    const slices: Array<{ v: number, i: number }> = []
+    for (let i = 0; i < data.length; i++) {
+        const entry = data[i]
+        if (isSingleRing && hidden.has(pieSliceLabel(cats, i, entry))) continue
+        const v = entryValue(entry)
+        if (Number.isFinite(v) && v > 0) slices.push({ v, i })
+    }
+    return slices
+}
+
+/*
+ * Pie / donut path generator. Two rendering modes:
+ *
+ *   1. **Single series → classic pie / donut** — one series with N data
+ *      points produces N slices, one per data point. Categories drive the
+ *      slice colours so the legend can address each slice by its X label.
+ *
+ *   2. **Multi-series → concentric rings** — each series becomes its own
+ *      ring, stacked from the centre out: series[0] = innermost band,
+ *      series[N-1] = outermost. Inside each ring, the same `categories`
+ *      drive the angular partitioning so a given category occupies the SAME
+ *      colour across all rings. Each ring's angular sweep is proportional to
+ *      its OWN series total.
+ *
+ * For donut, the global `innerR = outerR * donutHoleSize` is preserved
+ * (central hole). The remaining annulus `[innerR..outerR]` is divided into N
+ * equal bands.
+ */
+const buildPiePaths = (frame: IChartPieFrame): Array<IChartPath> => {
+    const out: Array<IChartPath> = []
+    const { plot, series, scheme, hidden } = frame
+    const outerR = Math.max(
+        CHART_PIE_MIN_RADIUS,
+        Math.min(plot.x1 - plot.x0, plot.y1 - plot.y0) / 2 - CHART_PIE_RADIUS_INSET
+    )
+    const baseInner = frame.isDonut ? outerR * frame.donutHoleSize : 0
+    const visibleSeries = frame.pieSeriesList.filter((s) => s.visible !== false)
+
+    if (visibleSeries.length === 0) return out
+
+    const bandThickness = (outerR - baseInner) / visibleSeries.length
+    const isSingleRing = visibleSeries.length === 1
+
+    for (let ringIdx = 0; ringIdx < visibleSeries.length; ringIdx++) {
+        const s = visibleSeries[ringIdx]
+        const ringInner = baseInner + bandThickness * ringIdx
+        const ringOuter = baseInner + bandThickness * (ringIdx + 1)
+        const slices = pieRingSlices(
+            s.data as Array<number | { x: number | string, y: number }>,
+            isSingleRing,
+            hidden,
+            frame.categories
+        )
+        const ringTotal = slices.reduce((acc, { v }) => acc + v, 0)
+        if (ringTotal === 0) continue
+
+        let angle = 0
+        for (const { v, i } of slices) {
+            const endAngle = angle + (v / ringTotal) * Math.PI * 2
+            out.push({
+                seriesIndex: series.indexOf(s),
+                kind: 'path',
+                d: arcPath(plot.cx, plot.cy, ringOuter, ringInner, angle, endAngle),
+                color: pieSliceColor(scheme, i, s),
+                series: s,
+                dataIndex: i
+            })
+            angle = endAngle
+        }
+    }
+    return out
 }
 
 /**
@@ -832,45 +1324,12 @@ export const useChart = (options: IUseChartOptions) => {
         const offsets = new Map<number, Array<number>>()
         if (!options.stacked()) return offsets
 
-        const isPercent = effectiveStacking.value === CHART_STACKING.PERCENT
+        const visible = indexVisibleSeries(options.series())
 
-        const visible = options.series()
-            .map((s, i) => ({ s, i }))
-            .filter(({ s }) => s.visible !== false)
-
-        const length = Math.max(...visible.map(({ s }) => s.data.length), 0)
-
-        if (isPercent) {
-            for (let dataIdx = 0; dataIdx < length; dataIdx++) {
-                let total = 0
-                for (const { s } of visible) {
-                    const entry = s.data[dataIdx]
-                    const y = typeof entry === 'number' ? entry : entry?.y ?? 0
-                    if (y > 0) total += y
-                }
-                const safeTot = total || 1
-                let runningPct = 0
-                for (const { s, i } of visible) {
-                    const entry = s.data[dataIdx]
-                    const y = typeof entry === 'number' ? entry : entry?.y ?? 0
-                    if (!offsets.has(i)) offsets.set(i, [])
-                    offsets.get(i)![dataIdx] = runningPct
-                    if (y > 0) runningPct += (y / safeTot) * CHART_PERCENT_MAX
-                }
-            }
+        if (effectiveStacking.value === CHART_STACKING.PERCENT) {
+            fillPercentStackOffsets(offsets, visible)
         } else {
-            for (let dataIdx = 0; dataIdx < length; dataIdx++) {
-                let runningPositive = 0
-                let runningNegative = 0
-                for (const { s, i } of visible) {
-                    const entry = s.data[dataIdx]
-                    const y = typeof entry === 'number' ? entry : entry?.y ?? 0
-                    if (!offsets.has(i)) offsets.set(i, [])
-                    offsets.get(i)![dataIdx] = y >= 0 ? runningPositive : runningNegative
-                    if (y >= 0) runningPositive += y
-                    else runningNegative += y
-                }
-            }
+            fillSignedStackOffsets(offsets, visible)
         }
         return offsets
     })
@@ -884,28 +1343,103 @@ export const useChart = (options: IUseChartOptions) => {
         const pctMap = new Map<number, Array<number>>()
         if (!options.stacked() || effectiveStacking.value !== CHART_STACKING.PERCENT) return pctMap
 
-        const visible = options.series()
-            .map((s, i) => ({ s, i }))
-            .filter(({ s }) => s.visible !== false)
-
-        const length = Math.max(...visible.map(({ s }) => s.data.length), 0)
+        const visible = indexVisibleSeries(options.series())
+        const length = maxDataLength(visible)
         for (let dataIdx = 0; dataIdx < length; dataIdx++) {
-            let total = 0
-            for (const { s } of visible) {
-                const entry = s.data[dataIdx]
-                const y = typeof entry === 'number' ? entry : entry?.y ?? 0
-                if (y > 0) total += y
-            }
-            const safeTot = total || 1
+            const safeTot = positiveColumnTotal(visible, dataIdx) || 1
             for (const { s, i } of visible) {
-                const entry = s.data[dataIdx]
-                const y = typeof entry === 'number' ? entry : entry?.y ?? 0
-                if (!pctMap.has(i)) pctMap.set(i, [])
-                pctMap.get(i)![dataIdx] = y > 0 ? (y / safeTot) * CHART_PERCENT_MAX : 0
+                const y = entryValue(s.data[dataIdx])
+                setSeriesSlot(pctMap, i, dataIdx, y > 0 ? (y / safeTot) * CHART_PERCENT_MAX : 0)
             }
         }
         return pctMap
     })
+
+    /**
+     * Dispatch one series to its per-type path generator.
+     */
+    const pushSeriesPaths = (
+        out: Array<IChartPath>,
+        series: Array<IChartSeries>,
+        seriesIdx: number,
+        cats: Array<string>,
+        smoothing: TChartSmoothing
+    ): void => {
+        const s = series[seriesIdx]
+        if (s.visible === false) return
+
+        const plotRect = plot.value
+        const kind = effectiveType(s)
+        const normalised = toPoints(s)
+
+        // Series assigned to axis 1 use the secondary right-hand scale;
+        // all others project against the primary left scale.
+        const onSecondaryAxis = (s.yAxis ?? 0) === 1
+        const yFn = onSecondaryAxis ? scaleY1.value : scales.value.y
+        const seriesRange = onSecondaryAxis ? secondaryYRange.value : yRange.value
+        const frame: IChartSeriesPathFrame = {
+            series: s,
+            seriesIdx,
+            color: colorFor(s, seriesIdx),
+            kind,
+            normalised,
+            yFn
+        }
+
+        if (isLineFamily(kind)) {
+            const linePathFrame: IChartLinePathFrame = {
+                ...frame,
+                pts: normalised.map((p) => [
+                    scales.value.x(p.x, p.dataIndex, slotCount.value),
+                    yFn(p.y)
+                ]),
+                smoothing,
+                baseline: yFn(Math.max(0, seriesRange.min))
+            }
+            pushLinePaths(out, linePathFrame)
+            return
+        }
+
+        if (kind === CHART_TYPE.BAR || kind === CHART_TYPE.COLUMN) {
+            const stacked = options.stacked()
+            const barFrame: IChartBarPathFrame = {
+                ...frame,
+                plot: plotRect,
+                groupCount: slotCount.value,
+                visibleCount: series.filter((other) => other.visible !== false).length,
+                visibleIdxInGroup: series
+                    .slice(0, seriesIdx)
+                    .filter((other) => other.visible !== false).length,
+                stacked,
+                isPercent: stacked && effectiveStacking.value === CHART_STACKING.PERCENT,
+                stackOffsets: stackOffsets.value.get(seriesIdx) ?? [],
+                percentShares: percentValues.value.get(seriesIdx),
+                yRange: yRange.value
+            }
+            pushBarPaths(out, barFrame)
+            return
+        }
+
+        if (kind === CHART_TYPE.SCATTER) {
+            const scatterFrame: IChartScatterPathFrame = {
+                ...frame,
+                plot: plotRect,
+                scatterSeries: series.filter((other) => effectiveType(other) === CHART_TYPE.SCATTER && other.visible !== false)
+            }
+            pushScatterPaths(out, scatterFrame)
+            return
+        }
+
+        if (kind === CHART_TYPE.RADAR) {
+            const radarFrame: IChartRadarPathFrame = {
+                ...frame,
+                plot: plotRect,
+                axes: Math.max(cats.length, normalised.length),
+                yRange: yRange.value
+            }
+            pushRadarPaths(out, radarFrame)
+        }
+    }
 
     /**
      * Heart of the engine. One render descriptor per visible
@@ -913,433 +1447,30 @@ export const useChart = (options: IUseChartOptions) => {
      * per value).
      */
     const paths: ComputedRef<Array<IChartPath>> = computed(() => {
-        const out: Array<IChartPath> = []
         const series = options.series()
         const cats = categories.value
-        const { x0, x1, y0, y1, cx, cy } = plot.value
+        const plotRect = plot.value
         const smoothing = options.smoothing()
 
         const pieSeriesList = series.filter((s) => effectiveType(s) === CHART_TYPE.PIE || effectiveType(s) === CHART_TYPE.DONUT)
         if (pieSeriesList.length > 0) {
-            /*
-             * Pie / donut path generator. Two rendering modes:
-             *
-             *   1. **Single series → classic pie / donut** — one series
-             *      with N data points produces N slices, one per data
-             *      point. Categories drive the slice colours so the
-             *      legend can address each slice by its X label.
-             *
-             *   2. **Multi-series → concentric rings** — each series
-             *      becomes its own ring, stacked from the centre out:
-             *      series[0] = innermost band, series[N-1] = outermost.
-             *      Inside each ring, the same `categories` drive the
-             *      angular partitioning so a given category occupies
-             *      the SAME colour across all rings. Each ring's
-             *      angular sweep is proportional to its OWN series
-             *      total, so the user can compare distribution shapes
-             *      at a glance.
-             *
-             * For donut, the global `innerR = outerR * donutHoleSize`
-             * is preserved (central hole). The remaining annulus
-             * `[innerR..outerR]` is divided into N equal bands.
-             */
-            const outerR = Math.max(
-                CHART_PIE_MIN_RADIUS,
-                Math.min(x1 - x0, y1 - y0) / 2 - CHART_PIE_RADIUS_INSET
-            )
             const isDonut = effectiveType(pieSeriesList[0]) === CHART_TYPE.DONUT
-            const baseInner = isDonut ? outerR * options.donutHoleSize() : 0
-            const scheme = options.colorScheme().length ? options.colorScheme() : CHART_DEFAULT_PALETTE
-            const visibleSeries = pieSeriesList.filter((s) => s.visible !== false)
-
-            if (visibleSeries.length === 0) return out
-
-            const bandThickness = (outerR - baseInner) / visibleSeries.length
-            const hidden = options.hiddenLabels?.() ?? new Set<string>()
-            const cats = options.categories()
-            const isSingleRing = visibleSeries.length === 1
-
-            // Single source of truth for category colours — categories
-            // across rings share the colour so the user instantly sees
-            // which slice corresponds to which category at every depth.
-            const categoryColor = (dataIdx: number, fallbackSeries: IChartSeries): string => {
-                if (fallbackSeries.color) return resolveColor(fallbackSeries.color)
-                return resolveColor(scheme[dataIdx % scheme.length])
-            }
-
-            const labelFor = (i: number, entry: number | { x: number | string, y: number } | undefined): string => {
-                if (cats[i] != null) return String(cats[i])
-                if (entry != null && typeof entry === 'object') return String(entry.x)
-                return `${ CHART_SLICE_LABEL_PREFIX } ${ i + 1 }`
-            }
-
-            for (let ringIdx = 0; ringIdx < visibleSeries.length; ringIdx++) {
-                const s = visibleSeries[ringIdx]
-                const ringInner = baseInner + bandThickness * ringIdx
-                const ringOuter = baseInner + bandThickness * (ringIdx + 1)
-
-                const data = s.data as Array<number | { x: number | string, y: number }>
-
-                // Compute ring total AFTER skipping per-label hidden slices
-                // — only relevant for the single-ring mode where the
-                // legend addresses slices by category name. In multi-ring
-                // mode the legend addresses entire rings (series.visible
-                // already filtered them above), so `hidden` only matters
-                // for the single-ring case.
-                const ringTotal = data.reduce<number>((acc, entry, i) => {
-                    if (isSingleRing && hidden.has(labelFor(i, entry))) return acc
-                    const v = typeof entry === 'number' ? entry : (entry?.y ?? 0)
-                    return acc + (Number.isFinite(v) && v > 0 ? v : 0)
-                }, 0)
-                if (ringTotal === 0) continue
-
-                let angle = 0
-                for (let i = 0; i < data.length; i++) {
-                    const entry = data[i]
-                    if (isSingleRing && hidden.has(labelFor(i, entry))) continue
-                    const v = typeof entry === 'number' ? entry : (entry?.y ?? 0)
-                    if (!Number.isFinite(v) || v <= 0) continue
-                    const sweep = (v / ringTotal) * Math.PI * 2
-                    const endAngle = angle + sweep
-                    out.push({
-                        seriesIndex: series.indexOf(s),
-                        kind: 'path',
-                        d: arcPath(cx, cy, ringOuter, ringInner, angle, endAngle),
-                        color: categoryColor(i, s),
-                        series: s,
-                        dataIndex: i
-                    })
-                    angle = endAngle
-                }
-            }
-            return out
+            return buildPiePaths({
+                series,
+                pieSeriesList,
+                plot: plotRect,
+                isDonut,
+                donutHoleSize: isDonut ? options.donutHoleSize() : 0,
+                scheme: options.colorScheme().length ? options.colorScheme() : CHART_DEFAULT_PALETTE,
+                hidden: options.hiddenLabels?.() ?? new Set<string>(),
+                categories: options.categories()
+            })
         }
 
         // Cartesian / radar generators.
+        const out: Array<IChartPath> = []
         for (let seriesIdx = 0; seriesIdx < series.length; seriesIdx++) {
-            const s = series[seriesIdx]
-            if (s.visible === false) continue
-            const color = colorFor(s, seriesIdx)
-            const kind = effectiveType(s)
-            const normalised = toPoints(s)
-
-            // Resolve the Y-mapping function for this series.
-            // Series assigned to axis 1 use the secondary right-hand scale;
-            // all others project against the primary left scale.
-            const seriesAxisIndex = s.yAxis ?? 0
-            const yFn = seriesAxisIndex === 1 ? scaleY1.value : scales.value.y
-            const seriesRange = seriesAxisIndex === 1 ? secondaryYRange.value : yRange.value
-            const seriesBaseline = yFn(Math.max(0, seriesRange.min))
-
-            if (
-                kind === CHART_TYPE.LINE
-                || kind === CHART_TYPE.AREA
-                || kind === CHART_TYPE.SPLINE
-                || kind === CHART_TYPE.STEPPED_LINE
-            ) {
-                const pts: Array<TPathPoint> = normalised.map((p) => [
-                    scales.value.x(p.x, p.dataIndex, slotCount.value),
-                    yFn(p.y)
-                ])
-
-                // Resolve the actual stroke generator per topology.
-                // `spline` defaults to monotone smoothing unless the
-                // consumer explicitly picks another mode. `stepped-line`
-                // is its own topology (no smoothing applies).
-                const effectiveSmoothing: TChartSmoothing =
-                    kind === CHART_TYPE.SPLINE && smoothing === CHART_SMOOTHING.NONE
-                        ? CHART_SMOOTHING.MONOTONE
-                        : smoothing
-
-                let dLine: string
-                let areaMode: boolean | 'monotone' | 'stepped' = false
-                if (kind === CHART_TYPE.STEPPED_LINE) {
-                    dLine = steppedPath(pts)
-                    areaMode = 'stepped'
-                } else if (effectiveSmoothing === CHART_SMOOTHING.MONOTONE) {
-                    dLine = monotonePath(pts)
-                    areaMode = 'monotone'
-                } else if (effectiveSmoothing === CHART_SMOOTHING.CURVE) {
-                    dLine = smoothPath(pts)
-                    areaMode = true
-                } else {
-                    dLine = linePath(pts)
-                    areaMode = false
-                }
-
-                /*
-             * Length policy per topology. The animation reveals the
-             * stroke via `stroke-dasharray: length; dashoffset: length`
-             * → 0, so under-counting the length truncates the visible
-             * portion of the stroke (the stepped-line tail-cut bug).
-             * `stepped-line` uses the Manhattan helper because its
-             * `d` includes both horizontal AND vertical legs.
-             */
-            const length = kind === CHART_TYPE.STEPPED_LINE
-                ? steppedPathLength(pts)
-                : computePathLength(pts)
-
-                if (kind === CHART_TYPE.AREA) {
-                    out.push({
-                        seriesIndex: seriesIdx,
-                        kind: 'path',
-                        d: areaPath(pts, seriesBaseline, areaMode),
-                        color,
-                        series: s,
-                        pathLength: length,
-                        variant: 'fill'
-                    })
-                }
-
-                out.push({
-                    seriesIndex: seriesIdx,
-                    kind: 'path',
-                    d: dLine,
-                    color,
-                    series: s,
-                    pathLength: length,
-                    variant: kind === CHART_TYPE.AREA ? 'stroke' : undefined
-                })
-
-                // Emit one descriptor per data point — `<circle>` markers
-                // and the hover hit zones.
-                {
-                    for (let dataIdx = 0; dataIdx < pts.length; dataIdx++) {
-                        out.push({
-                            seriesIndex: seriesIdx,
-                            kind: 'circle',
-                            circle: {
-                                cx: pts[dataIdx][0],
-                                cy: pts[dataIdx][1],
-                                r: CHART_POINT_MARKER_RADIUS
-                            },
-                            color,
-                            series: s,
-                            dataIndex: dataIdx
-                        })
-                    }
-                }
-                continue
-            }
-
-            if (kind === CHART_TYPE.BAR || kind === CHART_TYPE.COLUMN) {
-                const visibleCount = series.filter((other) => other.visible !== false).length
-                const groupCount = slotCount.value
-                const slotPx = kind === CHART_TYPE.COLUMN
-                    ? (x1 - x0) / Math.max(1, groupCount)
-                    : (y1 - y0) / Math.max(1, groupCount)
-                const stacked = options.stacked()
-                const isPercent = stacked && effectiveStacking.value === CHART_STACKING.PERCENT
-                const visibleIdxInGroup = series
-                    .slice(0, seriesIdx)
-                    .filter((other) => other.visible !== false).length
-                const stackOff = stackOffsets.value.get(seriesIdx) ?? []
-
-                // Horizontal-bar X scale: linear projection of the
-                // numeric Y range onto the plot's X span. `yRange`
-                // already absorbs `yMin`/`yMax` overrides + stacked
-                // accumulation so we just normalise into [0..1].
-                const horizRange = yRange.value
-                const horizSpan = Math.max(CHART_EPSILON, horizRange.max - horizRange.min)
-                const xValuePx = (v: number): number => {
-                    const ratio = (v - horizRange.min) / horizSpan
-                    const px = x0 + ratio * (x1 - x0)
-                    if (px < x0) return x0
-                    if (px > x1) return x1
-                    return px
-                }
-
-                for (let dataIdx = 0; dataIdx < normalised.length; dataIdx++) {
-                    const p = normalised[dataIdx]
-
-                    // In percent mode, convert the raw data value to
-                    // its percentage share of the column total at this
-                    // data index. `stackOffsets` stores percent offsets
-                    // so we must use matching percent units here.
-                    const renderY = isPercent
-                        ? (percentValues.value.get(seriesIdx)?.[dataIdx] ?? 0)
-                        : p.y
-
-                    if (kind === CHART_TYPE.COLUMN) {
-                        /*
-                         * Column slots use the "band" scale (each slot
-                         * occupies `slotPx` of the plot, centred on its
-                         * midpoint), NOT the edge-to-edge `idx / (slots-1)`
-                         * mapping used by `scales.x` for line / scatter /
-                         * spline. Without this the first column for
-                         * `dataIdx=0` would be centred on `x0` (the Y-axis)
-                         * and half of it would overflow to the LEFT of the
-                         * axis — the user-reported "column over the axis"
-                         * symptom on the leftmost (Jan) bar.
-                         */
-                        const centerX = x0 + (dataIdx + 0.5) * slotPx
-                        const barWidth = stacked
-                            ? slotPx * CHART_BAR_SLOT_FILL_RATIO
-                            : (slotPx * CHART_BAR_SLOT_FILL_RATIO) / Math.max(1, visibleCount)
-                        const left = stacked
-                            ? centerX - barWidth / 2
-                            : centerX - (slotPx * CHART_BAR_SLOT_FILL_RATIO) / 2 + visibleIdxInGroup * barWidth
-                        const offset = stacked ? stackOff[dataIdx] ?? 0 : 0
-                        const top = yFn(renderY + offset)
-                        const base = yFn(offset)
-                        out.push({
-                            seriesIndex: seriesIdx,
-                            kind: 'rect',
-                            rect: {
-                                x: left,
-                                y: Math.min(top, base),
-                                width: barWidth,
-                                height: Math.abs(base - top)
-                            },
-                            color,
-                            series: s,
-                            dataIndex: dataIdx
-                        })
-                    } else {
-                        // Horizontal bar — categorical axis runs along
-                        // Y (top-to-bottom), value axis runs along X.
-                        // Same "band" centring as column: slot centred
-                        // on its midpoint, not on edge-to-edge spaced.
-                        const slots = Math.max(1, groupCount)
-                        const slotCenterY = slots === 1
-                            ? (y0 + y1) / 2
-                            : y0 + (dataIdx + 0.5) * slotPx
-                        const barHeight = stacked
-                            ? slotPx * CHART_BAR_SLOT_FILL_RATIO
-                            : (slotPx * CHART_BAR_SLOT_FILL_RATIO) / Math.max(1, visibleCount)
-                        const top = stacked
-                            ? slotCenterY - barHeight / 2
-                            : slotCenterY - (slotPx * CHART_BAR_SLOT_FILL_RATIO) / 2 + visibleIdxInGroup * barHeight
-                        const offset = stacked ? stackOff[dataIdx] ?? 0 : 0
-                        const rightPx = xValuePx(renderY + offset)
-                        const basePx = xValuePx(offset)
-                        out.push({
-                            seriesIndex: seriesIdx,
-                            kind: 'rect',
-                            rect: {
-                                x: Math.min(rightPx, basePx),
-                                y: top,
-                                width: Math.abs(rightPx - basePx),
-                                height: barHeight
-                            },
-                            color,
-                            series: s,
-                            dataIndex: dataIdx
-                        })
-                    }
-                }
-                continue
-            }
-
-            if (kind === CHART_TYPE.SCATTER) {
-                /*
-                 * Scatter — (x, y) dots with optional `z` third
-                 * dimension that drives the dot RADIUS (bubble-style
-                 * variant of the standard scatter plot).
-                 *
-                 *   - X scale: linear projection of the data's X range
-                 *     onto the plot. Pre-fix this routed through
-                 *     `scales.x` which treats numeric values as
-                 *     "0..count-1 indices into the slot grid", and
-                 *     scatter X values can exceed the data count
-                 *     freely. A series with `x: 13` over a 6-point
-                 *     fixture landed at `13 / 5 = 2.6 × plotWidth` past
-                 *     `x0` — outside the SVG. The local `xPx()` mapping
-                 *     scopes the range to the actual data span across
-                 *     ALL visible scatter series so cohorts share the
-                 *     horizontal axis.
-                 *
-                 *   - Radius: if a point carries `z`, scale it linearly
-                 *     into `[MIN_R..MAX_R]` from the global Z range
-                 *     (across visible scatter series). When no point
-                 *     in the chart has `z`, all dots keep the default
-                 *     fixed radius — standard scatter behaviour.
-                 */
-                const scatterSeries = series.filter((other) => effectiveType(other) === CHART_TYPE.SCATTER && other.visible !== false)
-                let xMin = Infinity
-                let xMax = -Infinity
-                let zMin = Infinity
-                let zMax = -Infinity
-                let hasZ = false
-                for (const sp of scatterSeries) {
-                    for (const entry of sp.data) {
-                        const xv = typeof entry === 'number' ? entry : entry.x
-                        const x = typeof xv === 'number' ? xv : 0
-                        if (x < xMin) xMin = x
-                        if (x > xMax) xMax = x
-                        if (typeof entry !== 'number' && typeof entry.z === 'number' && Number.isFinite(entry.z)) {
-                            hasZ = true
-                            if (entry.z < zMin) zMin = entry.z
-                            if (entry.z > zMax) zMax = entry.z
-                        }
-                    }
-                }
-                const xSpan = Math.max(CHART_EPSILON, xMax - xMin)
-                const xPx = (v: number): number => {
-                    const ratio = (v - xMin) / xSpan
-                    const px = x0 + ratio * (x1 - x0)
-                    if (px < x0) return x0
-                    if (px > x1) return x1
-                    return px
-                }
-                const zSpan = Math.max(CHART_EPSILON, zMax - zMin)
-                const radiusFor = (z: number | undefined): number => {
-                    if (!hasZ || typeof z !== 'number' || !Number.isFinite(z)) return CHART_SCATTER_DEFAULT_RADIUS
-                    const ratio = zSpan === 0 ? 0.5 : (z - zMin) / zSpan
-                    return CHART_SCATTER_MIN_RADIUS + ratio * (CHART_SCATTER_MAX_RADIUS - CHART_SCATTER_MIN_RADIUS)
-                }
-
-                for (let dataIdx = 0; dataIdx < normalised.length; dataIdx++) {
-                    const p = normalised[dataIdx]
-                    const cxRaw = typeof p.x === 'number' ? p.x : Number(p.x)
-                    out.push({
-                        seriesIndex: seriesIdx,
-                        kind: 'circle',
-                        circle: {
-                            cx: xPx(Number.isFinite(cxRaw) ? cxRaw : 0),
-                            cy: yFn(p.y),
-                            r: radiusFor(p.z)
-                        },
-                        color,
-                        series: s,
-                        dataIndex: dataIdx
-                    })
-                }
-                continue
-            }
-
-            if (kind === CHART_TYPE.RADAR) {
-                const axes = Math.max(cats.length, normalised.length)
-                if (!axes) continue
-                const radius = Math.max(
-                    CHART_RADAR_MIN_RADIUS,
-                    Math.min(x1 - x0, y1 - y0) / 2 - CHART_RADAR_RADIUS_INSET
-                )
-                const pts: Array<TPathPoint> = normalised.map((p, i) => {
-                    const yRangeSize = Math.max(CHART_EPSILON, yRange.value.max - yRange.value.min)
-                    const ratio = (p.y - yRange.value.min) / yRangeSize
-                    const angle = (i / axes) * Math.PI * 2
-                    return polarToCartesian(cx, cy, radius * ratio, angle)
-                })
-                out.push({
-                    seriesIndex: seriesIdx,
-                    kind: 'polygon',
-                    d: polygonPath(pts),
-                    color,
-                    series: s
-                })
-                // Point markers on each axis.
-                for (let i = 0; i < pts.length; i++) {
-                    out.push({
-                        seriesIndex: seriesIdx,
-                        kind: 'circle',
-                        circle: { cx: pts[i][0], cy: pts[i][1], r: CHART_RADAR_MARKER_RADIUS },
-                        color,
-                        series: s,
-                        dataIndex: i
-                    })
-                }
-            }
+            pushSeriesPaths(out, series, seriesIdx, cats, smoothing)
         }
 
         return out

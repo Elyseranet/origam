@@ -187,7 +187,7 @@
     {
       "name": "padding",
       "label": "padding",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -202,7 +202,7 @@
     {
       "name": "paddingTop",
       "label": "paddingTop",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -217,7 +217,7 @@
     {
       "name": "paddingLeft",
       "label": "paddingLeft",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -232,7 +232,7 @@
     {
       "name": "paddingBottom",
       "label": "paddingBottom",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -247,7 +247,7 @@
     {
       "name": "paddingRight",
       "label": "paddingRight",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -262,7 +262,7 @@
     {
       "name": "paddingBlock",
       "label": "paddingBlock",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -277,7 +277,7 @@
     {
       "name": "paddingInline",
       "label": "paddingInline",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -292,7 +292,7 @@
     {
       "name": "paddingInlineStart",
       "label": "paddingInlineStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -307,7 +307,7 @@
     {
       "name": "paddingInlineEnd",
       "label": "paddingInlineEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -321,7 +321,7 @@
     {
       "name": "paddingBlockStart",
       "label": "paddingBlockStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -335,7 +335,7 @@
     {
       "name": "paddingBlockEnd",
       "label": "paddingBlockEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",

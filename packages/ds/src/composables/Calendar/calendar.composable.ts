@@ -9,7 +9,7 @@ import {
     CALENDAR_MS_PER_MINUTE
 } from '../../consts/Calendar/calendar.const'
 
-import { CALENDAR_NAVIGATE, CALENDAR_VIEW } from '../../enums'
+import { CALENDAR_NAVIGATE, CALENDAR_VIEW } from '../../enums/Calendar/calendar.enum'
 
 import type { ICalendarAgendaEntry, ICalendarTimeSlot, IUseCalendarOptions } from '../../interfaces/Calendar/calendar.interface'
 import type { IEvent } from '../../interfaces/Calendar/event.interface'

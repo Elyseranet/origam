@@ -92,10 +92,9 @@ export function useForm (props: IFormProps) {
         }
 
         errors.value = results
-        model.value =
-            invalid > 0 ? false
-                : valid === items.value.length ? true
-                    : null
+        if (invalid > 0) model.value = false
+        else if (valid === items.value.length) model.value = true
+        else model.value = null
     }, {deep: true, flush: 'post'})
 
     provide(ORIGAM_FORM_KEY, {

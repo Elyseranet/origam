@@ -101,7 +101,6 @@
 
 	import { AXIS } from '../../enums/Commons/drag.enum'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { ITouchHandlers } from '../../interfaces/Commons/touch.interface'
 	import type { IWindowProps, IWindowEmits, IWindowSlots } from '../../interfaces/Window/window.interface'
@@ -122,8 +121,8 @@
 		 * Affix icons were swapped: prev pointed right, next pointed left.
 		 * Reversed so the chevrons match the scroll/navigation direction.
 		 ********************************************************/
-		prevIcon: MDI_ICONS.CHEVRON_LEFT,
-		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
+		prevIcon: 'mdi:mdi-chevron-left',
+		nextIcon: 'mdi:mdi-chevron-right',
 		touch: undefined,
 		direction: DIRECTION.HORIZONTAL,
 		selectedClass: 'origam-window-item--active',

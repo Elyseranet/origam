@@ -143,3 +143,42 @@ describe('forwardRefs', () => {
         expect((proxy as any).anything).toBeUndefined()
     })
 })
+
+// ─── getOwnPropertyDescriptor trap (lot #1398, caracterisation avant refactor) ──
+
+describe('forwardRefs — getOwnPropertyDescriptor', () => {
+    const desc = (proxy: object, key: string) => Object.getOwnPropertyDescriptor(proxy, key)
+
+    it('returns the target own descriptor first', () => {
+        const proxy = forwardRefs({ own: 1 }, ref({ own: 2 }))
+        expect(desc(proxy, 'own')?.value).toBe(1)
+    })
+
+    it('finds the descriptor on the first ref that owns it (prototype included)', () => {
+        class Base { get viaProto () { return 'p' } }
+        const proxy = forwardRefs({}, ref(undefined), ref({ a: 1 }), ref(new Base()))
+        expect(desc(proxy, 'a')?.value).toBe(1)
+        expect(typeof desc(proxy, 'viaProto')?.get).toBe('function')
+    })
+
+    it('falls back to the setupState of a component-like ref ("_" in value)', () => {
+        const proxy = forwardRefs({}, ref({ _: { setupState: { fromSetup: 7 } } }))
+        expect(desc(proxy, 'fromSetup')?.value).toBe(7)
+    })
+
+    it('searches the refs forwarded by a child proxy, breadth first', () => {
+        const grandChild = forwardRefs({}, ref({ deep: 'x' }))
+        const child = forwardRefs({}, ref({ mid: 'y' }), ref(grandChild))
+        const proxy = forwardRefs({}, ref(child))
+        expect(desc(proxy, 'mid')?.value).toBe('y')
+        expect(desc(proxy, 'deep')?.value).toBe('x')
+    })
+
+    it('skips internal / symbol keys and returns undefined when nothing owns the key', () => {
+        const proxy = forwardRefs({}, ref({ $x: 1, __y: 2 }))
+        expect(desc(proxy, '$x')).toBeUndefined()
+        expect(desc(proxy, '__y')).toBeUndefined()
+        expect(desc(proxy, 'nope')).toBeUndefined()
+        expect(Object.getOwnPropertyDescriptor(proxy, Symbol('s'))).toBeUndefined()
+    })
+})

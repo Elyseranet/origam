@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import { computed, inject, onBeforeUnmount, provide, toRaw } from 'vue'
 import { EMPTY_NESTED, ORIGAM_NESTED_KEY } from '../../consts/Commons/nested.const'
-import { SELECTED } from '../../enums'
+import { SELECTED } from '../../enums/Commons/nested.enum'
 import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
