@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `v-contrast` ne force plus de couleur sur un fond en dégradé (#1427)
+
+- `resolvePaintedBackground` ignorait `background-image` : sur un bouton en dégradé, la directive mesurait le fond de page et imposait le mauvais noir/blanc en `!important` (texte noir sur le dégradé geek clair). Elle s’abstient désormais dès qu’une image de fond est rencontrée avant le fond opaque.
+
 ## [2.41.0] - 2026-11-21
 
 ### Fixed — Quality Gate Sonar vert sur le nouveau code (#1390)
