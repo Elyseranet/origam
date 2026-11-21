@@ -71,13 +71,28 @@ export function resolveBracketRadius (value: TBracketRounded): string | null {
     return convertToUnit(value) ?? null
 }
 
+/*********************************************************
+ * shadowVarForElevation
+ *
+ * @description
+ * Numeric elevation ladder → shadow-rung `var()` (upper bounds inclusive).
+ * Each rung is a literal so every emitted token name stays statically known.
+ ********************************************************/
+function shadowVarForElevation (value: number): string {
+    if (value <= 0) return 'var(--origam-shadow---none)'
+    if (value <= 2) return 'var(--origam-shadow---xs)'
+    if (value <= 4) return 'var(--origam-shadow---sm)'
+    if (value <= 8) return 'var(--origam-shadow---md)'
+    if (value <= 16) return 'var(--origam-shadow---lg)'
+
+    return 'var(--origam-shadow---xl)'
+}
+
 /** `elevation` → `box-shadow` (numeric ladder bucketised to a shadow rung). */
 export function resolveBracketShadow (value: TBracketElevation): string | null {
     if (value == null || value === false) return null
     if (typeof value === 'number') {
-        const rung = value <= 0 ? 'none' : value <= 2 ? 'xs' : value <= 4 ? 'sm' : value <= 8 ? 'md' : value <= 16 ? 'lg' : 'xl'
-
-        return `var(--origam-shadow---${rung})`
+        return shadowVarForElevation(value)
     }
     if (typeof value === 'string' && SHADOW_RUNGS.includes(value)) return `var(--origam-shadow---${value})`
     if (value === true) return 'var(--origam-shadow---md)'

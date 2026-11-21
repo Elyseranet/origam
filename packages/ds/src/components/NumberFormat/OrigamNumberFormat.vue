@@ -123,12 +123,13 @@
 		// Rebuild a long-form formatter on demand. The LRU cache will
 		// promote it to a hot entry as soon as the same locale is reused.
 		try {
-			const longIntl = new Intl.NumberFormat(
-				props.locale === 'auto' || !props.locale
-					? (typeof navigator !== 'undefined' ? navigator.language : 'en-US')
-					: (props.locale as string | string[]),
-				{ notation: 'compact', compactDisplay: 'long' }
-			)
+			let locales: string | string[]
+			if (props.locale === 'auto' || !props.locale) {
+				locales = typeof navigator !== 'undefined' ? navigator.language : 'en-US'
+			} else {
+				locales = props.locale as string | string[]
+			}
+			const longIntl = new Intl.NumberFormat(locales, { notation: 'compact', compactDisplay: 'long' })
 			return longIntl.format(numericValue.value)
 		} catch {
 			return undefined

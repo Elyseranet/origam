@@ -601,11 +601,7 @@ export function formatDate (
         return customFormat(newDate, formatString, locale)
     }
 
-    let options: Intl.DateTimeFormatOptions = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    }
+    let options: Intl.DateTimeFormatOptions
     switch (formatString) {
         case 'fullDate':
             options = {year: 'numeric', month: 'long', day: 'numeric'}
@@ -668,16 +664,6 @@ export function formatDate (
             options = {hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false}
             break
         case 'fullDateTime':
-            options = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-                hour12: true
-            }
-            break
         case 'fullDateTime12h':
             options = {
                 year: 'numeric',
@@ -704,6 +690,7 @@ export function formatDate (
             options = {year: 'numeric', month: '2-digit', day: '2-digit'}
             break
         case 'keyboardDateTime':
+        case 'keyboardDateTime24h':
             options = {
                 year: 'numeric',
                 month: '2-digit',
@@ -723,17 +710,6 @@ export function formatDate (
                 minute: 'numeric',
                 second: 'numeric',
                 hour12: true
-            }
-            break
-        case 'keyboardDateTime24h':
-            options = {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-                hour12: false
             }
             break
         default:
@@ -779,7 +755,6 @@ export function getWeek (adapter: DateAdapter, value: any) {
     } else {
         const tv = new Date(year + 1, 0, 1)
         if (date >= tv) {
-            year = year + 1
             d1w1 = tv
         }
     }

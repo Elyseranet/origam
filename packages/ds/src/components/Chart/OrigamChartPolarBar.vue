@@ -423,8 +423,9 @@
 			const labelY = labelR * Math.sin(midAngle)
 
 			const cosM = Math.cos(midAngle)
-			const labelAnchor: 'start' | 'middle' | 'end' =
-				cosM > 0.1 ? 'start' : cosM < -0.1 ? 'end' : 'middle'
+			let labelAnchor: 'start' | 'middle' | 'end' = 'middle'
+			if (cosM > 0.1) labelAnchor = 'start'
+			else if (cosM < -0.1) labelAnchor = 'end'
 
 			const pct = total > 0 ? (safeVal / total) * 100 : 0
 			const percentage = `${ pct.toFixed(1) }%`

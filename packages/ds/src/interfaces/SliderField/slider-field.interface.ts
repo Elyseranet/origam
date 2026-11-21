@@ -24,6 +24,7 @@ import type {
 
 import type {
     TAlways,
+    TSliderFieldValue,
     TSliderFieldVariant
 } from '../../types/SliderField/slider-field.type'
 import type { TSize } from '../../types/Commons/size.type'
@@ -44,7 +45,7 @@ export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps
      */
     trackProps?: ISliderFieldTrackProps
     reverse?: boolean
-    modelValue?: number | string | Array<number> | Array<string>
+    modelValue?: TSliderFieldValue
     range?: boolean
 
     showTicks?: TAlways
@@ -125,8 +126,8 @@ export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps
 /** Emits fired by `<OrigamSliderField>` — v-model + focus + drag lifecycle
  *  (`start` fires on pointerdown of a thumb, `end` on pointerup). */
 export interface ISliderFieldEmits extends ICommonsComponentEmits, IFocusEmits {
-    (e: 'start', value: number | string | Array<number> | Array<string>): void
-    (e: 'end', value: number | string | Array<number> | Array<string>): void
+    (e: 'start', value: TSliderFieldValue): void
+    (e: 'end', value: TSliderFieldValue): void
 }
 
 /**

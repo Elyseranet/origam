@@ -127,45 +127,78 @@ export function parseColor (color: TColorType): TRGBA {
             g: (color & 0xFF00) >> 8,
             b: (color & 0xFF)
         }
-    } else if (typeof color === 'string' && CSS_COLOR_REGEX.test(color)) {
-        const {groups} = color.match(CSS_COLOR_REGEX)!
-        const {fn, values} = groups as { fn: keyof typeof COLOR_MAPPERS, values: string }
-        const realValues = values.split(/,\s*/)
-            .map(v => {
-                if (v.endsWith('%') && ['hsl', 'hsla', 'hsv', 'hsva'].includes(fn)) {
-                    return parseFloat(v) / 100
-                } else {
-                    return parseFloat(v)
-                }
-            }) as [number, number, number, number?]
-
-        return COLOR_MAPPERS[fn](...realValues)
     } else if (typeof color === 'string') {
-        let hex = color.startsWith('#') ? color.slice(1) : color
+        const cssColor = CSS_COLOR_REGEX.exec(color)
 
-        if ([3, 4].includes(hex.length)) {
-            hex = hex.split('').map(char => char + char).join('')
-        } else if (![6, 8].includes(hex.length)) {
-            consoleWarn(`'${color}' is not a valid hex(a) color`)
-        }
-
-        const integer = int(hex, 16)
-        if (isNaN(integer) || integer < 0 || integer > 0xFFFFFFFF) {
-            consoleWarn(`'${color}' is not a valid hex(a) color`)
-        }
-
-        return HexToRGB(hex as THex)
+        return cssColor ? parseCssFunctionColor(cssColor.groups!) : parseHexColor(color)
     } else if (typeof color === 'object') {
-        if (has(color, ['r', 'g', 'b'])) {
-            return color
-        } else if (has(color, ['h', 's', 'l'])) {
-            return HSVtoRGB(HSLtoHSV(color))
-        } else if (has(color, ['h', 's', 'v'])) {
-            return HSVtoRGB(color)
-        }
+        const rgba = parseColorObject(color)
+
+        if (rgba) return rgba
     }
 
     throw new TypeError(`Invalid color: ${color == null ? color : (String(color) || (color as any).constructor.name)}\nExpected #hex, #hexa, rgb(), rgba(), hsl(), hsla(), object or number`)
+}
+
+/*********************************************************
+ * parseCssFunctionColor
+ *
+ * @description
+ * `rgb()` / `rgba()` / `hsl()` / `hsla()` string, from the named groups of `CSS_COLOR_REGEX`.
+ ********************************************************/
+function parseCssFunctionColor (groups: Record<string, string>): TRGBA {
+    const {fn, values} = groups as { fn: keyof typeof COLOR_MAPPERS, values: string }
+    const realValues = values.split(/,\s*/)
+        .map(v => {
+            if (v.endsWith('%') && ['hsl', 'hsla', 'hsv', 'hsva'].includes(fn)) {
+                return parseFloat(v) / 100
+            } else {
+                return parseFloat(v)
+            }
+        }) as [number, number, number, number?]
+
+    return COLOR_MAPPERS[fn](...realValues)
+}
+
+/*********************************************************
+ * parseHexColor
+ *
+ * @description
+ * `#hex` / `#hexa` string (the leading `#` is optional).
+ ********************************************************/
+function parseHexColor (color: string): TRGBA {
+    let hex = color.startsWith('#') ? color.slice(1) : color
+
+    if ([3, 4].includes(hex.length)) {
+        hex = hex.split('').map(char => char + char).join('')
+    } else if (![6, 8].includes(hex.length)) {
+        consoleWarn(`'${color}' is not a valid hex(a) color`)
+    }
+
+    const integer = int(hex, 16)
+    if (isNaN(integer) || integer < 0 || integer > 0xFFFFFFFF) {
+        consoleWarn(`'${color}' is not a valid hex(a) color`)
+    }
+
+    return HexToRGB(hex as THex)
+}
+
+/*********************************************************
+ * parseColorObject
+ *
+ * @description
+ * `{r,g,b}` / `{h,s,l}` / `{h,s,v}` object, or `undefined` when it is none of them.
+ ********************************************************/
+function parseColorObject (color: object): TRGBA | undefined {
+    if (has(color, ['r', 'g', 'b'])) {
+        return color as TRGBA
+    } else if (has(color, ['h', 's', 'l'])) {
+        return HSVtoRGB(HSLtoHSV(color as THSLA))
+    } else if (has(color, ['h', 's', 'v'])) {
+        return HSVtoRGB(color as THSVA)
+    }
+
+    return undefined
 }
 
 /*********************************************************
@@ -706,20 +739,18 @@ export function APCAcontrast (text: TRGBA, background: TRGBA) {
         // and also a low clip for very low contrasts (lint trap #2)
         // much of this is for very low contrasts, less than 10
         // therefore for most reversing needs, only LO_CON_OFFSET is important
-        outputContrast =
-            (SAPC < LO_CLIP) ? 0.0
-                : (SAPC < LO_CON_THRESH) ? SAPC - SAPC * LO_CON_FACTOR * LO_CON_OFFSET
-                    : SAPC - LO_CON_OFFSET
+        if (SAPC < LO_CLIP) outputContrast = 0.0
+        else if (SAPC < LO_CON_THRESH) outputContrast = SAPC - SAPC * LO_CON_FACTOR * LO_CON_OFFSET
+        else outputContrast = SAPC - LO_CON_OFFSET
     } else {
         // For reverse polarity, light text on dark
         // WoB should always return negative value.
 
         const SAPC = ((Ybg ** REV_BG) - (Ytxt ** REV_TXT)) * SCALE_W_O_B
 
-        outputContrast =
-            (SAPC > -LO_CLIP) ? 0.0
-                : (SAPC > -LO_CON_THRESH) ? SAPC - SAPC * LO_CON_FACTOR * LO_CON_OFFSET
-                    : SAPC + LO_CON_OFFSET
+        if (SAPC > -LO_CLIP) outputContrast = 0.0
+        else if (SAPC > -LO_CON_THRESH) outputContrast = SAPC - SAPC * LO_CON_FACTOR * LO_CON_OFFSET
+        else outputContrast = SAPC + LO_CON_OFFSET
     }
 
     return outputContrast * 100

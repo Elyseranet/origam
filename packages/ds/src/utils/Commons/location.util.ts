@@ -6,7 +6,8 @@ import type { ILocationStrategyData, ILocationStrategyProps } from '../../interf
 
 import { Box } from '../../classes/Commons/box.class'
 
-import type { TAnchor } from '../../types/Commons/anchor.type'
+import type { TAnchor, TParsedAnchor } from '../../types/Commons/anchor.type'
+import type { TAxisOverflow, TOverflow, TPlacement } from '../../types/Commons/location.type'
 
 import { flipAlign, flipCorner, flipSide, getAxis, parseAnchor } from './anchor.util'
 import { nullifyTransforms } from './animation.util'
@@ -20,7 +21,7 @@ import { getScrollParents } from './scroll.util'
  * Static location strategy.
  */
 export function staticLocationStrategy () {
-    // TODO
+    // Intentionally empty: the static strategy applies no positioning.
 }
 
 /**
@@ -42,10 +43,7 @@ export function connectedLocationStrategy (data: ILocationStrategyData, props: I
 
     const {preferredAnchor, preferredOrigin} = destructComputed(() => {
         const parsedAnchor = parseAnchor(props.location as TAnchor)
-        const parsedOrigin =
-            props.origin === 'overlap' ? parsedAnchor
-                : props.origin === 'auto' ? flipSide(parsedAnchor)
-                    : parseAnchor(props.origin as TAnchor)
+        const parsedOrigin = resolveOrigin(props.origin, parsedAnchor)
 
         // Some combinations of props may produce an invalid origin
         if (parsedAnchor.side === parsedOrigin.side && parsedAnchor.align === flipAlign(parsedOrigin).align) {
@@ -172,25 +170,7 @@ export function connectedLocationStrategy (data: ILocationStrategyData, props: I
             }
         }
 
-        const viewport = scrollParents.reduce<IBox>((box: IBox | undefined, el) => {
-            const rect = el.getBoundingClientRect()
-            const scrollBox = new Box({
-                x: el === document.documentElement ? 0 : rect.x,
-                y: el === document.documentElement ? 0 : rect.y,
-                width: el.clientWidth,
-                height: el.clientHeight
-            })
-
-            if (box) {
-                return new Box({
-                    x: Math.max(box.left, scrollBox.left),
-                    y: Math.max(box.top, scrollBox.top),
-                    width: Math.min(box.right, scrollBox.right) - Math.max(box.left, scrollBox.left),
-                    height: Math.min(box.bottom, scrollBox.bottom) - Math.max(box.top, scrollBox.top)
-                })
-            }
-            return scrollBox
-        }, undefined!)
+        const viewport = intersectScrollParents(scrollParents)
         viewport.x += viewportMargin
         viewport.y += viewportMargin
         viewport.width -= viewportMargin * 2
@@ -208,35 +188,8 @@ export function connectedLocationStrategy (data: ILocationStrategyData, props: I
 
             let {x, y} = getOffset(targetPoint, contentPoint)
 
-            switch (_placement.anchor.side) {
-                case 'top':
-                    y -= offset.value[0]
-                    break
-                case 'bottom':
-                    y += offset.value[0]
-                    break
-                case 'left':
-                    x -= offset.value[0]
-                    break
-                case 'right':
-                    x += offset.value[0]
-                    break
-            }
-
-            switch (_placement.anchor.align) {
-                case 'top':
-                    y -= offset.value[1]
-                    break
-                case 'bottom':
-                    y += offset.value[1]
-                    break
-                case 'left':
-                    x -= offset.value[1]
-                    break
-                case 'right':
-                    x += offset.value[1]
-                    break
-            }
+            ;[x, y] = applyEdgeOffset(x, y, _placement.anchor.side, offset.value[0])
+            ;[x, y] = applyEdgeOffset(x, y, _placement.anchor.align, offset.value[1])
 
             box.x += x
             box.y += y
@@ -269,55 +222,15 @@ export function connectedLocationStrategy (data: ILocationStrategyData, props: I
             contentBox.y += _y
 
             // flip
-            {
-                const axis = getAxis(placement.anchor)
-                const hasOverflowX = overflows.x.before || overflows.x.after
-                const hasOverflowY = overflows.y.before || overflows.y.after
-
-                let reset = false
-                ;[AXIS.X, AXIS.Y].forEach(key => {
-                if (
-                    (key === AXIS.X && hasOverflowX && !flipped.x) ||
-                    (key === AXIS.Y && hasOverflowY && !flipped.y)
-                ) {
-                    const newPlacement = {anchor: {...placement.anchor}, origin: {...placement.origin}}
-                    const flip = key === AXIS.X
-                        ? axis === AXIS.Y ? flipAlign : flipSide
-                        : axis === AXIS.Y ? flipSide : flipAlign
-                    newPlacement.anchor = flip(newPlacement.anchor)
-                    newPlacement.origin = flip(newPlacement.origin)
-                    const {overflows: newOverflows} = checkOverflow(newPlacement)
-                    if (
-                        (newOverflows[key].before <= overflows[key].before &&
-                            newOverflows[key].after <= overflows[key].after) ||
-                        (newOverflows[key].before + newOverflows[key].after <
-                            (overflows[key].before + overflows[key].after) / 2)
-                    ) {
-                        placement = newPlacement
-                        reset = flipped[key] = true
-                    }
-                }
-            })
-                if (reset) continue
-            }
+            const flip = flipPlacement(placement, overflows, flipped, checkOverflow)
+            placement = flip.placement
+            if (flip.reset) continue
 
             // shift
-            if (overflows.x.before) {
-                x += overflows.x.before
-                contentBox.x += overflows.x.before
-            }
-            if (overflows.x.after) {
-                x -= overflows.x.after
-                contentBox.x -= overflows.x.after
-            }
-            if (overflows.y.before) {
-                y += overflows.y.before
-                contentBox.y += overflows.y.before
-            }
-            if (overflows.y.after) {
-                y -= overflows.y.after
-                contentBox.y -= overflows.y.after
-            }
+            x = shiftAxis(x, overflows.x)
+            contentBox.x = shiftAxis(contentBox.x, overflows.x)
+            y = shiftAxis(y, overflows.y)
+            contentBox.y = shiftAxis(contentBox.y, overflows.y)
 
             // size
             {
@@ -371,7 +284,7 @@ export function connectedLocationStrategy (data: ILocationStrategyData, props: I
 
         const result = updateLocation()
 
-        // TODO: overflowing content should only require a single updateLocation call
+        // #1409: overflowing content should only require a single updateLocation call
         // Icky hack to make sure the content is positioned consistently
         if (!result) return
         const {available, contentBox} = result
@@ -386,6 +299,122 @@ export function connectedLocationStrategy (data: ILocationStrategyData, props: I
     })
 
     return {updateLocation}
+}
+
+/*********************************************************
+ * resolveOrigin
+ *
+ * @description
+ * Resolve the transform origin of the connected strategy from its `origin` prop.
+ ********************************************************/
+function resolveOrigin (origin: ILocationStrategyProps['origin'], anchor: TParsedAnchor): TParsedAnchor {
+    if (origin === 'overlap') return anchor
+    if (origin === 'auto') return flipSide(anchor)
+
+    return parseAnchor(origin as TAnchor)
+}
+
+/*********************************************************
+ * intersectScrollParents
+ *
+ * @description
+ * Intersection of the scroll parents' client boxes (the area the content may occupy).
+ ********************************************************/
+function intersectScrollParents (scrollParents: Array<HTMLElement>): IBox {
+    return scrollParents.reduce<IBox>((box: IBox | undefined, el) => {
+        const rect = el.getBoundingClientRect()
+        const scrollBox = new Box({
+            x: el === document.documentElement ? 0 : rect.x,
+            y: el === document.documentElement ? 0 : rect.y,
+            width: el.clientWidth,
+            height: el.clientHeight
+        })
+
+        if (box) {
+            return new Box({
+                x: Math.max(box.left, scrollBox.left),
+                y: Math.max(box.top, scrollBox.top),
+                width: Math.min(box.right, scrollBox.right) - Math.max(box.left, scrollBox.left),
+                height: Math.min(box.bottom, scrollBox.bottom) - Math.max(box.top, scrollBox.top)
+            })
+        }
+        return scrollBox
+    }, undefined!)
+}
+
+/*********************************************************
+ * applyEdgeOffset
+ *
+ * @description
+ * Move the point away from the anchor by `amount` along the edge it is attached to.
+ ********************************************************/
+function applyEdgeOffset (x: number, y: number, edge: string, amount: number): [number, number] {
+    switch (edge) {
+        case 'top':
+            return [x, y - amount]
+        case 'bottom':
+            return [x, y + amount]
+        case 'left':
+            return [x - amount, y]
+        case 'right':
+            return [x + amount, y]
+        default:
+            return [x, y]
+    }
+}
+
+/*********************************************************
+ * shiftAxis
+ *
+ * @description
+ * Pull a coordinate back inside the viewport: first the `before` overflow, then the `after` one.
+ ********************************************************/
+function shiftAxis (value: number, overflow: TAxisOverflow): number {
+    if (overflow.before) value += overflow.before
+    if (overflow.after) value -= overflow.after
+
+    return value
+}
+
+/*********************************************************
+ * flipPlacement
+ *
+ * @description
+ * Try to flip the placement on each overflowing axis, keeping the flip when it overflows less.
+ ********************************************************/
+function flipPlacement (
+    initial: TPlacement,
+    overflows: TOverflow,
+    flipped: { x: boolean, y: boolean },
+    checkOverflow: (placement: TPlacement) => { overflows: TOverflow }
+): { placement: TPlacement, reset: boolean } {
+    let placement = initial
+    let reset = false
+    const axis = getAxis(placement.anchor)
+    const hasOverflow = {
+        x: overflows.x.before || overflows.x.after,
+        y: overflows.y.before || overflows.y.after
+    }
+
+    for (const key of [AXIS.X, AXIS.Y] as const) {
+        if (!hasOverflow[key] || flipped[key]) continue
+
+        const flip = (key === AXIS.X) === (axis === AXIS.Y) ? flipAlign : flipSide
+        const newPlacement = {anchor: flip({...placement.anchor}), origin: flip({...placement.origin})}
+        const {overflows: newOverflows} = checkOverflow(newPlacement)
+
+        if (
+            (newOverflows[key].before <= overflows[key].before &&
+                newOverflows[key].after <= overflows[key].after) ||
+            (newOverflows[key].before + newOverflows[key].after <
+                (overflows[key].before + overflows[key].after) / 2)
+        ) {
+            placement = newPlacement
+            reset = flipped[key] = true
+        }
+    }
+
+    return {placement, reset}
 }
 
 /** Get size of element ignoring max-width/max-height */

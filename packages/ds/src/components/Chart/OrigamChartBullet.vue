@@ -545,11 +545,10 @@
 		const max = globalMax.value
 		for (let i = 0; i <= AXIS_TICK_COUNT; i++) {
 			const v = (i / AXIS_TICK_COUNT) * max
-			const label = props.xAxisFormat
-				? props.xAxisFormat(v)
-				: props.yAxisFormat
-					? props.yAxisFormat(v)
-					: String(Math.round(v * 10) / 10)
+			let label: string
+			if (props.xAxisFormat) label = props.xAxisFormat(v)
+			else if (props.yAxisFormat) label = props.yAxisFormat(v)
+			else label = String(Math.round(v * 10) / 10)
 
 			const pad = PADDING.value
 			const x = isHorizontal.value
