@@ -1,7 +1,6 @@
 import { computed, inject, Ref, unref } from 'vue'
 import { OrigamComponentIcon, OrigamSvgIcon } from '../../components/Icon/index'
 
-import { MDI_ALIASES } from '../../consts/Commons/mdi.const'
 import { MDI, MDI_CORE_ALIASES } from '../../consts/Commons/mdi-core.const'
 import { DEFAULT_SETS, ORIGAM_ICONS_KEY } from '../../consts/Icon/icon.const'
 
@@ -84,26 +83,6 @@ export const useIcon = (props: Ref<TIcon | undefined>) => {
     })
 
     return {iconData}
-}
-
-/*********************************************************
- * createIcons
- ********************************************************/
-/*********************************************************
- * createIcons
- *
- * @description
- * Construit la configuration d'icones fournie a l'application par
- * `createOrigam()` : jeu par defaut, jeux disponibles et alias. Les options du
- * consommateur sont fusionnees en profondeur sur les valeurs du DS, donc
- * declarer un alias n'efface pas les autres.
- *
- * @description
- * Le jeu par defaut est `mdi`, et les alias MDI sont pre-charges — c'est ce
- * qui permet d'ecrire `icon="mdi-account"` sans configuration prealable.
- ********************************************************/
-export function createIcons (options?: TIconOptions) {
-    return createIconsCore(mergeDeep({aliases: MDI_ALIASES}, options))
 }
 
 /*********************************************************
