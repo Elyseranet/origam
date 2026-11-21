@@ -15,7 +15,6 @@
 			<output
 					v-if="isSkeletonLoading"
 					class="origam-data-table__announcement"
-					role="status"
 			>{{ skeletonAnnouncement }}</output>
 			<slot name="top"/>
 		</template>

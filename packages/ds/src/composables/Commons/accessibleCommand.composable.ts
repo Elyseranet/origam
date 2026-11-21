@@ -87,7 +87,7 @@ export function useAccessibleCommand (options: {
 
         const raw = options.label()
         const translated = raw && locale ? locale.t(raw) : raw
-        const name = translated || ''
+        const name = translated ?? ''
 
         if (!name) {
             warnMissingAccessibleName(options.component, options.zone, options.prop)

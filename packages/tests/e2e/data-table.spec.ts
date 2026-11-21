@@ -246,9 +246,9 @@ test.describe('OrigamDataTable', () => {
         test('ONE announcement for the whole table, outside it; every row and cell is aria-hidden', async ({ page }) => {
             const table = await openSkeleton(page)
 
-            await expect(table.locator('[role="status"]')).toHaveCount(1)
-            await expect(table.locator('tbody [role="status"]')).toHaveCount(0)
-            await expect(table.locator('table [role="status"]')).toHaveCount(0)
+            await expect(table.getByRole('status')).toHaveCount(1)
+            await expect(table.locator('tbody').getByRole('status')).toHaveCount(0)
+            await expect(table.locator('table').getByRole('status')).toHaveCount(0)
             await expect(table.locator('tbody tr[aria-hidden="true"]')).toHaveCount(5)
             await expect(table.locator('tbody td[aria-hidden="true"]')).toHaveCount(20)
             await expect(table).toHaveAttribute('aria-busy', 'true')

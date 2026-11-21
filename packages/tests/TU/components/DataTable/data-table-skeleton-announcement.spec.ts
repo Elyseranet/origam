@@ -29,11 +29,12 @@ describe('OrigamDataTable — skeleton announcement (#1073 lot 2b)', () => {
         const wrapper = await mountTable({ loading: { type: 'skeleton' } })
 
         // scoped to the announcement: the header's sort <select> owns its own
-        // `role="status"` messages region, which is not the table's announcement
-        const statuses = wrapper.findAll('.origam-data-table__announcement[role="status"]')
+        // `role="status"` messages region, which is not the table's announcement.
+        // The announcement is an <output>, whose implicit role IS `status`.
+        const statuses = wrapper.findAll('output.origam-data-table__announcement')
         expect(statuses).toHaveLength(1)
         expect(statuses[0].element.closest('table')).toBeNull()
-        expect(wrapper.find('tbody [role="status"]').exists()).toBe(false)
+        expect(wrapper.find('tbody output').exists()).toBe(false)
         expect(statuses[0].text()).toBe('Loading items...')
     })
 
