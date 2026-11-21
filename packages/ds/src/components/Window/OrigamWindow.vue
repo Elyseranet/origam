@@ -10,7 +10,6 @@
 	>
 		<output
 				class="origam-window__live-region"
-				role="status"
 				aria-atomic="true"
 				aria-live="polite"
 		>

@@ -45,48 +45,58 @@ export function useBackButton (router: Router | undefined, cb: () => boolean | v
      ********************************************************/
     let poppedReset: ReturnType<typeof setTimeout> | undefined
 
+    const decide = () => (popped ? cb() : undefined)
+
+    /*********************************************************
+     * guard — garde `beforeEach`, aplati au niveau du composable (#1390)
+     *
+     * @description
+     * Sonar S2004 : la fonction etait imbriquee a plus de 4 niveaux. Meme
+     * corps, nomme ici, sans changement d'ordre d'evaluation.
+     ********************************************************/
+    const guard = () => {
+        let result: boolean | void | Promise<boolean | void>
+        if (!inTransition) {
+            /*********************************************************
+             * ⛔ CETTE macrotache-ci reste NUE, et c'est voulu (#779)
+             *
+             * @description
+             * Elle ne differe pas un effet cosmetique : elle DOIT
+             * resoudre la promesse du garde, sans quoi la
+             * navigation vue-router reste suspendue pour toujours —
+             * le routeur attend cette resolution. L'annuler au demontage
+             * remplacerait une tache d'une macrotache par une
+             * navigation morte : strictement pire que la fuite.
+             *
+             * @description
+             * Le demontage retire deja le garde
+             * (`removeBefore?.()` plus bas), donc plus AUCUNE
+             * nouvelle tache n'est armee apres lui ; seule celle
+             * eventuellement en vol se termine, et elle doit se
+             * terminer.
+             *
+             * @description
+             * Meme forme que les rAF attendus de
+             * `useScrolling.finishScrolling` : un ordonnanceur dont
+             * la continuation est un CONTRAT, pas un effet
+             * differe.
+             ********************************************************/
+            result = new Promise((resolve) => {
+                setTimeout(() => resolve(decide()))
+            })
+        } else {
+            result = decide()
+        }
+        inTransition = true
+
+        return result
+    }
+
     if (IN_BROWSER) {
         nextTick(() => {
             window.addEventListener('popstate', onPopstate)
             if (router) {
-                removeBefore = router.beforeEach(() => {
-                    const decide = () => (popped ? cb() : undefined)
-                    let result: boolean | void | Promise<boolean | void>
-                    if (!inTransition) {
-                        /*********************************************************
-                         * ⛔ CETTE macrotache-ci reste NUE, et c'est voulu (#779)
-                         *
-                         * @description
-                         * Elle ne differe pas un effet cosmetique : elle DOIT
-                         * resoudre la promesse du garde, sans quoi la
-                         * navigation vue-router reste suspendue pour toujours —
-                         * le routeur attend cette resolution. L'annuler au demontage
-                         * remplacerait une tache d'une macrotache par une
-                         * navigation morte : strictement pire que la fuite.
-                         *
-                         * @description
-                         * Le demontage retire deja le garde
-                         * (`removeBefore?.()` plus bas), donc plus AUCUNE
-                         * nouvelle tache n'est armee apres lui ; seule celle
-                         * eventuellement en vol se termine, et elle doit se
-                         * terminer.
-                         *
-                         * @description
-                         * Meme forme que les rAF attendus de
-                         * `useScrolling.finishScrolling` : un ordonnanceur dont
-                         * la continuation est un CONTRAT, pas un effet
-                         * differe.
-                         ********************************************************/
-                        result = new Promise((resolve) => {
-                            setTimeout(() => resolve(decide()))
-                        })
-                    } else {
-                        result = decide()
-                    }
-                    inTransition = true
-
-                    return result
-                })
+                removeBefore = router.beforeEach(guard)
                 removeAfter = router.afterEach(() => {
                     inTransition = false
                 })

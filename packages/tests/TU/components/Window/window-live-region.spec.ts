@@ -115,12 +115,13 @@ describe('OrigamWindow — #474 carousel region + live-region slide announcement
         expect(blank.find('.origam-window').attributes('role')).toBeUndefined()
     })
 
-    it('renders a role="status" aria-live="polite" live region announcing "Carousel slide 1 of 3" on mount', async () => {
+    it('renders an <output> (implicit role="status") aria-live="polite" live region announcing "Carousel slide 1 of 3" on mount', async () => {
         const wrapper = mountThreeSlides()
         await wrapper.vm.$nextTick()
         const live = wrapper.find('.origam-window__live-region')
         expect(live.exists()).toBe(true)
-        expect(live.attributes('role')).toBe('status')
+        expect(live.element.tagName).toBe('OUTPUT')
+        expect(live.attributes('role')).toBeUndefined()
         expect(live.attributes('aria-live')).toBe('polite')
         expect(live.text()).toBe('Carousel slide 1 of 3')
     })

@@ -149,7 +149,7 @@ describe('OrigamCarousel — patron WAI-ARIA hérité de <OrigamWindow>', () => 
         await nextTick()
         await nextTick()
 
-        const live = wrapper.find('[role="status"]')
+        const live = wrapper.find('.origam-window__live-region')
 
         expect(live.exists()).toBe(true)
         expect(live.attributes('aria-live')).toBe('polite')

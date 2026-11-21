@@ -44,7 +44,9 @@ test.describe('OrigamWindow — #474 carousel region + live-region', () => {
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const live = sandbox.locator('.origam-window__live-region').first()
         await expect(live).toBeAttached(VIS)
-        await expect(live).toHaveAttribute('role', 'status')
+        // <output> : role `status` IMPLICITE, vu par getByRole
+        await expect(live).toHaveJSProperty('tagName', 'OUTPUT')
+        await expect(sandbox.getByRole('status').filter({ hasText: 'Carousel slide 1 of 3' })).toHaveCount(1)
         await expect(live).toHaveAttribute('aria-live', 'polite')
         await expect(live).toHaveText('Carousel slide 1 of 3')
 
