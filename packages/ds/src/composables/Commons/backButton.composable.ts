@@ -1,5 +1,5 @@
 import { nextTick, onScopeDispose } from 'vue'
-import type { NavigationGuardNext, Router } from 'vue-router'
+import type { Router } from 'vue-router'
 import { IN_BROWSER } from '../../consts/Commons/commons.const'
 
 // Module-scoped, shared across every `useBackButton` call site (there is
@@ -15,10 +15,12 @@ let inTransition = false
  * (e.g. a Dialog / Sheet / Bottom-sheet) can intercept the native
  * back-button gesture and run its own close callback instead of
  * letting the browser navigate away.
+ * `cb` suit la convention des gardes vue-router : elle renvoie `false` pour
+ * ANNULER la navigation, toute autre valeur la laisse passer (plus de `next`).
  * Independent from `useRoute` / `useRouter` / `useLink` — does not
  * delegate to any of them.
  ********************************************************/
-export function useBackButton (router: Router | undefined, cb: (next: NavigationGuardNext) => void) {
+export function useBackButton (router: Router | undefined, cb: () => boolean | void) {
     let popped = false
     let removeBefore: (() => void) | undefined
     let removeAfter: (() => void) | undefined
@@ -47,16 +49,18 @@ export function useBackButton (router: Router | undefined, cb: (next: Navigation
         nextTick(() => {
             window.addEventListener('popstate', onPopstate)
             if (router) {
-                removeBefore = router.beforeEach((_to, _from, next) => {
+                removeBefore = router.beforeEach(() => {
+                    const decide = () => (popped ? cb() : undefined)
+                    let result: boolean | void | Promise<boolean | void>
                     if (!inTransition) {
                         /*********************************************************
                          * ⛔ CETTE macrotache-ci reste NUE, et c'est voulu (#779)
                          *
                          * @description
                          * Elle ne differe pas un effet cosmetique : elle DOIT
-                         * appeler `next()` (ou `cb(next)`), sans quoi la
+                         * resoudre la promesse du garde, sans quoi la
                          * navigation vue-router reste suspendue pour toujours —
-                         * le routeur attend ce rappel. L'annuler au demontage
+                         * le routeur attend cette resolution. L'annuler au demontage
                          * remplacerait une tache d'une macrotache par une
                          * navigation morte : strictement pire que la fuite.
                          *
@@ -73,19 +77,15 @@ export function useBackButton (router: Router | undefined, cb: (next: Navigation
                          * la continuation est un CONTRAT, pas un effet
                          * differe.
                          ********************************************************/
-                        setTimeout(() => {
-                            if (popped) {
-                                cb(next)
-                            } else {
-                                next()
-                            }
+                        result = new Promise((resolve) => {
+                            setTimeout(() => resolve(decide()))
                         })
-                    } else if (popped) {
-                        cb(next)
                     } else {
-                        next()
+                        result = decide()
                     }
                     inTransition = true
+
+                    return result
                 })
                 removeAfter = router.afterEach(() => {
                     inTransition = false

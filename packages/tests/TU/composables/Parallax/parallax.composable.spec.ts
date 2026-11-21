@@ -288,3 +288,36 @@ describe('useParallaxRuntime — lifecycle cleanup', () => {
         expect(() => wrapper.unmount()).not.toThrow()
     })
 })
+
+// ---------------------------------------------------------------------------
+// prefers-reduced-motion — abonnement via addEventListener uniquement (#1390)
+// ---------------------------------------------------------------------------
+
+describe('useParallaxRuntime — abonnement prefers-reduced-motion', () => {
+    it('s\'abonne et se desabonne via addEventListener/removeEventListener, jamais addListener', () => {
+        const mql = {
+            matches: false,
+            media: '',
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            dispatchEvent: vi.fn()
+        }
+        // @ts-expect-error — jsdom does not implement matchMedia
+        window.matchMedia = vi.fn().mockReturnValue(mql)
+
+        const { api, wrapper } = mountParallax()
+
+        expect(mql.addEventListener).toHaveBeenCalledWith('change', expect.any(Function))
+        const onChange = mql.addEventListener.mock.calls[0][1] as (ev: { matches: boolean }) => void
+        onChange({ matches: true })
+        expect(api().reducedMotion.value).toBe(true)
+
+        wrapper.unmount()
+
+        expect(mql.removeEventListener).toHaveBeenCalledWith('change', onChange)
+        expect(mql.addListener).not.toHaveBeenCalled()
+        expect(mql.removeListener).not.toHaveBeenCalled()
+    })
+})

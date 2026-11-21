@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed — rupture : `useBackButton` suit la convention des gardes vue-router, `useParallaxRuntime` n'utilise plus `addListener` (#1390)
+
+- **Rupture de signature** : `useBackButton(router, cb)` attend désormais `cb: () => boolean | void` au lieu de `cb: (next: NavigationGuardNext) => void`. `cb` renvoie `false` pour annuler la navigation, toute autre valeur la laisse passer ; `next` (déprécié dans vue-router 5) n'est plus passé. Migration : `(next) => { …; next(false) }` devient `() => { …; return false }`, et `next()` devient « ne rien renvoyer ». Seul appelant interne : `OrigamOverlay` (`closeOnBack`). Aucun consommateur externe connu.
+- Le repli `MediaQueryList.addListener` / `removeListener` est retiré de la détection de `prefers-reduced-motion` : seul `addEventListener('change', …)` reste (Safari 14+, 2020). Un navigateur antérieur ne suit plus le changement de préférence à chaud.
+- Tests : `TU/composables/Commons/router.composable.spec.ts`, `TU/composables/Parallax/parallax.composable.spec.ts`.
+
 ### Fixed — `origam-img` ne plante plus quand son élément n'est pas monté (#1394)
 
 - `pollForSize` ne fait plus rien quand l'élément image est absent (`image.value` vaut `undefined`) : composant chargé en différé (`lazy-*`, `defineAsyncComponent`) dont le DOM n'est pas encore monté, auparavant `Cannot destructure property 'naturalHeight'` et page d'erreur. Test `TU/components/Img/img-lazy-1394.spec.ts`.

@@ -346,14 +346,15 @@
 	 ********************************************************/
 	const router = useRouter()
 	useToggleScope(() => props.closeOnBack, () => {
-		useBackButton(router, (next) => {
+		useBackButton(router, () => {
 			if (globalTop.value && isActive.value) {
-				next(false)
 				if (!props.persistent) isActive.value = false
 				else animateClick()
-			} else {
-				next()
+
+				return false
 			}
+
+			return undefined
 		})
 	})
 

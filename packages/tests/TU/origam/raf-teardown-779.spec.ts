@@ -290,7 +290,7 @@ describe('#779 — ripple.util, le setTimeout non capture de rippleHide', () => 
 describe('#779 — useBackButton', () => {
     const SOURCE = 'backButton.composable.ts'
 
-    type TGarde = (to: unknown, from: unknown, next: () => void) => void
+    type TGarde = (to: unknown, from: unknown) => Promise<boolean | void> | boolean | void
 
     /** Routeur minimal : on veut capturer le garde, pas router. */
     const monter = async () => {
@@ -357,7 +357,7 @@ describe('#779 — useBackButton', () => {
         const {wrapper, garde} = await monter()
         let suivantAppele = false
 
-        garde?.({}, {}, () => {
+        Promise.resolve(garde?.({}, {})).then(() => {
             suivantAppele = true
         })
 
@@ -371,6 +371,8 @@ describe('#779 — useBackButton', () => {
         // (b) et sa continuation est un CONTRAT, pas un effet differe.
         expect(suivantAppele).toBe(false)
         flushTimersFrom(SOURCE, 1)
+        await Promise.resolve()
+        await Promise.resolve()
         expect(suivantAppele).toBe(true)
     })
 })

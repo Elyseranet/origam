@@ -36,19 +36,10 @@ function usePrefersReducedMotion (): Ref<boolean> {
     flag.value = mql.matches
 
     const onChange = (ev: MediaQueryListEvent) => { flag.value = ev.matches }
-    // Both API shapes (legacy addListener and modern addEventListener)
-    if (typeof mql.addEventListener === 'function') {
-        mql.addEventListener('change', onChange)
-    } else if (typeof mql.addListener === 'function') {
-        mql.addListener(onChange)
-    }
+    mql.addEventListener('change', onChange)
 
     onBeforeUnmount(() => {
-        if (typeof mql.removeEventListener === 'function') {
-            mql.removeEventListener('change', onChange)
-        } else if (typeof mql.removeListener === 'function') {
-            mql.removeListener(onChange)
-        }
+        mql.removeEventListener('change', onChange)
     })
 
     return flag

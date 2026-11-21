@@ -139,7 +139,7 @@ describe('useBackButton — popstate listener', () => {
         const Host = defineComponent({
             name: 'OrigamBackButtonHost',
             setup () {
-                useBackButton(undefined, (next) => next())
+                useBackButton(undefined, () => undefined)
                 return () => h('div')
             }
         })
@@ -157,7 +157,7 @@ describe('useBackButton — popstate listener', () => {
         const Host = defineComponent({
             name: 'OrigamBackButtonNoRouterHost',
             setup () {
-                useBackButton(undefined, (next) => next())
+                useBackButton(undefined, () => undefined)
                 return () => h('div')
             }
         })
@@ -166,7 +166,7 @@ describe('useBackButton — popstate listener', () => {
     })
 
     it('calls cb when popstate fires without replaced state', async () => {
-        const cb = vi.fn((next: any) => next())
+        const cb = vi.fn(() => undefined)
         const Host = defineComponent({
             name: 'OrigamBackButtonCbHost',
             setup () {
@@ -190,7 +190,7 @@ describe('useBackButton — popstate listener', () => {
     })
 
     it('cb is NOT called when popstate has replaced=true state', async () => {
-        const cb = vi.fn((next: any) => next())
+        const cb = vi.fn(() => undefined)
         const Host = defineComponent({
             name: 'OrigamBackButtonReplacedHost',
             setup () {
@@ -221,7 +221,7 @@ describe('useBackButton — with mocked router', () => {
         const Host = defineComponent({
             name: 'OrigamBackButtonMockedRouterHost',
             setup () {
-                useBackButton(mockRouter, (next) => next())
+                useBackButton(mockRouter, () => undefined)
                 return () => h('div')
             }
         })
@@ -232,6 +232,77 @@ describe('useBackButton — with mocked router', () => {
         expect(mockRouter.afterEach).toHaveBeenCalledOnce()
 
         // Cleanup on unmount
+        wrapper.unmount()
+    })
+})
+
+describe('useBackButton — le garde suit la convention vue-router (#1390)', () => {
+    afterEach(() => vi.useRealTimers())
+
+    const monter = async (cb: () => boolean | void) => {
+        let guard!: () => Promise<boolean | void> | boolean | void
+        let after!: () => void
+        const mockRouter = {
+            beforeEach: vi.fn((fn: typeof guard) => { guard = fn; return () => undefined }),
+            afterEach: vi.fn((fn: typeof after) => { after = fn; return () => undefined })
+        } as any
+        const wrapper = mount(defineComponent({
+            name: 'OrigamBackButtonGuardHost',
+            setup () {
+                useBackButton(mockRouter, cb)
+                return () => h('div')
+            }
+        }))
+        await nextTick()
+
+        return { wrapper, guard, after }
+    }
+
+    it('sans popstate : la navigation passe et cb n\'est pas appelee', async () => {
+        vi.useFakeTimers()
+        const cb = vi.fn(() => false as const)
+        const { wrapper, guard, after } = await monter(cb)
+
+        const result = guard()
+        vi.runAllTimers()
+
+        expect(await result).toBeUndefined()
+        expect(cb).not.toHaveBeenCalled()
+        after()
+        wrapper.unmount()
+    })
+
+    it('apres popstate : cb renvoie false => navigation annulee', async () => {
+        vi.useFakeTimers()
+        const cb = vi.fn(() => false as const)
+        const { wrapper, guard, after } = await monter(cb)
+
+        // vue-router ecoute popstate AVANT nous : son garde est appele d'abord,
+        // sa macrotache est donc armee avant celle qui remet `popped` a false.
+        const result = guard()
+        window.dispatchEvent(new PopStateEvent('popstate', { state: null }))
+        vi.runAllTimers()
+
+        expect(await result).toBe(false)
+        expect(cb).toHaveBeenCalledOnce()
+        after()
+        wrapper.unmount()
+    })
+
+    it('apres popstate : cb ne renvoie rien => navigation autorisee', async () => {
+        vi.useFakeTimers()
+        const cb = vi.fn(() => undefined)
+        const { wrapper, guard, after } = await monter(cb)
+
+        // vue-router ecoute popstate AVANT nous : son garde est appele d'abord,
+        // sa macrotache est donc armee avant celle qui remet `popped` a false.
+        const result = guard()
+        window.dispatchEvent(new PopStateEvent('popstate', { state: null }))
+        vi.runAllTimers()
+
+        expect(await result).toBeUndefined()
+        expect(cb).toHaveBeenCalledOnce()
+        after()
         wrapper.unmount()
     })
 })
