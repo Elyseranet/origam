@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamTextareaField` : texte noir illisible en mode sombre (#1150)
+
+- Cause : le `<textarea>` gardait la couleur UA (`fieldtext`, noire) faute de `color: inherit`, que l'`<input>` de `OrigamTextField` reçoit via `.origam-field__input`. Mesuré en sombre : `rgb(0,0,0)` sur `rgb(10,10,10)`, contraste 1,06.
+- Correctif : `color: inherit` sur `:deep(textarea)` (`OrigamTextareaField.vue`). Mesuré après : `rgb(250,250,250)` sur `rgb(10,10,10)` en sombre, `rgb(10,10,10)` sur blanc en clair. Spec `textarea-field-dark-color.spec.ts`.
+
 ### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
 
 - Cause : Btn/SelectionControl passaient un tuple façon Vuetify à `v-ripple` ; en template Vue les modifiers de directive sont statiques et le tableau n'est que la valeur, donc `binding.modifiers.center/circle` n'étaient jamais posés.
