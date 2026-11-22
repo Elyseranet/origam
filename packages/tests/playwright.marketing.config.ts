@@ -19,6 +19,9 @@ const MARKETING_BASE_URL = process.env.MARKETING_BASE_URL ?? 'http://localhost:3
 const MARKETING_GREEN_SPECS = [
     'nav-link-availability.spec.ts',
 
+    // #1428 — contraste AA des CTA primaires, 8 marques x 2 modes.
+    'home-cta-contrast.spec.ts',
+
     // #953 — le catalogue ne peut plus se vider en silence.
     //
     // Ce spec existait depuis longtemps et n'etait execute par AUCUN job :
