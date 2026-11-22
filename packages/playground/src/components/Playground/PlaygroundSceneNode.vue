@@ -13,6 +13,7 @@
             v-bind="instance.props"
             data-cy="playground-preview-instance"
             :data-instance-id="instance.id"
+            :data-playground-instance="instance.id"
             :data-pg-selected="selectedMarker"
             v-on="emitListeners"
     >

@@ -30,9 +30,12 @@
 
 		<template
 				v-if="slots.label"
-				#label
+				#label="labelSlotProps"
 		>
-			<slot name="label"/>
+			<slot
+					name="label"
+					v-bind="labelSlotProps"
+			/>
 		</template>
 	</origam-selection-control>
 </template>

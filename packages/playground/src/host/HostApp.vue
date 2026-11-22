@@ -1,6 +1,15 @@
 <template>
     <main class="host">
+        <origam-alert
+                v-if="external.status === 'error'"
+                data-cy="host-scene-error"
+                status="error"
+                role="alert"
+                :title="t('playground.host.scene_error_title', 'This scene cannot be shown')"
+                :text="errorText"
+        />
         <playground
+                v-else
                 :scene="scene"
                 :registry="registry"
                 :theme="theme"
@@ -24,14 +33,17 @@
 </template>
 
 <script setup lang="ts">
-    import { computed, ref } from 'vue'
+    import { computed, nextTick, onMounted, ref } from 'vue'
     import { Playground } from '../components'
     import { useComponentRegistry } from '../composables/Registry/registry.composable'
     import { useT } from '../composables/I18n/useT'
     import { createEmptyScene } from '../consts/Commons/scene.const'
     import { createDefaultSnippets, SNIPPET_PARENT_OF } from '../consts/Commons/snippets.const'
-    import { attachSnippets } from '../utils/Commons/scene-instance.util'
+    import { ERROR_DATASET_KEY, READY_DATASET_KEY } from '../consts/Commons/scene-param.const'
+    import { attachSnippets, countInstances } from '../utils/Commons/scene-instance.util'
+    import { waitForSceneReady } from '../utils/Commons/scene-ready.util'
     import { HOST_CATALOG_SEED } from './catalogSeed.const'
+    import type { IHostAppProps } from '../interfaces/Components/host-app.interface'
     import type { IPlaygroundScene } from '../interfaces/Scene/playground-scene.interface'
 
     /*********************************************************
@@ -58,6 +70,8 @@
      * `packages/marketing` would drive `mode` from its OWN selector in this
      * same `#toolbar` slot).
      ********************************************************/
+    const props = defineProps<IHostAppProps>()
+
     const { t } = useT()
 
     const mode = ref<'light' | 'dark'>('light')
@@ -85,7 +99,9 @@
      * The seed is GENERATED from metadata, which measures neither snippets nor
      * `requiresParent` (#1048 § 3.4): both are authored, and merged here.
      */
-    const definitions = attachSnippets(HOST_CATALOG_SEED, createDefaultSnippets(t), SNIPPET_PARENT_OF)
+    const seededNames = new Set(HOST_CATALOG_SEED.map(definition => definition.name))
+    const seed = [...HOST_CATALOG_SEED, ...props.extraDefinitions.filter(definition => !seededNames.has(definition.name))]
+    const definitions = attachSnippets(seed,createDefaultSnippets(t), SNIPPET_PARENT_OF)
 
     const families = [...new Set(definitions.map(definition => definition.family))]
     const sharedLoader = () => import('origam/components')
@@ -96,13 +112,42 @@
     /*********************************************************
      * Scene
      ********************************************************/
-    const scene = ref<IPlaygroundScene>(createEmptyScene())
+    const scene = ref<IPlaygroundScene>(props.external.status === 'scene' ? props.external.scene : createEmptyScene())
 
     const handleUpdateScene = (next: IPlaygroundScene) => {
         scene.value = next
     }
 
-    const handleSelect = (instanceId: string | null) => {
+    /*********************************************************
+     * External driving (#1441)
+     *
+     * @description
+     * A scene or an error handed over by URL is reported on `<html>` for a
+     * headless driver: `data-playground-error` (never a blank page) or
+     * `data-playground-ready="true"` once the scene is rendered and stable.
+     ********************************************************/
+    const errorText = computed(() => props.external.status === 'error'
+        ? t(`playground.host.scene_error_${props.external.code}`, props.external.code, { detail: props.external.detail ?? '' })
+        : '')
+
+    onMounted(async () => {
+        const dataset = document.documentElement.dataset
+
+        if (props.external.status === 'error') {
+            dataset[ERROR_DATASET_KEY] = props.external.code
+
+            return
+        }
+
+        await nextTick()
+
+        const outcome = await waitForSceneReady(document.body, countInstances(scene.value.roots), '[data-cy="playground-preview-error"]')
+
+        if (outcome === null) dataset[READY_DATASET_KEY] = 'true'
+        else dataset[ERROR_DATASET_KEY] = outcome
+    })
+
+    const handleSelect =(instanceId: string | null) => {
         console.info('[playground host] selection changed:', instanceId)
     }
 </script>

@@ -99,7 +99,6 @@
     "--origam-chart__bar---gap",
     "--origam-chart__point---radius",
     "--origam-chart__point---radius-hover",
-    "--origam-chip---density",
     "--origam-chip--danger---background-color",
     "--origam-chip--danger---border-color",
     "--origam-chip--danger---color",

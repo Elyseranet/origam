@@ -55,6 +55,17 @@
       "source": "types"
     },
     {
+      "name": "itemType",
+      "label": "itemType",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "type",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
       "name": "menu",
       "label": "menu",
       "tsType": "boolean | undefined",

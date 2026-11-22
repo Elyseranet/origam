@@ -165,8 +165,8 @@
 
 		<Variant title="Slots - Label">
 			<origam-radio v-model="slotLabelModel" value="custom">
-				<template #label>
-					<span style="font-style: italic; color: var(--origam-color__action--primary---bg);">Custom label slot</span>
+				<template #label="{ props: labelProps }">
+					<label :for="labelProps.id" style="font-style: italic; color: var(--origam-color__action--primary---bg);">Custom label slot</label>
 				</template>
 			</origam-radio>
 			<div>value = {{ slotLabelModel }}</div>
