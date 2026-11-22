@@ -43,6 +43,7 @@ import OrigamBreadcrumbItem from '@origam/components/Breadcrumb/OrigamBreadcrumb
 import OrigamBracketCompetitor from '@origam/components/Bracket/OrigamBracketCompetitor.vue'
 import OrigamBracketMatch from '@origam/components/Bracket/OrigamBracketMatch.vue'
 import OrigamSheet from '@origam/components/Sheet/OrigamSheet.vue'
+import OrigamTable from '@origam/components/Table/OrigamTable.vue'
 import OrigamRadioGroup from '@origam/components/Radio/OrigamRadioGroup.vue'
 import OrigamSnackbar from '@origam/components/Snackbar/OrigamSnackbar.vue'
 import OrigamDialogConfirmation from '@origam/components/Dialog/OrigamDialogConfirmation.vue'
@@ -283,9 +284,10 @@ describe('update:hover émis par useStateFlag — déclaration obligatoire (#115
      * composants dont le descripteur `emits` compilé ne contient pas
      * `update:hover` alors que leur template lie `@mouseenter` à `set()`.
      *
-     * `<OrigamTable>` câble le même survol mais n'a AUCUN `defineEmits` :
-     * `emitsOptions === null`, Vue reste silencieux — cas distinct, hors de
-     * ce lot (cf. l'en-tête, « VUE N'AVERTIT PAS TOUJOURS »).
+     * `<OrigamTable>` (#1155) : `defineEmits<ITableEmits>()` existait mais
+     * l'interface était vide, donc `emits` compilé = undefined,
+     * `emitsOptions === null` et Vue restait silencieux (cf. l'en-tête,
+     * « VUE N'AVERTIT PAS TOUJOURS ») : seul `$attrs` trahissait le défaut.
      */
     const hoverRoot = async (wrapper: ReturnType<typeof mount>) => {
         await wrapper.trigger('mouseenter')
@@ -299,7 +301,8 @@ describe('update:hover émis par useStateFlag — déclaration obligatoire (#115
         ['OrigamBreadcrumbItem', OrigamBreadcrumbItem, { title: 'Home' }],
         ['OrigamBracketCompetitor', OrigamBracketCompetitor, { competitor: { id: 'a', name: 'A' } }],
         ['OrigamBracketMatch', OrigamBracketMatch, { match: { id: 'm', competitorA: { id: 'a', name: 'A' }, competitorB: { id: 'b', name: 'B' } } }],
-        ['OrigamSheet', OrigamSheet, {}]
+        ['OrigamSheet', OrigamSheet, {}],
+        ['OrigamTable', OrigamTable, {}]
     ]
 
     for (const [name, component, props] of CASES) {

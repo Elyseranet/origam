@@ -143,6 +143,14 @@
 			</template>
 		</Variant>
 
+		<Variant title="Events - update:hover">
+			<origam-table border @update:hover="logEvent('update:hover', $event)">
+				<tbody>
+					<tr><td>Hover over this table.</td></tr>
+				</tbody>
+			</origam-table>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<origam-table border>
 				<thead>
@@ -252,6 +260,7 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
 	import { OrigamTable } from '@origam/components'
 	import type {
 		IHoverProps,

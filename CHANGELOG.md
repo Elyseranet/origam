@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamTable` : `update:hover` est déclaré (#1155)
+
+- Cause : `ITableEmits` était vide alors que `useStateFlag(props, {state: 'hover'})` émet `update:hover` ; le descripteur `emits` compilé était donc `undefined`, Vue restait silencieux et un handler `onUpdate:hover` du consommateur retombait dans `$attrs`, donc sur la racine.
+- Correctif : `ITableEmits extends IHoverEmits`, comme `ICardEmits` / `ISheetEmits`. Story `Events - update:hover` et ligne de doc ajoutées ; cas ajouté à `relay-emits-declaration.spec.ts`.
+
 ### Fixed — `v-contrast` : un fond `oklab()` / `oklch()` n'est plus sauté (#1131)
 
 - Cause : pendant une transition (`1e-05s` sous `prefers-reduced-motion: reduce`) et à l'hydratation, Chromium rapporte `background-color` en `oklab(…)`. `rgbaParts` ne lisait que `rgb(`, la couche était ignorée, le fond de page mesuré, et `#000` / `#fff` forcé en `!important`.
