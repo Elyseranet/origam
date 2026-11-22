@@ -592,7 +592,7 @@ export const ecomDarkTheme: IOrigamTheme = {
                 }
             },
             'btn-primary-bg': '#f43f5e',
-            'btn-primary-text': '#ffffff',
+            'btn-primary-text': '#0a0a0a',
             'btn-secondary-bg': 'transparent',
             'btn-secondary-border': 'rgba(251, 146, 60, 0.30)',
             'btn-secondary-text': '#fff7f0'
