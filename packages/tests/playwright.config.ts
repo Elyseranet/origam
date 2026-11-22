@@ -90,6 +90,7 @@ const GREEN_SPECS = [
     'label.spec.ts',
     // wave 3
     'select.spec.ts',
+    'select-subheader-divider.spec.ts',
     'number-field.spec.ts',
     'password-field.spec.ts',
     'rating-field.spec.ts',
