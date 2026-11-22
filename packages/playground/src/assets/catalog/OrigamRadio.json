@@ -1481,7 +1481,7 @@
     {
       "name": "label",
       "label": "label",
-      "slotPropsType": "any",
+      "slotPropsType": "{ text?: string | undefined; color?: TColor; props: any; }",
       "source": "types"
     },
     {

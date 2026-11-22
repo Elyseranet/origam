@@ -97,6 +97,25 @@ test.describe('OrigamChip', () => {
         expect(height).toBe('24px')
     })
 
+    // #1105 — `density` était inerte : `--origam-chip---density` écrit, jamais lu.
+    // Mutation + mesure dans UN evaluate (classe liée à un computed, cf. CLAUDE.md).
+    test('Design → density: compact < default < comfortable (hauteur calculée)', async ({ page }) => {
+        await page.goto(sandboxUrl(0), { waitUntil: 'domcontentloaded' })
+        const chip = page.locator('.origam-chip').first()
+        await expect(chip).toBeVisible({ timeout: 30000 })
+        const h = await chip.evaluate(el => {
+            const out: Record<string, number> = {}
+            for (const d of ['compact', 'default', 'comfortable']) {
+                el.classList.remove('origam-chip--density-compact', 'origam-chip--density-default', 'origam-chip--density-comfortable')
+                el.classList.add(`origam-chip--density-${d}`)
+                out[d] = parseFloat(getComputedStyle(el).height)
+            }
+            return out
+        })
+        expect(h.compact).toBeLessThan(h.default)
+        expect(h.default).toBeLessThan(h.comfortable)
+    })
+
     // ------------------------------------------------------------------ //
     // ROUNDED SCSS rules — injected classes, same Design variant (idx 0)  //
     // ------------------------------------------------------------------ //

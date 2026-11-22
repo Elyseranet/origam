@@ -73,9 +73,9 @@ const range = ref([20, 80])
 </template>
 ```
 
-Vertical orientation uses `writing-mode: vertical-lr` on the native
-input (modern path) with a `-webkit-appearance: slider-vertical;` and
-Firefox `orient="vertical"` attribute fallback.
+Vertical orientation uses `writing-mode: vertical-lr` + `direction: rtl` on the
+native input (bottom = min, top = max) with the Firefox `orient="vertical"`
+attribute fallback. The non-standard `appearance: slider-vertical` is no longer used.
 
 ## Reverse
 

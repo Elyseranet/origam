@@ -82,7 +82,7 @@ mark itself is a rendering change (glyph → drawn CSS box), not a prop — see
 | Slot | Scope | Description |
 |------|-------|-------------|
 | `default` | `{ id, messagesId, isDisabled, isReadonly, isValid }` | Replaces inner `<OrigamRadioBtn>` |
-| `label` | — | Custom label content |
+| `label` | `{ text, color, props }` — `props.id` is the input id (use it as `for` on your own `<label>`), `props.onClick` the click handler | Custom label content |
 | `input` | `{ props, icon, textColorStyles, backgroundColorStyles, model }` | Custom visual control |
 
 ## Emits
