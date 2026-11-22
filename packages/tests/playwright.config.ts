@@ -14,6 +14,8 @@ const REPO_ROOT = resolve(__dirname, '..', '..')
  * goes green. A local run with no env var still executes the whole suite.
  */
 const GREEN_SPECS = [
+    // #1131 — verte 4/4 (E2E_STATIC=1, chromium, port isole) ; temoin de non-regression : l'oklab() transitoire n'est PAS reproduit en navigateur, la spec ne l'a jamais vue rouge.
+    'contrast-oklab-alert.spec.ts',
     'btn.spec.ts',
     // #1328 — verte 21/21 apres bascule du temoin inverse ; A/B : rouge (12px) sans `:where(&)`, E2E_STATIC=1, chromium, port isole.
     'chart-pareto.spec.ts',
