@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamTextareaField` : texte noir illisible en mode sombre (#1150)
+
+- Cause : le `<textarea>` gardait la couleur UA (`fieldtext`, noire) faute de `color: inherit`, que l'`<input>` de `OrigamTextField` reçoit via `.origam-field__input`. Mesuré en sombre : `rgb(0,0,0)` sur `rgb(10,10,10)`, contraste 1,06.
+- Correctif : `color: inherit` sur `:deep(textarea)` (`OrigamTextareaField.vue`). Mesuré après : `rgb(250,250,250)` sur `rgb(10,10,10)` en sombre, `rgb(10,10,10)` sur blanc en clair. Spec `textarea-field-dark-color.spec.ts`.
+
 ### Fixed — `v-contrast` ne force plus de couleur sur un fond en dégradé (#1427)
 
 - `resolvePaintedBackground` ignorait `background-image` : sur un bouton en dégradé, la directive mesurait le fond de page et imposait le mauvais noir/blanc en `!important` (texte noir sur le dégradé geek clair). Elle s’abstient désormais dès qu’une image de fond est rencontrée avant le fond opaque.
