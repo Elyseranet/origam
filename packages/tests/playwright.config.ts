@@ -242,6 +242,8 @@ const GREEN_SPECS = [
     // `Prop — groupBy` qu'elle visite a ete creee avec elle : aucune des 30
     // Variants de la story ne rendait de ligne de groupe.
     'data-table-group-attr-leak.spec.ts',
+    // #1341 — rouge sur le parent (Entree/Espace ne trient pas), verte avec le bouton de tri ; E2E_STATIC=1, chromium.
+    'data-table-sort-keyboard.spec.ts',
     // wave 14 — #827. Un parent CONTROLE qui refuse la valeur (v-bind="state"
     // sans `state.modelValue = $event`, la forme du playground "Default")
     // laissait le DOM de la radio avancer indefiniment : le navigateur coche
