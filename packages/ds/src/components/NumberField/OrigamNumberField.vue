@@ -112,7 +112,10 @@
 			<slot name="loader"/>
 		</template>
 
-		<template #prependInner>
+		<template
+				v-if="!hideControls || slots.prependInner"
+				#prependInner
+		>
 			<div
 					v-if="!hideControls"
 					class="origam-number-field__control"
@@ -285,7 +288,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, getCurrentInstance, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch, watchEffect } from "vue"
+	import { computed, getCurrentInstance, nextTick, ref, shallowRef, StyleValue, useSlots, watch, watchEffect } from "vue"
 	import OrigamBtn from '../Btn/OrigamBtn.vue'
 	import OrigamDivider from '../Divider/OrigamDivider.vue'
 	import OrigamInput from '../Input/OrigamInput.vue'
@@ -334,6 +337,7 @@
 		rounded: true,
 		centerAffix: true,
 		split: false,
+		clamp: true,
 		compact: false,
 		type: TEXT_FIELD_TYPE.NUMBER,
 		decrementAriaLabel: 'origam.number_field.aria_label.decrement',
@@ -397,7 +401,7 @@
 			val => val ?? null,
 			val => val == null
 					? val ?? null
-					: clamp(Number(val), props.min, props.max))
+					: props.clamp ? clamp(Number(val), props.min, props.max) : Number(val))
 
 	/*********************************************************
 	 * effectiveValidationValue (#696)
@@ -538,7 +542,7 @@
 			if (val === null || val === '') {
 				model.value = null
 				_inputText.value = null
-			} else if (!isNaN(Number(val)) && Number(val) <= props.max && Number(val) >= props.min) {
+			} else if (!isNaN(Number(val)) && (!props.clamp || (Number(val) <= props.max && Number(val) >= props.min))) {
 				model.value = Number(val)
 				_inputText.value = val
 			}
@@ -564,10 +568,6 @@
 	})
 
 	watch(() => props.precision, () => formatInputValue())
-
-	onMounted(() => {
-		clampModel()
-	})
 
 	/*********************************************************
 	 * Spinbutton role (non-compact input)
@@ -740,7 +740,7 @@
 	}
 
 	const clampModel = () => {
-		if (controlsDisabled.value) return
+		if (controlsDisabled.value || !props.clamp) return
 
 		const actualText = _inputText.value ?? origamTextFieldRef.value?.value ?? null
 
@@ -862,8 +862,7 @@
 			if (val === '') {
 				model.value = null
 			} else if (!isNaN(Number(val))) {
-				const clamped = clamp(Number(val), props.min, props.max)
-				model.value = clamped
+				model.value = props.clamp ? clamp(Number(val), props.min, props.max) : Number(val)
 			}
 		}
 	})

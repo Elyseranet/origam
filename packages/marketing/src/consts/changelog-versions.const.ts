@@ -22,9 +22,11 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 fix. See the full changelog for detail.',
+        summaryFallback: '3 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'v-contrast : un fond oklab() / oklch() n\'est plus sauté (#1131)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamNumberField : plus de retrait vide avec hideControls, plus d\'écriture du modèle au montage, bornage désactivable (#1327)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamTable : update:hover est déclaré (#1155)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'v-contrast : un fond oklab() / oklch() n\'est plus sauté (#1131)' }
         ]
     },
     {

@@ -43,6 +43,16 @@ const qty = ref<number | null>(1)
 </template>
 ```
 
+## Clamp
+
+By default the value is bounded to `min` / `max` when the field loses focus. Set `:clamp="false"` to keep an out-of-range value so your validation can reject it with a message. The component never writes the model on mount.
+
+```vue
+<template>
+  <OrigamNumberField v-model="year" :min="2000" :max="2100" :clamp="false" />
+</template>
+```
+
 ## Custom icons
 
 ```vue
