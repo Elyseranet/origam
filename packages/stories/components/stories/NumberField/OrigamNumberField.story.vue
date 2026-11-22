@@ -109,6 +109,7 @@
 					precision: 0,
 					split: false,
 					hideControls: false,
+					clamp: true,
 					compact: false,
 					autofocus: false,
 					placeholder: undefined,
@@ -135,6 +136,7 @@
 						:precision="state.precision"
 						:split="state.split"
 						:hide-controls="state.hideControls"
+						:clamp="state.clamp"
 						:compact="state.compact"
 						:autofocus="state.autofocus"
 						:placeholder="state.placeholder || undefined"
@@ -166,6 +168,7 @@
 				<StoryGroup title="Layout">
 					<HstCheckbox v-model="state.split"        title="Split"/>
 					<HstCheckbox v-model="state.hideControls" title="Hide Controls"/>
+					<HstCheckbox v-model="state.clamp"        title="Clamp"/>
 					<HstCheckbox v-model="state.compact"      title="Compact"/>
 					<HstCheckbox v-model="state.hideInput"    title="Hide Input"/>
 					<HstCheckbox v-model="state.hideDetails"  title="Hide Details"/>
@@ -400,6 +403,7 @@
 					precision: 0,
 					split: false,
 					hideControls: false,
+					clamp: true,
 					compact: false,
 					disabled: false,
 					readonly: false,
@@ -434,6 +438,7 @@
 					<HstNumber   v-model="state.precision"    title="Precision"     :min="0"     :max="4"    :step="1"/>
 					<HstCheckbox v-model="state.split"        title="Split"/>
 					<HstCheckbox v-model="state.hideControls" title="Hide Controls"/>
+					<HstCheckbox v-model="state.clamp"        title="Clamp"/>
 					<HstCheckbox v-model="state.compact"      title="Compact"/>
 					<HstCheckbox v-model="state.disabled"     title="Disabled"/>
 					<HstCheckbox v-model="state.readonly"     title="Readonly"/>

@@ -199,6 +199,18 @@
       "source": "types"
     },
     {
+      "name": "clamp",
+      "label": "clamp",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Bound the value to `min`/`max` on blur and on write (default `true`). `false`: out-of-range values are kept so validation can reject them.",
+      "source": "types"
+    },
+    {
       "name": "compact",
       "label": "compact",
       "tsType": "boolean | undefined",

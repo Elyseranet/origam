@@ -18,6 +18,13 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamNumberField` : plus de retrait vide avec `hideControls`, plus d'écriture du modèle au montage, bornage désactivable (#1327)
+
+- Cause : le gabarit `#prependInner` était toujours passé à `OrigamField`, même vide ; `useAdjacentInner` le comptait comme présent et `.origam-field__prepend-inner` réservait ~27 px à gauche du texte.
+- Correctif : le gabarit n'est passé que si les contrôles sont affichés ou si l'appelant fournit son propre slot `prependInner`.
+- Le montage ne borne plus la valeur : aucune écriture du modèle sans interaction (`27` avec `min=2000` reste `27`, la validation le signale).
+- Nouvelle prop `clamp` (défaut `true`) : `false` désactive le bornage à la sortie du champ et à l'écriture, pour refuser une valeur hors bornes avec un message. Rupture assumée : le bornage au montage disparaît.
+
 ## [2.42.0] - 2026-11-22
 
 ### Fixed — `OrigamBtn` en chargement circulaire : le libellé reste visible (#1086)
