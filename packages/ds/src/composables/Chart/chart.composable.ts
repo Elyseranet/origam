@@ -768,7 +768,7 @@ const boundsOf = (values: Array<number>) => {
 
 /** X and Z extents across every scatter series (cohorts share the axes). */
 const scatterExtent = (scatterSeries: Array<IChartSeries>) => {
-    const entries = scatterSeries.flatMap(sp => sp.data)
+    const entries: Array<TScatterEntry> = scatterSeries.flatMap(sp => [ ...sp.data ])
     const { min: xMin, max: xMax } = boundsOf(entries.map(scatterX))
     const zs = entries.map(scatterZ).filter((z): z is number => z !== undefined)
     const { min: zMin, max: zMax } = boundsOf(zs)
