@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamBtn` : `disabled` lit enfin les jetons grisés et affiche `not-allowed` (#1097)
+
+- Cause : `disabled` se résumait à `opacity` + `pointer-events: none` ; `--origam-btn---background-color-disabled` / `--origam-btn---color-disabled` étaient déclarés mais jamais lus, et `pointer-events: none` rendait `cursor: not-allowed` impossible. `plain` écrivait en outre sa propre `opacity`, qui battait le voile : un `plain` désactivé restait à 70 %.
+- Correctif : un Btn désactivé lit les deux jetons (le remplissage passe par `--origam-btn---background-color`, donc `text` / `outlined` / `plain` / `ghost` gardent leur fond transparent), pose `cursor: not-allowed`, garde ses événements de pointeur (le clic d'une ancre désactivée est avalé par `handleClickCapture`) et désactive hover / `v-contrast`. Mesuré avant → après en Chromium : curseur `pointer` → `not-allowed`, `flat` primaire `rgb(124, 58, 237)` → `rgb(230, 230, 230)`, `plain` opacité `0.7` → `0.5`.
+- Rupture assumée (sans consommateur) : un Btn désactivé n'est plus `pointer-events: none`.
+
 ## [2.43.0] - 2026-11-22
 
 ### Fixed — `OrigamNumberField` : plus de retrait vide avec `hideControls`, plus d'écriture du modèle au montage, bornage désactivable (#1327)

@@ -257,9 +257,19 @@ const BLACK: [number, number, number] = [0, 0, 0]
 function enforceContrast (el: HTMLElement, enabled: boolean): void {
     // The directive's own per-binding override flag prevents the `updated`
     // hook from re-processing the colour we just forced.
+    const wasFixed = el.dataset.origamContrastFixed === 'true'
     delete el.dataset.origamContrastFixed
 
-    if (!enabled || typeof window === 'undefined') return
+    if (!enabled || typeof window === 'undefined') {
+        /*********************************************************
+         * Opt-out (#1097)
+         *
+         * @description
+         * A Btn that becomes disabled opts out: drop the colour we forced.
+         ********************************************************/
+        if (wasFixed) el.style.removeProperty('color')
+        return
+    }
 
     // The consumer EXPLICITLY chose a foreground colour (`color="danger"`,
     // etc.) — respect it. Auto-contrast must never override an intentional

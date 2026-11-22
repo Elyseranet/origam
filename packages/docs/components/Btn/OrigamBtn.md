@@ -485,6 +485,12 @@ The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
     spec's first rule is that a native element beats an ARIA attribute.
   - `tag="a"` has no native `disabled`, so the anchor gets
     `aria-disabled="true"` and its `href` is dropped instead.
+  - A disabled button shows `cursor: not-allowed` (the root keeps its pointer
+    events; a disabled anchor's click is swallowed by the component). It reads
+    `--origam-btn---background-color-disabled` / `--origam-btn---color-disabled`
+    (grey, not a faded brand colour) under the `--origam-btn---opacity-disabled`
+    veil; `text` / `outlined` / `plain` / `ghost` keep their see-through fill, and
+    the automatic contrast correction (`v-contrast`) is off while disabled.
 - ⚠️ **Icon-only mode needs an `aria-label` you supply yourself.** The
   component does **not** derive one from the `icon` prop, and there is no
   `ariaLabel` prop: an icon name (`mdi-content-save`) is an identifier, not

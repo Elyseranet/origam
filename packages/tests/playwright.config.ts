@@ -32,6 +32,9 @@ const GREEN_SPECS = [
     'btn-text-active.spec.ts',
     // #1086 — verifiee verte et stable avant inscription : 15/15 (--repeat-each=5, E2E_STATIC=1, chromium, port isole).
     'btn-loading-circular-label.spec.ts',
+    // #1097 — verifiee verte et stable avant inscription : 13/13 puis 65/65 sous `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
+    // Avant le correctif (mesure sur le parent) : cursor `pointer`, remplissage violet de marque, `plain` a 0.7.
+    'btn-disabled.spec.ts',
     // #1179 — verifiee verte et stable avant inscription : 9/9 puis 45/45 sous
     // `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
     'code-group.spec.ts',
