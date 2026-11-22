@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamTable` : `update:hover` est déclaré (#1155)
+
+- Cause : `ITableEmits` était vide alors que `useStateFlag(props, {state: 'hover'})` émet `update:hover` ; le descripteur `emits` compilé était donc `undefined`, Vue restait silencieux et un handler `onUpdate:hover` du consommateur retombait dans `$attrs`, donc sur la racine.
+- Correctif : `ITableEmits extends IHoverEmits`, comme `ICardEmits` / `ISheetEmits`. Story `Events - update:hover` et ligne de doc ajoutées ; cas ajouté à `relay-emits-declaration.spec.ts`.
+
 ## [2.42.0] - 2026-11-22
 
 ### Fixed — `OrigamBtn` en chargement circulaire : le libellé reste visible (#1086)

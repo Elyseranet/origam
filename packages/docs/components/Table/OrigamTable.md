@@ -90,6 +90,12 @@ scrollable body without breaking the outer chrome.
 </template>
 ```
 
+## Events
+
+| Name | Payload | When |
+|---|---|---|
+| `update:hover` | `boolean` | `true` on mouseenter, `false` on mouseleave of the root (v-model of `hover`). |
+
 ## Slots
 
 | Slot | Slot props | Description |
