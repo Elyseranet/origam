@@ -84,6 +84,7 @@ const GREEN_SPECS = [
     'text-field.spec.ts',
     'radio.spec.ts',
     'slider-field.spec.ts',
+    'slider-field-vertical.spec.ts',
     'tabs.spec.ts',
     'label.spec.ts',
     // wave 3

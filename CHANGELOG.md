@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — SliderField vertical : fin de `appearance: slider-vertical` (#1129)
+
+- Cause : `.origam-slider-field--vertical .origam-slider-field__input` déclarait `appearance: slider-vertical`, non standard (Chromium loggait un warning à chaque chargement de page, la feuille étant dans l'entrée CSS). Mesuré en plus : avec `writing-mode: vertical-lr` seul, un clic en haut du rail donnait la valeur MIN alors que le thumb visuel est ancré en bas pour le min (sens inversé).
+- Correctif : `writing-mode: vertical-lr` + `direction: rtl` (recommandation de Chromium). Bas = min, haut = max, flèches haut/bas inchangées, plus de warning.
+
 ## [2.41.1] - 2026-11-22
 
 ### Changed — complexité cognitive : `scatterExtent` et `compareBySortItem` (#1398)
