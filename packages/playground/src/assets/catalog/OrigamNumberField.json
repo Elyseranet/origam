@@ -207,7 +207,7 @@
       "defaultValue": true,
       "hasFactoryDefault": false,
       "control": "switch",
-      "description": "Bound the value to `min`/`max` on blur and on write (default `true`). `false`: out-of-range values are kept so validation can reject them.",
+      "description": "*******************************************************\nclamp",
       "source": "types"
     },
     {

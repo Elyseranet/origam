@@ -25,6 +25,16 @@ This project follows [Semantic Versioning](https://semver.org).
 - Le montage ne borne plus la valeur : aucune écriture du modèle sans interaction (`27` avec `min=2000` reste `27`, la validation le signale).
 - Nouvelle prop `clamp` (défaut `true`) : `false` désactive le bornage à la sortie du champ et à l'écriture, pour refuser une valeur hors bornes avec un message. Rupture assumée : le bornage au montage disparaît.
 
+### Fixed — `OrigamTable` : `update:hover` est déclaré (#1155)
+
+- Cause : `ITableEmits` était vide alors que `useStateFlag(props, {state: 'hover'})` émet `update:hover` ; le descripteur `emits` compilé était donc `undefined`, Vue restait silencieux et un handler `onUpdate:hover` du consommateur retombait dans `$attrs`, donc sur la racine.
+- Correctif : `ITableEmits extends IHoverEmits`, comme `ICardEmits` / `ISheetEmits`. Story `Events - update:hover` et ligne de doc ajoutées ; cas ajouté à `relay-emits-declaration.spec.ts`.
+
+### Fixed — `v-contrast` : un fond `oklab()` / `oklch()` n'est plus sauté (#1131)
+
+- Cause : pendant une transition (`1e-05s` sous `prefers-reduced-motion: reduce`) et à l'hydratation, Chromium rapporte `background-color` en `oklab(…)`. `rgbaParts` ne lisait que `rgb(`, la couche était ignorée, le fond de page mesuré, et `#000` / `#fff` forcé en `!important`.
+- `oklab()` / `oklch()` sont désormais convertis en sRGB ; une couleur de fond non convertible fait **s'abstenir** la directive au lieu de mesurer la couche du dessous.
+
 ## [2.42.0] - 2026-11-22
 
 ### Fixed — `OrigamBtn` en chargement circulaire : le libellé reste visible (#1086)

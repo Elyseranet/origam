@@ -1030,7 +1030,14 @@
       "source": "types"
     }
   ],
-  "events": [],
+  "events": [
+    {
+      "name": "update:hover",
+      "label": "update:hover",
+      "payloadType": "[value: boolean]",
+      "source": "types"
+    }
+  ],
   "slots": [
     {
       "name": "top",
