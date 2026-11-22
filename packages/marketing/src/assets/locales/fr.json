@@ -1117,7 +1117,7 @@
             "title_line1": "Un design system.",
             "title_line2": "Toutes les marques.",
             "subtitle": "Design tokens tenus à la main, props-first — multi-thème nativement. Basculez entre clair, sombre ou votre marque à l'exécution, sans remontage.",
-            "chip_sobre": "Sobre",
+            "chip_origam": "Origam",
             "chip_glass": "Glass",
             "chip_geek": "Geek",
             "chip_cartoon": "Cartoon",
@@ -1878,7 +1878,6 @@
             "editorial": "Éditorial",
             "material": "Material",
             "ecom": "E-commerce",
-            "sobre": "Sobre",
             "label": "Preset",
             "none": "— aucun —"
         },
