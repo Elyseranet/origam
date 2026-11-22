@@ -23,6 +23,19 @@ This project follows [Semantic Versioning](https://semver.org).
 - Cause : `.origam-slider-field--vertical .origam-slider-field__input` déclarait `appearance: slider-vertical`, non standard (Chromium loggait un warning à chaque chargement de page, la feuille étant dans l'entrée CSS). Mesuré en plus : avec `writing-mode: vertical-lr` seul, un clic en haut du rail donnait la valeur MIN alors que le thumb visuel est ancré en bas pour le min (sens inversé).
 - Correctif : `writing-mode: vertical-lr` + `direction: rtl` (recommandation de Chromium). Bas = min, haut = max, flèches haut/bas inchangées, plus de warning.
 
+### Changed — complexité cognitive : `scatterExtent` et `compareBySortItem` (#1398)
+
+- Refactor pur (comportement identique, figé par des tests de caractérisation) : `scatterExtent` (Chart, 27 → sous 15) et `compareBySortItem` (DataTable, 21 → sous 15) sont découpées en fonctions nommées. Débloque le quality gate Sonar du workflow `Build`.
+
+### Fixed — `OrigamTextareaField` : texte noir illisible en mode sombre (#1150)
+
+- Cause : le `<textarea>` gardait la couleur UA (`fieldtext`, noire) faute de `color: inherit`, que l'`<input>` de `OrigamTextField` reçoit via `.origam-field__input`. Mesuré en sombre : `rgb(0,0,0)` sur `rgb(10,10,10)`, contraste 1,06.
+- Correctif : `color: inherit` sur `:deep(textarea)` (`OrigamTextareaField.vue`). Mesuré après : `rgb(250,250,250)` sur `rgb(10,10,10)` en sombre, `rgb(10,10,10)` sur blanc en clair. Spec `textarea-field-dark-color.spec.ts`.
+
+### Fixed — `v-contrast` ne force plus de couleur sur un fond en dégradé (#1427)
+
+- `resolvePaintedBackground` ignorait `background-image` : sur un bouton en dégradé, la directive mesurait le fond de page et imposait le mauvais noir/blanc en `!important` (texte noir sur le dégradé geek clair). Elle s’abstient désormais dès qu’une image de fond est rencontrée avant le fond opaque.
+
 ### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
 
 - Cause : Btn/SelectionControl passaient un tuple façon Vuetify à `v-ripple` ; en template Vue les modifiers de directive sont statiques et le tableau n'est que la valeur, donc `binding.modifiers.center/circle` n'étaient jamais posés.

@@ -94,6 +94,7 @@ const GREEN_SPECS = [
     'rating-field.spec.ts',
     'otp-input-field.spec.ts',
     'textarea-field.spec.ts',
+    'textarea-field-dark-color.spec.ts',
     'list.spec.ts',
     /* Promu 2026-09-30 apres #938 : il attendait 45s un `aria-controls` qui
      * n'existait pas — trois attributs du contrat combobox etaient morts sur

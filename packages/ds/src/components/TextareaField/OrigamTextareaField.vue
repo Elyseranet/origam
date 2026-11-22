@@ -895,6 +895,8 @@
 		}
 
 		:deep(textarea) {
+			// UA `fieldtext` is black: inherit the field colour like `.origam-field__input` (#1150)
+			color: inherit;
 			opacity: var(--origam-textarea-field__textarea---opacity, 0);
 			flex: 1;
 			min-width: 0;
