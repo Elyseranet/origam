@@ -18,6 +18,20 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '4 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamRadio : le slot #label reçoit enfin ses props (#1359)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamChip : la prop density agit enfin sur la hauteur (#1105)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamListItem : anneau :focus-visible sur les lignes cliquables (#1358)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'SliderField vertical : fin de appearance: slider-vertical (#1129)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.41.1',
         date: '2026-11-22',
         type: 'patch',

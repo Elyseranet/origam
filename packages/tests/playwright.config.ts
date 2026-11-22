@@ -65,6 +65,7 @@ const GREEN_SPECS = [
     'utility-cascade-padding-margin-950.spec.ts',
     // #1230 — jeton d'opacite de l'overlay actif de OrigamListItem ; rouge a HEAD~1.
     'list-item-overlay-opacity.spec.ts',
+    'list-item-focus-ring.spec.ts',
     // #1244 — jetons d'opacite de survol (ListItem, ExpansionPanelHeader) ; rouge a HEAD~1.
     'overlay-opacity-hover-1244.spec.ts',
     'card.spec.ts',
@@ -84,6 +85,7 @@ const GREEN_SPECS = [
     'text-field.spec.ts',
     'radio.spec.ts',
     'slider-field.spec.ts',
+    'slider-field-vertical.spec.ts',
     'tabs.spec.ts',
     'label.spec.ts',
     // wave 3

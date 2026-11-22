@@ -18,6 +18,27 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — OrigamRadio : le slot `#label` reçoit enfin ses props (#1359)
+
+- Cause : `OrigamRadio` et `OrigamRadioBtn` ré-exposaient `<slot name="label"/>` sans `v-bind` ; le scope `{ text, color, props: { id, onClick, … } }` d'`OrigamSelectionControl` était perdu, d'où un `TypeError` à l'accès de `props.id` et une radio sans nom accessible.
+- Correctif : le scope est transmis à chaque niveau ; types `IRadioSlots` / `IRadioBtnSlots` et doc mis à jour (utiliser `props.id` comme `for` du `<label>` personnalisé).
+
+### Fixed — `OrigamChip` : la prop `density` agit enfin sur la hauteur (#1105)
+
+- Cause : le SCSS écrivait `--origam-chip---density` (`-8px` en compact) mais aucun `height` ne la lisait ; `compact` et `default` rendaient la même hauteur (24px mesuré sur `size=small`, Chromium).
+- Correctif : les cinq `height` de palier sont `calc(height-palier + var(--origam-chip---density, 0px))`, comme `OrigamBtn`. Ajout de `&--density-comfortable` (`+8px`, miroir de Btn ; la classe était émise sans règle). Entrée retirée de la baseline `token-var-channels-dormant`.
+- Rupture de rendu assumée : `density="compact"` / `"comfortable"` change maintenant la hauteur.
+
+### Fixed — `OrigamListItem` : anneau `:focus-visible` sur les lignes cliquables (#1358)
+
+- Cause : le focus clavier d'une ligne `link` ne produisait que le voile d'overlay (opacité 0,08, ~1,1:1), sans anneau (WCAG 1.4.11 / 2.4.7).
+- Correctif : `outline` 2px solid `--origam-color__border---focus` (même jeton sémantique que Btn et FileField, donc réglable par thème), décalé vers l'intérieur pour ne pas être rogné par le conteneur. Aucun nouveau jeton.
+
+### Fixed — SliderField vertical : fin de `appearance: slider-vertical` (#1129)
+
+- Cause : `.origam-slider-field--vertical .origam-slider-field__input` déclarait `appearance: slider-vertical`, non standard (Chromium loggait un warning à chaque chargement de page, la feuille étant dans l'entrée CSS). Mesuré en plus : avec `writing-mode: vertical-lr` seul, un clic en haut du rail donnait la valeur MIN alors que le thumb visuel est ancré en bas pour le min (sens inversé).
+- Correctif : `writing-mode: vertical-lr` + `direction: rtl` (recommandation de Chromium). Bas = min, haut = max, flèches haut/bas inchangées, plus de warning.
+
 ## [2.41.1] - 2026-11-22
 
 ### Changed — complexité cognitive : `scatterExtent` et `compareBySortItem` (#1398)
