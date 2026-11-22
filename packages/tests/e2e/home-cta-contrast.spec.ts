@@ -16,9 +16,33 @@ const MODES = ['light', 'dark']
 const CTAS = ['hero-cta-components', 'cta-btn-start']
 const AA = 4.5
 
+/**
+ * Attente sur condition, jamais sur un delai : plus aucune transition/animation
+ * en cours sur le bouton, ses descendants et ses ancetres, confirmee sur deux
+ * frames consecutives.
+ */
+async function settled (page: Page, cy: string): Promise<void> {
+    await page.waitForFunction(async (sel) => {
+        const el = document.querySelector(sel)
+        if (!el) return false
+        const running = () => {
+            for (let n: Element | null = el; n; n = n.parentElement) {
+                if (n.getAnimations({ subtree: n === el }).some(a => a.playState !== 'finished')) return true
+            }
+            return false
+        }
+        const frame = () => new Promise(r => requestAnimationFrame(r))
+        await frame()
+        if (running()) return false
+        await frame()
+        return !running()
+    }, `[data-cy="${ cy }"]`)
+}
+
 async function minRatio (page: Page, cy: string): Promise<number> {
     const loc = page.locator(`[data-cy="${ cy }"]`)
     await loc.scrollIntoViewIfNeeded()
+    await settled(page, cy)
     const fg = await loc.evaluate(el => getComputedStyle(el).color)
     const box = await loc.evaluate(el => {
         const c = el.querySelector('.origam-btn__content') ?? el
@@ -27,7 +51,8 @@ async function minRatio (page: Page, cy: string): Promise<number> {
         return { x: r.left - o.left, y: r.top - o.top, w: r.width, h: r.height, ow: o.width }
     })
     await loc.evaluate(el => el.style.setProperty('color', 'transparent', 'important'))
-    await page.waitForTimeout(900)
+    await expect.poll(() => loc.evaluate(el => getComputedStyle(el.querySelector('.origam-btn__content') ?? el).color)).toMatch(/rgba\(0, 0, 0, 0\)|transparent/)
+    await settled(page, cy)
     const buf = await loc.screenshot()
 
     return page.evaluate(async ([b64, fgColor, b]) => {
@@ -69,7 +94,7 @@ test.describe('#1428 — CTA primaires de l\'accueil : contraste AA', () => {
                     { name: 'origam-mode', value: mode, url: baseURL }
                 ])
                 await page.goto('/')
-                await page.waitForTimeout(3000)
+                await page.locator('[data-cy="hero-cta-components"]').waitFor()
 
                 for (const cy of CTAS) {
                     const min = await minRatio(page, cy)
