@@ -33,6 +33,14 @@ export interface INumberFieldProps extends IFieldProps, IInputProps, IInputVaria
     holdRepeat?: number
     split?: boolean
     hideControls?: boolean
+    /*********************************************************
+     * clamp
+     *
+     * @description
+     * Bounds the value to `min`/`max` on blur and on write (default `true`).
+     * `false` keeps an out-of-range value so validation can reject it.
+     ********************************************************/
+    clamp?: boolean
     compact?: boolean
     /*********************************************************
      * decrementAriaLabel / incrementAriaLabel
