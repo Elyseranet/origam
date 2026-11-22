@@ -90,4 +90,20 @@ describe('OrigamApiClient', () => {
         expect(withSecret).toHaveLength(1)
         expect(String(withSecret[0]![0])).toContain('/api/admin/login')
     })
+
+    it('logout verrouille : ecriture refusee sans appel login ; login deverrouille', async () => {
+        const f = vi.fn(async (u: URL) => String(u).endsWith('/login') ? login() : json({ ok: true }))
+        const c = client(f as unknown as typeof fetch)
+        await c.request('local', 'GET', '/api/admin/reference/sync/runs', { admin: true })
+        await c.logout('local')
+        const loginsBefore = f.mock.calls.filter(x => String(x[0]).endsWith('/login')).length
+        const err: any = await c.request('local', 'PATCH', '/api/admin/reference/component/alert', { admin: true, body: {} }).catch(e => e)
+        expect(err).toBeInstanceOf(McpHttpError)
+        expect(err.message).toContain('origam_admin_login')
+        expect(f.mock.calls.filter(x => String(x[0]).endsWith('/login'))).toHaveLength(loginsBefore)
+        // le verrou est par env
+        await expect(c.request('dev', 'GET', '/api/admin/reference/sync/runs', { admin: true })).resolves.toEqual({ ok: true })
+        await c.login('local')
+        await expect(c.request('local', 'PATCH', '/api/admin/reference/component/alert', { admin: true, body: {} })).resolves.toEqual({ ok: true })
+    })
 })

@@ -28,6 +28,8 @@ export class OrigamApiClient {
     private readonly timeoutMs: number
     /** env -> "name=value; name2=value2" */
     private readonly cookies = new Map<TEnvName, string>()
+    /** Envs fermes par un logout explicite : pas de reconnexion automatique (en memoire du process). */
+    private readonly loggedOut = new Set<TEnvName>()
 
     private readonly options: IHttpClientOptions
 
@@ -52,6 +54,9 @@ export class OrigamApiClient {
                 path
             )
         }
+        if (admin && this.loggedOut.has(env)) {
+            throw new McpHttpError(`Session fermee par logout sur ${env} : appelle origam_admin_login.`, 0, path)
+        }
         if (admin && !this.cookies.has(env)) await this.login(env)
         try {
             return await this.send<T>(env, method, path, opts)
@@ -67,6 +72,7 @@ export class OrigamApiClient {
     }
 
     async login (env: TEnvName): Promise<void> {
+        this.loggedOut.delete(env)
         const password = await this.options.getPassword(env)
         try {
             await this.send(env, 'POST', '/api/admin/login', { body: { password } }, true)
@@ -81,6 +87,7 @@ export class OrigamApiClient {
     async logout (env: TEnvName): Promise<void> {
         await this.send(env, 'POST', '/api/admin/logout', {})
         this.cookies.delete(env)
+        this.loggedOut.add(env)
     }
 
     private async send<T> (env: TEnvName, method: THttpMethod, path: string, opts: IRequestOptions, captureCookie = false): Promise<T> {
