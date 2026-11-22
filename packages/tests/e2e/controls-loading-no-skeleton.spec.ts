@@ -49,26 +49,37 @@ test.describe('OrigamBtn - action in flight', () => {
         expect(await btn.evaluate((el) => el === el.ownerDocument.activeElement)).toBe(true)
     })
 
-    test('width is stable: loading does not move the button width', async ({ page }) => {
+    // #1086 - the circular spinner REPLACES a prepend icon (same box, width unchanged) and is ADDED before the label otherwise.
+    const loadingVsIdle = (btn: import('@playwright/test').Locator) => btn.evaluate((el) => {
+        const progress = el.querySelector('.origam-btn__progress') as HTMLElement
+        const spinner = progress.getBoundingClientRect().width + parseFloat(getComputedStyle(progress).marginInlineEnd)
+        const loading = el.getBoundingClientRect().width
+        // IDLE clone of the same button (no loader classes, no spinner node) in the same parent.
+        const clone = el.cloneNode(true) as HTMLElement
+        clone.className = clone.className.split(/\s+/).filter((c) => !/^origam-btn--(loading|loader-|spinner-)/.test(c)).join(' ')
+        clone.querySelector('.origam-btn__progress')?.remove()
+        el.parentElement!.appendChild(clone)
+        const idle = clone.getBoundingClientRect().width
+        clone.remove()
+
+        return { loading, idle, spinner }
+    })
+
+    test('width is stable with a prepend icon: the spinner takes its place', async ({ page }) => {
         await page.goto(url(BTN, 4), { waitUntil: 'domcontentloaded' })
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const btn = sandbox.locator('[data-cy="btn-loading-circular-override"]')
+        const btn = page.frameLocator('iframe[src*="__sandbox"]').locator('[data-cy="btn-loading-prepend"]')
         await expect(btn).toBeVisible({ timeout: 12000 })
+        const w = await loadingVsIdle(btn)
+        expect(Math.abs(w.loading - w.idle)).toBeLessThanOrEqual(0.5)
+    })
 
-        // One evaluate: measure the busy button, then an IDLE clone of it (no
-        // loader classes, no spinner node) in the same parent.
-        const widths = await btn.evaluate((el) => {
-            const loading = el.getBoundingClientRect().width
-            const clone = el.cloneNode(true) as HTMLElement
-            clone.classList.remove('origam-btn--loading', 'origam-btn--loader-circular')
-            clone.querySelector('.origam-btn__progress')?.remove()
-            el.parentElement!.appendChild(clone)
-            const idle = clone.getBoundingClientRect().width
-            clone.remove()
-
-            return { loading, idle }
-        })
-        expect(widths.loading).toBeCloseTo(widths.idle, 0)
+    test('without an icon the button grows by exactly the spinner width + gap', async ({ page }) => {
+        await page.goto(url(BTN, 4), { waitUntil: 'domcontentloaded' })
+        const btn = page.frameLocator('iframe[src*="__sandbox"]').locator('[data-cy="btn-loading-circular-override"]')
+        await expect(btn).toBeVisible({ timeout: 12000 })
+        const w = await loadingVsIdle(btn)
+        expect(w.spinner).toBeGreaterThan(0)
+        expect(Math.abs(w.loading - (w.idle + w.spinner))).toBeLessThanOrEqual(0.5)
     })
 
     test('Enter on a busy button does not reach a consumer click handler', async ({ page }) => {
