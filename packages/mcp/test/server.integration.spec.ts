@@ -32,7 +32,7 @@ const [marketingUp, playgroundUp] = await Promise.all([up(`${MARKETING}/api/heal
 let client: Client
 beforeAll(async () => {
     client = new Client({ name: 'test', version: '0.0.0' })
-    await client.connect(new StdioClientTransport({ command: 'node', args: ['src/index.ts'], env: { ...process.env as Record<string, string> } }))
+    await client.connect(new StdioClientTransport({ command: 'pnpm', args: ['exec', 'tsx', 'src/index.ts'], env: { ...process.env as Record<string, string> } }))
 })
 afterAll(async () => { await client.close() })
 
@@ -67,5 +67,14 @@ describe('serveur MCP (stdio)', () => {
         const r: any = await client.callTool({ name: 'playground_render', arguments: { component: 'origam-btn', props: { color: 'primary' }, slot: 'Hello' } })
         expect(r.content.some((c: any) => c.type === 'image')).toBe(true)
         expect(JSON.parse(text(r)).error).toBeNull()
+    })
+
+    it.skipIf(!playgroundUp)('playground_diff + playground_sweep (partie A requise)', async () => {
+        const d: any = await client.callTool({ name: 'playground_diff', arguments: { component: 'origam-btn', slot: 'Hi', propsA: {}, propsB: { color: 'danger' } } })
+        const diff = JSON.parse(text(d))
+        expect(typeof diff.pixelDiffPercent).toBe('number')
+        expect(diff.errorA).toBeNull()
+        const s: any = await client.callTool({ name: 'playground_sweep', arguments: { component: 'origam-btn', slot: 'Hi', prop: 'color', values: ['primary', 'danger'] } })
+        expect(JSON.parse(text(s)).rows).toHaveLength(2)
     })
 })

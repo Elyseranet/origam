@@ -42,9 +42,6 @@ export const PLAYGROUND_READY_TIMEOUT_MS = 20000
 
 export const DEFAULT_VIEWPORT = { width: 1024, height: 768 }
 
-/** Version du modele de scene (miroir de `SCENE_VERSION`, packages/playground). */
-export const PLAYGROUND_SCENE_VERSION = 1
-
 /**
  * Longhands uniquement : `getPropertyValue` sur un shorthand contenant `var()`
  * renvoie "" (CLAUDE.md, « getPropertyValue sur un shorthand »).

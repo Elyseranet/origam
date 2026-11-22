@@ -1,7 +1,9 @@
+import { COMPONENT_PARAM, ERROR_DATASET_KEY, PLAYGROUND_INSTANCE_ATTRIBUTE, PROPS_PARAM, READY_DATASET_KEY, SLOT_PARAM } from '@origam/playground/consts'
+import { encodeSceneParam, encodeTextParam } from '@origam/playground/scene-param'
 import { chromium, type Browser, type Page } from '@playwright/test'
 import {
     DEFAULT_PLAYGROUND_URL, DEFAULT_STYLE_PROPS, DEFAULT_VIEWPORT, ENV_VAR_PLAYGROUND_URL, ENV_VAR_STYLE_PROPS,
-    PLAYGROUND_READY_TIMEOUT_MS, PLAYGROUND_SCENE_VERSION
+    PLAYGROUND_READY_TIMEOUT_MS
 } from '../consts/mcp.const.ts'
 import type { IPlaygroundDiff, IPlaygroundRenderInput, IPlaygroundSnapshot } from '../interfaces/mcp.interface.ts'
 
@@ -11,15 +13,6 @@ import type { IPlaygroundDiff, IPlaygroundRenderInput, IPlaygroundSnapshot } fro
  * `data-playground-instance`, `data-playground-error`).
  * Une seule instance Chromium headless, reutilisee, fermee a l'arret.
  ********************************************************/
-
-/*
- * shortcut: copie locale de `encodeSceneParam` (base64url(JSON)) en attendant
- * l'export de `@origam/playground/utils` (partie A, pas encore sur cette
- * branche). A remplacer par l'import `workspace:*` des qu'il existe.
- */
-export function encodeParam (value: unknown): string {
-    return Buffer.from(JSON.stringify(value), 'utf8').toString('base64url')
-}
 
 export function playgroundBaseUrl (): string {
     return (process.env[ENV_VAR_PLAYGROUND_URL] ?? DEFAULT_PLAYGROUND_URL).replace(/\/+$/, '')
@@ -31,18 +24,13 @@ export function styleProps (input?: readonly string[]): readonly string[] {
     return fromEnv ? fromEnv.split(',').map(s => s.trim()).filter(Boolean) : DEFAULT_STYLE_PROPS
 }
 
-/** URL de la scene d'une instance : `?scene=` si un slot est fourni, sinon le cas simple. */
+/** URL d'une instance : `?component=&props=[&slot=]` (contrat partie A de #1441). */
 export function buildSceneUrl (input: Pick<IPlaygroundRenderInput, 'component' | 'props' | 'slot'>): string {
-    const base = playgroundBaseUrl()
-    if (input.slot !== undefined) {
-        const scene = {
-            version: PLAYGROUND_SCENE_VERSION,
-            roots: [{ id: 'mcp-1', componentName: input.component, props: input.props ?? {}, slotContent: input.slot }],
-            selectedInstanceId: 'mcp-1'
-        }
-        return `${base}/?scene=${encodeParam(scene)}`
-    }
-    return `${base}/?component=${encodeURIComponent(input.component)}&props=${encodeParam(input.props ?? {})}`
+    const url = new URL(`${playgroundBaseUrl()}/`)
+    url.searchParams.set(COMPONENT_PARAM, input.component)
+    url.searchParams.set(PROPS_PARAM, encodeSceneParam(input.props ?? {}))
+    if (input.slot !== undefined) url.searchParams.set(SLOT_PARAM, encodeTextParam(input.slot))
+    return url.toString()
 }
 
 export class PlaygroundBrowser {
@@ -56,6 +44,13 @@ export class PlaygroundBrowser {
         return this.browser
     }
 
+    /** Contexte avec le shim `__name` : tsx (esbuild keepNames) l'injecte dans les fonctions passees a `evaluate`. */
+    private async newContext (options?: Parameters<Browser['newContext']>[0]) {
+        const context = await (await this.getBrowser()).newContext(options)
+        await context.addInitScript('window.__name = window.__name || ((f) => f)')
+        return context
+    }
+
     async close (): Promise<void> {
         const b = this.browser
         this.browser = null
@@ -63,8 +58,7 @@ export class PlaygroundBrowser {
     }
 
     async render (input: IPlaygroundRenderInput): Promise<IPlaygroundSnapshot> {
-        const browser = await this.getBrowser()
-        const context = await browser.newContext({ viewport: input.viewport ?? DEFAULT_VIEWPORT })
+        const context = await this.newContext({ viewport: input.viewport ?? DEFAULT_VIEWPORT })
         try {
             if (input.theme || input.mode) {
                 await context.addInitScript(({ theme, mode }) => {
@@ -92,17 +86,17 @@ export class PlaygroundBrowser {
     private async snapshot (page: Page, logs: string[], props: readonly string[]): Promise<IPlaygroundSnapshot> {
         try {
             await page.waitForFunction(
-                () => document.documentElement.dataset.playgroundReady === 'true' || !!document.documentElement.dataset.playgroundError,
-                undefined,
+                ([ready, err]) => document.documentElement.dataset[ready!] === 'true' || !!document.documentElement.dataset[err!],
+                [READY_DATASET_KEY, ERROR_DATASET_KEY],
                 { timeout: PLAYGROUND_READY_TIMEOUT_MS }
             )
         } catch {
             return { png: await page.screenshot(), styles: {}, classes: [], outerHTML: '', console: logs, error: `timeout : data-playground-ready absent apres ${PLAYGROUND_READY_TIMEOUT_MS} ms (l'hote du playground tourne-t-il sur ${playgroundBaseUrl()} ?)` }
         }
-        const error = await page.evaluate(() => document.documentElement.dataset.playgroundError ?? null)
-        const instance = page.locator('[data-playground-instance]').first()
+        const error = await page.evaluate(k => document.documentElement.dataset[k] ?? null, ERROR_DATASET_KEY)
+        const instance = page.locator(`[${PLAYGROUND_INSTANCE_ATTRIBUTE}]`).first()
         if (error || (await instance.count()) === 0) {
-            return { png: await page.screenshot(), styles: {}, classes: [], outerHTML: '', console: logs, error: error ?? 'aucune instance [data-playground-instance] rendue' }
+            return { png: await page.screenshot(), styles: {}, classes: [], outerHTML: '', console: logs, error: error ? `data-playground-error=${error}` : 'instance root not found (composant a racine fragment/teleport ? aucun [data-playground-instance])' }
         }
         const info = await instance.evaluate((el, names) => {
             const cs = getComputedStyle(el)
@@ -129,10 +123,10 @@ export class PlaygroundBrowser {
 
     /** Pourcentage de pixels differents (taille differente = dimensions max comparees). */
     async pixelDiff (pngA: Buffer, pngB: Buffer): Promise<number> {
-        const browser = await this.getBrowser()
-        const context = await browser.newContext()
+        const context = await this.newContext()
         try {
             const page = await context.newPage()
+            await page.goto('about:blank')
             return await page.evaluate(async ([x, y]) => {
                 const load = async (b64: string) => {
                     const blob = await (await fetch(`data:image/png;base64,${b64}`)).blob()
