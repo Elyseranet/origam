@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.42.0] - 2026-11-22
+
 ### Fixed — `OrigamBtn` en chargement circulaire : le libellé reste visible (#1086)
 
 - Cause : `--loader-circular` posait `opacity: 0` sur `__content` / `__prepend` / `__append` et centrait le spinner en absolu par-dessus.

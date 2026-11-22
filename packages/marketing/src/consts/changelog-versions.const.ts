@@ -18,18 +18,18 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
+        version: '2.42.0',
+        date: '2026-11-22',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2420.summary',
         summaryFallback: '10 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamBtn en chargement circulaire : le libellé reste visible (#1086)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamProgressLinear : plus de <div> dans un <button> en chargement line (#1087)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamPasswordField : aria-invalid / aria-describedby suivent la validation du consommateur (#1110)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamPasswordField : la règle de longueur n\'est plus imposée par défaut (#1334)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamPasswordField : plus aucune chaîne anglaise en dur dans les exigences (#1434)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'OrigamSelect : les items subheader / divider ne sont plus des options (#1426)' }
+            { type: 'fixed', textKey: 'changelog.versions.v2420.h1', textFallback: 'OrigamBtn en chargement circulaire : le libellé reste visible (#1086)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2420.h2', textFallback: 'OrigamProgressLinear : plus de <div> dans un <button> en chargement line (#1087)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2420.h3', textFallback: 'OrigamPasswordField : aria-invalid / aria-describedby suivent la validation du consommateur (#1110)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2420.h4', textFallback: 'OrigamPasswordField : la règle de longueur n\'est plus imposée par défaut (#1334)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2420.h5', textFallback: 'OrigamPasswordField : plus aucune chaîne anglaise en dur dans les exigences (#1434)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2420.h6', textFallback: 'OrigamSelect : les items subheader / divider ne sont plus des options (#1426)' }
         ]
     },
     {
