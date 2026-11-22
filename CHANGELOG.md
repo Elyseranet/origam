@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamChip` : la prop `density` agit enfin sur la hauteur (#1105)
+
+- Cause : le SCSS écrivait `--origam-chip---density` (`-8px` en compact) mais aucun `height` ne la lisait ; `compact` et `default` rendaient la même hauteur (24px mesuré sur `size=small`, Chromium).
+- Correctif : les cinq `height` de palier sont `calc(height-palier + var(--origam-chip---density, 0px))`, comme `OrigamBtn`. Ajout de `&--density-comfortable` (`+8px`, miroir de Btn ; la classe était émise sans règle). Entrée retirée de la baseline `token-var-channels-dormant`.
+- Rupture de rendu assumée : `density="compact"` / `"comfortable"` change maintenant la hauteur.
+
 ### Fixed — `OrigamListItem` : anneau `:focus-visible` sur les lignes cliquables (#1358)
 
 - Cause : le focus clavier d'une ligne `link` ne produisait que le voile d'overlay (opacité 0,08, ~1,1:1), sans anneau (WCAG 1.4.11 / 2.4.7).
