@@ -22,13 +22,14 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '5 fixes. See the full changelog for detail.',
+        summaryFallback: '8 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamSelect : les items subheader / divider ne sont plus des options (#1426)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamRadio : le slot #label reçoit enfin ses props (#1359)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamChip : la prop density agit enfin sur la hauteur (#1105)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamListItem : anneau :focus-visible sur les lignes cliquables (#1358)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'SliderField vertical : fin de appearance: slider-vertical (#1129)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamPasswordField : aria-invalid / aria-describedby suivent la validation du consommateur (#1110)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamPasswordField : la règle de longueur n\'est plus imposée par défaut (#1334)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamPasswordField : plus aucune chaîne anglaise en dur dans les exigences (#1434)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamSelect : les items subheader / divider ne sont plus des options (#1426)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamRadio : le slot #label reçoit enfin ses props (#1359)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'OrigamChip : la prop density agit enfin sur la hauteur (#1105)' }
         ]
     },
     {

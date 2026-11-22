@@ -45,6 +45,19 @@ const pwd = ref('')
 </template>
 ```
 
+## Length rule
+
+The length rule is opt-in: it only applies with `min-length`, `requirements` or `strength-bar` (default 8 there). An empty value is left to `rules` / `required`. The default message is translated by the DS locales; `min-length-message` replaces it for one field.
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `minLength` | `number` | Minimum length, enforced only when set (or with `requirements` / `strengthBar`) |
+| `minLengthMessage` | `string` | Replaces the default translated message of the length rule |
+
+```vue
+<OrigamPasswordField :min-length="15" min-length-message="15 caractères minimum" />
+```
+
 ## Persistent requirements
 
 ```vue

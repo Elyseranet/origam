@@ -84,22 +84,27 @@ export const PASSWORD_STRENGTH_LEVEL_BY_SCORE: Record<TPasswordStrengthScore, TP
 export const DEFAULT_PASSWORD_REQUIREMENTS: IPasswordRequirement[] = [
     {
         id: 'min-length',
-        label: `At least ${PASSWORD_MIN_LENGTH} characters`,
+        label: '',
+        labelKey: 'origam.password_field.requirement_min_length',
+        labelParams: {count: PASSWORD_MIN_LENGTH},
         test: (v: string) => (v ?? '').length >= PASSWORD_MIN_LENGTH
     },
     {
         id: 'uppercase',
-        label: 'At least 1 uppercase letter',
+        label: '',
+        labelKey: 'origam.password_field.requirement_uppercase',
         test: (v: string) => PASSWORD_PATTERN_UPPERCASE.test(v ?? '')
     },
     {
         id: 'number',
-        label: 'At least 1 number',
+        label: '',
+        labelKey: 'origam.password_field.requirement_number',
         test: (v: string) => PASSWORD_PATTERN_DIGIT.test(v ?? '')
     },
     {
         id: 'special',
-        label: 'At least 1 special character',
+        label: '',
+        labelKey: 'origam.password_field.requirement_special',
         test: (v: string) => PASSWORD_PATTERN_SPECIAL.test(v ?? '')
     }
 ]
@@ -127,37 +132,43 @@ export const DEFAULT_PASSWORD_REQUIREMENTS: IPasswordRequirement[] = [
  * length per-instance.
  ********************************************************/
 
+/*********************************************************
+ * Length shown / enforced when `requirements` is on and no `minLength` is given.
+ ********************************************************/
+export const DEFAULT_MIN_LENGTH = 8
+
 export const REQUIREMENT_MIN_LENGTH = (length: number) => ({
     key: 'minLength',
-    message: `${length} characters`,
+    messageKey: 'origam.password_field.message_min_length',
+    count: length,
     icon: `+${length}`,
     reg: new RegExp(`(.{${length},})`)
 })
 
 export const REQUIREMENT_TINY = {
     key: 'tiny',
-    message: 'a tiny',
+    messageKey: 'origam.password_field.message_tiny',
     icon: 'a',
     reg: /(?=.*[a-z])/
 } as const
 
 export const REQUIREMENT_UPPERCASE = {
     key: 'uppercase',
-    message: 'a uppercase',
+    messageKey: 'origam.password_field.message_uppercase',
     icon: 'A',
     reg: /(?=.*[A-Z])/
 } as const
 
 export const REQUIREMENT_NUMBER = {
     key: 'number',
-    message: 'a number',
+    messageKey: 'origam.password_field.message_number',
     icon: '1',
     reg: /(?=.*\d)/
 } as const
 
 export const REQUIREMENT_SPECIAL = {
     key: 'special',
-    message: 'a special character (!@#$%)',
+    messageKey: 'origam.password_field.message_special',
     icon: '@',
     reg: /(?=.*[^a-zA-Z0-9\s])/
 } as const
