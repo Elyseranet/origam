@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed — complexité cognitive : `scatterExtent` et `compareBySortItem` (#1398)
+
+- Refactor pur (comportement identique, figé par des tests de caractérisation) : `scatterExtent` (Chart, 27 → sous 15) et `compareBySortItem` (DataTable, 21 → sous 15) sont découpées en fonctions nommées. Débloque le quality gate Sonar du workflow `Build`.
+
 ### Fixed — `OrigamTextareaField` : texte noir illisible en mode sombre (#1150)
 
 - Cause : le `<textarea>` gardait la couleur UA (`fieldtext`, noire) faute de `color: inherit`, que l'`<input>` de `OrigamTextField` reçoit via `.origam-field__input`. Mesuré en sombre : `rgb(0,0,0)` sur `rgb(10,10,10)`, contraste 1,06.
