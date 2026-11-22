@@ -20,6 +20,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [2.43.0] - 2026-11-22
 
+### Changed — complexité de `v-contrast` (#1398)
+
+- `resolvePaintedBackground` passait à 16 de complexité cognitive (seuil Sonar 15) après #1427 et #1131. Refactor pur : l'abstention (`mustAbstain`) et la composition des couches (`compositeLayers`) sont extraites, comportement identique. Complexité 16 → 10.
+
 ### Fixed — `OrigamNumberField` : plus de retrait vide avec `hideControls`, plus d'écriture du modèle au montage, bornage désactivable (#1327)
 
 - Cause : le gabarit `#prependInner` était toujours passé à `OrigamField`, même vide ; `useAdjacentInner` le comptait comme présent et `.origam-field__prepend-inner` réservait ~27 px à gauche du texte.
