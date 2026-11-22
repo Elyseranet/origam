@@ -4,6 +4,47 @@ import type { IInternalItem } from '../../interfaces/List/list-children.interfac
 import type { TDataTableSortEntry } from '../../types/DataTable/data-table.type'
 import { isEmpty } from '../Commons/commons.util'
 
+function compareWithCustom<T extends IInternalItem> (
+    sortKey: string,
+    raw: [ unknown, unknown ],
+    values: [ unknown, unknown ],
+    options?: IDataTableSortItemsOptions<T>
+): number | null | undefined {
+    let hasCustomResult = false
+
+    for (const [ compare, valueA, valueB ] of [
+        [ options?.sortRawFunctions?.[sortKey], raw[0], raw[1] ],
+        [ options?.sortFunctions?.[sortKey], values[0], values[1] ]
+    ] as const) {
+        if (!compare) continue
+
+        const customResult = compare(valueA, valueB)
+
+        if (customResult == null) return null
+        hasCustomResult = true
+        if (customResult !== 0) return customResult
+    }
+
+    return hasCustomResult ? null : undefined
+}
+
+function compareValues (valueA: any, valueB: any): number | undefined {
+    // Dates should be compared numerically
+    if (valueA instanceof Date && valueB instanceof Date) {
+        return valueA.getTime() - valueB.getTime()
+    }
+
+    const sortA = valueA != null ? valueA.toString().toLocaleLowerCase() : valueA
+    const sortB = valueB != null ? valueB.toString().toLocaleLowerCase() : valueB
+
+    if (sortA === sortB) return undefined
+    if (isEmpty(sortA) && isEmpty(sortB)) return 0
+    if (isEmpty(sortA)) return -1
+    if (isEmpty(sortB)) return 1
+    if (!isNaN(sortA) && !isNaN(sortB)) return Number(sortA) - Number(sortB)
+    return sortA.localeCompare(sortB) // #1407 : suivre la langue active
+}
+
 function compareBySortItem<T extends IInternalItem> (
     a: TDataTableSortEntry<T>,
     b: TDataTableSortEntry<T>,
@@ -15,43 +56,18 @@ function compareBySortItem<T extends IInternalItem> (
 
     if (sortOrder === false) return undefined
 
-    const [first, second] = sortOrder === SORT_DIRECTION.DESC ? [b, a] : [a, b]
-    let sortA = first[1][sortKey]
-    let sortB = second[1][sortKey]
-    const sortARaw = first[0].raw
-    const sortBRaw = second[0].raw
+    const [ first, second ] = sortOrder === SORT_DIRECTION.DESC ? [ b, a ] : [ a, b ]
+    const custom = compareWithCustom(
+        sortKey,
+        [ first[0].raw, second[0].raw ],
+        [ first[1][sortKey], second[1][sortKey] ],
+        options
+    )
 
-    let hasCustomResult = false
+    if (custom === null) return undefined
+    if (custom !== undefined) return custom
 
-    for (const [compare, valueA, valueB] of [
-        [options?.sortRawFunctions?.[sortKey], sortARaw, sortBRaw],
-        [options?.sortFunctions?.[sortKey], sortA, sortB]
-    ] as const) {
-        if (!compare) continue
-
-        const customResult = compare(valueA, valueB)
-
-        if (customResult == null) return undefined
-        hasCustomResult = true
-        if (customResult !== 0) return customResult
-    }
-
-    if (hasCustomResult) return undefined
-
-    // Dates should be compared numerically
-    if (sortA instanceof Date && sortB instanceof Date) {
-        return sortA.getTime() - sortB.getTime()
-    }
-
-    sortA = sortA != null ? sortA.toString().toLocaleLowerCase() : sortA
-    sortB = sortB != null ? sortB.toString().toLocaleLowerCase() : sortB
-
-    if (sortA === sortB) return undefined
-    if (isEmpty(sortA) && isEmpty(sortB)) return 0
-    if (isEmpty(sortA)) return -1
-    if (isEmpty(sortB)) return 1
-    if (!isNaN(sortA) && !isNaN(sortB)) return Number(sortA) - Number(sortB)
-    return sortA.localeCompare(sortB) // #1407 : suivre la langue active
+    return compareValues(first[1][sortKey], second[1][sortKey])
 }
 
 /**

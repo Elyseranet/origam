@@ -23,6 +23,37 @@ This project follows [Semantic Versioning](https://semver.org).
 - Cause : `OrigamRadio` et `OrigamRadioBtn` ré-exposaient `<slot name="label"/>` sans `v-bind` ; le scope `{ text, color, props: { id, onClick, … } }` d'`OrigamSelectionControl` était perdu, d'où un `TypeError` à l'accès de `props.id` et une radio sans nom accessible.
 - Correctif : le scope est transmis à chaque niveau ; types `IRadioSlots` / `IRadioBtnSlots` et doc mis à jour (utiliser `props.id` comme `for` du `<label>` personnalisé).
 
+### Fixed — `OrigamChip` : la prop `density` agit enfin sur la hauteur (#1105)
+
+- Cause : le SCSS écrivait `--origam-chip---density` (`-8px` en compact) mais aucun `height` ne la lisait ; `compact` et `default` rendaient la même hauteur (24px mesuré sur `size=small`, Chromium).
+- Correctif : les cinq `height` de palier sont `calc(height-palier + var(--origam-chip---density, 0px))`, comme `OrigamBtn`. Ajout de `&--density-comfortable` (`+8px`, miroir de Btn ; la classe était émise sans règle). Entrée retirée de la baseline `token-var-channels-dormant`.
+- Rupture de rendu assumée : `density="compact"` / `"comfortable"` change maintenant la hauteur.
+
+### Fixed — `OrigamListItem` : anneau `:focus-visible` sur les lignes cliquables (#1358)
+
+- Cause : le focus clavier d'une ligne `link` ne produisait que le voile d'overlay (opacité 0,08, ~1,1:1), sans anneau (WCAG 1.4.11 / 2.4.7).
+- Correctif : `outline` 2px solid `--origam-color__border---focus` (même jeton sémantique que Btn et FileField, donc réglable par thème), décalé vers l'intérieur pour ne pas être rogné par le conteneur. Aucun nouveau jeton.
+
+### Fixed — SliderField vertical : fin de `appearance: slider-vertical` (#1129)
+
+- Cause : `.origam-slider-field--vertical .origam-slider-field__input` déclarait `appearance: slider-vertical`, non standard (Chromium loggait un warning à chaque chargement de page, la feuille étant dans l'entrée CSS). Mesuré en plus : avec `writing-mode: vertical-lr` seul, un clic en haut du rail donnait la valeur MIN alors que le thumb visuel est ancré en bas pour le min (sens inversé).
+- Correctif : `writing-mode: vertical-lr` + `direction: rtl` (recommandation de Chromium). Bas = min, haut = max, flèches haut/bas inchangées, plus de warning.
+
+## [2.41.1] - 2026-11-22
+
+### Changed — complexité cognitive : `scatterExtent` et `compareBySortItem` (#1398)
+
+- Refactor pur (comportement identique, figé par des tests de caractérisation) : `scatterExtent` (Chart, 27 → sous 15) et `compareBySortItem` (DataTable, 21 → sous 15) sont découpées en fonctions nommées. Débloque le quality gate Sonar du workflow `Build`.
+
+### Fixed — `OrigamTextareaField` : texte noir illisible en mode sombre (#1150)
+
+- Cause : le `<textarea>` gardait la couleur UA (`fieldtext`, noire) faute de `color: inherit`, que l'`<input>` de `OrigamTextField` reçoit via `.origam-field__input`. Mesuré en sombre : `rgb(0,0,0)` sur `rgb(10,10,10)`, contraste 1,06.
+- Correctif : `color: inherit` sur `:deep(textarea)` (`OrigamTextareaField.vue`). Mesuré après : `rgb(250,250,250)` sur `rgb(10,10,10)` en sombre, `rgb(10,10,10)` sur blanc en clair. Spec `textarea-field-dark-color.spec.ts`.
+
+### Fixed — `v-contrast` ne force plus de couleur sur un fond en dégradé (#1427)
+
+- `resolvePaintedBackground` ignorait `background-image` : sur un bouton en dégradé, la directive mesurait le fond de page et imposait le mauvais noir/blanc en `!important` (texte noir sur le dégradé geek clair). Elle s’abstient désormais dès qu’une image de fond est rencontrée avant le fond opaque.
+
 ### Fixed — v-ripple : `center` / `circle` enfin appliqués (#1378)
 
 - Cause : Btn/SelectionControl passaient un tuple façon Vuetify à `v-ripple` ; en template Vue les modifiers de directive sont statiques et le tableau n'est que la valeur, donc `binding.modifiers.center/circle` n'étaient jamais posés.

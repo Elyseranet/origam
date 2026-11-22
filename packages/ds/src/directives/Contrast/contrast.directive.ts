@@ -148,14 +148,18 @@ function over (top: TRgba, bottom: TRgba): TRgba {
  * back down. This makes a translucent state tint (e.g. a hover / selected
  * overlay at 8 % alpha) measure against the real surface beneath it instead
  * of being mistaken for an opaque colour — the bug that forced white text
- * onto a light fill. Returns a normalised opaque rgb string.
+ * onto a light fill. Returns a normalised opaque rgb string, or null when a
+ * background IMAGE (gradient, picture) is met first: it paints above the
+ * colour and cannot be measured, so the directive abstains.
  */
 function resolvePaintedBackground (el: HTMLElement): string | null {
     const layers: TRgba[] = []
     let node: HTMLElement | null = el
 
     while (node) {
-        const parts = rgbaParts(toRgb(getComputedStyle(node).backgroundColor))
+        const style = getComputedStyle(node)
+        if (style.backgroundImage && style.backgroundImage !== 'none') return null
+        const parts = rgbaParts(toRgb(style.backgroundColor))
         if (parts && parts.a > 0) {
             layers.push(parts)
             if (parts.a >= 1) break
