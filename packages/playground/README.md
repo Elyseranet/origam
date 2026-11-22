@@ -316,3 +316,58 @@ fails there.
 ```sh
 E2E_PLAYGROUND_PORT=<free port> pnpm -F @origam/tests test:e2e:playground   # includes playground-select.spec.ts
 ```
+
+## Pilotage externe (#1441)
+
+The standalone host (`pnpm -F @origam/playground dev`) can be driven without a
+mouse, by a headless browser: the scene comes from the URL, readiness and
+errors come back on `<html>`.
+
+### URL parameters
+
+| Parameter | Value | Effect |
+|---|---|---|
+| `scene` | `base64url(JSON IPlaygroundScene)` | loads that scene at start-up (`version` must be `SCENE_VERSION`) |
+| `component` | an `origam-xxx` tag (an export name such as `OrigamBtn` is accepted too) | shortcut: a scene holding ONE instance of that component |
+| `props` | `base64url(JSON object)` | with `component`: the instance's props (default `{}`) |
+| `slot` | `base64url(text)` | with `component`: the text of the default slot |
+
+`scene` wins when both `scene` and `component` are present. base64url is RFC
+4648 section 5, no padding, over the UTF-8 bytes. Build it with the package's own
+helpers instead of re-implementing it:
+
+```ts
+import { encodeSceneParam, decodeSceneParam, encodeTextParam, decodeTextParam } from '@origam/playground/utils'
+
+const url = `${host}/?component=origam-btn&props=${encodeSceneParam({ variant: 'outlined' })}&slot=${encodeTextParam('Save')}`
+```
+
+`decodeSceneParam` / `decodeTextParam` throw on a corrupt parameter.
+`resolveExternalScene(search, knownName, nameOfTag)` is the pure resolver the host
+uses (result: `scene`, `error` or `none`).
+
+### Attributes the host sets
+
+| Attribute | Where | Meaning |
+|---|---|---|
+| `data-playground-ready="true"` | `<html>` | the scene is rendered AND stable: fonts loaded, then 150 ms with no DOM child-list mutation (lazy components each land as a mutation). An empty scene is ready once quiet. Never set when an error is. |
+| `data-playground-error="<code>"` | `<html>` | the scene cannot be shown; a visible `role="alert"` message (`data-cy="host-scene-error"`) is rendered too, never a blank page |
+| `data-playground-instance="<id>"` | root element of each rendered instance | the `IPlaygroundInstance.id`. A fall-through attribute: a component whose template is a fragment, or whose root is a teleport, cannot carry it (Vue drops it with a warning) and has no marked element. Nested instances (slot children) carry theirs too. |
+
+### Error codes
+
+| Code | When |
+|---|---|
+| `decode_failed` | a parameter is not valid base64url, not valid UTF-8, or not valid JSON |
+| `invalid_scene` | the decoded value is not a scene (`roots` / `id` / `componentName` / `props` shape), or `props` is not a JSON object |
+| `version_mismatch` | `scene.version` is not `SCENE_VERSION` |
+| `unknown_component` | a `componentName` / `component` tag the catalogue does not carry |
+| `render_failed` | the scene was accepted but an instance threw while rendering (`data-cy="playground-preview-error"`) |
+| `render_timeout` | nothing rendered within 15 s |
+
+If something rendered but the DOM never goes quiet within 15 s (a perpetual
+animation), the scene is reported ready rather than failed.
+
+```sh
+E2E_PLAYGROUND_PORT=<free port> pnpm -F @origam/tests test:e2e:playground   # includes playground-external-scene.spec.ts
+```

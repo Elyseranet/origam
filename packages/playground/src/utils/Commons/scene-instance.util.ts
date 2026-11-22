@@ -72,6 +72,22 @@ export function collectSubtreeIds (instance: IPlaygroundInstance): string[] {
     return [instance.id, ...Object.values(instance.children ?? {}).flat().flatMap(collectSubtreeIds)]
 }
 
+/** Every distinct `componentName` in the tree, children included. */
+export function collectComponentNames (instances: IPlaygroundInstance[]): string[] {
+    const names = new Set<string>()
+
+    const visit = (list: IPlaygroundInstance[]) => {
+        for (const instance of list) {
+            names.add(instance.componentName)
+            Object.values(instance.children ?? {}).forEach(visit)
+        }
+    }
+
+    visit(instances)
+
+    return [...names]
+}
+
 /** Number of instances in the tree, children included. */
 export function countInstances (instances: IPlaygroundInstance[]): number {
     return instances.reduce((sum, instance) => sum + collectSubtreeIds(instance).length, 0)

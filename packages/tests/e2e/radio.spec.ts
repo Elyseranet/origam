@@ -459,7 +459,12 @@ test.describe('OrigamRadio', () => {
             await page.goto(rUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
-            await expect(sandbox.locator('span[style]')).toContainText('Custom label slot')
+            const label = sandbox.locator('label[style]')
+            await expect(label).toContainText('Custom label slot')
+            // #1359 — the custom label is tied to the input through the slot's props.id
+            const inputId = await sandbox.locator('.origam-radio input[type="radio"]').first().getAttribute('id')
+            expect(inputId).toBeTruthy()
+            await expect(label).toHaveAttribute('for', inputId as string)
         })
     })
 

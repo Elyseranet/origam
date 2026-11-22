@@ -3,7 +3,7 @@ import type {
     ICommonsComponentEmits,
     ICommonsComponentProps
 } from '../Commons/commons.interface'
-import type { ISelectionControlProps } from '../SelectionControl/selection-control.interface'
+import type { ISelectionControlProps, ISelectionControlSlots } from '../SelectionControl/selection-control.interface'
 import type { TColor } from '../../types/Commons/color.type'
 import type { TIcon } from '../../types/Icon/icon.type'
 
@@ -33,5 +33,5 @@ export interface IRadioBtnEmits extends ICommonsComponentEmits, IClickLabelEmits
 export interface IRadioBtnSlots {
     default?: () => any
     input?: (data: { model: any, color?: TColor, bgColor?: TColor, icon?: TIcon, props: any }) => any
-    label?: () => any
+    label?: ISelectionControlSlots['label']
 }
