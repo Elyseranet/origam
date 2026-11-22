@@ -18,6 +18,18 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '2 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamSelect : un seul combobox, plus de role="menu" autour du listbox (#1331)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamSelect multiple : cases d\'option décoratives, fermeture de pastille nommée (#1425)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.43.0',
         date: '2026-11-22',
         type: 'minor',

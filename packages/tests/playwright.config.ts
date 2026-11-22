@@ -95,6 +95,7 @@ const GREEN_SPECS = [
     // wave 3
     'select.spec.ts',
     'select-subheader-divider.spec.ts',
+    'select-aria-a11y.spec.ts',
     'number-field.spec.ts',
     'number-field-hide-controls.spec.ts',
     'password-field.spec.ts',
