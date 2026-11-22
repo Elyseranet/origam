@@ -69,6 +69,25 @@ const selected = ref<string[]>([])
 </template>
 ```
 
+## Subheaders and dividers
+
+Like `OrigamList`, entries with `type: 'subheader'` / `type: 'divider'` (key configurable through `item-type`) are structure, not options: no `role="option"`, not selectable, skipped by the arrow keys, Home/End and type-ahead, and dropped while filtering.
+
+```vue
+<template>
+  <OrigamSelect
+    label="Networks"
+    :items="[
+      { type: 'subheader', title: 'Automatic' },
+      { value: 'linkedin', title: 'LinkedIn' },
+      { type: 'divider' },
+      { type: 'subheader', title: 'Manual' },
+      { value: 'instagram', title: 'Instagram' }
+    ]"
+  />
+</template>
+```
+
 ## No-data text
 
 ```vue

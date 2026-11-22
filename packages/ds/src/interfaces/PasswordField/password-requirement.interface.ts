@@ -21,6 +21,14 @@ export interface IPasswordRequirement {
     id: string
     /** Human-readable label rendered next to the check/cross icon. */
     label: string
+    /*********************************************************
+     * Locale key resolved with `t()` instead of `label` (used by the DS defaults).
+     ********************************************************/
+    labelKey?: string
+    /*********************************************************
+     * Params for `labelKey` (e.g. `{count}`).
+     ********************************************************/
+    labelParams?: Record<string, string | number>
     /**
      * Predicate evaluated against the current password value.
      * Return `true` when the rule is satisfied.

@@ -17,6 +17,7 @@
     "./interfaces": "./src/interfaces/index.ts",
     "./types": "./src/types/index.ts",
     "./utils": "./src/utils/index.ts",
+    "./scene-param": "./src/utils/Commons/scene-param.util.ts",
     "./catalog": "./src/utils/Commons/catalog.util.ts"
   },
   "scripts": {
