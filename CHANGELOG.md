@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — OrigamRadio : le slot `#label` reçoit enfin ses props (#1359)
+
+- Cause : `OrigamRadio` et `OrigamRadioBtn` ré-exposaient `<slot name="label"/>` sans `v-bind` ; le scope `{ text, color, props: { id, onClick, … } }` d'`OrigamSelectionControl` était perdu, d'où un `TypeError` à l'accès de `props.id` et une radio sans nom accessible.
+- Correctif : le scope est transmis à chaque niveau ; types `IRadioSlots` / `IRadioBtnSlots` et doc mis à jour (utiliser `props.id` comme `for` du `<label>` personnalisé).
+
 ### Fixed — `OrigamChip` : la prop `density` agit enfin sur la hauteur (#1105)
 
 - Cause : le SCSS écrivait `--origam-chip---density` (`-8px` en compact) mais aucun `height` ne la lisait ; `compact` et `default` rendaient la même hauteur (24px mesuré sur `size=small`, Chromium).
