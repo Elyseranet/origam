@@ -22,9 +22,10 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 fix. See the full changelog for detail.',
+        summaryFallback: '2 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'SliderField vertical : fin de appearance: slider-vertical (#1129)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamListItem : anneau :focus-visible sur les lignes cliquables (#1358)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'SliderField vertical : fin de appearance: slider-vertical (#1129)' }
         ]
     },
     {

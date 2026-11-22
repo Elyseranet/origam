@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamListItem` : anneau `:focus-visible` sur les lignes cliquables (#1358)
+
+- Cause : le focus clavier d'une ligne `link` ne produisait que le voile d'overlay (opacité 0,08, ~1,1:1), sans anneau (WCAG 1.4.11 / 2.4.7).
+- Correctif : `outline` 2px solid `--origam-color__border---focus` (même jeton sémantique que Btn et FileField, donc réglable par thème), décalé vers l'intérieur pour ne pas être rogné par le conteneur. Aucun nouveau jeton.
+
 ### Fixed — SliderField vertical : fin de `appearance: slider-vertical` (#1129)
 
 - Cause : `.origam-slider-field--vertical .origam-slider-field__input` déclarait `appearance: slider-vertical`, non standard (Chromium loggait un warning à chaque chargement de page, la feuille étant dans l'entrée CSS). Mesuré en plus : avec `writing-mode: vertical-lr` seul, un clic en haut du rail donnait la valeur MIN alors que le thumb visuel est ancré en bas pour le min (sens inversé).
