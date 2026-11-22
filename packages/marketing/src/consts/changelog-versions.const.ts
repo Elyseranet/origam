@@ -22,11 +22,12 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: '2026-11-22',
         type: 'minor',
         summaryKey: 'changelog.versions.v2430.summary',
-        summaryFallback: '3 fixes. See the full changelog for detail.',
+        summaryFallback: '1 change and 3 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.v2430.h1', textFallback: 'OrigamNumberField : plus de retrait vide avec hideControls, plus d\'écriture du modèle au montage, bornage désactivable (#1327)' },
-            { type: 'fixed', textKey: 'changelog.versions.v2430.h2', textFallback: 'OrigamTable : update:hover est déclaré (#1155)' },
-            { type: 'fixed', textKey: 'changelog.versions.v2430.h3', textFallback: 'v-contrast : un fond oklab() / oklch() n\'est plus sauté (#1131)' }
+            { type: 'changed', textKey: 'changelog.versions.v2430.h1', textFallback: 'complexité de v-contrast (#1398)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2430.h2', textFallback: 'OrigamNumberField : plus de retrait vide avec hideControls, plus d\'écriture du modèle au montage, bornage désactivable (#1327)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2430.h3', textFallback: 'OrigamTable : update:hover est déclaré (#1155)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2430.h4', textFallback: 'v-contrast : un fond oklab() / oklch() n\'est plus sauté (#1131)' }
         ]
     },
     {
