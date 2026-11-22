@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 /**
  * OrigamStepper — e2e spec (pattern canonique, réf. btn.spec.ts)
  *
- * ## Variants réels (grep '<Variant' OrigamStepper.story.vue — 5 Variants, 0-based)
+ * ## Variants réels (grep '<Variant' OrigamStepper.story.vue — 9 Variants, 0-based)
  *
  *   0  → Design       init: { color:'primary', size:'default', density:'default' }
  *                     modelValue=1 → item[0]=done, item[1]=active, item[2-3]=pending
@@ -11,7 +11,8 @@ import { expect, test } from '@playwright/test'
  *                              clickable:false, showConnectors:true }
  *   2  → Events - update:modelValue  clickable=true, modelValue=1
  *   3  → Slots - Default             slot = <span>Custom slot content</span>
- *   4  → Default (playground)        modelValue=1, clickable=false, color='primary'
+ *   4  → Slots - Item prepend (#1338) / 5 Item append / 6 Status colors (#1339) / 7 Wrapping (#1340)
+ *   8  → Default (playground)        modelValue=1, clickable=false, color='primary'
  *
  * ## Data defaultItems (4 items définis dans la story)
  *   [0] Account   / Email & password
@@ -333,21 +334,21 @@ test.describe('OrigamStepper', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT / Playground (index 4)                                      //
+    // DEFAULT / Playground (index 8)                                      //
     // init: { modelValue:1, orientation:'horizontal',                    //
     //         clickable:false, showConnectors:true, color:'primary' }    //
     // ------------------------------------------------------------------ //
 
     test.describe('Default (playground)', () => {
         test('renders stepper root', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
         })
 
         test('playground stepper carries origam--color-primary from color=primary', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -355,7 +356,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('modelValue=1: active item is item[1]', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -365,7 +366,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('active item[1] is rendered as <div> (clickable=false by default)', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -376,10 +377,10 @@ test.describe('OrigamStepper', () => {
         })
 
         test('active item[1] carries aria-current="step" (a11y)', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
-            // This variant (index 4 / Default playground) takes longer to mount
+            // This variant (index 8 / Default playground) takes longer to mount
             // when the browser has just navigated away from the slot variant (index 3).
             await expect(stepper).toBeVisible({ timeout: 20000 })
             const ariaCurrent = await stepper
@@ -389,7 +390,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('pending items do not have aria-current', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -400,7 +401,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('done item[0] does not have aria-current', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -411,7 +412,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('each step item has an aria-label (a11y)', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -424,7 +425,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('SCSS vertical: adding origam-stepper--vertical switches flex-direction to column', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -435,5 +436,77 @@ test.describe('OrigamStepper', () => {
             })
             expect(flexDir).toBe('column')
         })
+    })
+})
+
+test.describe('OrigamStepper — #1338 / #1339 / #1340', () => {
+    test.setTimeout(45000)
+
+    const open = async (page: any, idx: number) => {
+        await page.goto(variantUrl(idx), { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        await expect(sandbox.locator('.origam-stepper').first()).toBeVisible({ timeout: 20000 })
+        return sandbox
+    }
+
+    test('#1338 item-append is rendered in each item AND connectors are kept', async ({ page }) => {
+        const sandbox = await open(page, 5)
+        await expect(sandbox.locator('[data-cy="story-item-append"]')).toHaveCount(4)
+        await expect(sandbox.locator('.origam-stepper__connector')).toHaveCount(3)
+        await expect(sandbox.locator('[data-cy="stepper-item-1"] [data-cy="story-item-append"]')).toHaveText('active')
+    })
+
+    test('#1338 item-prepend is rendered before the indicator', async ({ page }) => {
+        const sandbox = await open(page, 4)
+        const first = sandbox.locator('[data-cy="stepper-item-0"]')
+        await expect(first.locator('[data-cy="story-item-prepend"]')).toHaveText('#0')
+        const before = await first.evaluate((el: HTMLElement) =>
+            el.firstElementChild?.getAttribute('data-cy'))
+        expect(before).toBe('story-item-prepend')
+    })
+
+    test('#1338 without slot the item has no extra child', async ({ page }) => {
+        const sandbox = await open(page, 8)
+        const n = await sandbox.locator('[data-cy="stepper-item-0"]').evaluate((el: HTMLElement) => el.children.length)
+        expect(n).toBe(2) // indicator + label
+    })
+
+    test('#1339 done and active get their own colour', async ({ page }) => {
+        const sandbox = await open(page, 6)
+        const color = (i: number) => sandbox
+            .locator(`[data-cy="stepper-item-${i}"] .origam-stepper-item__indicator`)
+            .evaluate((el: HTMLElement) => getComputedStyle(el).color)
+        expect(await color(0)).toBe('rgb(0, 128, 0)')
+        expect(await color(1)).toBe('rgb(0, 0, 255)')
+    })
+
+    test('#1339 without override done and active keep the same colour', async ({ page }) => {
+        const sandbox = await open(page, 8)
+        const color = (i: number) => sandbox
+            .locator(`[data-cy="stepper-item-${i}"] .origam-stepper-item__indicator`)
+            .evaluate((el: HTMLElement) => getComputedStyle(el).color)
+        expect(await color(0)).toBe(await color(1))
+    })
+
+    test('#1340 vertical: long subtitle wraps, no horizontal scroll', async ({ page }) => {
+        const sandbox = await open(page, 7)
+        const m = await sandbox.locator('.origam-stepper').first().evaluate((nav: HTMLElement) => {
+            const sub = nav.querySelector('.origam-stepper-item__subtitle') as HTMLElement
+            return {
+                ws: getComputedStyle(sub).whiteSpace,
+                overflowX: nav.scrollWidth - nav.clientWidth,
+                subOverflow: sub.scrollWidth - sub.clientWidth
+            }
+        })
+        expect(m.ws).toBe('normal')
+        expect(m.overflowX).toBeLessThanOrEqual(0)
+        expect(m.subOverflow).toBeLessThanOrEqual(0)
+    })
+
+    test('#1340 horizontal: title and subtitle stay nowrap', async ({ page }) => {
+        const sandbox = await open(page, 8)
+        const ws = await sandbox.locator('.origam-stepper-item__subtitle').first().evaluate((el: HTMLElement) => getComputedStyle(el).whiteSpace)
+        const wt = await sandbox.locator('.origam-stepper-item__title').first().evaluate((el: HTMLElement) => getComputedStyle(el).whiteSpace)
+        expect([ws, wt]).toEqual(['nowrap', 'nowrap'])
     })
 })

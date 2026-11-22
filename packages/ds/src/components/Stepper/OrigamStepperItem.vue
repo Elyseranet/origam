@@ -10,6 +10,12 @@
 			:disabled="isClickable && resolvedStatus === STEPPER_ITEM_STATUS.ACTIVE ? true : undefined"
 			@click="handleClick"
 	>
+		<slot
+				name="prepend"
+				:index="index"
+				:status="resolvedStatus"
+		/>
+
 		<span
 				v-contrast
 				:class="indicatorClasses"
@@ -39,6 +45,12 @@
 					class="origam-stepper-item__subtitle"
 			>{{ subtitle }}</span>
 		</span>
+
+		<slot
+				name="append"
+				:index="index"
+				:status="resolvedStatus"
+		/>
 	</component>
 </template>
 
@@ -211,24 +223,20 @@
 				line-height: 1;
 			}
 
-			&--active,
-			&--done {
-				color: var(
-					--origam-stepper---color,
-					var(--origam-color__action--primary---bg)
-				);
-				border-color: var(
-					--origam-stepper---color,
-					var(--origam-color__action--primary---bg)
-				);
-				background-color: var(
-					--origam-stepper---background-color,
-					color-mix(
-						in srgb,
-						var(--origam-stepper---color, var(--origam-color__action--primary---bg)) 16%,
-						transparent
-					)
-				);
+			@each $status in (active, done) {
+				&--#{$status} {
+					$status-color: var(
+						--origam-stepper---color-#{$status},
+						var(--origam-stepper---color, var(--origam-color__action--primary---bg))
+					);
+
+					color: $status-color;
+					border-color: $status-color;
+					background-color: var(
+						--origam-stepper---background-color,
+						color-mix(in srgb, #{$status-color} 16%, transparent)
+					);
+				}
 			}
 
 			&--error {
@@ -255,13 +263,19 @@
 				align-items: flex-start;
 				text-align: start;
 			}
+
+			// Vertical: the subtitle wraps by default (own token, so a root-level
+			// `subtitle---white-space` override still reaches horizontal steppers).
+			#{$this}__subtitle {
+				white-space: var(--origam-stepper-item--vertical__subtitle---white-space, normal);
+			}
 		}
 
 		&__title {
 			font-size: var(--origam-stepper---title-font-size, 0.875rem);
 			font-weight: var(--origam-stepper---title-font-weight, 500);
 			color: var(--origam-stepper---title-color, var(--origam-color__text---primary));
-			white-space: nowrap;
+			white-space: var(--origam-stepper-item__title---white-space, nowrap);
 			overflow: hidden;
 			text-overflow: ellipsis;
 			max-width: 100%;
@@ -270,7 +284,7 @@
 		&__subtitle {
 			font-size: var(--origam-stepper---subtitle-font-size, 0.75rem);
 			color: var(--origam-stepper---subtitle-color, var(--origam-color__text---secondary));
-			white-space: nowrap;
+			white-space: var(--origam-stepper-item__subtitle---white-space, nowrap);
 			overflow: hidden;
 			text-overflow: ellipsis;
 			max-width: 100%;

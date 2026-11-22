@@ -18,6 +18,18 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added — `OrigamStepperItem` : slots `prepend` / `append`, `OrigamStepper` : `item-prepend` / `item-append` (#1338)
+
+- `OrigamStepperItem` n'avait aucun slot ; le slot `default` d'`OrigamStepper` supprime les connecteurs. Les nouveaux slots reçoivent `{ index, status }` (+ `item` côté stepper) et gardent `show-connectors`. Sans slot, le rendu est inchangé.
+
+### Added — `OrigamStepper` : couleur par statut `--origam-stepper---color-done` / `-color-active` (#1339)
+
+- `done` et `active` partageaient `--origam-stepper---color`. Deux jetons, repli sur `---color` : rendu inchangé sans réglage. Non traité : la prop `color` du stepper n'est toujours pas lue par les items (arbitrage ouvert).
+
+### Fixed — `OrigamStepperItem` : retour à la ligne réglable, sous-titre vertical à la ligne par défaut (#1340)
+
+- Jetons `--origam-stepper-item__title---white-space`, `--origam-stepper-item__subtitle---white-space` (`nowrap`) et `--origam-stepper-item--vertical__subtitle---white-space` (`normal`). Mesuré à 316 px : le sous-titre vertical `nowrap` coupé et la nav défilait ; il passe à la ligne, sans défilement. Horizontal inchangé.
+
 ## [2.43.0] - 2026-11-22
 
 ### Fixed — `OrigamNumberField` : plus de retrait vide avec `hideControls`, plus d'écriture du modèle au montage, bornage désactivable (#1327)
