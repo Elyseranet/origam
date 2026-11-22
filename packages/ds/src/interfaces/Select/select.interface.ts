@@ -43,6 +43,7 @@ export interface ISelectProps extends ICommonsComponentProps, IColorProps, IBgCo
     hideNoData?: boolean
     hideSelected?: boolean
     listProps?: IListProps
+    itemType?: string
     menu?: boolean
     menuIcon?: TIcon
     menuProps?: IMenuProps

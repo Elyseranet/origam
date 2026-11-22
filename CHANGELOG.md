@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamSelect` : les items `subheader` / `divider` ne sont plus des options (#1426)
+
+- Cause : `itemType` figurait dans les `withDefaults` mais pas dans `ISelectProps` — jamais une vraie prop, donc `type` n'était jamais lu par `useItems`, et le gabarit rendait chaque entrée en `origam-list-item` `role="option"`.
+- Correctif : `itemType` déclaré dans `ISelectProps` ; le gabarit rend `origam-list-subheader` / `origam-divider` (comme `OrigamListChildren`) ; flèches, Home/End et type-ahead sautent ces lignes, le filtre les écarte.
+
 ### Fixed — OrigamRadio : le slot `#label` reçoit enfin ses props (#1359)
 
 - Cause : `OrigamRadio` et `OrigamRadioBtn` ré-exposaient `<slot name="label"/>` sans `v-bind` ; le scope `{ text, color, props: { id, onClick, … } }` d'`OrigamSelectionControl` était perdu, d'où un `TypeError` à l'accès de `props.id` et une radio sans nom accessible.
