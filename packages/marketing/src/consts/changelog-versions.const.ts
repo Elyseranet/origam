@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamDatePickerField : le menu ouvert est un dialog relié au combobox, plus un role="menu" sans menuitem (#1382)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.43.0',
         date: '2026-11-22',
         type: 'minor',
