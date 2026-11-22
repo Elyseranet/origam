@@ -60,7 +60,7 @@ async function switchThemeLive (page: import('@playwright/test').Page, key: stri
 test.describe('Live theme switch — props follow the switch, not just cssVars (#275)', () => {
     test.beforeEach(async ({ page }) => {
         await page.context().addCookies([
-            { name: 'origam-theme', value: 'sobre', url: 'http://localhost:3000' },
+            { name: 'origam-theme', value: 'origam', url: 'http://localhost:3000' },
             { name: 'origam-mode', value: 'light', url: 'http://localhost:3000' }
         ])
         await page.goto('/')
@@ -119,7 +119,7 @@ test.describe('Live theme switch — props follow the switch, not just cssVars (
 
         await switchThemeLive(page, 'cartoon')
         await switchThemeLive(page, 'geek')
-        await switchThemeLive(page, 'sobre')
+        await switchThemeLive(page, 'origam')
 
         const restored = await page.evaluate((sel) => {
             const btn = document.querySelector(sel)
