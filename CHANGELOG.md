@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.43.0] - 2026-11-22
+
 ### Fixed — `OrigamNumberField` : plus de retrait vide avec `hideControls`, plus d'écriture du modèle au montage, bornage désactivable (#1327)
 
 - Cause : le gabarit `#prependInner` était toujours passé à `OrigamField`, même vide ; `useAdjacentInner` le comptait comme présent et `.origam-field__prepend-inner` réservait ~27 px à gauche du texte.
