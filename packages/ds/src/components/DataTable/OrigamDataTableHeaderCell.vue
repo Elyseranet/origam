@@ -271,6 +271,7 @@
 				border: 0;
 				padding: 0;
 				margin: 0;
+				width: 100%;
 				font: inherit;
 				color: inherit;
 				text-align: inherit;

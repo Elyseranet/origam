@@ -34,6 +34,31 @@ test.describe('OrigamDataTable — tri au clavier (#1341)', () => {
         })
     }
 
+    // Rendu inchange vs l'ancien <div> (mesure A/B #1341) : le bouton reprend la
+    // police du <th>, n'ajoute aucun padding/bordure et occupe toute la largeur utile.
+    test('le bouton garde le rendu de l\'ancien div (police, padding, largeur)', async ({ page }) => {
+        await page.goto(URL, { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const th = sandbox.locator(TH).first()
+        await expect(th).toBeVisible({ timeout: 8000 })
+        await page.waitForTimeout(500)
+        const m = await th.evaluate((el) => {
+            const b = el.querySelector('button.origam-data-table-header-cell__content')!
+            const cs = getComputedStyle(b), ts = getComputedStyle(el)
+            const inner = el.clientWidth - parseFloat(ts.paddingLeft) - parseFloat(ts.paddingRight)
+            return {
+                same: ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'color'].every(k => (cs as never)[k] === (ts as never)[k]),
+                pad: cs.padding, border: cs.borderTopWidth, bg: cs.backgroundColor,
+                dw: Math.abs(b.getBoundingClientRect().width - inner)
+            }
+        })
+        expect(m.same).toBe(true)
+        expect(m.pad).toBe('0px')
+        expect(m.border).toBe('0px')
+        expect(m.bg).toBe('rgba(0, 0, 0, 0)')
+        expect(m.dw).toBeLessThan(1)
+    })
+
     test('axe : aucune violation serious/critical sur le tableau', async ({ page }) => {
         await page.goto(URL, { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
