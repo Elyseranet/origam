@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.41.1] - 2026-11-22
+
 ### Changed — complexité cognitive : `scatterExtent` et `compareBySortItem` (#1398)
 
 - Refactor pur (comportement identique, figé par des tests de caractérisation) : `scatterExtent` (Chart, 27 → sous 15) et `compareBySortItem` (DataTable, 21 → sous 15) sont découpées en fonctions nommées. Débloque le quality gate Sonar du workflow `Build`.

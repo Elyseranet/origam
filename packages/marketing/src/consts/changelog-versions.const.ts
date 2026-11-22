@@ -18,18 +18,18 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
+        version: '2.41.1',
+        date: '2026-11-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2411.summary',
         summaryFallback: '1 addition, 1 change and 7 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'changed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'complexité cognitive : scatterExtent et compareBySortItem (#1398)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamTextareaField : texte noir illisible en mode sombre (#1150)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'v-contrast ne force plus de couleur sur un fond en dégradé (#1427)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'v-ripple : center / circle enfin appliqués (#1378)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamFileField : anneau de focus sur la dropzone et attributs natifs sur l\'<input> seul (#1383)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'OrigamCounter : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)' }
+            { type: 'changed', textKey: 'changelog.versions.v2411.h1', textFallback: 'complexité cognitive : scatterExtent et compareBySortItem (#1398)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2411.h2', textFallback: 'OrigamTextareaField : texte noir illisible en mode sombre (#1150)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2411.h3', textFallback: 'v-contrast ne force plus de couleur sur un fond en dégradé (#1427)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2411.h4', textFallback: 'v-ripple : center / circle enfin appliqués (#1378)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2411.h5', textFallback: 'OrigamFileField : anneau de focus sur la dropzone et attributs natifs sur l\'<input> seul (#1383)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2411.h6', textFallback: 'OrigamCounter : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)' }
         ]
     },
     {
