@@ -26,15 +26,6 @@ export const ENV_VAR_STYLE_PROPS = 'ORIGAM_MCP_STYLE_PROPS'
 /** Prefixe du nom de l'entree trousseau / de la variable d'env de repli. */
 export const PASSWORD_ENTRY_PREFIX = 'ORIGAM_ADMIN_PASSWORD_'
 
-/** Miroir de `DOC_KINDS` (packages/marketing/src/consts/db.const.ts). */
-export const DOC_KINDS = ['component', 'composable', 'const', 'directive', 'enum', 'interface', 'type', 'util'] as const
-
-/** Miroir de `REL_TYPES` (idem). */
-export const REL_TYPES = ['used_by', 'related', 'family', 'extends'] as const
-
-/** Miroir de `ALLOWED_COLLECTIONS` (packages/marketing/src/consts/admin-mappers.const.ts). */
-export const ITEM_COLLECTIONS = ['prop', 'value', 'param', 'return', 'emit', 'slot', 'directive_arg', 'directive_modifier'] as const
-
 export const DEFAULT_PLAYGROUND_URL = 'http://localhost:5183'
 
 /** Delai d'attente de `data-playground-ready` / `data-playground-error`. */

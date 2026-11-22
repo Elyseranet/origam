@@ -1,6 +1,9 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
-import { DEFAULT_ENV, DOC_KINDS, ENV_NAMES, ITEM_COLLECTIONS, REL_TYPES } from '../consts/mcp.const.ts'
+import { DEFAULT_ENV, ENV_NAMES } from '../consts/mcp.const.ts'
+// Source de verite du marketing, importee par chemin relatif (comme packages/marketing/scripts/*.mjs).
+import { ALLOWED_COLLECTIONS } from '../../../marketing/src/consts/admin-mappers.const.ts'
+import { DOC_KINDS, REL_TYPES } from '../../../marketing/src/consts/db.const.ts'
 import type { IRequestOptions } from '../interfaces/mcp.interface.ts'
 import type { TEnvName, THttpMethod } from '../types/mcp.type.ts'
 import { McpHttpError, type OrigamApiClient } from '../utils/http-client.util.ts'
@@ -164,7 +167,7 @@ const API_TOOLS: IApiToolDef[] = [
         description: 'PATCH /api/admin/reference/:kind/:slug/items/:id?collection= : description d\'un item enfant (prop, value, param, return, emit, slot, directive_arg, directive_modifier).',
         method: 'PATCH',
         admin: true,
-        shape: { kind, slug, id: uuid, collection: z.enum(ITEM_COLLECTIONS), descriptionKey: text, descriptionFallback: text },
+        shape: { kind, slug, id: uuid, collection: z.enum(ALLOWED_COLLECTIONS as unknown as [string, ...string[]]), descriptionKey: text, descriptionFallback: text },
         build: ({ kind: k, slug: s, id, collection, ...body }) => ({ path: `${base(k, s)}/items/${id}`, query: { collection }, body })
     },
     {

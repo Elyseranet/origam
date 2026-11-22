@@ -70,4 +70,4 @@ Les tests d'integration (stdio) sont conditionnels : `health` / `reference` si u
 ## Limites
 
 - Les reponses API sont renvoyees en JSON brut : les interfaces `*Doc` du marketing ne sont pas exportees par un paquet importable.
-- `DOC_KINDS`, `REL_TYPES` et les collections d'items sont des copies des constantes du marketing (`src/consts/mcp.const.ts`).
+- `DOC_KINDS`, `REL_TYPES` et les collections d'items sont importes par chemin relatif depuis `packages/marketing/src/consts` (pas de copie).
