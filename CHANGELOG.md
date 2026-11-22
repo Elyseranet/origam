@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamBtn` en chargement circulaire : le libellé reste visible (#1086)
+
+- Cause : `--loader-circular` posait `opacity: 0` sur `__content` / `__prepend` / `__append` et centrait le spinner en absolu par-dessus.
+- Correctif : le libellé reste visible, nom accessible inchangé. Avec une icône/un avatar `prepend`, ou sur un bouton `icon`, le spinner PREND LA PLACE de l'élément (même boîte : largeur identique au repos, mesuré 73,95 px -> 73,95 px). Sans, il s'ajoute avant le libellé et le bouton s'élargit (56,7 -> 85,7 px).
+
+### Fixed — `OrigamProgressLinear` : plus de `<div>` dans un `<button>` en chargement `line` (#1087)
+
+- Cause : l'arrière-plan, le flux, la zone de chargement et les barres de `OrigamProgressLinear` étaient des `<div>` ; `OrigamBtn` en `loading` de type `line` les rendait dans un `<button>` (contenu phrasé uniquement).
+- Correctif : ces quatre éléments passent en `<span>` (`__loader` reçoit `display: block`, les autres sont déjà positionnés en absolu). Le conteneur `__content` (slot consommateur) reste un `<div>`. Test : `OrigamBtn.loading-content-model.spec.ts`.
+
 ### Fixed — `OrigamPasswordField` : `aria-invalid` / `aria-describedby` suivent la validation du consommateur (#1110)
 
 - Cause : `filterInputAttrs(attrs)` était appelé une fois dans `setup()` ; les attributs posés après le montage n'atteignaient jamais l'`<input>`.

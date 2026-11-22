@@ -27,7 +27,7 @@
 		/>
 
 		<slot
-				v-if="isOverlayLoading"
+				v-if="isOverlayLoading && spinnerHost === 'root'"
 				name="loader"
 				v-bind="progressProps"
 		>
@@ -64,6 +64,22 @@
 								:icon="prependIcon"
 						/>
 					</slot>
+				<slot
+						v-if="isOverlayLoading && spinnerHost === 'prepend'"
+						name="loader"
+						v-bind="progressProps"
+				>
+					<origam-progress
+							ref="origamProgressRef"
+							class="origam-btn__progress"
+							v-bind="progressProps"
+							tag="span"
+							aria-hidden="true"
+							:thickness="loaderKind === 'line' ? 3 : undefined"
+							:color="color"
+							:active="true"
+					/>
+				</slot>
 				</span>
 
 				<span
@@ -81,6 +97,22 @@
 							{{ text }}
 						</template>
 					</slot>
+				<slot
+						v-if="isOverlayLoading && spinnerHost === 'content'"
+						name="loader"
+						v-bind="progressProps"
+				>
+					<origam-progress
+							ref="origamProgressRef"
+							class="origam-btn__progress"
+							v-bind="progressProps"
+							tag="span"
+							aria-hidden="true"
+							:thickness="loaderKind === 'line' ? 3 : undefined"
+							:color="color"
+							:active="true"
+					/>
+				</slot>
 				</span>
 
 				<span
@@ -397,6 +429,12 @@
 	 ********************************************************/
 	const isOverlayLoading = computed(() => loaderConfig.value.isActive)
 
+	const spinnerHost = computed(() => {
+		if (loaderKind.value !== 'circular') return 'root'
+		if (hasPrepend.value) return 'prepend'
+		return hasIcon.value ? 'content' : 'root'
+	})
+
 	const loaderKind = computed(() => (loaderConfig.value.kind === 'line' ? 'line' : 'circular'))
 
 	/*********************************************************
@@ -463,6 +501,7 @@
 				// so consumers can pick either spelling.
 				'origam-btn--flat': props.flat,
 				'origam-btn--icon': !!props.icon,
+				[`origam-btn--spinner-${spinnerHost.value}`]: isLoading.value,
 				// `origam-btn--loading` comes from `loaderClasses` below: one
 				// source, emitted once.
 				// Loader-kind discriminator so SCSS can branch per kind:
@@ -1097,24 +1136,31 @@
 			}
 		}
 
-		// Circular spinner — centred absolutely over the
-		// (invisible-but-still-laid-out) label. The `inset: 0` +
-		// `margin: auto` pattern centres an absolutely-positioned
-		// element when it has intrinsic width/height (the spinner is
-		// 16-23 px square from its `size` prop). Hiding the label via
-		// opacity preserves the btn's natural width.
+		// Circular spinner (#1086, decision n°2 of #1073): the label stays visible and keeps its accessible name.
+		// Default host (no prepend, no icon): in flow before the label, the button grows by spinner + gap.
 		&--loader-circular {
-			#{$this}__content,
-			#{$this}__prepend,
-			#{$this}__append {
+			:deep(#{$this}__progress) {
+				flex: none;
+				margin-inline-end: 0.5em;
+				pointer-events: none;
+			}
+		}
+
+		// With a prepend (or an icon-only button) the spinner REPLACES it: same box, so the width is unchanged.
+		&--spinner-prepend #{$this}__prepend,
+		&--spinner-content #{$this}__content {
+			position: relative;
+
+			> :not(#{$this}__progress) {
 				opacity: 0;
 			}
 
 			:deep(#{$this}__progress) {
 				position: absolute !important;
 				inset: 0 !important;
-				margin: auto !important;
-				pointer-events: none;
+				width: 100% !important;
+				height: 100% !important;
+				margin: 0 !important;
 			}
 		}
 
