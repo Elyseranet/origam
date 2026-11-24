@@ -65,6 +65,18 @@ This project follows [Semantic Versioning](https://semver.org).
 - Cause : `OrigamDataTableFooter` enveloppait ses blocs dans un `OrigamRow` au gutter par défaut (24 px) dont la marge inline négative (−12 px) n'est compensée que par le padding des `OrigamCol` ; ici les enfants sont des `div`, rien ne compense, et avec 4 px de padding de pied le libellé sortait à −7 px (« ems per page »).
 - Correctif : `:gutters="ROW_GUTTER.NONE"` sur ce `OrigamRow` (plus de marge négative). Mesuré en Chromium, Histoire statique : bord gauche du libellé −7 px → +5 px, identique à 320 / 375 / 768 / 1280 px, modes light et dark. Le pied perd aussi sa marge verticale négative (le pied gagne en hauteur le gutter).
 
+### Fixed — `OrigamBtn` : `disabled` lit enfin les jetons grisés et affiche `not-allowed` (#1097)
+
+- Cause : `disabled` se résumait à `opacity` + `pointer-events: none` ; `--origam-btn---background-color-disabled` / `--origam-btn---color-disabled` étaient déclarés mais jamais lus, et `pointer-events: none` rendait `cursor: not-allowed` impossible. `plain` écrivait en outre sa propre `opacity`, qui battait le voile : un `plain` désactivé restait à 70 %.
+- Correctif : un Btn désactivé lit les deux jetons (le remplissage passe par `--origam-btn---background-color`, donc `text` / `outlined` / `plain` / `ghost` gardent leur fond transparent), pose `cursor: not-allowed`, garde ses événements de pointeur (le clic d'une ancre désactivée est avalé par `handleClickCapture`) désactive hover / `v-contrast`, et ne pose AUCUN voile d'opacité (décision du propriétaire : gris seul ; `--origam-btn---opacity-disabled` est supprimé des feuilles). Ratio libellé/fond mesuré en clair : 2,02 à 2,52:1 ; en sombre, CALCULÉ depuis les jetons (non mesuré, Histoire impose le thème clair) : 1,94:1 sur les looks pleins, 2,53:1 sur les transparents — sous 2:1 assumé, les contrôles inactifs sont exemptés de WCAG 1.4.3. Mesuré avant → après en Chromium : curseur `pointer` → `not-allowed`, `flat` primaire `rgb(124, 58, 237)` → `rgb(230, 230, 230)`, `plain` opacité `0.7` → `1`.
+- Rupture assumée (sans consommateur) : un Btn désactivé n'est plus `pointer-events: none`.
+
+### Fixed — `OrigamBtn` : un bouton dont `to` est une route parente n'est plus peint actif (#1125)
+
+- Cause : un Btn seul avec `to` prenait l'état actif sur le `isActive` de vue-router, vrai dès que la route du bouton figure dans la chaîne matchée (route parente comprise).
+- Correctif (décision du propriétaire) : actif seulement sur correspondance EXACTE (`isExactActive`, query comprise comme la branche `exact`). Un `to="/login"` sur `/login` reste actif ; `to="/parent"` sur `/parent/enfant` ne l'est plus. `active` explicite prioritaire ; `BtnToggle` (`group.isSelected`) inchangé. `useLink` expose `isExactActive` ; `ListItem` / `BreadcrumbItem` gardent `isActive`.
+- Rupture assumée (sans consommateur) : les items de `OrigamBottomNav` / `OrigamBtnGroup` portant `to` ne sont plus actifs sur une sous-route.
+
 ## [2.43.0] - 2026-11-22
 
 ### Changed — complexité de `v-contrast` (#1398)

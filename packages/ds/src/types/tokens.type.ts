@@ -530,7 +530,6 @@ export type TTokenName =
   | '--origam-btn__content---justify-content'
   | '--origam-btn__content---text-align'
   | '--origam-btn---opacity'
-  | '--origam-btn---opacity-disabled'
   | '--origam-btn---opacity-plain'
   | '--origam-btn---overlay-opacity-active'
   | '--origam-btn---overlay-opacity-active-hover'

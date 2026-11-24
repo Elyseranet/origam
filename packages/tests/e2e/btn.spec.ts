@@ -271,19 +271,19 @@ test.describe('OrigamBtn', () => {
             expect(ptrEvents).toBe('auto')
         })
 
-        test('SCSS --disabled: adding the class disables pointer events', async ({ page }) => {
-            // The SCSS rule `.origam-btn--disabled { pointer-events: none }` is scoped.
+        test('SCSS --disabled: adding the class shows not-allowed and keeps pointer events (#1097)', async ({ page }) => {
+            // The SCSS rule `.origam-btn--disabled { cursor: not-allowed }` is scoped.
             // We inject the class programmatically into the sandbox DOM to verify the
             // rule is compiled and applied — this tests the stylesheet, not the prop logic.
             await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
-            const ptrEvents = await btn.evaluate(el => {
+            const cursor = await btn.evaluate(el => {
                 el.classList.add('origam-btn--disabled')
-                return getComputedStyle(el).pointerEvents
+                return getComputedStyle(el).cursor
             })
-            expect(ptrEvents).toBe('none')
+            expect(cursor).toBe('not-allowed')
         })
 
         test('SCSS --loading: adding the class disables pointer events', async ({ page }) => {
