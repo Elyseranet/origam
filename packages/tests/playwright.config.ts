@@ -32,6 +32,9 @@ const GREEN_SPECS = [
     'btn-text-active.spec.ts',
     // #1086 — verifiee verte et stable avant inscription : 15/15 (--repeat-each=5, E2E_STATIC=1, chromium, port isole).
     'btn-loading-circular-label.spec.ts',
+    // #1097 — verifiee verte et stable avant inscription : 13/13 puis 65/65 sous `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
+    // Avant le correctif (mesure sur le parent) : cursor `pointer`, remplissage violet de marque, `plain` a 0.7.
+    'btn-disabled.spec.ts',
     // #1179 — verifiee verte et stable avant inscription : 9/9 puis 45/45 sous
     // `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
     'code-group.spec.ts',
@@ -95,8 +98,10 @@ const GREEN_SPECS = [
     // wave 3
     'select.spec.ts',
     'select-subheader-divider.spec.ts',
+    'select-aria-a11y.spec.ts',
     'number-field.spec.ts',
     'number-field-hide-controls.spec.ts',
+    'number-field-controls-zones.spec.ts',
     'password-field.spec.ts',
     'rating-field.spec.ts',
     'otp-input-field.spec.ts',
@@ -158,6 +163,8 @@ const GREEN_SPECS = [
     'table-header-typography-tokens.spec.ts',
     'defaults-provider.spec.ts',
     'field-height.spec.ts',
+    // #1280 — padding UA de l'input natif remis a zero, min-height suit l'interligne.
+    'field-input-inset.spec.ts',
     // #1266 — jetons de couleur / opacité du placeholder de Field. Verte
     // chromium, E2E_STATIC=1, port isolé ; rouge sur le parent.
     'field-placeholder-token.spec.ts',
@@ -245,6 +252,8 @@ const GREEN_SPECS = [
     // `Prop — groupBy` qu'elle visite a ete creee avec elle : aucune des 30
     // Variants de la story ne rendait de ligne de groupe.
     'data-table-group-attr-leak.spec.ts',
+    // #1341 — rouge sur le parent (Entree/Espace ne trient pas), verte avec le bouton de tri ; E2E_STATIC=1, chromium.
+    'data-table-sort-keyboard.spec.ts',
     // wave 14 — #827. Un parent CONTROLE qui refuse la valeur (v-bind="state"
     // sans `state.modelValue = $event`, la forme du playground "Default")
     // laissait le DOM de la radio avancer indefiniment : le navigateur coche

@@ -22,14 +22,14 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '2 additions and 4 fixes. See the full changelog for detail.',
+        summaryFallback: '2 additions and 12 fixes. See the full changelog for detail.',
         highlights: [
             { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamColorPickerField : menu ouvert en role="dialog" avec aria-controls (#1458)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamDatePickerField : le menu ouvert est un dialog relié au combobox, plus un role="menu" sans menuitem (#1382)' },
-            { type: 'added', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamStepperItem : slots prepend / append, OrigamStepper : item-prepend / item-append (#1338)' },
-            { type: 'added', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamStepper : couleur par statut --origam-stepper---color-done / -color-active (#1339)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamStepperItem : retour à la ligne réglable, sous-titre vertical à la ligne par défaut (#1340)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'OrigamDataTable : le libellé « Items per page » du pied n\'est plus rogné à gauche (#1162)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamField : l\'<input> natif n\'a plus de padding propre, la hauteur minimale suit --origam-input---line-height (#1280)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamNumberField / champs : basculer hideControls (ou un slot *Inner) après le premier rendu met à jour la zone (#1448)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamNumberField : plus de div de contrôles vide dans prependInner sans split (#1449)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamSelect : un seul combobox, plus de role="menu" autour du listbox (#1331)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'OrigamSelect multiple : cases d\'option décoratives, fermeture de pastille nommée (#1425)' }
         ]
     },
     {

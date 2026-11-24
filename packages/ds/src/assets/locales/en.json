@@ -7,6 +7,9 @@
     "open": "Open",
     "close": "Close",
     "dismiss": "Dismiss",
+    "select": {
+      "remove_item": "Remove {title}"
+    },
     "confirm_edit": {
       "ok": "OK",
       "cancel": "Cancel"

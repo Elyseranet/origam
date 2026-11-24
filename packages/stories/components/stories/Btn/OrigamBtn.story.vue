@@ -91,6 +91,16 @@
 				<origam-btn :bg-color="state.bgColor" :hover="resolveHoverState(state.hover)" :active="resolveActiveState(state.active)" text="Button"/>
 				<origam-btn variant="text" text="Text" data-cy="btn-state-text-rest"/>
 				<origam-btn variant="text" active text="Text active" data-cy="btn-state-text-active"/>
+				<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;" data-cy="btn-disabled-matrix">
+					<origam-btn variant="text"     disabled text="Text"     data-cy="btn-disabled-text"/>
+					<origam-btn variant="flat"     disabled text="Flat"     data-cy="btn-disabled-flat"/>
+					<origam-btn variant="elevated" disabled text="Elevated" data-cy="btn-disabled-elevated"/>
+					<origam-btn variant="tonal"    disabled text="Tonal"    data-cy="btn-disabled-tonal"/>
+					<origam-btn variant="outlined" disabled text="Outlined" data-cy="btn-disabled-outlined"/>
+					<origam-btn variant="plain"    disabled text="Plain"    data-cy="btn-disabled-plain"/>
+					<origam-btn variant="ghost"    disabled text="Ghost"    data-cy="btn-disabled-ghost"/>
+					<origam-btn variant="flat" bg-color="primary" disabled text="Primary" data-cy="btn-disabled-primary"/>
+				</div>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Surface">
