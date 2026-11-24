@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamDataTable` : le libellé « Items per page » du pied n'est plus rogné à gauche (#1162)
+
+- Cause : `OrigamDataTableFooter` enveloppait ses blocs dans un `OrigamRow` au gutter par défaut (24 px) dont la marge inline négative (−12 px) n'est compensée que par le padding des `OrigamCol` ; ici les enfants sont des `div`, rien ne compense, et avec 4 px de padding de pied le libellé sortait à −7 px (« ems per page »).
+- Correctif : `:gutters="ROW_GUTTER.NONE"` sur ce `OrigamRow` (plus de marge négative). Mesuré en Chromium, Histoire statique : bord gauche du libellé −7 px → +5 px, identique à 320 / 375 / 768 / 1280 px, modes light et dark. Le pied perd aussi sa marge verticale négative (le pied gagne en hauteur le gutter).
+
 ## [2.43.0] - 2026-11-22
 
 ### Changed — complexité de `v-contrast` (#1398)

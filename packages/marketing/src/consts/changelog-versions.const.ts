@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamDataTable : le libellé « Items per page » du pied n\'est plus rogné à gauche (#1162)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.43.0',
         date: '2026-11-22',
         type: 'minor',
