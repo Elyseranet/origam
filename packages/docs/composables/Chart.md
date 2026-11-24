@@ -220,7 +220,7 @@ const { headerTypographyStyles } = useChartHeaderTypography(props)
 ## `useChartRoving`
 
 ```ts
-export function useChartRoving(svgRef: Ref<SVGSVGElement | null | undefined>): IChartRoving
+export function useChartRoving(svgRef: Ref<SVGSVGElement | null>): IChartRoving
 ```
 
 Gives a chart ONE tab stop (WAI-ARIA roving tabindex, WCAG 2.1.1 / 2.4.3).
@@ -229,10 +229,6 @@ This composable promotes the last active one (else the first) to
 `tabindex="0"` after mount and after each update, and moves it with the
 arrow keys. Bind `onKeydown` on the chart `<svg>`; `svgRef` is the template
 ref of that `<svg>`.
-
-The focus listener lives on the svg's PARENT, never on the svg: Blink makes
-an SVG element keyboard-focusable as soon as it has a focus / focusin
-listener, which would add a second tab stop (the svg itself).
 
 **Source** : `packages/ds/src/composables/Chart/chart-roving.composable.ts`
 
@@ -258,7 +254,7 @@ ecrase.
 
 **Source** : `packages/ds/src/composables/Chart/chart-size.composable.ts`
 
-**Consommateurs** (22) : `components/Chart/OrigamChartAxis.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartMap.vue`, …
+**Consommateurs** (21) : `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartMap.vue`, `components/Chart/OrigamChartPareto.vue`, …
 
 ## `useChartZoom`
 

@@ -37,5 +37,5 @@ behaviour, unchanged.
 
 **Source** : `packages/ds/src/composables/Code/code.composable.ts`
 
-**Consommateurs** (5) : `components/Code/OrigamCode.vue`, `consts/Code/code.const.ts`, `interfaces/Code/code.interface.ts`, `origam-core.ts`, `types/Code/code.type.ts`
+**Consommateurs** (5) : `components/Code/OrigamCode.vue`, `consts/Code/code.const.ts`, `interfaces/Code/code.interface.ts`, `origam.ts`, `types/Code/code.type.ts`
 
