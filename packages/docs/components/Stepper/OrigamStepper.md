@@ -115,6 +115,14 @@ A thin horizontal (or vertical) line connects adjacent steps. The connector colo
 
 Disable connectors with `:show-connectors="false"`.
 
+## Slots
+
+| Slot | Props | Description |
+|---|---|---|
+| `default` | none | Replaces the whole generated list — **connectors included**. |
+| `item-prepend` | `{ item, index, status }` | `items` mode: forwarded to each item's `prepend` slot, connectors kept. |
+| `item-append` | `{ item, index, status }` | `items` mode: forwarded to each item's `append` slot, connectors kept. |
+
 ## Accessibility
 
 - The wrapper renders as `<nav aria-label="Progress steps">`.
@@ -130,6 +138,11 @@ Disable connectors with `:show-connectors="false"`.
 | `--origam-stepper---indicator-active-bg` | `color.action.primary.bg` | Active indicator background |
 | `--origam-stepper---indicator-done-bg` | `color.action.primary.bg` | Done indicator background |
 | `--origam-stepper---indicator-error-bg` | `color.feedback.danger.bg` | Error indicator background |
+| `--origam-stepper---color-active` | `--origam-stepper---color` | Active indicator colour. The stepper `color` prop wins over it |
+| `--origam-stepper---color-done` | `--origam-stepper---color` | Done indicator colour. The stepper `color` prop wins over it |
+| `--origam-stepper-item__title---white-space` | `nowrap` | Title wrapping (`normal` to allow line breaks) |
+| `--origam-stepper-item__subtitle---white-space` | `nowrap` | Subtitle wrapping (horizontal) |
+| `--origam-stepper-item--vertical__subtitle---white-space` | `normal` | Subtitle wrapping in `vertical` orientation |
 | `--origam-stepper---connector-color` | `color.border.subtle` | Pending connector color |
 | `--origam-stepper---connector-color-done` | `color.action.primary.bg` | Done connector color |
 | `--origam-stepper---title-font-size` | `font.size.md` | Step title font size |

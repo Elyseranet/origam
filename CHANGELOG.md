@@ -24,7 +24,28 @@ This project follows [Semantic Versioning](https://semver.org).
 - Correctif : le menu reçoit `role="dialog"` (cohérent avec `aria-haspopup="dialog"` déjà posé), un `aria-label` issu de `label`, et le combobox reçoit `aria-controls` vers son id.
 - Mesure navigateur (axe, menu ouvert) : `aria-required-children` critical sur `#origam-menu-v-*` avant, 0 violation après. `aria-required-attr` n'a pas été reproduit avec l'axe du dépôt.
 
+### Added — `OrigamStepperItem` : slots `prepend` / `append`, `OrigamStepper` : `item-prepend` / `item-append` (#1338)
+
+- `OrigamStepperItem` n'avait aucun slot ; le slot `default` d'`OrigamStepper` supprime les connecteurs. Les nouveaux slots reçoivent `{ index, status }` (+ `item` côté stepper) et gardent `show-connectors`. Sans slot, le rendu est inchangé.
+
+### Added — `OrigamStepper` : couleur par statut `--origam-stepper---color-done` / `-color-active` (#1339)
+
+- `done` et `active` partageaient `--origam-stepper---color`. Deux jetons, repli sur `---color` : rendu inchangé sans réglage. La prop `color` du stepper s'applique désormais aux items `active` et `done` (elle prime sur les jetons par statut).
+
+### Fixed — `OrigamStepperItem` : retour à la ligne réglable, sous-titre vertical à la ligne par défaut (#1340)
+
+- Jetons `--origam-stepper-item__title---white-space`, `--origam-stepper-item__subtitle---white-space` (`nowrap`) et `--origam-stepper-item--vertical__subtitle---white-space` (`normal`). Mesuré à 316 px : le sous-titre vertical `nowrap` coupé et la nav défilait ; il passe à la ligne, sans défilement. Horizontal inchangé.
+
+### Fixed — `OrigamDataTable` : le libellé « Items per page » du pied n'est plus rogné à gauche (#1162)
+
+- Cause : `OrigamDataTableFooter` enveloppait ses blocs dans un `OrigamRow` au gutter par défaut (24 px) dont la marge inline négative (−12 px) n'est compensée que par le padding des `OrigamCol` ; ici les enfants sont des `div`, rien ne compense, et avec 4 px de padding de pied le libellé sortait à −7 px (« ems per page »).
+- Correctif : `:gutters="ROW_GUTTER.NONE"` sur ce `OrigamRow` (plus de marge négative). Mesuré en Chromium, Histoire statique : bord gauche du libellé −7 px → +5 px, identique à 320 / 375 / 768 / 1280 px, modes light et dark. Le pied perd aussi sa marge verticale négative (le pied gagne en hauteur le gutter).
+
 ## [2.43.0] - 2026-11-22
+
+### Changed — complexité de `v-contrast` (#1398)
+
+- `resolvePaintedBackground` passait à 16 de complexité cognitive (seuil Sonar 15) après #1427 et #1131. Refactor pur : l'abstention (`mustAbstain`) et la composition des couches (`compositeLayers`) sont extraites, comportement identique. Complexité 16 → 10.
 
 ### Fixed — `OrigamNumberField` : plus de retrait vide avec `hideControls`, plus d'écriture du modèle au montage, bornage désactivable (#1327)
 

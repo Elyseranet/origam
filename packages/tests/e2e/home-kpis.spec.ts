@@ -134,9 +134,9 @@ test.describe('HomeKpis — T2', () => {
         await expect(grid).toBeAttached()
     })
 
-    // ── Sobre computed-style assertions (≥3) ───────────────────────────────
+    // ── origam computed-style assertions (≥3) ───────────────────────────────
 
-    test('Sobre — le nombre KPI est peint via gradient (kpi-value)', async ({ page }) => {
+    test('origam — le nombre KPI est peint via gradient (kpi-value)', async ({ page }) => {
         const value = page.locator('#kpis dd.home-kpis__value').first()
         const styles = await value.evaluate(el => {
             const s = getComputedStyle(el)
@@ -152,10 +152,10 @@ test.describe('HomeKpis — T2', () => {
         expect(styles.bgImage.toLowerCase()).toContain('gradient')
     })
 
-    // ⛔ Ce test DEMANDE le thème sobre — voir la note dans `home-cta.spec.ts`
+    // ⛔ Ce test DEMANDE le thème origam — voir la note dans `home-cta.spec.ts`
     // et `_support/marketing-theme.ts`.
-    test('Sobre — le label KPI est uppercase + gris secondaire', async ({ page }) => {
-        await applyBrand(page, 'sobre')
+    test('origam — le label KPI est uppercase + gris secondaire', async ({ page }) => {
+        await applyBrand(page, 'origam')
 
         const label = page.locator('#kpis dt.home-kpis__label').first()
         const styles = await label.evaluate(el => {
@@ -163,11 +163,11 @@ test.describe('HomeKpis — T2', () => {
             return { transform: s.textTransform, color: s.color }
         })
         expect(styles.transform).toBe('uppercase')
-        // sobre text---secondary = #525252 = rgb(82, 82, 82)
+        // origam text---secondary = #525252 = rgb(82, 82, 82)
         expect(styles.color).toBe('rgb(82, 82, 82)')
     })
 
-    test('Sobre — la règle (divider) lit le token border à pleine opacité', async ({ page }) => {
+    test('origam — la règle (divider) lit le token border à pleine opacité', async ({ page }) => {
         const rule = page.locator('[data-cy="kpis-rule-top"]')
         const opacity = await rule.evaluate(el => getComputedStyle(el).opacity)
         expect(opacity).toBe('1')

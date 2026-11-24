@@ -194,24 +194,26 @@ function over (top: TRgba, bottom: TRgba): TRgba {
  * that layer would measure the one beneath it and force black / white against
  * the wrong surface.
  */
-function resolvePaintedBackground (el: HTMLElement): string | null {
-    const layers: TRgba[] = []
-    let node: HTMLElement | null = el
+/*********************************************************
+ * mustAbstain
+ *
+ * @description
+ * True when a layer's paint cannot be measured: a background image, or a
+ * non-empty, non-transparent `background-color` that did not parse to sRGB.
+ ********************************************************/
+function mustAbstain (style: CSSStyleDeclaration, parts: TRgba | null): boolean {
+    if (style.backgroundImage && style.backgroundImage !== 'none') return true
+    return !parts && !!style.backgroundColor && style.backgroundColor !== 'transparent'
+}
 
-    while (node) {
-        const style = getComputedStyle(node)
-        if (style.backgroundImage && style.backgroundImage !== 'none') return null
-        const parts = rgbaParts(toRgb(style.backgroundColor))
-        if (!parts && style.backgroundColor && style.backgroundColor !== 'transparent') return null
-        if (parts && parts.a > 0) {
-            layers.push(parts)
-            if (parts.a >= 1) break
-        }
-        node = node.parentElement
-    }
-
-    if (!layers.length) return null
-
+/*********************************************************
+ * compositeLayers
+ *
+ * @description
+ * Alpha-composite the collected layers over their opaque base, white when the
+ * walk ended on a translucent layer.
+ ********************************************************/
+function compositeLayers (layers: TRgba[]): string {
     const deepest = layers[layers.length - 1]
     let acc: TRgba = deepest.a >= 1 ? layers.pop()! : { r: 255, g: 255, b: 255, a: 1 }
 
@@ -220,6 +222,24 @@ function resolvePaintedBackground (el: HTMLElement): string | null {
     }
 
     return `rgb(${Math.round(acc.r)}, ${Math.round(acc.g)}, ${Math.round(acc.b)})`
+}
+
+function resolvePaintedBackground (el: HTMLElement): string | null {
+    const layers: TRgba[] = []
+    let node: HTMLElement | null = el
+
+    while (node) {
+        const style = getComputedStyle(node)
+        const parts = rgbaParts(toRgb(style.backgroundColor))
+        if (mustAbstain(style, parts)) return null
+        if (parts && parts.a > 0) {
+            layers.push(parts)
+            if (parts.a >= 1) break
+        }
+        node = node.parentElement
+    }
+
+    return layers.length ? compositeLayers(layers) : null
 }
 
 function channelsOf (rgb: string | null): [number, number, number] | null {

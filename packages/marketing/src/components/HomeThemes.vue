@@ -263,19 +263,6 @@ const { theme, setTheme } = useTheme()
         }
     }
 
-    /*
-     * "sobre" (no brand theme, DS defaults only, no dedicated theme CSS
-     * file) — white text on the DS's default dark-mode primary accent
-     * (#8b5cf6) measures 4.23:1, just short of WCAG AA. `:global()` is
-     * needed here because `[data-theme]` targets <html>, an ancestor
-     * outside this component's scoped tree. See #28.
-     */
-    :global(:root:root[data-theme="sobre"][data-mode="dark"] .home-themes__chip[data-active="true"]),
-    :global(:root:root[data-theme="sobre"][data-mode="dark"] .home-themes__chip[aria-pressed="true"]) {
-        background-color: #7c3aed;
-        border-color: #7c3aed;
-    }
-
     &__tooling {
         margin: 0;
         display: flex;
