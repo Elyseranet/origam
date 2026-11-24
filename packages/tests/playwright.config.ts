@@ -148,6 +148,7 @@ const GREEN_SPECS = [
     // #859 — direct-typing wiring, verified stable (--repeat-each=5, 30/30)
     'color-picker-field-typing.spec.ts',
     'date-picker-field-typing.spec.ts',
+    'date-picker-field-aria.spec.ts',
     'theme-provider.spec.ts',
     'textarea-richtext.spec.ts',
     // #1267 — tokens kv de DataList : defauts inchanges + effet mesure par token.
