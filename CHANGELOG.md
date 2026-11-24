@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — avertissements console dev émis par le DS lui-même (#1156, #1157)
+
+- #1156 : les champs (`OrigamTextField`, `TextareaField`, `PasswordField`, `NumberField`, `FileField`, `OtpInputField`, `Select`) liaient `@click:append-inner` / `@click:prepend-inner` sans condition pour re-émettre ; `OrigamField` voyait donc toujours un écouteur et avertissait « click listener but no accessible name » sur tout champ doté d'une icône interne. Le relais passe par `appendInnerRelay` / `prependInnerRelay` (`useAdjacentInner`) et n'existe que si le consommateur écoute. Un vrai écouteur sans nom avertit toujours.
+- #1157 : `OrigamMessages` avertissait « prop "active" has no effect » à chaque montage (prop booléenne absente = `false`, jamais `undefined`) ; `Input`, `Form`, `ConfirmWrapper` et `OtpInputField` ne lui passent plus `:active`. `OrigamToolbar` avertissait pour `modelValue` à chaque montage (défaut `true`) : le prédicat compare désormais au défaut. Passer réellement la prop morte avertit toujours.
+
 ### Added — `OrigamStepperItem` : slots `prepend` / `append`, `OrigamStepper` : `item-prepend` / `item-append` (#1338)
 
 - `OrigamStepperItem` n'avait aucun slot ; le slot `default` d'`OrigamStepper` supprime les connecteurs. Les nouveaux slots reçoivent `{ index, status }` (+ `item` côté stepper) et gardent `show-connectors`. Sans slot, le rendu est inchangé.

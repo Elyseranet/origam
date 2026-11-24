@@ -91,6 +91,21 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
     })
 
     /*********************************************************
+     * appendInnerRelay / prependInnerRelay
+     *
+     * @description
+     * #1156 — a wrapper (TextField, Select, …) re-emits the inner click from its
+     * inner `<origam-field>`. Binding that relay unconditionally made the Field
+     * see a listener on every instance and dev-warn about a missing name nobody
+     * could set. A wrapper binds `@click:append-inner="appendInnerRelay"` (a
+     * simple path, NOT a ternary: Vue wraps an expression in a handler and the
+     * key would then always exist) so the Field only sees a listener when the
+     * consumer attached one.
+     ********************************************************/
+    const appendInnerRelay = computed(() => isAppendInnerClickable.value ? onClickAppendInner : undefined)
+    const prependInnerRelay = computed(() => isPrependInnerClickable.value ? onClickPrependInner : undefined)
+
+    /*********************************************************
      * ownsKey — la zone ne confisque QUE ses propres touches
      *
      * @description
@@ -112,10 +127,10 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
      * mais inactionnable a l'Espace.
      *
      * @description
-     * ⛔ Et ce n'est pas un cas de bord rare : `OrigamTextField` lie
-     * `@click:append-inner` a `<origam-field>` SANS CONDITION, donc
-     * `isAppendInnerClickable` vaut `true` sur CHAQUE champ texte du
-     * catalogue, que le consommateur ait cable quoi que ce soit ou non.
+     * ⛔ Et ce n'est pas un cas de bord rare : `OrigamTextField` liait
+     * `@click:append-inner` a `<origam-field>` SANS CONDITION (avant #1156 ;
+     * il passe desormais par `appendInnerRelay`), donc `isAppendInnerClickable`
+     * valait `true` sur CHAQUE champ texte du catalogue.
      * C'est aussi ce qui donnait a la zone `role="button"` + `tabindex`
      * partout avant #747 — d'ou le `nested-interactive` de #614, que
      * #747 a fait disparaitre en refusant un role qu'il ne peut nommer.
@@ -181,6 +196,8 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
         hasClear,
         isPrependInnerClickable,
         isAppendInnerClickable,
+        appendInnerRelay,
+        prependInnerRelay,
         onClickPrependInner,
         onClickAppendInner,
         onKeydownPrependInner,

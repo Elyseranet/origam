@@ -545,7 +545,7 @@ describe('OrigamOtpInputField — click:clear emit (#445)', () => {
 // ---------------------------------------------------------------------------
 describe('OrigamOtpInputField — click:appendInner / click:prependInner relay (LOT1 emits fix)', () => {
     it('emits `click:appendInner` when a cell relays click:appendInner', async () => {
-        const wrapper = mountOtpFieldClearable({ length: 4 })
+        const wrapper = mountOtpFieldClearable({ length: 4, 'onClick:appendInner': () => {} })
         await nextTick()
 
         await wrapper.find('.fake-append-inner-btn').trigger('click')
@@ -554,7 +554,7 @@ describe('OrigamOtpInputField — click:appendInner / click:prependInner relay (
     })
 
     it('emits `click:prependInner` when a cell relays click:prependInner', async () => {
-        const wrapper = mountOtpFieldClearable({ length: 4 })
+        const wrapper = mountOtpFieldClearable({ length: 4, 'onClick:prependInner': () => {} })
         await nextTick()
 
         await wrapper.find('.fake-prepend-inner-btn').trigger('click')

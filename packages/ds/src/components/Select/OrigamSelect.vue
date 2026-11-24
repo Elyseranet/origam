@@ -22,8 +22,8 @@
 			@mousedown:control="handleMousedownControl"
 			@click:append="handleClickAppend"
 			@click:prepend="handleClickPrepend"
-			@click:append-inner="handleClickAppendInner"
-			@click:prepend-inner="handleClickPrependInner"
+			@click:append-inner="appendInnerRelay"
+			@click:prepend-inner="prependInnerRelay"
 	>
 		<template
 				v-if="slots.prepend"
@@ -344,7 +344,7 @@
 	import type { TOrigamVirtualScroll } from '../../types/VirtualScroll/virtual-scroll.type'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { deepEqual, matchesSelector, wrapInArray } from '../../utils/Commons/commons.util'
+	import { deepEqual, hasEvent, matchesSelector, wrapInArray } from '../../utils/Commons/commons.util'
 	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
@@ -410,6 +410,9 @@
 	// expose certain props/methods (notably `$el`, which the proxy filters
 	// because of its `$` prefix).
 	const vm = getCurrentInstance()
+	const hasListener = (name: string) => hasEvent(vm?.vnode.props ?? {}, name)
+	const appendInnerRelay = computed(() => hasListener('click:appendInner') ? handleClickAppendInner : undefined)
+	const prependInnerRelay = computed(() => hasListener('click:prependInner') ? handleClickPrependInner : undefined)
 
 	/*********************************************************
 	 * WAI-ARIA combobox IDs
