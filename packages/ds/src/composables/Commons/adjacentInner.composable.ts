@@ -55,27 +55,33 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
      * ⛔ #1448 — `slots` is not reactive: a slot that appears/disappears
      * on a parent re-render never invalidated the computeds below.
      * Bumped before each update so they re-read it.
+     * `slotPresence` reads it as a property (`version`) so every
+     * consumer subscribes without a bare `void` read (Sonar S3735).
      ********************************************************/
     const slotsVersion = shallowRef(0)
     onBeforeUpdate(() => { slotsVersion.value++ })
+
+    const slotPresence = computed(() => ({
+        version: slotsVersion.value,
+        prependInner: !!slots.prependInner,
+        appendInner: !!slots.appendInner,
+        clear: !!slots.clear
+    }))
 
     const hasPrependInnerMedia = computed(() => {
         return !!(props.prependInnerAvatar || props.prependInnerIcon)
     })
     const hasPrependInner = computed(() => {
-        void slotsVersion.value
-        return slots.prependInner || hasPrependInnerMedia.value
+        return slotPresence.value.prependInner || hasPrependInnerMedia.value
     })
     const hasAppendInnerMedia = computed(() => {
         return !!(props.appendInnerAvatar || props.appendInnerIcon)
     })
     const hasAppendInner = computed(() => {
-        void slotsVersion.value
-        return slots.appendInner || hasAppendInnerMedia.value
+        return slotPresence.value.appendInner || hasAppendInnerMedia.value
     })
     const hasClear = computed(() => {
-        void slotsVersion.value
-        return props.clearable || slots.clear
+        return !!props.clearable || slotPresence.value.clear
     })
 
     const onClickPrependInner = (e: Event) => {
