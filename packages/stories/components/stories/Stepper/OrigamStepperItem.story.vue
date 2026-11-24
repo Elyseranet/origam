@@ -55,6 +55,26 @@
 			</origam-stepper>
 		</Variant>
 
+		<Variant title="Slots - Prepend">
+			<origam-stepper>
+				<origam-stepper-item :index="0" title="Step" subtitle="Subtitle">
+					<template #prepend="{ index, status }">
+						<span data-cy="story-prepend">{{ index }} · {{ status }}</span>
+					</template>
+				</origam-stepper-item>
+			</origam-stepper>
+		</Variant>
+
+		<Variant title="Slots - Append">
+			<origam-stepper>
+				<origam-stepper-item :index="0" title="Step" subtitle="Subtitle">
+					<template #append="{ index, status }">
+						<span data-cy="story-append">{{ index }} · {{ status }}</span>
+					</template>
+				</origam-stepper-item>
+			</origam-stepper>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IStepperItemProps>({

@@ -18,6 +18,18 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added — `OrigamStepperItem` : slots `prepend` / `append`, `OrigamStepper` : `item-prepend` / `item-append` (#1338)
+
+- `OrigamStepperItem` n'avait aucun slot ; le slot `default` d'`OrigamStepper` supprime les connecteurs. Les nouveaux slots reçoivent `{ index, status }` (+ `item` côté stepper) et gardent `show-connectors`. Sans slot, le rendu est inchangé.
+
+### Added — `OrigamStepper` : couleur par statut `--origam-stepper---color-done` / `-color-active` (#1339)
+
+- `done` et `active` partageaient `--origam-stepper---color`. Deux jetons, repli sur `---color` : rendu inchangé sans réglage. La prop `color` du stepper s'applique désormais aux items `active` et `done` (elle prime sur les jetons par statut).
+
+### Fixed — `OrigamStepperItem` : retour à la ligne réglable, sous-titre vertical à la ligne par défaut (#1340)
+
+- Jetons `--origam-stepper-item__title---white-space`, `--origam-stepper-item__subtitle---white-space` (`nowrap`) et `--origam-stepper-item--vertical__subtitle---white-space` (`normal`). Mesuré à 316 px : le sous-titre vertical `nowrap` coupé et la nav défilait ; il passe à la ligne, sans défilement. Horizontal inchangé.
+
 ### Fixed — `OrigamDataTable` : le libellé « Items per page » du pied n'est plus rogné à gauche (#1162)
 
 - Cause : `OrigamDataTableFooter` enveloppait ses blocs dans un `OrigamRow` au gutter par défaut (24 px) dont la marge inline négative (−12 px) n'est compensée que par le padding des `OrigamCol` ; ici les enfants sont des `div`, rien ne compense, et avec 4 px de padding de pied le libellé sortait à −7 px (« ems per page »).

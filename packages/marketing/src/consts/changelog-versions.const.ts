@@ -22,9 +22,12 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 fix. See the full changelog for detail.',
+        summaryFallback: '2 additions and 2 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamDataTable : le libellé « Items per page » du pied n\'est plus rogné à gauche (#1162)' }
+            { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamStepperItem : slots prepend / append, OrigamStepper : item-prepend / item-append (#1338)' },
+            { type: 'added', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamStepper : couleur par statut --origam-stepper---color-done / -color-active (#1339)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamStepperItem : retour à la ligne réglable, sous-titre vertical à la ligne par défaut (#1340)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamDataTable : le libellé « Items per page » du pied n\'est plus rogné à gauche (#1162)' }
         ]
     },
     {

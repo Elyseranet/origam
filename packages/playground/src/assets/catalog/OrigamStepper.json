@@ -1017,6 +1017,18 @@
       "slotPropsType": "any",
       "description": "Overrides the whole auto-generated item list.",
       "source": "types"
+    },
+    {
+      "name": "item-prepend",
+      "label": "item-prepend",
+      "slotPropsType": "IStepperItemSlotProps & { item: IStepperItem; }",
+      "source": "types"
+    },
+    {
+      "name": "item-append",
+      "label": "item-append",
+      "slotPropsType": "IStepperItemSlotProps & { item: IStepperItem; }",
+      "source": "types"
     }
   ],
   "snippets": [],
