@@ -53,3 +53,17 @@ test('multiple : option sans contrôle interactif, fermeture de pastille nomme l
     const labels = await sandbox.locator('[data-cy="select-closable-chips"] .origam-chip__close').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))
     expect(labels).toEqual([ 'Remove France', 'Remove Germany' ])
 })
+
+test('multiple : un clic DANS la case (inert) bascule l\'option, et la listbox ne porte plus aria-live', async ({ page }) => {
+    await page.goto(`/stories/story/${STORY_ID}?variantId=${STORY_ID}-${variantIndex('Multiple - closable chips')}`, { waitUntil: 'domcontentloaded' })
+    const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+    await sandbox.locator('[data-cy="select-closable-chips"] .origam-field').click()
+    await expect(sandbox.locator('[role="listbox"]')).not.toHaveAttribute('aria-live', /.+/)
+    const spain = sandbox.locator('[role="option"]', { hasText: 'Spain' })
+    await expect(spain).toHaveAttribute('aria-selected', 'false')
+    const box = await spain.locator('.origam-checkbox-btn').first().boundingBox()
+    expect(box).not.toBeNull()
+    // boundingBox est relatif à la page principale : clic souris réel au centre de la case.
+    await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2)
+    await expect(spain).toHaveAttribute('aria-selected', 'true')
+})

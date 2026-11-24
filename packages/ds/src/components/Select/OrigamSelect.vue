@@ -68,6 +68,8 @@
 		</template>
 
 		<template #default>
+			<output class="origam-select__announcement">{{ menu && hasNoData ? t(noDataText) : '' }}</output>
+
 			<origam-menu
 					ref="origamMenuRef"
 					v-model="menu"
@@ -96,7 +98,6 @@
 							:selected="selectedValues"
 							:size="listSize"
 							:tabindex="-1"
-							aria-live="polite"
 							v-bind="{ ...listProps }"
 							@focusin="handleFocusin"
 							@focusout="handleFocusout"
@@ -1418,6 +1419,12 @@
 		lang="scss"
 		scoped
 >
+	@use '../../assets/scss/helpers' as ds;
+
+	.origam-select__announcement {
+		@include ds.ds-visually-hidden;
+	}
+
 	.origam-select {
 		$this: &;
 
