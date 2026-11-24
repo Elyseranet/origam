@@ -97,6 +97,7 @@ const GREEN_SPECS = [
     'select-subheader-divider.spec.ts',
     'number-field.spec.ts',
     'number-field-hide-controls.spec.ts',
+    'number-field-controls-zones.spec.ts',
     'password-field.spec.ts',
     'rating-field.spec.ts',
     'otp-input-field.spec.ts',

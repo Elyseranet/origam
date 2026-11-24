@@ -18,6 +18,14 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamNumberField` / champs : basculer `hideControls` (ou un slot `*Inner`) après le premier rendu met à jour la zone (#1448)
+
+- `useAdjacentInner` lisait `slots` (non réactif) dans des `computed` mis en cache : un slot `prependInner` / `appendInner` / `clear` qui apparaît ou disparaît à l'exécution laissait la zone vide rendue. Les `computed` sont désormais invalidés avant chaque mise à jour. Touche tous les consommateurs (`OrigamField`, `OrigamTextField`, `OrigamTextareaField`, `OrigamPasswordField`, `OrigamFileField`, `OrigamNumberField`).
+
+### Fixed — `OrigamNumberField` : plus de `div` de contrôles vide dans `prependInner` sans `split` (#1449)
+
+- Sans `split`, les contrôles vivent dans `appendInner` ; la zone `prependInner` vide décalait le texte de 12 px au lieu des 16 px d'un champ simple. Le texte démarre désormais à la même position qu'avec `hideControls`.
+
 ### Added — `OrigamStepperItem` : slots `prepend` / `append`, `OrigamStepper` : `item-prepend` / `item-append` (#1338)
 
 - `OrigamStepperItem` n'avait aucun slot ; le slot `default` d'`OrigamStepper` supprime les connecteurs. Les nouveaux slots reçoivent `{ index, status }` (+ `item` côté stepper) et gardent `show-connectors`. Sans slot, le rendu est inchangé.
