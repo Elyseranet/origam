@@ -53,7 +53,7 @@ export function calculateCenteredTarget ({selectedElement, containerElement, isH
  */
 export function getScrollSize (isHorizontal: boolean, element?: HTMLElement) {
     const key = isHorizontal ? 'scrollWidth' : 'scrollHeight'
-    return element?.[key] || 0
+    return element?.[key] ?? 0
 }
 
 /**
@@ -64,7 +64,7 @@ export function getScrollSize (isHorizontal: boolean, element?: HTMLElement) {
  */
 export function getClientSize (isHorizontal: boolean, element?: HTMLElement) {
     const key = isHorizontal ? 'clientWidth' : 'clientHeight'
-    return element?.[key] || 0
+    return element?.[key] ?? 0
 }
 
 /**
@@ -102,7 +102,7 @@ export function getScrollPosition (isHorizontal: boolean, isRtl: boolean, elemen
  */
 export function getOffsetSize (isHorizontal: boolean, element?: HTMLElement) {
     const key = isHorizontal ? 'offsetWidth' : 'offsetHeight'
-    return element?.[key] || 0
+    return element?.[key] ?? 0
 }
 
 /**
@@ -113,5 +113,5 @@ export function getOffsetSize (isHorizontal: boolean, element?: HTMLElement) {
  */
 export function getOffsetPosition (isHorizontal: boolean, element?: HTMLElement) {
     const key = isHorizontal ? 'offsetLeft' : 'offsetTop'
-    return element?.[key] || 0
+    return element?.[key] ?? 0
 }

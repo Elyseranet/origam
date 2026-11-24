@@ -110,38 +110,14 @@ function buildIntlOptions (options: IUseNumberFormatOptions): Intl.NumberFormatO
         intl.notation = options.notation
     }
 
-    if (intl.style === 'currency') {
-        intl.currency = options.currency || NUMBER_FORMAT_DEFAULT_CURRENCY
-        if (options.currencyDisplay !== undefined) {
-            intl.currencyDisplay = options.currencyDisplay
-        }
-    }
-
-    if (intl.style === 'unit') {
-        if (options.unit) {
-            intl.unit = options.unit
-            if (options.unitDisplay !== undefined) {
-                intl.unitDisplay = options.unitDisplay
-            }
-        } else {
-            // Fall back to a safe decimal — without `unit`, Intl would
-            // throw at construction time. Surface a console warning so
-            // the misconfiguration is visible at dev time.
-            if (typeof console !== 'undefined') {
-                console.warn('[origam] useNumberFormat: format="unit" requires a `unit` option (e.g. "kilometer-per-hour"). Falling back to decimal.')
-            }
-            intl.style = 'decimal'
-        }
-    }
+    if (intl.style === 'currency') applyCurrency(intl, options)
+    if (intl.style === 'unit') applyUnit(intl, options)
 
     if (intl.notation === 'compact' && options.compactDisplay !== undefined) {
         intl.compactDisplay = options.compactDisplay
     }
 
-    if (options.minimumFractionDigits !== undefined) intl.minimumFractionDigits = options.minimumFractionDigits
-    if (options.maximumFractionDigits !== undefined) intl.maximumFractionDigits = options.maximumFractionDigits
-    if (options.minimumSignificantDigits !== undefined) intl.minimumSignificantDigits = options.minimumSignificantDigits
-    if (options.maximumSignificantDigits !== undefined) intl.maximumSignificantDigits = options.maximumSignificantDigits
+    applyDigits(intl, options)
 
     const grouping = resolveUseGrouping(options.useGrouping)
     if (grouping !== undefined) {
@@ -162,6 +138,38 @@ function buildIntlOptions (options: IUseNumberFormatOptions): Intl.NumberFormatO
     return intl
 }
 
+function applyCurrency (intl: Intl.NumberFormatOptions, options: IUseNumberFormatOptions): void {
+    intl.currency = options.currency || NUMBER_FORMAT_DEFAULT_CURRENCY
+    if (options.currencyDisplay !== undefined) {
+        intl.currencyDisplay = options.currencyDisplay
+    }
+}
+
+function applyUnit (intl: Intl.NumberFormatOptions, options: IUseNumberFormatOptions): void {
+    if (options.unit) {
+        intl.unit = options.unit
+        if (options.unitDisplay !== undefined) {
+            intl.unitDisplay = options.unitDisplay
+        }
+        return
+    }
+
+    // Fall back to a safe decimal — without `unit`, Intl would
+    // throw at construction time. Surface a console warning so
+    // the misconfiguration is visible at dev time.
+    if (typeof console !== 'undefined') {
+        console.warn('[origam] useNumberFormat: format="unit" requires a `unit` option (e.g. "kilometer-per-hour"). Falling back to decimal.')
+    }
+    intl.style = 'decimal'
+}
+
+function applyDigits (intl: Intl.NumberFormatOptions, options: IUseNumberFormatOptions): void {
+    if (options.minimumFractionDigits !== undefined) intl.minimumFractionDigits = options.minimumFractionDigits
+    if (options.maximumFractionDigits !== undefined) intl.maximumFractionDigits = options.maximumFractionDigits
+    if (options.minimumSignificantDigits !== undefined) intl.minimumSignificantDigits = options.minimumSignificantDigits
+    if (options.maximumSignificantDigits !== undefined) intl.maximumSignificantDigits = options.maximumSignificantDigits
+}
+
 /**
  * Look up (or build + cache) the `Intl.NumberFormat` for the given
  * locale + options. Cache key is the JSON-serialised payload — stable
@@ -178,7 +186,7 @@ function getIntl (locale: string | string[], options: Intl.NumberFormatOptions):
         return hit
     }
 
-    const fresh = new Intl.NumberFormat(locale as string | string[], options)
+    const fresh = new Intl.NumberFormat(locale, options)
     intlCache.set(cacheKey, fresh)
 
     if (intlCache.size > NUMBER_FORMAT_LRU_CAPACITY) {
@@ -248,7 +256,7 @@ export function useNumberFormat (
         if (isRef(options) || typeof options === 'function') {
             return toValue(options) ?? {}
         }
-        return options as IUseNumberFormatOptions
+        return options
     })
 
     const intl: ComputedRef<Intl.NumberFormat> = computed(() => {

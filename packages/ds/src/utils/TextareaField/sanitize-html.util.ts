@@ -33,7 +33,7 @@ export function sanitizeHtml(input: string): string {
 
 function walk(node: Element): void {
     // We mutate children while iterating — snapshot first.
-    const children = Array.from(node.children) as Element[]
+    const children = Array.from(node.children)
 
     for (const child of children) {
         const tag = child.tagName.toLowerCase()
@@ -70,38 +70,35 @@ function unwrap(el: Element): void {
 
 function sanitizeAttributes(el: Element, tag: string): void {
     const allowed = ALLOWED_ATTRIBUTES[tag] ?? []
+
     // `attributes` is a live NamedNodeMap; snapshot first.
-    const attrs = Array.from(el.attributes)
+    for (const attr of Array.from(el.attributes)) sanitizeAttribute(el, attr, allowed)
+}
 
-    for (const attr of attrs) {
-        const name = attr.name.toLowerCase()
+function sanitizeAttribute(el: Element, attr: Attr, allowed: ReadonlyArray<string>): void {
+    const name = attr.name.toLowerCase()
 
-        if (name.startsWith('on')) {
+    if (name.startsWith('on') || !allowed.includes(name)) {
+        el.removeAttribute(attr.name)
+        return
+    }
+
+    if (name === 'href') {
+        if (!isSafeUrl(attr.value)) {
             el.removeAttribute(attr.name)
-            continue
+            return
         }
+        // Harden external links — applied after the URL check so the
+        // browser's URL parser already produced the trimmed value.
+        el.setAttribute('rel', 'noopener noreferrer nofollow')
+        el.setAttribute('target', '_blank')
+        return
+    }
 
-        if (!allowed.includes(name)) {
-            el.removeAttribute(attr.name)
-            continue
-        }
-
-        if (name === 'href') {
-            if (!isSafeUrl(attr.value)) {
-                el.removeAttribute(attr.name)
-                continue
-            }
-            // Harden external links — applied after the URL check so the
-            // browser's URL parser already produced the trimmed value.
-            ;(el as HTMLAnchorElement).setAttribute('rel', 'noopener noreferrer nofollow')
-            ;(el as HTMLAnchorElement).setAttribute('target', '_blank')
-        }
-
-        if (name === 'class') {
-            const cleaned = filterClassList(attr.value)
-            if (cleaned === '') el.removeAttribute(attr.name)
-            else el.setAttribute(attr.name, cleaned)
-        }
+    if (name === 'class') {
+        const cleaned = filterClassList(attr.value)
+        if (cleaned === '') el.removeAttribute(attr.name)
+        else el.setAttribute(attr.name, cleaned)
     }
 }
 

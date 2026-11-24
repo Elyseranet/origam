@@ -697,40 +697,40 @@
 		&--size-x-small {
 			font-size: var(--origam-chip---font-size, var(--origam-chip---font-size-xs, 0.625rem));
 			line-height: 1;
-			height: var(--origam-chip---height-xs, 20px);
+			height: calc(var(--origam-chip---height-xs, 20px) + var(--origam-chip---density, 0px));
 			padding: 0 var(--origam-chip---padding-xs, 8px);
 		}
 
 		&--size-small {
 			font-size: var(--origam-chip---font-size, var(--origam-chip---font-size-sm, 0.75rem));
 			line-height: 1;
-			height: var(--origam-chip---height-sm, 24px);
+			height: calc(var(--origam-chip---height-sm, 24px) + var(--origam-chip---density, 0px));
 			padding: 0 var(--origam-chip---padding-sm, 10px);
 		}
 
 		&--size-default {
 			font-size: var(--origam-chip---font-size, var(--origam-chip---font-size-md, 0.875rem));
 			line-height: 1;
-			height: var(--origam-chip---height-md, 32px);
+			height: calc(var(--origam-chip---height-md, 32px) + var(--origam-chip---density, 0px));
 			padding: 0 var(--origam-chip---padding-md, 12px);
 		}
 
 		&--size-large {
 			font-size: var(--origam-chip---font-size, var(--origam-chip---font-size-lg, 1rem));
 			line-height: 1;
-			height: var(--origam-chip---height-lg, 38px);
+			height: calc(var(--origam-chip---height-lg, 38px) + var(--origam-chip---density, 0px));
 			padding: 0 var(--origam-chip---padding-lg, 14px);
 		}
 
 		&--size-x-large {
 			font-size: var(--origam-chip---font-size, var(--origam-chip---font-size-xl, 1.125rem));
 			line-height: 1;
-			height: var(--origam-chip---height-xl, 44px);
+			height: calc(var(--origam-chip---height-xl, 44px) + var(--origam-chip---density, 0px));
 			padding: 0 var(--origam-chip---padding-xl, 17px);
 		}
 
 		/*
-		 * ⛔ #595 — QUINZE tokens `--origam-chip--*` que les feuilles declarent
+		 * ⛔ #595 — QUATORZE tokens `--origam-chip--*` que les feuilles declarent
 		 * et que ce SCSS ne lit PAS. Ils restent en baseline
 		 * `token-var-channels-dormant.json`, voici pourquoi :
 		 *
@@ -744,13 +744,13 @@
 		 *     `!important` — empecherait la prop de peindre : c est exactement
 		 *     l incident qui a produit l ADR-005 et le garde `no-variant-css`.
 		 *     La classe emise reste un point d accroche CONSOMMATEUR ;
-		 *   · `---density` (0px) est ECRIT juste en dessous par les deux
-		 *     modificateurs de densite et LU par personne. C est un defaut
-		 *     distinct de C2 — la prop `density` de Chip est inerte, aucune
-		 *     hauteur ni marge ne consomme la variable — et le corriger
-		 *     changerait le rendu de `density="compact"`. Hors perimetre de ce
-		 *     lot, signale sans ticket ouvert (consigne du lot).
+		 *   · `---density` est desormais LU par les cinq `height` (#1105), comme
+		 *     `--origam-btn---density` : `calc(height-palier + density)`.
 		 */
+		&--density-comfortable {
+			--origam-chip---density: 8px;
+		}
+
 		&--density-default {
 			--origam-chip---density: 0px;
 		}

@@ -101,18 +101,20 @@ export function useLink (props: ILinkProps & ITagProps, attrs: SetupContext['att
     const link = props.to ? RouterLink.useLink(props as UseLinkOptions) : undefined
     const route = useRoute()
 
+    const isExactActive = link && computed(() => {
+        if (!route.value) return link.isExactActive?.value
+
+        return link.isExactActive?.value && deepEqual(link.route.value.query, route.value.query)
+    })
+
     return {
         tag,
         isLink,
         isClickable,
         route: link?.route,
         navigate: link?.navigate,
-        isActive: link && computed(() => {
-            if (!props.exact) return link.isActive?.value
-            if (!route.value) return link.isExactActive?.value
-
-            return link.isExactActive?.value && deepEqual(link.route.value.query, route.value.query)
-        }),
+        isExactActive,
+        isActive: link && computed(() => (props.exact ? !!isExactActive?.value : link.isActive.value)),
         href: computed(() => props.to ? link?.route.value.href : props.href)
     }
 }

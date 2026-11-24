@@ -7,6 +7,9 @@
     "open": "Ouvrir",
     "close": "Fermer",
     "dismiss": "Dismiss",
+    "select": {
+      "remove_item": "Retirer {title}"
+    },
     "confirm_edit": {
       "ok": "OK",
       "cancel": "Annuler"
@@ -123,7 +126,16 @@
     },
     "password_field": {
       "show": "Afficher le mot de passe",
-      "hide": "Masquer le mot de passe"
+      "hide": "Masquer le mot de passe",
+      "requirement_min_length": "Au moins {count} caractères",
+      "requirement_uppercase": "Au moins 1 majuscule",
+      "requirement_number": "Au moins 1 chiffre",
+      "requirement_special": "Au moins 1 caractère spécial",
+      "message_min_length": "{count} caractères",
+      "message_tiny": "une minuscule",
+      "message_uppercase": "une majuscule",
+      "message_number": "un chiffre",
+      "message_special": "un caractère spécial (!@#$%)"
     },
     "file_field": {
       "counter": "{0} fichier(s)",

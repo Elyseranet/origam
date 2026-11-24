@@ -103,7 +103,7 @@ export default defineNuxtConfig({
         defaultMode: 'auto',
         // Brand themes authored as clean IOrigamTheme objects (semantic vars,
         // light + dark). Component default props are inherited from the origam
-        // base theme (sobre identity, name-less → applies to every brand). The
+        // base theme (origam identity, name-less → applies to every brand). The
         // legacy per-brand CSS sheets still carry bespoke marketing selectors
         // (.home-* hacks) — to be removed in the themes-showcase cleanup.
         //

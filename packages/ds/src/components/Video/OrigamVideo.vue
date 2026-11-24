@@ -1208,6 +1208,10 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
+		// Anchored at `top: 50%` with no static positioning transform — the
+		// y-axis `translateY(-50%)` is composed here with the scale so the
+		// enter/leave keyframes below can animate the same pair.
+		transform: translateY(-50%) scale(1);
 	}
 
 	@supports ((backdrop-filter: blur(6px)) or (-webkit-backdrop-filter: blur(6px))) {
@@ -1293,14 +1297,6 @@
 		white-space: nowrap;
 		user-select: none;
 		line-height: 1.2;
-	}
-
-	// Note: disc anchored at `top: 50%` with no transform — the y-axis
-	// `translateY(-50%)` we'd normally add is moved INTO the enter/leave
-	// keyframes so we can compose it with the scale puff-in without
-	// fighting the static positioning transform.
-	.origam-video__skip-ripple {
-		transform: translateY(-50%) scale(1);
 	}
 
 	.origam-video-skip-ripple-enter-active,

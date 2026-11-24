@@ -23,7 +23,28 @@
 							:index="index"
 							:data-cy="`stepper-item-${index}`"
 							@click="handleItemClick"
-					/>
+					>
+						<template
+								v-if="$slots['item-prepend']"
+								#prepend="slotProps"
+						>
+							<slot
+									name="item-prepend"
+									v-bind="slotProps"
+									:item="item"
+							/>
+						</template>
+						<template
+								v-if="$slots['item-append']"
+								#append="slotProps"
+						>
+							<slot
+									name="item-append"
+									v-bind="slotProps"
+									:item="item"
+							/>
+						</template>
+					</origam-stepper-item>
 				</template>
 			</template>
 		</slot>
@@ -218,16 +239,6 @@
 
 		&--vertical {
 			flex-direction: column;
-
-			.origam-stepper__connector {
-				width: var(--origam-stepper---connector-thickness, 2px);
-				height: var(--origam-stepper---gap, 16px);
-				min-width: 0;
-				min-height: 16px;
-				margin-inline-start: calc((var(--origam-stepper---indicator-size, 32px) / 2) - (var(--origam-stepper---connector-thickness, 2px) / 2));
-				margin-block: 4px;
-				align-self: flex-start;
-			}
 		}
 
 		&__connector {
@@ -249,9 +260,15 @@
 			}
 
 			.origam-stepper--vertical & {
+				width: var(--origam-stepper---connector-thickness, 2px);
+				height: var(--origam-stepper---gap, 16px);
+				min-width: 0;
+				min-height: 16px;
+				margin-inline-start: calc((var(--origam-stepper---indicator-size, 32px) / 2) - (var(--origam-stepper---connector-thickness, 2px) / 2));
+				margin-block: 4px;
+				align-self: flex-start;
 				flex: 0 0 auto;
 				margin-block-start: 0;
-				align-self: flex-start;
 			}
 		}
 

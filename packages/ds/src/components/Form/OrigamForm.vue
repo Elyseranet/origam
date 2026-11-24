@@ -29,7 +29,6 @@
 			>
 				<origam-messages
 						:id="messagesId"
-						:active="hasMessages"
 						:messages="messages"
 				>
 					<template
@@ -288,9 +287,7 @@
 					opacity: var(--origam-form--error---icon-opacity, 1);
 					color: var(--origam-form--error---messages-color, var(--origam-color__feedback--danger---fgSubtle));
 				}
-			}
 
-			#{$this}__details {
 				> .origam-icon {
 					opacity: var(--origam-form--error---icon-opacity, 1);
 					color: var(--origam-form--error---icon-color, var(--origam-color__feedback--danger---fgSubtle));

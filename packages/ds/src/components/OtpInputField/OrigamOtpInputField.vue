@@ -29,8 +29,8 @@
 						:focused="(isFocused && focusAll) || focusIndex === i"
 						v-bind="{...fieldProps(i)}"
 						@click:clear="handleClear"
-						@click:append-inner="handleClickAppendInner"
-						@click:prepend-inner="handleClickPrependInner"
+						@click:append-inner="appendInnerRelay"
+						@click:prepend-inner="prependInnerRelay"
 				>
 					<template
 							v-if="slots.prependInner"
@@ -141,7 +141,6 @@
 		>
 			<origam-messages
 					:id="messagesId"
-					:active="hasMessages"
 					:messages="validationMessages"
 			/>
 		</div>
@@ -153,7 +152,7 @@
 		setup
 >
 
-	import { computed, nextTick, onBeforeUnmount, ref, StyleValue, useAttrs, useSlots, watch } from "vue"
+	import { computed, getCurrentInstance, nextTick, onBeforeUnmount, ref, StyleValue, useAttrs, useSlots, watch } from "vue"
 	import OrigamField from '../Field/OrigamField.vue'
 	import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
@@ -177,7 +176,7 @@
 	import type { TOrigamField } from '../../types/Field/field.type'
 
 	import { filterInputAttrs } from '../../utils/Input/input.util'
-	import { focusChild, wrapInArray } from '../../utils/Commons/commons.util'
+	import { focusChild, hasEvent, wrapInArray } from '../../utils/Commons/commons.util'
 	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
@@ -520,6 +519,10 @@
 	 * `handleClear` above: relay on THIS component's own instance whichever
 	 * cell the click came from.
 	 ********************************************************/
+	const vm = getCurrentInstance()
+	const hasListener = (name: string) => hasEvent(vm?.vnode.props ?? {}, name)
+	const appendInnerRelay = computed(() => hasListener('click:appendInner') ? handleClickAppendInner : undefined)
+	const prependInnerRelay = computed(() => hasListener('click:prependInner') ? handleClickPrependInner : undefined)
 	const handleClickAppendInner = (e: MouseEvent) => {
 		emits('click:appendInner', e)
 	}
@@ -528,7 +531,7 @@
 	}
 
 	const isInvalidValue = (value: string) => {
-		return props.type === OTP_INPUT_FIELD_TYPE.NUMBER && /[^0-9]/g.test(value)
+		return props.type === OTP_INPUT_FIELD_TYPE.NUMBER && /\D/g.test(value)
 	}
 
 	watch(model, (val) => {

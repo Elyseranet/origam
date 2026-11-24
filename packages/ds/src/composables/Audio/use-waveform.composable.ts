@@ -10,6 +10,41 @@ import { WAVEFORM_DEFAULT_BINS } from '../../consts/Audio/audio.const'
 import type { IUseWaveformOptions } from '../../interfaces/Audio/audio-player.interface'
 
 /**
+ * Single pass through the channel: per bucket, keep the largest absolute
+ * amplitude. We do NOT compute RMS here — visually `max` gives a punchier
+ * waveform that matches the user's mental model of "loudness".
+ */
+function downsamplePeaks (channel: Float32Array, bins: number): Array<number> {
+    const samplesPerBin = Math.max(1, Math.floor(channel.length / bins))
+    const out: Array<number> = new Array(bins)
+    for (let bin = 0; bin < bins; bin++) {
+        const start = bin * samplesPerBin
+        const end = Math.min(start + samplesPerBin, channel.length)
+        let peak = 0
+        for (let i = start; i < end; i++) {
+            const value = Math.abs(channel[i] ?? 0)
+            if (value > peak) peak = value
+        }
+        out[bin] = peak
+    }
+    return out
+}
+
+/**
+ * Normalise so the loudest bucket is 1. This makes the visual independent
+ * from the master volume of the recording — a softly-mastered track and a
+ * loudness-war banger render at the same height.
+ */
+function normalisePeaks (out: Array<number>): Array<number> {
+    let maxPeak = 0
+    for (const value of out) if (value > maxPeak) maxPeak = value
+    if (maxPeak > 0) {
+        for (let i = 0; i < out.length; i++) out[i] = out[i] / maxPeak
+    }
+    return out
+}
+
+/**
  * Headless waveform composable. Decodes the audio referenced by
  * `srcRef`, downsamples it to `bins` peaks (default 200), and exposes
  * the resulting array as a reactive ref. The composable is SSR-safe
@@ -114,35 +149,7 @@ export function useWaveform (
             // the same AudioBuffer.
             const audio = await decodeWithFallback(ctx, buffer)
 
-            const channel = audio.getChannelData(0)
-            const samplesPerBin = Math.max(1, Math.floor(channel.length / bins))
-            const out: Array<number> = new Array(bins)
-            // Single pass through the channel: per bucket, keep the
-            // largest absolute amplitude. We do NOT compute RMS here
-            // — visually `max` gives a punchier waveform that matches
-            // the user's mental model of "loudness".
-            for (let bin = 0; bin < bins; bin++) {
-                const start = bin * samplesPerBin
-                const end = Math.min(start + samplesPerBin, channel.length)
-                let peak = 0
-                for (let i = start; i < end; i++) {
-                    const value = Math.abs(channel[i] ?? 0)
-                    if (value > peak) peak = value
-                }
-                out[bin] = peak
-            }
-
-            // Normalise so the loudest bucket is 1. This makes the
-            // visual independent from the master volume of the
-            // recording — a softly-mastered track and a loudness-war
-            // banger render at the same height.
-            let maxPeak = 0
-            for (const value of out) if (value > maxPeak) maxPeak = value
-            if (maxPeak > 0) {
-                for (let i = 0; i < out.length; i++) out[i] = out[i] / maxPeak
-            }
-
-            peaks.value = out
+            peaks.value = normalisePeaks(downsamplePeaks(audio.getChannelData(0), bins))
         } catch (err) {
             error.value = err instanceof Error ? err : new Error(String(err))
         } finally {

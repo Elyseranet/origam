@@ -589,7 +589,7 @@
 					const scale = parseFloat(targetStyle.getPropertyValue('--origam-field__label---font-size'))
 					const color = targetStyle.getPropertyValue('color')
 
-					el.style.visibility = 'visible'
+					el.style.clipPath = 'none'
 					targetEl.style.visibility = 'hidden'
 
 					animate(el, {
@@ -601,7 +601,7 @@
 						easing: EASING.STANDARD,
 						direction: newVal ? 'normal' : 'reverse'
 					}).finished.then(() => {
-						el.style.removeProperty('visibility')
+						el.style.removeProperty('clip-path')
 						targetEl.style.removeProperty('visibility')
 					})
 				})
@@ -964,7 +964,7 @@
 			 * lecteur — et le lot ne peut pas le verifier sur les trois
 			 * composants sans changer de perimetre.
 			 */
-			min-height: max(calc(var(--origam-input__control---height, 36px) + var(--origam-input---density, 0px)), 1.5rem + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
+			min-height: max(calc(var(--origam-input__control---height, 36px) + var(--origam-input---density, 0px)), calc(1rem * var(--origam-input---line-height, 1.5)) + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
 			min-width: 0;
 			padding-inline: var(--origam-field__input---padding-start) var(--origam-field__input---padding-end);
 			padding-top: var(--origam-field__input---padding-top);
@@ -997,6 +997,8 @@
 			textarea {
 				letter-spacing: inherit;
 				border: none;
+				// #1280 — remet a zero le padding UA (1px 2px) : le texte demarre au retrait du champ.
+				padding: 0;
 
 				&::placeholder {
 					color: var(--origam-field---placeholder-color, currentColor);
@@ -1023,7 +1025,7 @@
 			opacity: 0;
 			transition: inherit;
 			white-space: nowrap;
-			min-height: max(var(--origam-input__control---height, 36px), 1.5rem + var(--origam-field__input---padding-top, 0px) + var(--origam-field__input---padding-bottom, 0px));
+			min-height: max(var(--origam-input__control---height, 36px), calc(1rem * var(--origam-input---line-height, 1.5)) + var(--origam-field__input---padding-top, 0px) + var(--origam-field__input---padding-bottom, 0px));
 			padding-top: calc(var(--origam-field---padding-top, 4px) + calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density, 0px)));
 			padding-bottom: var(--origam-field---padding-bottom, 6px);
 		}
@@ -1186,11 +1188,17 @@
 		}
 
 		&--active {
+			/*
+			 * Le label d'origine reste visible pour les technologies d'assistance
+			 * (axe ne lit que le PREMIER label[for] : `visibility: hidden` y vidait
+			 * le nom accessible, #1149) ; il est seulement rogne visuellement.
+			 */
 			#{$this}__label {
-				visibility: hidden;
+				clip-path: inset(50%);
 
 				&--floating {
 					visibility: unset;
+					clip-path: none;
 				}
 			}
 

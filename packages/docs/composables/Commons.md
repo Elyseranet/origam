@@ -5,7 +5,7 @@
 > rien n'est redige ici. Corriger une description se fait dans la banniere du symbole,
 > puis en regenerant. Issue #545.
 
-113 symbole(s) exporte(s).
+114 symbole(s) exporte(s).
 
 ## `_resetCssSupportCache`
 
@@ -86,7 +86,7 @@ ne le recree pas.
 
 **Source** : `packages/ds/src/composables/Commons/date.composable.ts`
 
-**Consommateurs** (1) : `origam.ts`
+**Consommateurs** (1) : `origam-core.ts`
 
 ## `createDefaults`
 
@@ -101,7 +101,7 @@ valeur parente au sommet de l'arbre.
 
 **Source** : `packages/ds/src/composables/Commons/defaults.composable.ts`
 
-**Consommateurs** (1) : `origam.ts`
+**Consommateurs** (1) : `origam-core.ts`
 
 ## `createDisplay`
 
@@ -124,7 +124,7 @@ approximation tant que l'hydratation n'a pas tourne.
 
 **Source** : `packages/ds/src/composables/Commons/display.composable.ts`
 
-**Consommateurs** (1) : `origam.ts`
+**Consommateurs** (1) : `origam-core.ts`
 
 ## `createGoTo`
 
@@ -140,7 +140,7 @@ capture le sens RTL courant (`locale.isRtl`) dans l'instance injectee
 
 **Source** : `packages/ds/src/composables/Commons/goTo.composable.ts`
 
-**Consommateurs** (1) : `origam.ts`
+**Consommateurs** (1) : `origam-core.ts`
 
 ## `createLocale`
 
@@ -155,7 +155,7 @@ than duplicating it.
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (2) : `origam.ts`, `utils/Commons/nuxt-locale.util.ts`
+**Consommateurs** (2) : `origam-core.ts`, `utils/Commons/nuxt-locale.util.ts`
 
 ## `createRtl`
 
@@ -215,7 +215,7 @@ provider names returns after a Map lookup and one property lookup.
 
 **Source** : `packages/ds/src/composables/Commons/theme-props-resolver.composable.ts`
 
-**Consommateurs** (1) : `origam.ts`
+**Consommateurs** (1) : `origam-core.ts`
 
 ## `provideDefaults`
 
@@ -333,7 +333,7 @@ l'installation par `createOrigam()`, comme `themedPropKeysUnion`.
 
 **Source** : `packages/ds/src/composables/Commons/theme-props-resolver.composable.ts`
 
-**Consommateurs** (2) : `interfaces/Commons/theme.interface.ts`, `origam.ts`
+**Consommateurs** (2) : `interfaces/Commons/theme.interface.ts`, `origam-core.ts`
 
 ## `themedPropKeysUnion`
 
@@ -357,7 +357,7 @@ Pure — no Vue/DOM access — so it is called once, synchronously, at
 
 **Source** : `packages/ds/src/composables/Commons/theme-props-resolver.composable.ts`
 
-**Consommateurs** (1) : `origam.ts`
+**Consommateurs** (1) : `origam-core.ts`
 
 ## `useAccessibleCommand`
 
@@ -568,6 +568,8 @@ Wires a `popstate` listener + router navigation guard so a consumer
 (e.g. a Dialog / Sheet / Bottom-sheet) can intercept the native
 back-button gesture and run its own close callback instead of
 letting the browser navigate away.
+`cb` suit la convention des gardes vue-router : elle renvoie `false` pour
+ANNULER la navigation, toute autre valeur la laisse passer (plus de `next`).
 Independent from `useRoute` / `useRouter` / `useLink` — does not
 delegate to any of them.
 
@@ -836,7 +838,7 @@ markup-driving flags — both share the cached `rawSupports` primitive.
 ## `useCssSupportClient`
 
 ```ts
-export function useCssSupportClient ( feature: TCssFeatureName | string, options: IUseCssSupportClientOptions = {} ): Ref<boolean>
+export function useCssSupportClient ( feature: TCssFeatureName | TAnyString, options: IUseCssSupportClientOptions = {} ): Ref<boolean>
 ```
 
 Hydration-safe single-feature gate. Returns a `Ref<boolean>` that
@@ -913,7 +915,7 @@ explicitly passed?" check to `usePassedProps`.
 
 **Source** : `packages/ds/src/composables/Commons/defaults.composable.ts`
 
-**Consommateurs** (6) : `components/DefaultsProvider/OrigamDefaultsProvider.vue`, `consts/Commons/defaults.const.ts`, `interfaces/DefaultsProvider/defaults-provider.interface.ts`, `nuxt/plugin.client.ts`, `origam.ts`, `utils/Commons/commons.util.ts`
+**Consommateurs** (6) : `components/DefaultsProvider/OrigamDefaultsProvider.vue`, `consts/Commons/defaults.const.ts`, `interfaces/DefaultsProvider/defaults-provider.interface.ts`, `nuxt/plugin.client.ts`, `origam-core.ts`, `utils/Commons/commons.util.ts`
 
 ## `useDelay`
 
@@ -1038,8 +1040,8 @@ utilise pour les poignees de redimensionnement (panneau, colonne…).
 termine.
 
 ⛔ Seul l'axe `X` (`AXIS.X`) est reellement gere : `isVertical` est
-commente en mort dans le code et un `// TODO - Rework for both axis`
-l'annonce explicitement. Passer `AXIS.Y` fait juste tomber dans la
+commente en mort dans le code et un commentaire de rework (« Rework for
+both axis ») l'annonce explicitement. Passer `AXIS.Y` fait juste tomber dans la
 branche verticale de `getPosition` sans etre teste par ce composable.
 
 ⛔ #1152 — `el`, `min` et `max` acceptent un `Ref` (ou un getter pour
@@ -1669,7 +1671,7 @@ Independent from `useLocation` — no shared state or call
 dependency.
 
 ⛔ `locationStrategy="static"` NE POSITIONNE RIEN. `staticLocationStrategy`
-(utils/Commons/location.util.ts) a un corps reduit a `// TODO` : elle rend
+(utils/Commons/location.util.ts) a un corps reduit a un commentaire de tache restante : elle rend
 `undefined`, donc `updateLocation` reste `undefined` et `contentStyles`
 reste `{}`. Mesure, contenu et cible reels attaches au document :
 `static` → `contentStyles = {}` / `updateLocation = undefined` ;
@@ -1965,6 +1967,21 @@ dependency direction backwards to read.
 **Source** : `packages/ds/src/composables/Commons/passedProps.composable.ts`
 
 **Consommateurs** (21) : `components/Avatar/OrigamAvatarGroup.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketRound.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Btn/OrigamBtnGroup.vue`, `components/Carousel/OrigamCarouselItem.vue`, `components/Chart/OrigamChartPareto.vue`, …
+
+## `usePopupDialogAria`
+
+```ts
+export function usePopupDialogAria (name: string, label: () => string | undefined, expanded: Ref<boolean>)
+```
+
+ARIA d'un champ combobox dont le menu est un `dialog` (calendrier,
+color picker), pas une liste de `menuitem` : le menu recoit `id` +
+`role="dialog"` + `aria-label` (`menuAriaProps`), le combobox pointe
+dessus par `aria-controls` (`comboboxAriaAttrs`). #1382 / #1458
+
+**Source** : `packages/ds/src/composables/Commons/popup-dialog-aria.composable.ts`
+
+**Consommateurs** (2) : `components/ColorPickerField/OrigamColorPickerField.vue`, `components/DatePickerField/OrigamDatePickerField.vue`
 
 ## `usePosition`
 

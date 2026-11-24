@@ -55,19 +55,19 @@ test.describe('HomeFeatures section', () => {
         expect(text?.trim().length).toBeGreaterThan(0)
     })
 
-    // ── Sobre computed-style assertions (≥3) ───────────────────────────────
+    // ── origam computed-style assertions (≥3) ───────────────────────────────
 
-    test('Sobre — eyebrow violet (action-primary fgSubtle)', async ({ page }) => {
+    test('origam — eyebrow violet (action-primary fgSubtle)', async ({ page }) => {
         const eyebrow = page.locator('section.home-features p.home-features__eyebrow')
         const color = await eyebrow.evaluate(el => getComputedStyle(el).color)
-        // sobre action--primary---fgSubtle = #6D28D9 = rgb(109, 40, 217)
+        // origam action--primary---fgSubtle = #6D28D9 = rgb(109, 40, 217)
         expect(color).toBe('rgb(109, 40, 217)')
     })
 
-    // ⛔ Les tests « Sobre — … » DEMANDENT le thème sobre — voir la note dans
+    // ⛔ Les tests « origam — … » DEMANDENT le thème origam — voir la note dans
     // `home-cta.spec.ts` et `_support/marketing-theme.ts`.
-    test('Sobre — carte feature peinte par le jeton surface raised, et plate', async ({ page }) => {
-        await applyBrand(page, 'sobre')
+    test('origam — carte feature peinte par le jeton surface raised, et plate', async ({ page }) => {
+        await applyBrand(page, 'origam')
 
         // ⛔ Ne PAS réécrire un hex en dur ici. Ce test épinglait
         // `rgb(250, 250, 250)` — la valeur de `--origam-color__surface---raised`
@@ -82,7 +82,7 @@ test.describe('HomeFeatures section', () => {
             return { bg: s.backgroundColor, shadow: s.boxShadow, token }
         })
 
-        expect(styles.token, 'le thème sobre doit déclarer --origam-color__surface---raised').not.toBe('')
+        expect(styles.token, 'le thème origam doit déclarer --origam-color__surface---raised').not.toBe('')
 
         // Comparaison en pixels rendus : le jeton est un hex, `backgroundColor`
         // un `rgb()`. On repasse par le navigateur plutôt que de convertir à la
@@ -105,7 +105,7 @@ test.describe('HomeFeatures section', () => {
         expect(styles.shadow === 'none' || styles.shadow === '').toBe(true)
     })
 
-    test('Sobre — carte feature à angles droits + padding 32px', async ({ page }) => {
+    test('origam — carte feature à angles droits + padding 32px', async ({ page }) => {
         const card = page.locator('section.home-features .origam-card').first()
         const styles = await card.evaluate(el => {
             const s = getComputedStyle(el)
@@ -120,8 +120,8 @@ test.describe('HomeFeatures section', () => {
         expect(styles.pad).toBe('32px')
     })
 
-    test('Sobre — tuile icône bordée violet, 44×44, radius 10px', async ({ page }) => {
-        await applyBrand(page, 'sobre')
+    test('origam — tuile icône bordée violet, 44×44, radius 10px', async ({ page }) => {
+        await applyBrand(page, 'origam')
 
         const tile = page.locator('section.home-features .home-features__icon-tile').first()
         const styles = await tile.evaluate(el => {
@@ -136,7 +136,7 @@ test.describe('HomeFeatures section', () => {
         expect(styles.w).toBe('44px')
         expect(styles.h).toBe('44px')
         expect(styles.radius).toBe('10px')
-        // border colour = sobre action--primary---bg = #7C3AED = rgb(124, 58, 237)
+        // border colour = origam action--primary---bg = #7C3AED = rgb(124, 58, 237)
         expect(styles.borderColor).toBe('rgb(124, 58, 237)')
     })
 

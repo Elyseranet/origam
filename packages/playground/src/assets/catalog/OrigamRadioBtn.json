@@ -293,7 +293,7 @@
     {
       "name": "borderTop",
       "label": "borderTop",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -307,7 +307,7 @@
     {
       "name": "borderLeft",
       "label": "borderLeft",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -321,7 +321,7 @@
     {
       "name": "borderBottom",
       "label": "borderBottom",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -335,7 +335,7 @@
     {
       "name": "borderRight",
       "label": "borderRight",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -349,7 +349,7 @@
     {
       "name": "borderBlock",
       "label": "borderBlock",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -364,7 +364,7 @@
     {
       "name": "borderInline",
       "label": "borderInline",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -379,7 +379,7 @@
     {
       "name": "borderInlineStart",
       "label": "borderInlineStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -394,7 +394,7 @@
     {
       "name": "borderInlineEnd",
       "label": "borderInlineEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -409,7 +409,7 @@
     {
       "name": "borderBlockStart",
       "label": "borderBlockStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -424,7 +424,7 @@
     {
       "name": "borderBlockEnd",
       "label": "borderBlockEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -591,7 +591,7 @@
     {
       "name": "roundedTopRight",
       "label": "roundedTopRight",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -606,7 +606,7 @@
     {
       "name": "roundedTopLeft",
       "label": "roundedTopLeft",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -621,7 +621,7 @@
     {
       "name": "roundedBottomLeft",
       "label": "roundedBottomLeft",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -636,7 +636,7 @@
     {
       "name": "roundedBottomRight",
       "label": "roundedBottomRight",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -651,7 +651,7 @@
     {
       "name": "roundedStartStart",
       "label": "roundedStartStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -666,7 +666,7 @@
     {
       "name": "roundedStartEnd",
       "label": "roundedStartEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -680,7 +680,7 @@
     {
       "name": "roundedEndStart",
       "label": "roundedEndStart",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -694,7 +694,7 @@
     {
       "name": "roundedEndEnd",
       "label": "roundedEndEnd",
-      "tsType": "string | number | boolean | undefined",
+      "tsType": "TBoxValue | undefined",
       "runtimeType": [
         "Boolean",
         "Number",
@@ -762,7 +762,7 @@
     {
       "name": "label",
       "label": "label",
-      "slotPropsType": "any",
+      "slotPropsType": "{ text?: string | undefined; color?: TColor; props: any; }",
       "source": "types"
     }
   ],

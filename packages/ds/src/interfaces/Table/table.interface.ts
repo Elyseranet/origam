@@ -6,7 +6,7 @@ import type {
 import type { IDensityProps } from '../Commons/density.interface'
 import type { IDimensionProps } from '../Commons/dimension.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IHoverProps } from '../Commons/hover.interface'
+import type { IHoverEmits, IHoverProps } from '../Commons/hover.interface'
 import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
@@ -20,7 +20,7 @@ export interface ITableProps extends ICommonsComponentProps, IBorderProps, IRoun
     ariaRowcount?: number
 }
 
-export interface ITableEmits {}
+export interface ITableEmits extends IHoverEmits {}
 
 /** Slot signatures for `<OrigamTable>`. */
 export interface ITableSlots {

@@ -47,7 +47,7 @@ export const FEATURE_ICON_TILE_VARS: CSSProperties = {
     '--origam-sheet---background': 'var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.1))'
 } as CSSProperties
 
-/** Icon tint = sobre action-primary fgSubtle, via the icon's bg/colour token. */
+/** Icon tint = origam action-primary fgSubtle, via the icon's bg/colour token. */
 export const FEATURE_ICON_VARS: CSSProperties = {
     '--origam-icon---color': 'var(--origam-color__action--primary---fgSubtle, #6d28d9)'
 } as CSSProperties

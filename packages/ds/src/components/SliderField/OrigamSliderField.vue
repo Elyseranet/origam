@@ -1417,8 +1417,7 @@
 
 			#{$this}__input {
 				writing-mode: vertical-lr;
-				-webkit-appearance: slider-vertical;
-				appearance: slider-vertical;
+				direction: rtl;
 				width: var(--origam-slider-field__thumb---size, 20px);
 				height: 100%;
 				top: 0;

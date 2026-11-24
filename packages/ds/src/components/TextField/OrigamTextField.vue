@@ -33,8 +33,8 @@
 						@click="handleControlClick"
 						@mousedown="handleControlMousedown"
 						@click:clear="handleClear"
-						@click:prepend-inner="handleClickPrependInner"
-						@click:append-inner="handleClickAppendInner"
+						@click:prepend-inner="prependInnerRelay"
+						@click:append-inner="appendInnerRelay"
 				>
 					<template
 							v-if="slots.loader"
@@ -278,8 +278,8 @@
 	 ********************************************************/
 
 	const {
-		onClickPrependInner: handleClickPrependInner,
-		onClickAppendInner: handleClickAppendInner
+		appendInnerRelay,
+		prependInnerRelay
 	} = useAdjacentInner(props)
 
 	/*********************************************************
@@ -493,7 +493,7 @@
 				// (some chars may have been silently dropped).
 				if (el.value !== r.masked) el.value = r.masked
 				const pos = r.masked.length
-				try { el.setSelectionRange(pos, pos) } catch (err) { void err }
+				try { el.setSelectionRange(pos, pos) } catch { /* selection range unsupported on this input type */ }
 			})
 			return
 		}

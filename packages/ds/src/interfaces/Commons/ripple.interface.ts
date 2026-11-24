@@ -5,7 +5,7 @@ export interface IRippleProps {
 }
 
 export interface IRippleDirectiveBinding extends Omit<DirectiveBinding, 'modifiers' | 'value'> {
-    value?: boolean | { class: string }
+    value?: boolean | IRippleOptions
     modifiers: {
         center?: boolean
         circle?: boolean

@@ -386,7 +386,9 @@
 		]
 	})
 	const listItemTabIndex = computed(() => {
-		return isClickable.value ? (list ? -2 : 0) : undefined
+		if (!isClickable.value) return undefined
+
+		return list ? -2 : 0
 	})
 
 	const setActiveLink = () => {
@@ -751,10 +753,6 @@
 			opacity: var(--origam-list-item---opacity, 0.6);
 		}
 
-		&--link {
-			cursor: var(--origam-list-item---cursor, pointer);
-		}
-
 		&--one-line {
 			#{$this}__subtitle {
 				-webkit-line-clamp: 1;
@@ -813,6 +811,15 @@
 		}
 
 		&--link {
+			cursor: var(--origam-list-item---cursor, pointer);
+
+			// Focus ring (#1358) — same semantic token as Btn / FileField: a theme re-colours it
+			// via `--origam-color__border---focus`. Inset so the list's overflow can't clip it.
+			&:focus-visible {
+				outline: var(--origam-border__width---2, 2px) solid var(--origam-color__border---focus, currentColor);
+				outline-offset: calc(-1 * var(--origam-border__width---2, 2px));
+			}
+
 			&:hover,
 			&:focus-visible {
 				> #{$this}__overlay {

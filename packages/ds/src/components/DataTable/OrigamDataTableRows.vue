@@ -340,7 +340,8 @@
 	const groupHeaderSlotProps = (item: IDataTableGroup, index: number): IDataTableGroupHeaderSlot => {
 		const slotPropsLocal = slotProps(item, index)
 
-		return Object.assign({}, slotPropsLocal, {
+		return {
+			...slotPropsLocal,
 			index,
 			item,
 			columns: columns.value,
@@ -351,7 +352,7 @@
 			toggleSelect,
 			toggleGroup,
 			isGroupOpen
-		})
+		}
 	}
 	/*********************************************************
 	 * Props reellement declarees par la ligne d'en-tete de groupe
@@ -386,7 +387,8 @@
 	const itemSlotProps = (item: any, index: number): IDataTableItemSlot => {
 		const slotPropsLocal = slotProps(item, index)
 
-		return Object.assign({}, slotPropsLocal, {
+		return {
+			...slotPropsLocal,
 			props: mergeProps(
 					{
 						key: `item_${item.key ?? item.index}`,
@@ -430,7 +432,7 @@
 							})
 							: props.rowProps
 			)
-		})
+		}
 	}
 
 	/*********************************************************

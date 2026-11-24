@@ -13,12 +13,9 @@ import { origamThemes } from '~/themes/origam.theme'
  * Brand identities the live demo cycles through.
  *
  * ⛔ MEASURED, not assumed: these are the theme NAMES that actually emit a
- * `[data-theme="…"]` token block in the running app. `sobre` is deliberately
- * ABSENT — it appears in `THEME_CHIPS` (home page) but no `IOrigamTheme`
- * carries that name, so `[data-theme="sobre"]` matches only 5 declarations
- * (a `.home-themes__chip` hack in HomeThemes.vue) and the sub-tree silently
- * falls back to the root tokens. Listing it would show the visitor the same
- * rendering twice and call it two identities.
+ * `[data-theme="…"]` token block in the running app. The legacy `sobre` name
+ * is gone (#245): the `THEME_CHIPS` chip is now `origam`, the baseline
+ * identity listed first below.
  */
 export const WHY_DEMO_THEMES: ReadonlyArray<{ key: string, themes: IOrigamTheme[] }> = [
     { key: 'origam', themes: origamThemes },

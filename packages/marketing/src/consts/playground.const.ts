@@ -33,11 +33,11 @@ import { OrigamCard, OrigamTitle, OrigamBtn } from 'origam'
  * `bgColor`/`rounded` reject `var(--origam-…)` (they expect a TIntent / a
  * radius literal, and warn+deprecate a raw var). The frame surface/radius are
  * non-intent semantic tokens, so — per the project color policy — we paint
- * the sheet's public bg/radius custom-props with the sobre tokens directly.
+ * the sheet's public bg/radius custom-props with the origam tokens directly.
  * Border colour/width still ride the Sheet's typed `border`/`borderColor`
  * props in the template.
  *
- *   bg     #fafafa → --origam-color__surface---raised (sobre)
+ *   bg     #fafafa → --origam-color__surface---raised (origam)
  *   shadow         → --origam-shadow---card-elevated (marketing display token)
  *
  * Radius rides the typed `rounded="var(--origam-radius---lg)"` prop now

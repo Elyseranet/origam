@@ -106,7 +106,6 @@
 			>
 				<origam-messages
 						:id="messagesId"
-						:active="hasMessages"
 						:messages="messages"
 				>
 					<template
@@ -525,10 +524,6 @@
 			}
 		}
 
-		&--disabled {
-			pointer-events: none;
-		}
-
 		&--vertical {
 			#{$this}__content {
 				grid-template-areas: "field field" "confirm confirm";
@@ -563,6 +558,8 @@
 		}
 
 		&--disabled {
+			pointer-events: none;
+
 			#{$this}__details,
 			#{$this}__prepend,
 			#{$this}__append {

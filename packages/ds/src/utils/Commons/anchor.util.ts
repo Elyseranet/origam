@@ -4,6 +4,19 @@ import { AXIS } from '../../enums/Commons/drag.enum'
 
 import type { TAnchor, TBlock, TInline, TParsedAnchor } from '../../types/Commons/anchor.type'
 
+/*********************************************************
+ * defaultAlign
+ *
+ * @description
+ * Default alignment of a side when the anchor carries none.
+ ********************************************************/
+function defaultAlign (side: TBlock | TInline | 'center') {
+    if (BLOCK_ARRAY.includes(side as TBlock)) return 'left'
+    if (INLINE_ARRAY.includes(side as TInline)) return 'top'
+
+    return 'center'
+}
+
 /**
  * Parse anchor.
  *
@@ -12,11 +25,7 @@ import type { TAnchor, TBlock, TInline, TParsedAnchor } from '../../types/Common
 export function parseAnchor (anchor: TAnchor) {
     const [side, initialAlign] = anchor.split(' ') as [TBlock | TInline | 'center', TBlock | TInline | 'center' | undefined]
 
-    const align = !initialAlign
-        ? BLOCK_ARRAY.includes(side as TBlock) ? 'left'
-            : INLINE_ARRAY.includes(side as TInline) ? 'top'
-                : 'center'
-        : initialAlign
+    const align = initialAlign || defaultAlign(side)
 
     return {side, align} as TParsedAnchor
 }

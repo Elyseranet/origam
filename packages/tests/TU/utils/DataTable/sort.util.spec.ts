@@ -8,6 +8,71 @@ function makeItem (raw: RawItem) {
     return { raw, value: raw }
 }
 
+// #1398 — characterization of the generic comparison path, recorded on the
+// unrefactored compareBySortItem and kept green after splitting it.
+describe('sortItems — generic path characterization (#1398)', () => {
+    const t = { transform: (item: any) => item.raw as Record<string, any> }
+    const run = (vals: unknown[], order?: 'asc' | 'desc') =>
+        sortItems(vals.map(v => makeItem({ k: v })), [{ key: 'k', order }], t).map(i => i.raw.k)
+
+    it('compares numeric strings numerically, not lexically', () => {
+        expect(run(['10', '9', '100', '1'])).toEqual(['1', '9', '10', '100'])
+    })
+    it('mixes null, empty string, numbers and text', () => {
+        expect(run(['b', 3, null, '', 'A', undefined, 1])).toMatchInlineSnapshot(`
+          [
+            null,
+            "",
+            undefined,
+            1,
+            3,
+            "A",
+            "b",
+          ]
+        `)
+    })
+    it('desc reverses mixed values', () => {
+        expect(run(['b', 3, null, 'A', 1], 'desc')).toMatchInlineSnapshot(`
+          [
+            "b",
+            "A",
+            3,
+            1,
+            null,
+          ]
+        `)
+    })
+    it('compares dates numerically and falls back to strings when only one is a Date', () => {
+        const d1 = new Date(2020, 0, 1)
+        const d2 = new Date(2019, 0, 1)
+        expect(run([d1, d2])).toEqual([d2, d1])
+        // timezone-independent: compare identities, not ISO strings
+        expect(run([d1, 'zzz', d2])).toEqual([d2, d1, 'zzz'])
+    })
+    it('treats case-insensitively equal values as ties (stable)', () => {
+        expect(run(['B', 'a', 'b', 'A'])).toMatchInlineSnapshot(`
+          [
+            "a",
+            "A",
+            "B",
+            "b",
+          ]
+        `)
+    })
+    it('custom comparator null on one key skips to the next key', () => {
+        const items = [makeItem({ k: 1, j: 2 }), makeItem({ k: 1, j: 1 })]
+        const res = sortItems(items, [{ key: 'k' }, { key: 'j' }], {
+            ...t, sortFunctions: { k: () => null as never }
+        }).map(i => i.raw.j)
+        expect(res).toMatchInlineSnapshot(`
+          [
+            1,
+            2,
+          ]
+        `)
+    })
+})
+
 describe('sortItems', () => {
     describe('single-key sort — asc (default)', () => {
         it('sorts numbers ascending', () => {

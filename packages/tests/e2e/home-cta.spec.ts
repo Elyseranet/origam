@@ -106,23 +106,23 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
     // deux OrigamBtn ("Get started" + "Read docs"). Les clés i18n home.cta.install /
     // home.cta.copy / home.cta.copied ont été supprimées intentionnellement.
 
-    // ── 6. Sobre computed-style assertions (≥3) ────────────────────────────
+    // ── 6. origam computed-style assertions (≥3) ────────────────────────────
 
-    test('Sobre — la section CTA a un <nav> contenant exactement 2 boutons', async ({ page }) => {
+    test('origam — la section CTA a un <nav> contenant exactement 2 boutons', async ({ page }) => {
         const nav = page.locator('section.home-cta nav.home-cta__actions')
         await expect(nav).toBeVisible()
         const btns = await nav.locator('a, button').count()
         expect(btns).toBe(2)
     })
 
-    // ⛔ Les tests « Sobre — … » DEMANDENT le thème sobre, ils ne l'héritent
+    // ⛔ Les tests « origam — … » DEMANDENT le thème origam (identité ex-« sobre », thème supprimé), ils ne l'héritent
     // plus du défaut du site. Ils s'appuyaient sur le fait que `sobre` était le
     // thème par défaut ; ce défaut a bougé deux fois (`sobre` → `origam` le
     // 2026-06-27, puis `origam` → `geek` le 2026-09-17) et ces tests sont
     // devenus rouges à chaque fois sans que leur objet ait changé. Voir
     // `_support/marketing-theme.ts`.
-    test('Sobre — le H2 CTA est à la taille display cta (64px)', async ({ page }) => {
-        await applyBrand(page, 'sobre')
+    test('origam — le H2 CTA est à la taille display cta (64px)', async ({ page }) => {
+        await applyBrand(page, 'origam')
 
         const title = page.locator('section.home-cta h2.home-cta__title')
         const styles = await title.evaluate(el => {
@@ -131,16 +131,16 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
         })
         // --origam-font-size---cta = 4rem = 64px
         expect(styles.size).toBe('64px')
-        // sobre text---primary = #0A0A0A = rgb(10, 10, 10)
+        // origam text---primary = #0A0A0A = rgb(10, 10, 10)
         expect(styles.color).toBe('rgb(10, 10, 10)')
     })
 
-    test('Sobre — le H2 CTA est peint avec la couleur texte-ink', async ({ page }) => {
-        await applyBrand(page, 'sobre')
+    test('origam — le H2 CTA est peint avec la couleur texte-ink', async ({ page }) => {
+        await applyBrand(page, 'origam')
 
         const title = page.locator('section.home-cta h2.home-cta__title')
         const color = await title.evaluate(el => getComputedStyle(el).color)
-        // sobre text---ink = #0A0A0A = rgb(10, 10, 10)
+        // origam text---ink = #0A0A0A = rgb(10, 10, 10)
         expect(color).toBe('rgb(10, 10, 10)')
     })
 

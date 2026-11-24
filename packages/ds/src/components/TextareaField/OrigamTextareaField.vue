@@ -32,8 +32,8 @@
 					@click="handleControlClick"
 					@mousedown="handleControlMousedown"
 					@click:clear="handleClear"
-					@click:prepend-inner="handleClickPrependInner"
-					@click:append-inner="handleClickAppendInner"
+					@click:prepend-inner="prependInnerRelay"
+					@click:append-inner="appendInnerRelay"
 			>
 				<template
 						v-if="slots.loader"
@@ -433,8 +433,8 @@
 	 ********************************************************/
 
 	const {
-		onClickAppendInner: handleClickAppendInner,
-		onClickPrependInner: handleClickPrependInner
+		appendInnerRelay,
+		prependInnerRelay
 	} = useAdjacentInner(props)
 
 	/*********************************************************
@@ -895,6 +895,8 @@
 		}
 
 		:deep(textarea) {
+			// UA `fieldtext` is black: inherit the field colour like `.origam-field__input` (#1150)
+			color: inherit;
 			opacity: var(--origam-textarea-field__textarea---opacity, 0);
 			flex: 1;
 			min-width: 0;
