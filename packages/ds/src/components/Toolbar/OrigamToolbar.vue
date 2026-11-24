@@ -127,7 +127,7 @@
 		'OrigamToolbar',
 		'modelValue',
 		'the toolbar has no open/closed state to bind — nothing reads this value.',
-		() => props.modelValue !== undefined
+		() => props.modelValue !== true
 	)
 	const {isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active'})
 	// `colorClasses` / `colorStyles` MUST come from `useStateEffect` so the

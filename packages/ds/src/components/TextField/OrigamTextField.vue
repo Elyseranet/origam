@@ -33,8 +33,8 @@
 						@click="handleControlClick"
 						@mousedown="handleControlMousedown"
 						@click:clear="handleClear"
-						@click:prepend-inner="handleClickPrependInner"
-						@click:append-inner="handleClickAppendInner"
+						@click:prepend-inner="prependInnerRelay"
+						@click:append-inner="appendInnerRelay"
 				>
 					<template
 							v-if="slots.loader"
@@ -278,8 +278,8 @@
 	 ********************************************************/
 
 	const {
-		onClickPrependInner: handleClickPrependInner,
-		onClickAppendInner: handleClickAppendInner
+		appendInnerRelay,
+		prependInnerRelay
 	} = useAdjacentInner(props)
 
 	/*********************************************************
