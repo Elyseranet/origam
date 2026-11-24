@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamDataTable` : le tri des colonnes est atteignable au clavier (#1341)
+
+- Cause : le tri n'était déclenché que par un `@click` sur le `<th>`, sans élément focusable.
+- Correctif : une colonne triable rend son contenu dans un `<button type="button">` (motif APG « Sortable Table »), activable à Entrée et Espace ; `aria-sort` reste sur le `<th>`. Le rendu visuel est inchangé (reset natif du bouton).
+
 ### Fixed — `OrigamDatePickerField` : le menu ouvert est un `dialog` relié au combobox, plus un `role="menu"` sans `menuitem` (#1382)
 
 - Cause : `OrigamMenu` pose `role="menu"` sur sa surface ; le contenu d'un date picker est un calendrier, pas des `menuitem` (`aria-required-children`, critical). Le combobox ne pointait vers aucune surface.
