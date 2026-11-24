@@ -61,9 +61,12 @@ test('multiple : un clic DANS la case (inert) bascule l\'option, et la listbox n
     await expect(sandbox.locator('[role="listbox"]')).not.toHaveAttribute('aria-live', /.+/)
     const spain = sandbox.locator('[role="option"]', { hasText: 'Spain' })
     await expect(spain).toHaveAttribute('aria-selected', 'false')
-    const box = await spain.locator('.origam-checkbox-btn').first().boundingBox()
-    expect(box).not.toBeNull()
-    // boundingBox est relatif à la page principale : clic souris réel au centre de la case.
-    await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2)
+    const pos = await spain.evaluate((el) => {
+        const r = el.getBoundingClientRect()
+        const c = el.querySelector('.origam-checkbox-btn')!.getBoundingClientRect()
+        return { x: c.left + c.width / 2 - r.left, y: c.top + c.height / 2 - r.top }
+    })
+    // Clic réel aux coordonnées du centre de la case (inert) : il doit atteindre la ligne d'option.
+    await spain.click({ position: pos })
     await expect(spain).toHaveAttribute('aria-selected', 'true')
 })
