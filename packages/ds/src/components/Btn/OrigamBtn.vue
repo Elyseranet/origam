@@ -1117,11 +1117,11 @@
 		 * The root keeps its pointer events so `cursor: not-allowed` can show (`pointer-events: none` hands the cursor to the parent). A native `disabled` <button> fires no click, an anchor is stopped by `handleClickCapture`, and the hover surfaces are switched off here and on the `plain` / `ghost` hover rules (`:not(--disabled)`).
 		 *
 		 * @description
-		 * `opacity` is written directly: `plain` sets its own `opacity`, which beat the `--origam-btn---opacity` var and left a disabled plain button at 70 %.
+		 * No opacity veil: the grey tokens carry the state (owner decision). `opacity: 1` is written directly because `plain` sets its own `opacity` (70 %). `--origam-btn---opacity-disabled` is therefore no longer read.
 		 ********************************************************/
 		&--disabled {
 			cursor: not-allowed;
-			opacity: var(--origam-btn---opacity-disabled, 0.5);
+			opacity: 1;
 
 			> #{$this}__overlay {
 				--origam-btn__overlay---opacity: 0;

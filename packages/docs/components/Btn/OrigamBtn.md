@@ -490,8 +490,9 @@ The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
   - A disabled button shows `cursor: not-allowed` (the root keeps its pointer
     events; a disabled anchor's click is swallowed by the component). It reads
     `--origam-btn---background-color-disabled` / `--origam-btn---color-disabled`
-    (grey, not a faded brand colour) under the `--origam-btn---opacity-disabled`
-    veil; `text` / `outlined` / `plain` / `ghost` keep their see-through fill, and
+    (grey, not a faded brand colour) with **no opacity veil** (the label stays
+    around 2:1 against its fill; `--origam-btn---opacity-disabled` is no longer
+    read); `text` / `outlined` / `plain` / `ghost` keep their see-through fill, and
     the automatic contrast correction (`v-contrast`) is off while disabled.
 - ⚠️ **Icon-only mode needs an `aria-label` you supply yourself.** The
   component does **not** derive one from the `icon` prop, and there is no

@@ -84,6 +84,7 @@
     "--origam-btn--warning---background-color",
     "--origam-btn--warning---color",
     "--origam-card---box-shadow-elevated",
+    "--origam-btn---opacity-disabled",
     "--origam-card---overlay-opacity-disabled",
     "--origam-carousel---aspect-ratio",
     "--origam-carousel---transition-duration",
