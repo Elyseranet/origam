@@ -144,6 +144,20 @@
 		</Variant>
 
 		<Variant
+				title="Prop - color on statuses"
+				:init-state="() => useStoryInitState<Partial<IStepperProps>>({ color: 'success' })"
+		>
+			<template #default="{ state }">
+				<origam-stepper :items="defaultItems" :model-value="1" :color="state.color" />
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IStepperProps>({ modelValue: 1, orientation: 'horizontal', clickable: false, showConnectors: true, color: 'primary' })"
 		>

@@ -138,8 +138,8 @@ Disable connectors with `:show-connectors="false"`.
 | `--origam-stepper---indicator-active-bg` | `color.action.primary.bg` | Active indicator background |
 | `--origam-stepper---indicator-done-bg` | `color.action.primary.bg` | Done indicator background |
 | `--origam-stepper---indicator-error-bg` | `color.feedback.danger.bg` | Error indicator background |
-| `--origam-stepper---color-active` | `--origam-stepper---color` | Active indicator colour (text, border, tint) |
-| `--origam-stepper---color-done` | `--origam-stepper---color` | Done indicator colour (text, border, tint) |
+| `--origam-stepper---color-active` | `--origam-stepper---color` | Active indicator colour. The stepper `color` prop wins over it |
+| `--origam-stepper---color-done` | `--origam-stepper---color` | Done indicator colour. The stepper `color` prop wins over it |
 | `--origam-stepper-item__title---white-space` | `nowrap` | Title wrapping (`normal` to allow line breaks) |
 | `--origam-stepper-item__subtitle---white-space` | `nowrap` | Subtitle wrapping (horizontal) |
 | `--origam-stepper-item--vertical__subtitle---white-space` | `normal` | Subtitle wrapping in `vertical` orientation |

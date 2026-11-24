@@ -1117,7 +1117,7 @@
             "title_line1": "One design system.",
             "title_line2": "Every brand.",
             "subtitle": "Hand-maintained, props-first design tokens — multi-theme out of the box. Switch between light, dark or your custom brand at runtime, with zero remount.",
-            "chip_sobre": "Sobre",
+            "chip_origam": "Origam",
             "chip_glass": "Glass",
             "chip_geek": "Geek",
             "chip_cartoon": "Cartoon",
@@ -1878,7 +1878,6 @@
             "editorial": "Editorial",
             "material": "Material",
             "ecom": "E-commerce",
-            "sobre": "Sobre",
             "label": "Preset",
             "none": "— none —"
         },

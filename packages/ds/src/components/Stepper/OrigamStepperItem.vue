@@ -147,7 +147,8 @@
 		`origam-stepper-item--${resolvedStatus.value}`,
 		`origam-stepper-item--${orientation.value}`,
 		{
-			'origam-stepper-item--clickable': isClickable.value
+			'origam-stepper-item--clickable': isClickable.value,
+			'origam-stepper-item--colored': !!stepper?.color.value
 		},
 		props.class
 	])
@@ -237,6 +238,14 @@
 						color-mix(in srgb, #{$status-color} 16%, transparent)
 					);
 				}
+			}
+
+			// The stepper's own `color` prop wins over the per-status tokens: the item
+			// inherits the colour the stepper root already resolved (class or inline).
+			#{$this}--colored &--active,
+			#{$this}--colored &--done {
+				color: inherit;
+				border-color: currentColor;
 			}
 
 			&--error {

@@ -207,8 +207,8 @@ test.describe('HomeShowcase — AvatarGroup theming (#263)', () => {
     const firstGroupItem = (page: import('@playwright/test').Page) =>
         page.locator('[data-cy="showcase-avatar-group"] .origam-avatar-group__item').first()
 
-    test('baseline theme ("sobre"): no border, but the separation ring is present (zero regression)', async ({ page, baseURL }) => {
-        await gotoWithTheme(page, baseURL, 'sobre', 'light')
+    test('baseline theme ("origam"): no border, but the separation ring is present (zero regression)', async ({ page, baseURL }) => {
+        await gotoWithTheme(page, baseURL, 'origam', 'light')
         const item = firstGroupItem(page)
         await expect(item).toBeVisible()
 
