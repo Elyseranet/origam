@@ -154,6 +154,7 @@ const GREEN_SPECS = [
     'color-picker-field-typing.spec.ts',
     'date-picker-field-typing.spec.ts',
     'date-picker-field-aria.spec.ts',
+    'color-picker-field-aria.spec.ts',
     'theme-provider.spec.ts',
     'textarea-richtext.spec.ts',
     // #1267 — tokens kv de DataList : defauts inchanges + effet mesure par token.

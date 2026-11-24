@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamColorPickerField` : menu ouvert en `role="dialog"` avec `aria-controls` (#1458)
+
+- Le menu gardait le `role="menu"` d'`OrigamMenu` sans `menuitem` (`aria-required-children`) et le combobox n'avait pas d'`aria-controls`. Le menu est désormais un `dialog` nommé par le `label`, relié au combobox par `aria-controls`, comme `OrigamDatePickerField` (#1382). Le bloc ARIA commun aux deux champs (`menuId`, `role="dialog"`, `aria-label`, `aria-controls`) est factorisé dans le composable `usePopupDialogAria`, consommé par les deux.
+
 ### Fixed — `OrigamField` : l'`<input>` natif n'a plus de padding propre, la hauteur minimale suit `--origam-input---line-height` (#1280)
 
 - Le `<input>` / `<textarea>` natif gardait le padding du navigateur (`1px 2px`) : le texte démarrait 2 px après le retrait du champ, contre 0 px pour le texte d'un `OrigamSelect`. `padding: 0` posé sur l'élément natif ; texte désormais aligné au retrait (`--origam-field---padding-start`) sur tous les champs. Hauteur des champs inchangée (36 px, textarea 62/70 px) ; la boîte de l'input perd 2 px de hauteur (padding vertical UA), texte recentré.
