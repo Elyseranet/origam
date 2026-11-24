@@ -23,6 +23,14 @@ This project follows [Semantic Versioning](https://semver.org).
 - Le `<input>` / `<textarea>` natif gardait le padding du navigateur (`1px 2px`) : le texte démarrait 2 px après le retrait du champ, contre 0 px pour le texte d'un `OrigamSelect`. `padding: 0` posé sur l'élément natif ; texte désormais aligné au retrait (`--origam-field---padding-start`) sur tous les champs. Hauteur des champs inchangée (36 px, textarea 62/70 px) ; la boîte de l'input perd 2 px de hauteur (padding vertical UA), texte recentré.
 - `min-height` de `.origam-field__input` (et du préfixe/suffixe) comptait une ligne de `1.5rem` quel que soit l'interligne ; elle vaut maintenant `calc(1rem * var(--origam-input---line-height, 1.5))` — identique au défaut (1,5), suit un interligne personnalisé.
 
+### Fixed — `OrigamNumberField` / champs : basculer `hideControls` (ou un slot `*Inner`) après le premier rendu met à jour la zone (#1448)
+
+- `useAdjacentInner` lisait `slots` (non réactif) dans des `computed` mis en cache : un slot `prependInner` / `appendInner` / `clear` qui apparaît ou disparaît à l'exécution laissait la zone vide rendue. Les `computed` sont désormais invalidés avant chaque mise à jour. Touche tous les consommateurs (`OrigamField`, `OrigamTextField`, `OrigamTextareaField`, `OrigamPasswordField`, `OrigamFileField`, `OrigamNumberField`).
+
+### Fixed — `OrigamNumberField` : plus de `div` de contrôles vide dans `prependInner` sans `split` (#1449)
+
+- Sans `split`, les contrôles vivent dans `appendInner` ; la zone `prependInner` vide décalait le texte de 12 px au lieu des 16 px d'un champ simple. Le texte démarre désormais à la même position qu'avec `hideControls`.
+
 ### Fixed — `OrigamSelect` : un seul `combobox`, plus de `role="menu"` autour du `listbox` (#1331)
 
 - Mesure (Chromium, axe-core, menu ouvert, Histoire statique) : le second `role="combobox"` sur `.origam-field` n'existe plus sur `develop` (corrigé par #1247) ; restait l'overlay `role="menu"` posé en dur par `OrigamMenu` autour du `listbox` du select (`aria-required-children`), et, depuis #1426, les lignes subheader / séparateur (`<hr role="separator">`) enfants directs du `listbox`.

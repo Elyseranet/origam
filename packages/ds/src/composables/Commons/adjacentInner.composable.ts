@@ -1,4 +1,4 @@
-import { computed, useSlots } from 'vue'
+import { computed, onBeforeUpdate, shallowRef, useSlots } from 'vue'
 import type { IAdjacentInnerProps } from '../../interfaces/Commons/adjacent.interface'
 import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 import { hasEvent } from '../../utils/Commons/commons.util'
@@ -48,19 +48,33 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
 
     const slots = useSlots()
 
+    /*********************************************************
+     * slotsVersion
+     *
+     * @description
+     * ⛔ #1448 — `slots` is not reactive: a slot that appears/disappears
+     * on a parent re-render never invalidated the computeds below.
+     * Bumped before each update so they re-read it.
+     ********************************************************/
+    const slotsVersion = shallowRef(0)
+    onBeforeUpdate(() => { slotsVersion.value++ })
+
     const hasPrependInnerMedia = computed(() => {
         return !!(props.prependInnerAvatar || props.prependInnerIcon)
     })
     const hasPrependInner = computed(() => {
+        void slotsVersion.value
         return slots.prependInner || hasPrependInnerMedia.value
     })
     const hasAppendInnerMedia = computed(() => {
         return !!(props.appendInnerAvatar || props.appendInnerIcon)
     })
     const hasAppendInner = computed(() => {
+        void slotsVersion.value
         return slots.appendInner || hasAppendInnerMedia.value
     })
     const hasClear = computed(() => {
+        void slotsVersion.value
         return props.clearable || slots.clear
     })
 
