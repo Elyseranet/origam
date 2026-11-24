@@ -135,11 +135,12 @@ jobs:
         run: pnpm -F @origam/marketing docs:tokens
 
       # CRITICAL: seed the ephemeral DB from the committed fixtures BEFORE the
-      # sync. The curated kinds (component catalog, composables, directives,
-      # types) are NOT source-extracted — without this step the DB only holds
-      # what docs:sync extracts (enums/interfaces/consts/utils) and docs:dump
-      # then exports fixtures with the curated kinds EMPTIED (a destructive
-      # auto-PR — this actually happened: PR #186 wiped component.json).
+      # sync. docs:sync re-extracts all 8 families, but each one only claims the
+      # columns of its RESYNC_POLICY (src/consts/doc-sync.const.ts): editorial
+      # columns, curated composable/component content and the like come from
+      # the fixtures only. Without this step docs:dump would export fixtures
+      # with those curated parts EMPTIED (a destructive auto-PR — this actually
+      # happened: PR #186 wiped component.json).
       - name: Seed DB from committed fixtures
         run: pnpm -F @origam/marketing docs:seed
 
