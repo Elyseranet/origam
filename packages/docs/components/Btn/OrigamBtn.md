@@ -250,6 +250,8 @@ utility wins on its own and this inline path is the thing to delete.
 </template>
 ```
 
+A Btn with `to` is painted active (`origam-btn--active`) only when `to` matches the current route **exactly** (vue-router's `isExactActive`, query included when `exact` is set). It is **not** active just because its route is a parent of the current one. An explicit `active` prop always wins, and inside an `<OrigamBtnToggle>` the selection (not the route) owns the active state.
+
 ## Slots
 
 | Slot | Slot props | Description |

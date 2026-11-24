@@ -41,6 +41,12 @@ This project follows [Semantic Versioning](https://semver.org).
 - Correctif : un Btn désactivé lit les deux jetons (le remplissage passe par `--origam-btn---background-color`, donc `text` / `outlined` / `plain` / `ghost` gardent leur fond transparent), pose `cursor: not-allowed`, garde ses événements de pointeur (le clic d'une ancre désactivée est avalé par `handleClickCapture`) et désactive hover / `v-contrast`. Mesuré avant → après en Chromium : curseur `pointer` → `not-allowed`, `flat` primaire `rgb(124, 58, 237)` → `rgb(230, 230, 230)`, `plain` opacité `0.7` → `0.5`.
 - Rupture assumée (sans consommateur) : un Btn désactivé n'est plus `pointer-events: none`.
 
+### Fixed — `OrigamBtn` : un bouton dont `to` est une route parente n'est plus peint actif (#1125)
+
+- Cause : un Btn seul avec `to` prenait l'état actif sur le `isActive` de vue-router, vrai dès que la route du bouton figure dans la chaîne matchée (route parente comprise).
+- Correctif (décision du propriétaire) : actif seulement sur correspondance EXACTE (`isExactActive`, query comprise comme la branche `exact`). Un `to="/login"` sur `/login` reste actif ; `to="/parent"` sur `/parent/enfant` ne l'est plus. `active` explicite prioritaire ; `BtnToggle` (`group.isSelected`) inchangé. `useLink` expose `isExactActive` ; `ListItem` / `BreadcrumbItem` gardent `isActive`.
+- Rupture assumée (sans consommateur) : les items de `OrigamBottomNav` / `OrigamBtnGroup` portant `to` ne sont plus actifs sur une sous-route.
+
 ## [2.43.0] - 2026-11-22
 
 ### Changed — complexité de `v-contrast` (#1398)

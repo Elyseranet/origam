@@ -248,7 +248,13 @@
 		}
 
 		if (link.isLink.value) {
-			return link.isActive?.value
+			/*********************************************************
+			 * Link active (#1125)
+			 *
+			 * @description
+			 * Exact match only: a parent route in the matched chain is not "the current page". An explicit `active` still wins (above).
+			 ********************************************************/
+			return link.isExactActive?.value
 		}
 
 		return active.value
