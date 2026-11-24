@@ -396,7 +396,7 @@
 	 ********************************************************/
 
 	const labelProps = computed(() => {
-		const defaultLabelProps = origamLabelRef.value?.filterProps(props, ['text', 'class', 'style'])
+		const defaultLabelProps = origamLabelRef.value?.filterProps(props, ['text', 'class', 'style', 'id'])
 
 		return {
 			class: ['origam-field__label'],
@@ -432,7 +432,7 @@
 		return !props.singleLine && !!(props.label || slots.floatingLabel)
 	})
 	const floatingLabelProps = computed(() => {
-		const defaultFloatingLabelProps = origamFloatingLabelRef.value?.filterProps(props, ['text', 'class', 'style'])
+		const defaultFloatingLabelProps = origamFloatingLabelRef.value?.filterProps(props, ['text', 'class', 'style', 'id'])
 
 		return {
 			class: ['origam-field__label', 'origam-field__label--floating'],
@@ -589,7 +589,7 @@
 					const scale = parseFloat(targetStyle.getPropertyValue('--origam-field__label---font-size'))
 					const color = targetStyle.getPropertyValue('color')
 
-					el.style.visibility = 'visible'
+					el.style.clipPath = 'none'
 					targetEl.style.visibility = 'hidden'
 
 					animate(el, {
@@ -601,7 +601,7 @@
 						easing: EASING.STANDARD,
 						direction: newVal ? 'normal' : 'reverse'
 					}).finished.then(() => {
-						el.style.removeProperty('visibility')
+						el.style.removeProperty('clip-path')
 						targetEl.style.removeProperty('visibility')
 					})
 				})
@@ -1188,11 +1188,17 @@
 		}
 
 		&--active {
+			/*
+			 * Le label d'origine reste visible pour les technologies d'assistance
+			 * (axe ne lit que le PREMIER label[for] : `visibility: hidden` y vidait
+			 * le nom accessible, #1149) ; il est seulement rogne visuellement.
+			 */
 			#{$this}__label {
-				visibility: hidden;
+				clip-path: inset(50%);
 
 				&--floating {
 					visibility: unset;
+					clip-path: none;
 				}
 			}
 

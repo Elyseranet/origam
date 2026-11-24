@@ -431,7 +431,9 @@ const GREEN_SPECS = [
     // rendent la même valeur en clair et en sombre. Le seul test vert des deux
     // côtés est le contrôle négatif, ce qu'on attend de lui. Vérifiée 7/7,
     // `E2E_STATIC=1`, chromium, port isolé, load average < 10.
-    'token-channels-c2-594-595.spec.ts'
+    'token-channels-c2-594-595.spec.ts',
+    // #1149 — labels du champ sans l'id de l'input ; verte (E2E_STATIC=1, chromium, port isole) ; rouge sur le parent.
+    'field-label-id.spec.ts'
 ]
 
 /**
