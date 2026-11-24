@@ -70,3 +70,45 @@ test('multiple : un clic DANS la case (inert) bascule l\'option, et la listbox n
     await spain.click({ position: pos })
     await expect(spain).toHaveAttribute('aria-selected', 'true')
 })
+
+test('région live « aucun résultat » : texte de la locale, masquée visuellement mais dans l\'arbre d\'accessibilité', async ({ page }) => {
+    // Libellé attendu lu dans la locale du DS (clé `origam.no_data_text`, celle de `noDataText`), jamais écrit en dur.
+    const en = JSON.parse(readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../../ds/src/assets/locales/en.json'), 'utf8'))
+    const noData: string = en.origam.no_data_text
+    expect(noData).toBeTruthy()
+
+    await page.goto(`/stories/story/${STORY_ID}?variantId=${STORY_ID}-${variantIndex('Multiple - closable chips')}`, { waitUntil: 'domcontentloaded' })
+    const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+    const select = sandbox.locator('[data-cy="select-closable-chips"]')
+    const live = select.locator('output.origam-select__announcement')
+
+    // Menu fermé : vide.
+    await expect(live).toHaveText('')
+
+    // Menu ouvert avec résultats : vide.
+    await select.locator('.origam-field').click()
+    await expect(sandbox.locator('[role="option"]').first()).toBeVisible()
+    await expect(live).toHaveText('')
+
+    // Filtre sans résultat : le libellé de la locale.
+    await select.locator('input').fill('zzzzzz')
+    await expect(live).toHaveText(noData)
+
+    // Masquée visuellement (1px, clip) mais ni display:none, ni visibility:hidden, ni aria-hidden.
+    const state = await live.evaluate((el) => {
+        const cs = getComputedStyle(el)
+        const r = el.getBoundingClientRect()
+        return {
+            display: cs.display, visibility: cs.visibility, ariaHidden: el.closest('[aria-hidden="true"]') !== null,
+            small: r.width <= 1 && r.height <= 1
+        }
+    })
+    expect(state.display).not.toBe('none')
+    expect(state.visibility).toBe('visible')
+    expect(state.ariaHidden).toBe(false)
+    expect(state.small).toBe(true)
+
+    // Efface le filtre : de nouveau vide.
+    await select.locator('input').fill('')
+    await expect(live).toHaveText('')
+})
