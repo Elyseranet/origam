@@ -22,9 +22,13 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 fix. See the full changelog for detail.',
+        summaryFallback: '2 additions and 3 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamBtn : disabled lit enfin les jetons grisés et affiche not-allowed (#1097)' }
+            { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamStepperItem : slots prepend / append, OrigamStepper : item-prepend / item-append (#1338)' },
+            { type: 'added', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamStepper : couleur par statut --origam-stepper---color-done / -color-active (#1339)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamStepperItem : retour à la ligne réglable, sous-titre vertical à la ligne par défaut (#1340)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamDataTable : le libellé « Items per page » du pied n\'est plus rogné à gauche (#1162)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamBtn : disabled lit enfin les jetons grisés et affiche not-allowed (#1097)' }
         ]
     },
     {
@@ -33,11 +37,12 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: '2026-11-22',
         type: 'minor',
         summaryKey: 'changelog.versions.v2430.summary',
-        summaryFallback: '3 fixes. See the full changelog for detail.',
+        summaryFallback: '1 change and 3 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.v2430.h1', textFallback: 'OrigamNumberField : plus de retrait vide avec hideControls, plus d\'écriture du modèle au montage, bornage désactivable (#1327)' },
-            { type: 'fixed', textKey: 'changelog.versions.v2430.h2', textFallback: 'OrigamTable : update:hover est déclaré (#1155)' },
-            { type: 'fixed', textKey: 'changelog.versions.v2430.h3', textFallback: 'v-contrast : un fond oklab() / oklch() n\'est plus sauté (#1131)' }
+            { type: 'changed', textKey: 'changelog.versions.v2430.h1', textFallback: 'complexité de v-contrast (#1398)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2430.h2', textFallback: 'OrigamNumberField : plus de retrait vide avec hideControls, plus d\'écriture du modèle au montage, bornage désactivable (#1327)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2430.h3', textFallback: 'OrigamTable : update:hover est déclaré (#1155)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2430.h4', textFallback: 'v-contrast : un fond oklab() / oklch() n\'est plus sauté (#1131)' }
         ]
     },
     {

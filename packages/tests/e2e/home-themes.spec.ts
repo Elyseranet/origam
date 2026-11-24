@@ -59,16 +59,16 @@ test.describe('HomeThemes section', () => {
         await expect(h2).toContainText('One design system')
     })
 
-    // ── 4. Exactly 8 brand chips (Sobre inclus en v5-phase1) ──────────────
+    // ── 4. Exactly 8 brand chips (Origam inclus en v5-phase1) ──────────────
 
-    test('renders exactly 8 brand chips (Sobre + 7 variants)', async ({ page }) => {
+    test('renders exactly 8 brand chips (Origam + 7 variants)', async ({ page }) => {
         const chips = page.locator('section.home-themes .home-themes__chips .origam-chip')
         await expect(chips).toHaveCount(8)
     })
 
     test('all 8 brand chip labels are visible', async ({ page }) => {
         const section = page.locator('section.home-themes')
-        await expect(section).toContainText('Sobre')
+        await expect(section).toContainText('Origam')
         await expect(section).toContainText('Glass')
         await expect(section).toContainText('Geek')
         await expect(section).toContainText('Cartoon')
@@ -79,7 +79,7 @@ test.describe('HomeThemes section', () => {
     })
 
     test('chips have data-cy attributes', async ({ page }) => {
-        const chipKeys = ['sobre', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
+        const chipKeys = ['origam', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
         for (const key of chipKeys) {
             const chip = page.locator(`[data-cy="themes-chip-${key}"]`)
             await expect(chip).toBeVisible()
@@ -247,13 +247,13 @@ test.describe('HomeThemes section', () => {
  * external CSS rule regardless of specificity — so every theme's active-chip
  * text override needed `!important` to actually take effect. Verified via
  * WCAG contrast ratio (not just "is it white/dark") because the fix for
- * ecom/apple/sobre dark mode required darkening the fill itself, not just
+ * ecom/apple/origam dark mode required darkening the fill itself, not just
  * swapping to white text (their brand accent is too light for white text
  * to reach 4.5:1 even once the inline-style override works).
  */
 test.describe('HomeThemes section · selected chip contrast (#28)', () => {
     const COMBOS: Array<{ theme: string; mode: 'light' | 'dark' }> = [
-        { theme: 'sobre', mode: 'light' }, { theme: 'sobre', mode: 'dark' },
+        { theme: 'origam', mode: 'light' }, { theme: 'origam', mode: 'dark' },
         { theme: 'glass', mode: 'light' }, { theme: 'glass', mode: 'dark' },
         { theme: 'cartoon', mode: 'light' }, { theme: 'cartoon', mode: 'dark' },
         { theme: 'geek', mode: 'light' }, { theme: 'geek', mode: 'dark' },

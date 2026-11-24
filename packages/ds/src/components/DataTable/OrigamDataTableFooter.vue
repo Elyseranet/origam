@@ -4,7 +4,8 @@
 			:class="dataTableFooterClasses"
 			:style="dataTableFooterStyles"
 	>
-		<origam-row>
+		<!-- #1162 : gutter nul — la marge negative du Row rognait le libelle a gauche -->
+		<origam-row :gutters="ROW_GUTTER.NONE">
 			<slot name="prepend"/>
 
 			<div class="origam-data-table-footer__items-per-page">
@@ -56,6 +57,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { ROW_GUTTER } from '../../enums/Grids/row.enum'
 
 	import type { IDataTableFooterEmits, IDataTableFooterProps, IDataTableFooterSlots } from '../../interfaces/DataTable/footer.interface'
 	import type { TOrigamPagination } from '../../types/Pagination/pagination.type'
