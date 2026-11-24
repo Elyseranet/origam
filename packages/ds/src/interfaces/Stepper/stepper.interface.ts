@@ -12,6 +12,7 @@ import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ISizeProps } from '../Commons/size.interface'
+import type { IStepperItemSlotProps } from './stepper-item.interface'
 import type { TIcon } from '../../types/Icon/icon.type'
 import type {
     TStepperItemStatus,
@@ -59,4 +60,6 @@ export interface IStepperEmits {
 export interface IStepperSlots {
     /** Overrides the whole auto-generated item list. */
     default?: () => any
+    'item-prepend'?: (props: IStepperItemSlotProps & { item: IStepperItem }) => any
+    'item-append'?: (props: IStepperItemSlotProps & { item: IStepperItem }) => any
 }

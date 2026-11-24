@@ -21,6 +21,7 @@ This project follows [Semantic Versioning](https://semver.org).
 ### Fixed — `OrigamSelect` : un seul `combobox`, plus de `role="menu"` autour du `listbox` (#1331)
 
 - Mesure (Chromium, axe-core, menu ouvert, Histoire statique) : le second `role="combobox"` sur `.origam-field` n'existe plus sur `develop` (corrigé par #1247) ; restait l'overlay `role="menu"` posé en dur par `OrigamMenu` autour du `listbox` du select (`aria-required-children`), et, depuis #1426, les lignes subheader / séparateur (`<hr role="separator">`) enfants directs du `listbox`.
+- `aria-live="polite"` retiré de la listbox ; le message « aucun résultat » est annoncé par une région `<output>` visuellement masquée hors de la listbox.
 - Correctif : le menu du select passe `role="presentation"` à l'overlay (surchargeable via `menuProps.role`) ; les lignes de structure sont `role="presentation"`.
 
 ### Fixed — `OrigamSelect` multiple : cases d'option décoratives, fermeture de pastille nommée (#1425)
@@ -28,7 +29,28 @@ This project follows [Semantic Versioning](https://semver.org).
 - La case `origam-checkbox-btn` d'une option est `aria-hidden` + `inert` : plus de contrôle focusable dans un `option` (`label` critical, `nested-interactive`), l'état reste porté par `aria-selected`.
 - Le bouton de fermeture d'une pastille se nomme `Retirer {title}` (clé `origam.select.remove_item`, en + fr) ; `chipProps.closeLabel` reste prioritaire.
 
+### Added — `OrigamStepperItem` : slots `prepend` / `append`, `OrigamStepper` : `item-prepend` / `item-append` (#1338)
+
+- `OrigamStepperItem` n'avait aucun slot ; le slot `default` d'`OrigamStepper` supprime les connecteurs. Les nouveaux slots reçoivent `{ index, status }` (+ `item` côté stepper) et gardent `show-connectors`. Sans slot, le rendu est inchangé.
+
+### Added — `OrigamStepper` : couleur par statut `--origam-stepper---color-done` / `-color-active` (#1339)
+
+- `done` et `active` partageaient `--origam-stepper---color`. Deux jetons, repli sur `---color` : rendu inchangé sans réglage. La prop `color` du stepper s'applique désormais aux items `active` et `done` (elle prime sur les jetons par statut).
+
+### Fixed — `OrigamStepperItem` : retour à la ligne réglable, sous-titre vertical à la ligne par défaut (#1340)
+
+- Jetons `--origam-stepper-item__title---white-space`, `--origam-stepper-item__subtitle---white-space` (`nowrap`) et `--origam-stepper-item--vertical__subtitle---white-space` (`normal`). Mesuré à 316 px : le sous-titre vertical `nowrap` coupé et la nav défilait ; il passe à la ligne, sans défilement. Horizontal inchangé.
+
+### Fixed — `OrigamDataTable` : le libellé « Items per page » du pied n'est plus rogné à gauche (#1162)
+
+- Cause : `OrigamDataTableFooter` enveloppait ses blocs dans un `OrigamRow` au gutter par défaut (24 px) dont la marge inline négative (−12 px) n'est compensée que par le padding des `OrigamCol` ; ici les enfants sont des `div`, rien ne compense, et avec 4 px de padding de pied le libellé sortait à −7 px (« ems per page »).
+- Correctif : `:gutters="ROW_GUTTER.NONE"` sur ce `OrigamRow` (plus de marge négative). Mesuré en Chromium, Histoire statique : bord gauche du libellé −7 px → +5 px, identique à 320 / 375 / 768 / 1280 px, modes light et dark. Le pied perd aussi sa marge verticale négative (le pied gagne en hauteur le gutter).
+
 ## [2.43.0] - 2026-11-22
+
+### Changed — complexité de `v-contrast` (#1398)
+
+- `resolvePaintedBackground` passait à 16 de complexité cognitive (seuil Sonar 15) après #1427 et #1131. Refactor pur : l'abstention (`mustAbstain`) et la composition des couches (`compositeLayers`) sont extraites, comportement identique. Complexité 16 → 10.
 
 ### Fixed — `OrigamNumberField` : plus de retrait vide avec `hideControls`, plus d'écriture du modèle au montage, bornage désactivable (#1327)
 

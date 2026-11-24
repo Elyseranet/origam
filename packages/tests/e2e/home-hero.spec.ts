@@ -3,7 +3,7 @@
  *
  * Asserts the rebuilt, DS-first Hero contract (badge = OrigamChip,
  * snippet = OrigamCode `copyable`, CTAs = OrigamBtn). The section is
- * rendered under the active `sobre` theme (T0).
+ * rendered under the active `origam` theme (T0).
  *
  *  1. Section #hero present with aria-labelledby="hero-title".
  *  2. Single <h1> contains both i18n title lines.

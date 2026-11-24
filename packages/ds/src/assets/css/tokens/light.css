@@ -2490,6 +2490,11 @@
   --origam-stepper---connector-color: var(--origam-color__border---subtle);
   --origam-stepper---connector-color-done: var(--origam-color__action--primary---bg);
   --origam-stepper---connector-thickness: var(--origam-border__width---thin);
+  --origam-stepper---color-active: var(--origam-stepper---color);
+  --origam-stepper---color-done: var(--origam-stepper---color);
+  --origam-stepper-item__title---white-space: nowrap;
+  --origam-stepper-item__subtitle---white-space: nowrap;
+  --origam-stepper-item--vertical__subtitle---white-space: normal;
   --origam-timeline---background-color: var(--origam-color__surface---default);
   --origam-timeline---color: var(--origam-color__text---primary);
   --origam-timeline---gap: var(--origam-space---4);

@@ -29,7 +29,18 @@ export interface IStepperItemEmits {
  * IStepperItemSlots
  *
  * @description
- * Slot signatures for `<OrigamStepperItem>` — none. Indicator icon,
- * title and subtitle are entirely derived from props.
+ * Slot signatures for `<OrigamStepperItem>`. Indicator icon, title and
+ * subtitle stay derived from props; `prepend` / `append` add rich content
+ * around them (a status pill, a counter, an action): `prepend` renders
+ * before the indicator, `append` after the label. `<OrigamStepper>` forwards
+ * them in `items` mode as `item-prepend` / `item-append` (connectors kept).
  ********************************************************/
-export interface IStepperItemSlots {}
+export interface IStepperItemSlotProps {
+    index: number
+    status: TStepperItemStatus
+}
+
+export interface IStepperItemSlots {
+    prepend?: (props: IStepperItemSlotProps) => any
+    append?: (props: IStepperItemSlotProps) => any
+}

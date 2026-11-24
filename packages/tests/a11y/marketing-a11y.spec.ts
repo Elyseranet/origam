@@ -129,13 +129,13 @@ test.describe('Marketing a11y — #530 fixes (Chip / Avatar / Switch / Grid)', (
         await page.goto('/')
         await settle(page)
 
-        const chip = page.locator('[data-cy="themes-chip-sobre"]')
+        const chip = page.locator('[data-cy="themes-chip-origam"]')
         await expect(chip).toHaveCount(1)
         await expect(chip).toHaveJSProperty('tagName', 'BUTTON')
         await expect(chip).toHaveAttribute('type', 'button')
 
         const results = await scanPage(page)
-            .include('[data-cy="themes-chip-sobre"]')
+            .include('[data-cy="themes-chip-origam"]')
             .analyze()
         const chipViolations = results.violations.filter(v => v.id === 'aria-allowed-attr')
         expect(chipViolations, JSON.stringify(chipViolations)).toHaveLength(0)

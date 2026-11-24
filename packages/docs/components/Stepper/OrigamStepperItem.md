@@ -39,8 +39,14 @@ stepper's `default` slot and want to lay the steps out yourself.
 
 ## Slots
 
-None. Content is driven by `title`, `subtitle` and `icon`. To render arbitrary
-step content, take over `OrigamStepper`'s `default` slot instead.
+| Slot | Props | Description |
+|---|---|---|
+| `prepend` | `{ index, status }` | Rendered before the indicator. |
+| `append` | `{ index, status }` | Rendered after the label (e.g. a status pill). |
+
+Indicator, title and subtitle remain driven by `title`, `subtitle` and `icon`.
+Without a slot the render is unchanged. In `items` mode use `OrigamStepper`'s
+`item-prepend` / `item-append` slots, which keep the connectors.
 
 ## Status resolution
 
