@@ -114,7 +114,7 @@ export function useLink (props: ILinkProps & ITagProps, attrs: SetupContext['att
         route: link?.route,
         navigate: link?.navigate,
         isExactActive,
-        isActive: link && computed(() => (props.exact ? isExactActive?.value : link.isActive?.value)),
+        isActive: link && computed(() => (props.exact ? !!isExactActive?.value : link.isActive.value)),
         href: computed(() => props.to ? link?.route.value.href : props.href)
     }
 }

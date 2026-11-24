@@ -22,14 +22,14 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '2 additions and 4 fixes. See the full changelog for detail.',
+        summaryFallback: '2 additions and 8 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamStepperItem : slots prepend / append, OrigamStepper : item-prepend / item-append (#1338)' },
-            { type: 'added', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamStepper : couleur par statut --origam-stepper---color-done / -color-active (#1339)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamStepperItem : retour à la ligne réglable, sous-titre vertical à la ligne par défaut (#1340)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamDataTable : le libellé « Items per page » du pied n\'est plus rogné à gauche (#1162)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamBtn : disabled lit enfin les jetons grisés et affiche not-allowed (#1097)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'OrigamBtn : un bouton dont to est une route parente n\'est plus peint actif (#1125)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamSelect : un seul combobox, plus de role="menu" autour du listbox (#1331)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamSelect multiple : cases d\'option décoratives, fermeture de pastille nommée (#1425)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamDataTable : le tri des colonnes est atteignable au clavier (#1341)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamDatePickerField : le menu ouvert est un dialog relié au combobox, plus un role="menu" sans menuitem (#1382)' },
+            { type: 'added', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamStepperItem : slots prepend / append, OrigamStepper : item-prepend / item-append (#1338)' },
+            { type: 'added', textKey: 'changelog.versions.unreleased.h6', textFallback: 'OrigamStepper : couleur par statut --origam-stepper---color-done / -color-active (#1339)' }
         ]
     },
     {
