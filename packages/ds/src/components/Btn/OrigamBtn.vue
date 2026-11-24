@@ -3,7 +3,7 @@
 			:is="link.tag.value"
 			:id="id"
 			v-ripple="isRipple"
-			v-contrast
+			v-contrast="!isDisabled"
 			:data-origam-color-locked="colorLocked"
 			:class="btnClasses"
 			:disabled="isDisabled || undefined"
@@ -248,7 +248,13 @@
 		}
 
 		if (link.isLink.value) {
-			return link.isActive?.value
+			/*********************************************************
+			 * Link active (#1125)
+			 *
+			 * @description
+			 * Exact match only: a parent route in the matched chain is not "the current page". An explicit `active` still wins (above).
+			 ********************************************************/
+			return link.isExactActive?.value
 		}
 
 		return active.value
@@ -345,7 +351,13 @@
 	 * The capture listener runs first on the target, so it swallows all three.
 	 ********************************************************/
 	const handleClickCapture = (e: MouseEvent) => {
-		if (!isLoading.value) return
+		/*********************************************************
+		 * Disabled anchor (#1097)
+		 *
+		 * @description
+		 * A disabled anchor is no longer shielded by `pointer-events: none`; a native disabled <button> never reaches here.
+		 ********************************************************/
+		if (!isLoading.value && !isDisabled.value) return
 
 		e.preventDefault()
 		e.stopImmediatePropagation()
@@ -478,7 +490,15 @@
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
-			colorStyles.value,
+			/*********************************************************
+			 * Disabled tokens (#1097)
+			 *
+			 * @description
+			 * Disabled reads the disabled tokens, not the brand colour; the fill goes through the base var so `text` / `outlined` / `plain` / `ghost` keep their own.
+			 ********************************************************/
+			isDisabled.value
+				? ['--origam-btn---background-color: var(--origam-btn---background-color-disabled)', 'color: var(--origam-btn---color-disabled)']
+				: colorStyles.value,
 			dimensionStyles.value,
 			locationStyles.value,
 			roundedStyles.value,
@@ -1005,7 +1025,7 @@
 			box-shadow: none;
 			opacity: var(--origam-btn---opacity-plain, var(--origam-opacity---70));
 
-			&:hover,
+			&:hover:not(#{$this}--disabled),
 			&:focus-visible {
 				opacity: 1;
 			}
@@ -1064,7 +1084,7 @@
 				) !important;
 			}
 
-			&:hover,
+			&:hover:not(#{$this}--disabled),
 			&:focus-visible {
 				background-color: var(
 					--origam-btn---background-color-ghost-hover,
@@ -1090,12 +1110,21 @@
 			--origam-btn---min-width: 100%;
 		}
 
+		/*********************************************************
+		 * Disabled (#1097)
+		 *
+		 * @description
+		 * The root keeps its pointer events so `cursor: not-allowed` can show (`pointer-events: none` hands the cursor to the parent). A native `disabled` <button> fires no click, an anchor is stopped by `handleClickCapture`, and the hover surfaces are switched off here and on the `plain` / `ghost` hover rules (`:not(--disabled)`).
+		 *
+		 * @description
+		 * No opacity veil: the grey tokens carry the state (owner decision). `opacity: 1` is written directly because `plain` sets its own `opacity` (70 %). `--origam-btn---opacity-disabled` is therefore no longer read.
+		 ********************************************************/
 		&--disabled {
-			pointer-events: none;
-			--origam-btn---opacity: var(--origam-btn---opacity-disabled, 0.5);
+			cursor: not-allowed;
+			opacity: 1;
 
-			&:hover {
-				--origam-btn---opacity: var(--origam-btn---opacity-disabled, 0.5);
+			> #{$this}__overlay {
+				--origam-btn__overlay---opacity: 0;
 			}
 		}
 

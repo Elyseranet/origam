@@ -23,12 +23,11 @@ test.describe('OrigamNumberField — hideControls (#1327)', () => {
             }
         })
 
+        // controls live in prepend-inner only with `split` (#1449)
+        await toggleHstCheckbox(page, 'Split')
+        await expect.poll(async () => (await measure()).zones, { timeout: 8000 }).toBe(1)
         const withControls = await measure()
         await toggleHstCheckbox(page, 'Hide Controls')
-        // `slots.prependInner` is read in a cached computed (useAdjacentInner), blind to a slot that
-        // appears/disappears at runtime — remount the field (compact on/off) to model a static `hideControls`.
-        await toggleHstCheckbox(page, 'Compact')
-        await toggleHstCheckbox(page, 'Compact')
         await expect.poll(async () => (await measure()).zones, { timeout: 8000 }).toBe(0)
         expect(withControls.zones).toBe(1)
     })

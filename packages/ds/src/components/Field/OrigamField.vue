@@ -964,7 +964,7 @@
 			 * lecteur — et le lot ne peut pas le verifier sur les trois
 			 * composants sans changer de perimetre.
 			 */
-			min-height: max(calc(var(--origam-input__control---height, 36px) + var(--origam-input---density, 0px)), 1.5rem + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
+			min-height: max(calc(var(--origam-input__control---height, 36px) + var(--origam-input---density, 0px)), calc(1rem * var(--origam-input---line-height, 1.5)) + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
 			min-width: 0;
 			padding-inline: var(--origam-field__input---padding-start) var(--origam-field__input---padding-end);
 			padding-top: var(--origam-field__input---padding-top);
@@ -997,6 +997,8 @@
 			textarea {
 				letter-spacing: inherit;
 				border: none;
+				// #1280 — remet a zero le padding UA (1px 2px) : le texte demarre au retrait du champ.
+				padding: 0;
 
 				&::placeholder {
 					color: var(--origam-field---placeholder-color, currentColor);
@@ -1023,7 +1025,7 @@
 			opacity: 0;
 			transition: inherit;
 			white-space: nowrap;
-			min-height: max(var(--origam-input__control---height, 36px), 1.5rem + var(--origam-field__input---padding-top, 0px) + var(--origam-field__input---padding-bottom, 0px));
+			min-height: max(var(--origam-input__control---height, 36px), calc(1rem * var(--origam-input---line-height, 1.5)) + var(--origam-field__input---padding-top, 0px) + var(--origam-field__input---padding-bottom, 0px));
 			padding-top: calc(var(--origam-field---padding-top, 4px) + calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density, 0px)));
 			padding-bottom: var(--origam-field---padding-bottom, 6px);
 		}
