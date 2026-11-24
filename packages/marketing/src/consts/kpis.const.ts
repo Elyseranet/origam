@@ -4,7 +4,7 @@ import type { IKpi, ILiveKpi } from '~/interfaces/kpi.interface'
 
 /**
  * OrigamDivider opacity override for the KPI hairlines. The divider bakes a
- * 0.12 fade for its default hairline look; the KPI rules must read the sobre
+ * 0.12 fade for its default hairline look; the KPI rules must read the origam
  * border token at full strength. Since the v2.6 DS fix the opacity is exposed
  * as the overridable `--origam-divider---opacity` custom-prop, so we set it
  * via the divider's public `:style` channel instead of a scoped CSS exception.

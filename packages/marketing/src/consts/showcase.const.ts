@@ -24,7 +24,7 @@ export const SHOWCASE_GRID_COLUMNS = '2fr 1fr 1fr'
  * translucent recipe, or ecom's dedicated `#ffffff`/`#2e1b14` card colours —
  * both set `--origam-card---background` directly in their theme object,
  * which this override was shadowing for showcase widgets specifically). On
- * sobre/default the override happened to resolve to the exact same opaque
+ * origam/default the override happened to resolve to the exact same opaque
  * value as the component's own default cascade (`{color.surface.raised}` =
  * `#ffffff`), so removing it is a strict no-op there — verified via
  * computed-style. Removed so every theme's showcase widgets render with

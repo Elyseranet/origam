@@ -148,6 +148,7 @@ const GREEN_SPECS = [
     // #859 — direct-typing wiring, verified stable (--repeat-each=5, 30/30)
     'color-picker-field-typing.spec.ts',
     'date-picker-field-typing.spec.ts',
+    'date-picker-field-aria.spec.ts',
     'theme-provider.spec.ts',
     'textarea-richtext.spec.ts',
     // #1267 — tokens kv de DataList : defauts inchanges + effet mesure par token.
@@ -233,6 +234,7 @@ const GREEN_SPECS = [
     // avant, 4/4 verts apres. Verifiee stable 20/20, `--repeat-each=5`,
     // `E2E_STATIC=1`, chromium, port isole.
     'data-table-sticky.spec.ts',
+    'data-table-footer-label.spec.ts',
     // #371 (point 1) — verdict navigateur reel sur la closure serialisee en
     // attribut DOM des lignes d'en-tete de groupe. Gardee plutot que
     // baselisee : elle porte une vraie verification, et elle est rouge sans
