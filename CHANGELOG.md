@@ -18,6 +18,14 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamNumberField` / champs : basculer `hideControls` (ou un slot `*Inner`) après le premier rendu met à jour la zone (#1448)
+
+- `useAdjacentInner` lisait `slots` (non réactif) dans des `computed` mis en cache : un slot `prependInner` / `appendInner` / `clear` qui apparaît ou disparaît à l'exécution laissait la zone vide rendue. Les `computed` sont désormais invalidés avant chaque mise à jour. Touche tous les consommateurs (`OrigamField`, `OrigamTextField`, `OrigamTextareaField`, `OrigamPasswordField`, `OrigamFileField`, `OrigamNumberField`).
+
+### Fixed — `OrigamNumberField` : plus de `div` de contrôles vide dans `prependInner` sans `split` (#1449)
+
+- Sans `split`, les contrôles vivent dans `appendInner` ; la zone `prependInner` vide décalait le texte de 12 px au lieu des 16 px d'un champ simple. Le texte démarre désormais à la même position qu'avec `hideControls`.
+
 ### Fixed — `OrigamSelect` : un seul `combobox`, plus de `role="menu"` autour du `listbox` (#1331)
 
 - Mesure (Chromium, axe-core, menu ouvert, Histoire statique) : le second `role="combobox"` sur `.origam-field` n'existe plus sur `develop` (corrigé par #1247) ; restait l'overlay `role="menu"` posé en dur par `OrigamMenu` autour du `listbox` du select (`aria-required-children`), et, depuis #1426, les lignes subheader / séparateur (`<hr role="separator">`) enfants directs du `listbox`.
