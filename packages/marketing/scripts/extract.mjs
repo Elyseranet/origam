@@ -165,6 +165,32 @@ function verbatimDefinition (sf, node) {
     return node.getText(sf)
 }
 
+/**
+ * #1088 — full `definition` of a type alias: the declaration as written, plus,
+ * for every ENUM interpolated as a whole (`${ROUNDED}`), the block
+ * `\n\n// Where X is:\n` + that enum's declaration text from the CURRENT source
+ * (same text the `enum` kind extracts). A qualified member (`${E.A}`) or a
+ * non-enum reference adds nothing.
+ */
+function typeDefinition (sf, node, checker) {
+    let out = verbatimDefinition(sf, node)
+    const seen = new Set()
+    const visit = (n) => {
+        if (ts.isTemplateLiteralTypeSpan(n) && ts.isTypeReferenceNode(n.type) && ts.isIdentifier(n.type.typeName)) {
+            let sym = checker.getSymbolAtLocation(n.type.typeName)
+            if (sym && (sym.flags & ts.SymbolFlags.Alias)) sym = checker.getAliasedSymbol(sym)
+            const en = sym?.declarations?.find(ts.isEnumDeclaration)
+            if (en && !seen.has(en)) {
+                seen.add(en)
+                out += `\n\n// Where ${en.name.text} is:\n${verbatimDefinition(en.getSourceFile(), en)}`
+            }
+        }
+        ts.forEachChild(n, visit)
+    }
+    visit(node.type)
+    return out
+}
+
 /** Extract all exported symbols of interest from one source file. */
 export function extractFile (domainKey, file, program, checker) {
     const sf = program.getSourceFile(file)
@@ -303,7 +329,7 @@ export function extractFile (domainKey, file, program, checker) {
                 slug: typeSlug(name),
                 category,
                 sourceFile,
-                definition: verbatimDefinition(sf, node),
+                definition: typeDefinition(sf, node, checker),
                 values: unionValues(checker, node).map(value => ({ value })),
                 jsdoc: getJsDoc(node),
             })
