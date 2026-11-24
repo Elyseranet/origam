@@ -30,7 +30,11 @@
 				</template>
 
 				<template v-else>
-					<div class="origam-data-table-header-cell__content">
+					<component
+							:is="column.sortable && !disableSort ? 'button' : 'div'"
+							:type="column.sortable && !disableSort ? 'button' : undefined"
+							class="origam-data-table-header-cell__content"
+					>
 						<span>{{ column.title }}</span>
 
 						<template v-if="column.sortable && !disableSort">
@@ -51,7 +55,7 @@
 								{{ sortedItems(column) }}
 							</div>
 						</template>
-					</div>
+					</component>
 				</template>
 			</slot>
 		</template>
@@ -259,6 +263,20 @@
 			display: flex;
 			align-items: center;
 			gap: var(--origam-data-table-header-cell__content---gap, 4px);
+
+			/* Native <button> reset: the sort control keeps the former <div> look. */
+			&:is(button) {
+				appearance: none;
+				background: none;
+				border: 0;
+				padding: 0;
+				margin: 0;
+				width: 100%;
+				font: inherit;
+				color: inherit;
+				text-align: inherit;
+				cursor: inherit;
+			}
 		}
 
 		&__sort-badge {

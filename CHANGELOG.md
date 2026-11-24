@@ -23,6 +23,28 @@ This project follows [Semantic Versioning](https://semver.org).
 - Le `<input>` / `<textarea>` natif gardait le padding du navigateur (`1px 2px`) : le texte démarrait 2 px après le retrait du champ, contre 0 px pour le texte d'un `OrigamSelect`. `padding: 0` posé sur l'élément natif ; texte désormais aligné au retrait (`--origam-field---padding-start`) sur tous les champs. Hauteur des champs inchangée (36 px, textarea 62/70 px) ; la boîte de l'input perd 2 px de hauteur (padding vertical UA), texte recentré.
 - `min-height` de `.origam-field__input` (et du préfixe/suffixe) comptait une ligne de `1.5rem` quel que soit l'interligne ; elle vaut maintenant `calc(1rem * var(--origam-input---line-height, 1.5))` — identique au défaut (1,5), suit un interligne personnalisé.
 
+### Fixed — `OrigamSelect` : un seul `combobox`, plus de `role="menu"` autour du `listbox` (#1331)
+
+- Mesure (Chromium, axe-core, menu ouvert, Histoire statique) : le second `role="combobox"` sur `.origam-field` n'existe plus sur `develop` (corrigé par #1247) ; restait l'overlay `role="menu"` posé en dur par `OrigamMenu` autour du `listbox` du select (`aria-required-children`), et, depuis #1426, les lignes subheader / séparateur (`<hr role="separator">`) enfants directs du `listbox`.
+- `aria-live="polite"` retiré de la listbox ; le message « aucun résultat » est annoncé par une région `<output>` visuellement masquée hors de la listbox.
+- Correctif : le menu du select passe `role="presentation"` à l'overlay (surchargeable via `menuProps.role`) ; les lignes de structure sont `role="presentation"`.
+
+### Fixed — `OrigamSelect` multiple : cases d'option décoratives, fermeture de pastille nommée (#1425)
+
+- La case `origam-checkbox-btn` d'une option est `aria-hidden` + `inert` : plus de contrôle focusable dans un `option` (`label` critical, `nested-interactive`), l'état reste porté par `aria-selected`.
+- Le bouton de fermeture d'une pastille se nomme `Retirer {title}` (clé `origam.select.remove_item`, en + fr) ; `chipProps.closeLabel` reste prioritaire.
+
+### Fixed — `OrigamDataTable` : le tri des colonnes est atteignable au clavier (#1341)
+
+- Cause : le tri n'était déclenché que par un `@click` sur le `<th>`, sans élément focusable.
+- Correctif : une colonne triable rend son contenu dans un `<button type="button">` (motif APG « Sortable Table »), activable à Entrée et Espace ; `aria-sort` reste sur le `<th>`. Le rendu visuel est inchangé (reset natif du bouton).
+
+### Fixed — `OrigamDatePickerField` : le menu ouvert est un `dialog` relié au combobox, plus un `role="menu"` sans `menuitem` (#1382)
+
+- Cause : `OrigamMenu` pose `role="menu"` sur sa surface ; le contenu d'un date picker est un calendrier, pas des `menuitem` (`aria-required-children`, critical). Le combobox ne pointait vers aucune surface.
+- Correctif : le menu reçoit `role="dialog"` (cohérent avec `aria-haspopup="dialog"` déjà posé), un `aria-label` issu de `label`, et le combobox reçoit `aria-controls` vers son id.
+- Mesure navigateur (axe, menu ouvert) : `aria-required-children` critical sur `#origam-menu-v-*` avant, 0 violation après. `aria-required-attr` n'a pas été reproduit avec l'axe du dépôt.
+
 ### Added — `OrigamStepperItem` : slots `prepend` / `append`, `OrigamStepper` : `item-prepend` / `item-append` (#1338)
 
 - `OrigamStepperItem` n'avait aucun slot ; le slot `default` d'`OrigamStepper` supprime les connecteurs. Les nouveaux slots reçoivent `{ index, status }` (+ `item` côté stepper) et gardent `show-connectors`. Sans slot, le rendu est inchangé.
