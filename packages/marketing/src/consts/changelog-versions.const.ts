@@ -22,14 +22,14 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '2 additions and 14 fixes. See the full changelog for detail.',
+        summaryFallback: '2 additions and 15 fixes. See the full changelog for detail.',
         highlights: [
             { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamField : les labels ne reprennent plus l\'id de l\'input (#1149)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'avertissements console dev émis par le DS lui-même (#1156, #1157)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamColorPickerField : menu ouvert en role="dialog" avec aria-controls (#1458)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamField : l\'<input> natif n\'a plus de padding propre, la hauteur minimale suit --origam-input---line-height (#1280)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamNumberField / champs : basculer hideControls (ou un slot *Inner) après le premier rendu met à jour la zone (#1448)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'OrigamNumberField : plus de div de contrôles vide dans prependInner sans split (#1449)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamOverlay : Échap n\'est plus ignoré juste après l\'ouverture (#1357)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'avertissements console dev émis par le DS lui-même (#1156, #1157)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamColorPickerField : menu ouvert en role="dialog" avec aria-controls (#1458)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamField : l\'<input> natif n\'a plus de padding propre, la hauteur minimale suit --origam-input---line-height (#1280)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'OrigamNumberField / champs : basculer hideControls (ou un slot *Inner) après le premier rendu met à jour la zone (#1448)' }
         ]
     },
     {

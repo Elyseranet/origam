@@ -1,8 +1,8 @@
 {
   "kind": "composable",
-  "exportedAt": "2026-11-18T16:12:23.127Z",
-  "sourceCommit": "fe36f02cc",
-  "entryCount": 148,
+  "exportedAt": "2026-11-24T21:40:37.439Z",
+  "sourceCommit": "6f3fde6de",
+  "entryCount": 149,
   "entries": [
     {
       "entry": {
@@ -957,7 +957,7 @@
         },
         {
           "name": "cb",
-          "type": "(next: NavigationGuardNext) => void",
+          "type": "() => boolean | void",
           "required": true,
           "default_value": null,
           "position": 1,
@@ -3074,7 +3074,7 @@
       "params": [
         {
           "name": "feature",
-          "type": "TCssFeatureName | string",
+          "type": "TCssFeatureName | TAnyString",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -9223,6 +9223,73 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-popup-dialog-aria",
+        "name": "usePopupDialogAria",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function usePopupDialogAria(name: string, label: () => string | undefined, expanded: Ref<boolean>): { comboboxAriaAttrs: ComputedRef<{ role: string; 'aria-haspopup': string; 'aria-controls': string; 'aria-expanded': string; }>; menuAriaProps: ComputedRef<{ id: string; role: string; 'aria-label': string; }>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/popup-dialog-aria.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "label",
+          "type": "() => string | undefined",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "expanded",
+          "type": "Ref<boolean>",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {

@@ -473,6 +473,28 @@
 				</origam-dialog>
 			</div>
 		</Variant>
+
+		<!-- Overlays empiles : Echap ne ferme que celui du haut (#1357) -->
+		<Variant title="Nested overlays - Escape stacking">
+			<div style="padding: 16px;">
+				<origam-dialog v-model="nestedOuterOpen" title="Outer">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open outer" data-cy="nested-outer-open"/>
+					</template>
+					<origam-dialog v-model="nestedInnerOpen" title="Inner">
+						<template #activator="{ props: a }">
+							<origam-btn v-bind="a" text="Open inner" data-cy="nested-inner-open"/>
+						</template>
+						<span>Inner content.</span>
+					</origam-dialog>
+					<origam-menu :items="[{title: 'Menu item'}]">
+						<template #activator="{ props: a }">
+							<origam-btn v-bind="a" text="Open menu" data-cy="nested-menu-open"/>
+						</template>
+					</origam-menu>
+				</origam-dialog>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -511,6 +533,8 @@
 	const slotAssetOpen      = ref(false)
 	const overflowContentOpen  = ref(false)
 	const contentGapOpen  = ref(false)
+	const nestedOuterOpen = ref(false)
+	const nestedInnerOpen = ref(false)
 	const slotContentOpen    = ref(false)
 	const slotDefaultOpen    = ref(false)
 	const slotFooterOpen     = ref(false)

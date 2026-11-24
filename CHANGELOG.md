@@ -22,6 +22,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 - Cause : `labelProps` / `floatingLabelProps` recopiaient la prop `id` du champ sur les deux `<origam-label>` via `filterProps` ; l'input et les deux labels partageaient donc le même `id` (`label[for]` visait le premier label, pas le contrôle). `id` est désormais exclu du forward. Touche tous les champs construits sur `OrigamField`. Aucun changement d'API. Corollaire : le label d'origine n'est plus masqué par `visibility: hidden` quand le champ est actif mais rogné (`clip-path`), car axe (`label-title-only`) ne lit que le premier `label[for]` et le trouvait vide dès qu'un `aria-describedby` existait (NumberField).
 
+### Fixed — `OrigamOverlay` : Échap n'est plus ignoré juste après l'ouverture (#1357)
+
+- Cause : `globalTop` (`useStack`) était mis à jour dans un `setTimeout` lancé par un `watchEffect` ; tant que le timer n'avait pas tourné, `globalTop` valait encore `false` et `handleKeydown` ignorait Échap (2 à 55 ms mesurées côté consommateur).
+- Correctif : `globalTop` est un `computed` sur `GLOBAL_STACK` (réactif), donc synchrone ; plus de timer. Sans changement d'API.
+- Test : `stack.composable.spec.ts` — rouge sur le commit parent, vert après.
+
 ### Fixed — avertissements console dev émis par le DS lui-même (#1156, #1157)
 
 - #1156 : les champs (`OrigamTextField`, `TextareaField`, `PasswordField`, `NumberField`, `FileField`, `OtpInputField`, `Select`) liaient `@click:append-inner` / `@click:prepend-inner` sans condition pour re-émettre ; `OrigamField` voyait donc toujours un écouteur et avertissait « click listener but no accessible name » sur tout champ doté d'une icône interne. Le relais passe par `appendInnerRelay` / `prependInnerRelay` (`useAdjacentInner`) et n'existe que si le consommateur écoute. Un vrai écouteur sans nom avertit toujours.
