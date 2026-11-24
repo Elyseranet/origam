@@ -13,15 +13,16 @@
 export function createIcons (options?: TIconOptions)
 ```
 
-Construit la configuration d'icones fournie a l'application par
-`createOrigam()` : jeu par defaut, jeux disponibles et alias. Les options du
-consommateur sont fusionnees en profondeur sur les valeurs du DS, donc
-declarer un alias n'efface pas les autres.
+Icon configuration provided by `createOrigam()`: default set, available sets
+and aliases, with the MDI aliases pre-loaded so `icon="mdi-account"` works
+with no setup. Consumer options are deep-merged over the DS values.
 
-Le jeu par defaut est `mdi`, et les alias MDI sont pre-charges — c'est ce
-qui permet d'ecrire `icon="mdi-account"` sans configuration prealable.
+(#1392) Lives apart from `useIcon` on purpose: it reaches `MDI_ALIASES` (the
+~7 000-entry `MDI_ICONS` enum, ~430 Kio). In `icon.composable.ts`, every
+component importing `useIcon` (Btn, Avatar, Chip...) pulled the enum in
+through the module graph, icon or not.
 
-**Source** : `packages/ds/src/composables/Icon/icon.composable.ts`
+**Source** : `packages/ds/src/composables/Icon/iconsFull.composable.ts`
 
 **Consommateurs** (1) : `utils/Commons/nuxt-icons.util.ts`
 

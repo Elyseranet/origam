@@ -26,7 +26,7 @@ does not depend on any of the three.
 ## `createHeaders`
 
 ```ts
-export function createHeaders ( props: IDataTableHeaderProps, options?: { groupBy?: Ref<Array<IDataTableSortItem>> | undefined; showSelect?: Ref<boolean>; showExpand?: Ref<boolean> } )
+export function createHeaders ( props: IDataTableHeaderProps, options?: { groupBy?: Ref<Array<IDataTableSortItem>>; showSelect?: Ref<boolean>; showExpand?: Ref<boolean> } )
 ```
 
 Normalises the raw `headers` prop (or infers columns from the first

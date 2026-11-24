@@ -13,18 +13,9 @@
 export function bucketFill ( heights: ReadonlyArray<number>, containerWidth: number, gap: number, columns: number, align: TMasonryAlign = 'top' ): IMasonryLayoutResult
 ```
 
-Pure bucket-fill algorithm. Given an ordered list of item heights, a
-container width, a gap in px, and a column count, returns the layout
-coordinates of every item and the final container height.
-
-Algorithm:
-  1. Compute item width  = (containerWidth - (cols - 1) * gap) / cols.
-  2. Track `columnHeights[i]` — running sum of item heights + gaps.
-  3. For each item, place it in the column with the SMALLEST current
-     height (ties → leftmost column). Update that column's height.
-  4. `containerHeight` = max(columnHeights).
-
-No DOM access. Fully deterministic. Easy to unit-test.
+> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
+> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
+> ecrire la banniere dans `packages/ds/src/composables/Masonry/masonry.composable.ts`, puis regenerer.
 
 **Source** : `packages/ds/src/composables/Masonry/masonry.composable.ts`
 

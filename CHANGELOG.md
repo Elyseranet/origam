@@ -20,7 +20,13 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ### Fixed — `OrigamColorPickerField` : menu ouvert en `role="dialog"` avec `aria-controls` (#1458)
 
-- Le menu gardait le `role="menu"` d'`OrigamMenu` sans `menuitem` (`aria-required-children`) et le combobox n'avait pas d'`aria-controls`. Le menu est désormais un `dialog` nommé par le `label`, relié au combobox par `aria-controls`, comme `OrigamDatePickerField` (#1382).
+- Le menu gardait le `role="menu"` d'`OrigamMenu` sans `menuitem` (`aria-required-children`) et le combobox n'avait pas d'`aria-controls`. Le menu est désormais un `dialog` nommé par le `label`, relié au combobox par `aria-controls`, comme `OrigamDatePickerField` (#1382). Le bloc ARIA commun aux deux champs (`menuId`, `role="dialog"`, `aria-label`, `aria-controls`) est factorisé dans le composable `usePopupDialogAria`, consommé par les deux.
+
+### Fixed — `OrigamDatePickerField` : le menu ouvert est un `dialog` relié au combobox, plus un `role="menu"` sans `menuitem` (#1382)
+
+- Cause : `OrigamMenu` pose `role="menu"` sur sa surface ; le contenu d'un date picker est un calendrier, pas des `menuitem` (`aria-required-children`, critical). Le combobox ne pointait vers aucune surface.
+- Correctif : le menu reçoit `role="dialog"` (cohérent avec `aria-haspopup="dialog"` déjà posé), un `aria-label` issu de `label`, et le combobox reçoit `aria-controls` vers son id.
+- Mesure navigateur (axe, menu ouvert) : `aria-required-children` critical sur `#origam-menu-v-*` avant, 0 violation après. `aria-required-attr` n'a pas été reproduit avec l'axe du dépôt.
 
 ### Added — `OrigamStepperItem` : slots `prepend` / `append`, `OrigamStepper` : `item-prepend` / `item-append` (#1338)
 
