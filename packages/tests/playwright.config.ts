@@ -156,6 +156,8 @@ const GREEN_SPECS = [
     'table-header-typography-tokens.spec.ts',
     'defaults-provider.spec.ts',
     'field-height.spec.ts',
+    // #1280 — padding UA de l'input natif remis a zero, min-height suit l'interligne.
+    'field-input-inset.spec.ts',
     // #1266 — jetons de couleur / opacité du placeholder de Field. Verte
     // chromium, E2E_STATIC=1, port isolé ; rouge sur le parent.
     'field-placeholder-token.spec.ts',

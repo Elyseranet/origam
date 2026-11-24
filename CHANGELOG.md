@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamField` : l'`<input>` natif n'a plus de padding propre, la hauteur minimale suit `--origam-input---line-height` (#1280)
+
+- Le `<input>` / `<textarea>` natif gardait le padding du navigateur (`1px 2px`) : le texte démarrait 2 px après le retrait du champ, contre 0 px pour le texte d'un `OrigamSelect`. `padding: 0` posé sur l'élément natif ; texte désormais aligné au retrait (`--origam-field---padding-start`) sur tous les champs. Hauteur des champs inchangée (36 px, textarea 62/70 px) ; la boîte de l'input perd 2 px de hauteur (padding vertical UA), texte recentré.
+- `min-height` de `.origam-field__input` (et du préfixe/suffixe) comptait une ligne de `1.5rem` quel que soit l'interligne ; elle vaut maintenant `calc(1rem * var(--origam-input---line-height, 1.5))` — identique au défaut (1,5), suit un interligne personnalisé.
+
 ### Added — `OrigamStepperItem` : slots `prepend` / `append`, `OrigamStepper` : `item-prepend` / `item-append` (#1338)
 
 - `OrigamStepperItem` n'avait aucun slot ; le slot `default` d'`OrigamStepper` supprime les connecteurs. Les nouveaux slots reçoivent `{ index, status }` (+ `item` côté stepper) et gardent `show-connectors`. Sans slot, le rendu est inchangé.
