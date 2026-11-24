@@ -14,6 +14,8 @@ const REPO_ROOT = resolve(__dirname, '..', '..')
  * goes green. A local run with no env var still executes the whole suite.
  */
 const GREEN_SPECS = [
+    // #1131 — verte 4/4 (E2E_STATIC=1, chromium, port isole) ; temoin de non-regression : l'oklab() transitoire n'est PAS reproduit en navigateur, la spec ne l'a jamais vue rouge.
+    'contrast-oklab-alert.spec.ts',
     'btn.spec.ts',
     // #1328 — verte 21/21 apres bascule du temoin inverse ; A/B : rouge (12px) sans `:where(&)`, E2E_STATIC=1, chromium, port isole.
     'chart-pareto.spec.ts',
@@ -28,6 +30,11 @@ const GREEN_SPECS = [
     'chart-responsive-size.spec.ts',
     // #1222 — verifiee verte et stable avant inscription : 10/10 (--repeat-each=5, E2E_STATIC=1, chromium, port isole).
     'btn-text-active.spec.ts',
+    // #1086 — verifiee verte et stable avant inscription : 15/15 (--repeat-each=5, E2E_STATIC=1, chromium, port isole).
+    'btn-loading-circular-label.spec.ts',
+    // #1097 — verifiee verte et stable avant inscription : 13/13 puis 65/65 sous `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
+    // Avant le correctif (mesure sur le parent) : cursor `pointer`, remplissage violet de marque, `plain` a 0.7.
+    'btn-disabled.spec.ts',
     // #1179 — verifiee verte et stable avant inscription : 9/9 puis 45/45 sous
     // `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
     'code-group.spec.ts',
@@ -65,6 +72,7 @@ const GREEN_SPECS = [
     'utility-cascade-padding-margin-950.spec.ts',
     // #1230 — jeton d'opacite de l'overlay actif de OrigamListItem ; rouge a HEAD~1.
     'list-item-overlay-opacity.spec.ts',
+    'list-item-focus-ring.spec.ts',
     // #1244 — jetons d'opacite de survol (ListItem, ExpansionPanelHeader) ; rouge a HEAD~1.
     'overlay-opacity-hover-1244.spec.ts',
     'card.spec.ts',
@@ -84,15 +92,21 @@ const GREEN_SPECS = [
     'text-field.spec.ts',
     'radio.spec.ts',
     'slider-field.spec.ts',
+    'slider-field-vertical.spec.ts',
     'tabs.spec.ts',
     'label.spec.ts',
     // wave 3
     'select.spec.ts',
+    'select-subheader-divider.spec.ts',
+    'select-aria-a11y.spec.ts',
     'number-field.spec.ts',
+    'number-field-hide-controls.spec.ts',
+    'number-field-controls-zones.spec.ts',
     'password-field.spec.ts',
     'rating-field.spec.ts',
     'otp-input-field.spec.ts',
     'textarea-field.spec.ts',
+    'textarea-field-dark-color.spec.ts',
     'list.spec.ts',
     /* Promu 2026-09-30 apres #938 : il attendait 45s un `aria-controls` qui
      * n'existait pas — trois attributs du contrat combobox etaient morts sur
@@ -139,6 +153,8 @@ const GREEN_SPECS = [
     // #859 — direct-typing wiring, verified stable (--repeat-each=5, 30/30)
     'color-picker-field-typing.spec.ts',
     'date-picker-field-typing.spec.ts',
+    'date-picker-field-aria.spec.ts',
+    'color-picker-field-aria.spec.ts',
     'theme-provider.spec.ts',
     'textarea-richtext.spec.ts',
     // #1267 — tokens kv de DataList : defauts inchanges + effet mesure par token.
@@ -147,6 +163,8 @@ const GREEN_SPECS = [
     'table-header-typography-tokens.spec.ts',
     'defaults-provider.spec.ts',
     'field-height.spec.ts',
+    // #1280 — padding UA de l'input natif remis a zero, min-height suit l'interligne.
+    'field-input-inset.spec.ts',
     // #1266 — jetons de couleur / opacité du placeholder de Field. Verte
     // chromium, E2E_STATIC=1, port isolé ; rouge sur le parent.
     'field-placeholder-token.spec.ts',
@@ -224,6 +242,7 @@ const GREEN_SPECS = [
     // avant, 4/4 verts apres. Verifiee stable 20/20, `--repeat-each=5`,
     // `E2E_STATIC=1`, chromium, port isole.
     'data-table-sticky.spec.ts',
+    'data-table-footer-label.spec.ts',
     // #371 (point 1) — verdict navigateur reel sur la closure serialisee en
     // attribut DOM des lignes d'en-tete de groupe. Gardee plutot que
     // baselisee : elle porte une vraie verification, et elle est rouge sans
@@ -233,6 +252,8 @@ const GREEN_SPECS = [
     // `Prop — groupBy` qu'elle visite a ete creee avec elle : aucune des 30
     // Variants de la story ne rendait de ligne de groupe.
     'data-table-group-attr-leak.spec.ts',
+    // #1341 — rouge sur le parent (Entree/Espace ne trient pas), verte avec le bouton de tri ; E2E_STATIC=1, chromium.
+    'data-table-sort-keyboard.spec.ts',
     // wave 14 — #827. Un parent CONTROLE qui refuse la valeur (v-bind="state"
     // sans `state.modelValue = $event`, la forme du playground "Default")
     // laissait le DOM de la radio avancer indefiniment : le navigateur coche

@@ -22,8 +22,8 @@
 			@mousedown:control="handleMousedownControl"
 			@click:append="handleClickAppend"
 			@click:prepend="handleClickPrepend"
-			@click:append-inner="handleClickAppendInner"
-			@click:prepend-inner="handleClickPrependInner"
+			@click:append-inner="appendInnerRelay"
+			@click:prepend-inner="prependInnerRelay"
 	>
 		<template
 				v-if="slots.prepend"
@@ -68,6 +68,8 @@
 		</template>
 
 		<template #default>
+			<output class="origam-select__announcement">{{ menu && hasNoData ? t(noDataText) : '' }}</output>
+
 			<origam-menu
 					ref="origamMenuRef"
 					v-model="menu"
@@ -96,7 +98,6 @@
 							:selected="selectedValues"
 							:size="listSize"
 							:tabindex="-1"
-							aria-live="polite"
 							v-bind="{ ...listProps }"
 							@focusin="handleFocusin"
 							@focusout="handleFocusout"
@@ -121,7 +122,18 @@
 										renderless
 								>
 									<template #item.renderless="{item, index, itemRef}">
+										<origam-divider
+												v-if="isDivider(item)"
+												role="presentation"
+												v-bind="item.props"
+										/>
+										<origam-list-subheader
+												v-else-if="isSubheader(item)"
+												role="presentation"
+												v-bind="item.props"
+										/>
 										<slot
+												v-else
 												name="item"
 												v-bind="{item, index, props: menuListItemProps(item, itemRef, index)}"
 										>
@@ -138,6 +150,8 @@
 															:model-value="isSelected"
 															:ripple="false"
 															:tabindex="-1"
+															aria-hidden="true"
+															inert
 													/>
 
 													<origam-avatar
@@ -288,10 +302,12 @@
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamCheckboxBtn from '../Checkbox/OrigamCheckboxBtn.vue'
 	import OrigamChip from '../Chip/OrigamChip.vue'
+	import OrigamDivider from '../Divider/OrigamDivider.vue'
 	import OrigamExpandY from '../Transition/OrigamExpandY.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 	import OrigamList from '../List/OrigamList.vue'
 	import OrigamListItem from '../List/OrigamListItem.vue'
+	import OrigamListSubheader from '../List/OrigamListSubheader.vue'
 	import OrigamMenu from '../Menu/OrigamMenu.vue'
 	import OrigamTextField from '../TextField/OrigamTextField.vue'
 	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
@@ -316,11 +332,12 @@
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 	import { FILTERS_MODE } from '../../enums/Commons/filters.enum'
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { LIST_ITEM_TYPE } from '../../enums/List/list-item.enum'
 	import { SELECT_STRATEGY } from '../../enums/Commons/nested.enum'
 	import { SIZES } from '../../enums/Commons/size.enum'
 	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { IInternalListItem } from '../../interfaces/List/list-children.interface'
+	import type { IInternalListItem, IInternalListItemChildren } from '../../interfaces/List/list-children.interface'
 	import type { IItemProps } from '../../interfaces/Commons/item.interface'
 	import type { ISelectProps, ISelectEmits, ISelectSlots } from '../../interfaces/Select/select.interface'
 
@@ -332,7 +349,7 @@
 	import type { TOrigamVirtualScroll } from '../../types/VirtualScroll/virtual-scroll.type'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { deepEqual, matchesSelector, wrapInArray } from '../../utils/Commons/commons.util'
+	import { deepEqual, hasEvent, matchesSelector, wrapInArray } from '../../utils/Commons/commons.util'
 	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
@@ -398,6 +415,9 @@
 	// expose certain props/methods (notably `$el`, which the proxy filters
 	// because of its `$` prefix).
 	const vm = getCurrentInstance()
+	const hasListener = (name: string) => hasEvent(vm?.vnode.props ?? {}, name)
+	const appendInnerRelay = computed(() => hasListener('click:appendInner') ? handleClickAppendInner : undefined)
+	const prependInnerRelay = computed(() => hasListener('click:prependInner') ? handleClickPrependInner : undefined)
 
 	/*********************************************************
 	 * WAI-ARIA combobox IDs
@@ -540,12 +560,27 @@
 	const selectionIndex = shallowRef(-1)
 	const isSelecting = shallowRef(false)
 
+	/*********************************************************
+	 * Structural rows (#1426)
+	 *
+	 * @description
+	 * `subheader` / `divider` entries are structure, not options: same
+	 * discriminant as `OrigamListChildren` (`item.type`, read through the
+	 * `itemType` prop). They are dropped while searching (a header title
+	 * would match the query) and stepped over by the arrow keys, Home/End.
+	 ********************************************************/
+	const isDivider = (item: IInternalListItem) => (item as IInternalListItemChildren).type === LIST_ITEM_TYPE.DIVIDER
+	const isSubheader = (item: IInternalListItem) => (item as IInternalListItemChildren).type === LIST_ITEM_TYPE.SUBHEADER
+	const isStructural = (item: IInternalListItem) => isDivider(item) || isSubheader(item)
+
 	const displayItems = computed(() => {
+		let result = isPristine.value ? filteredItems.value : filteredItems.value.filter((item) => !isStructural(item))
+
 		if (props.hideSelected) {
-			return filteredItems.value.filter((filteredItem) => !model.value.some((s) => s.value === filteredItem.value))
+			result = result.filter((filteredItem) => !model.value.some((s) => s.value === filteredItem.value))
 		}
 
-		return filteredItems.value
+		return result
 	})
 
 	const menuDisabled = computed(() => {
@@ -568,6 +603,7 @@
 
 		return {
 			...consumerProps,
+			role: consumerProps.role ?? 'presentation',
 			/*********************************************************
 			 * Menu activator ARIA — #1247
 			 *
@@ -575,7 +611,8 @@
 			 * `activator="parent"` is the role-less `.origam-field` wrapper: OrigamMenu's
 			 * default aria-haspopup/expanded/owns are illegal there (aria-allowed-attr).
 			 * The combobox ARIA lives on the <input> (`comboboxAriaAttrs`); `undefined`
-			 * suppresses the defaults.
+			 * suppresses the defaults. #1331: `role` below replaces the overlay's hardcoded
+			 * `role="menu"`, illegal around a listbox.
 			 ********************************************************/
 			activatorProps: {
 				...MENU_WRAPPER_ARIA_RESET,
@@ -880,18 +917,22 @@
 		const itemCount = displayItems.value.length
 		if (!menu.value || itemCount <= 0) return false
 
+		const step = (from: number, dir: 1 | -1): number => {
+			for (let n = 1; n <= itemCount; n++) {
+				const i = (((from + dir * n) % itemCount) + itemCount) % itemCount
+				if (!isStructural(displayItems.value[i] as IInternalListItem)) return i
+			}
+			return -1
+		}
+
 		if (e.key === KEYBOARD_VALUES.DOWN) {
-			highlightIndex.value = highlightIndex.value < itemCount - 1
-				? highlightIndex.value + 1
-				: 0
+			highlightIndex.value = step(highlightIndex.value, 1)
 		} else if (e.key === KEYBOARD_VALUES.UP) {
-			highlightIndex.value = highlightIndex.value > 0
-				? highlightIndex.value - 1
-				: itemCount - 1
+			highlightIndex.value = step(highlightIndex.value < 0 ? 0 : highlightIndex.value, -1)
 		} else if (e.key === KEYBOARD_VALUES.HOME) {
-			highlightIndex.value = 0
+			highlightIndex.value = step(-1, 1)
 		} else if (e.key === KEYBOARD_VALUES.END) {
-			highlightIndex.value = itemCount - 1
+			highlightIndex.value = step(0, -1)
 		} else if (e.key === KEYBOARD_VALUES.ENTER && highlightIndex.value >= 0) {
 			handleSelect(displayItems.value[highlightIndex.value] as IInternalListItem, null)
 			highlightIndex.value = -1
@@ -994,7 +1035,7 @@
 		keyboardLookupPrefix += e.key.toLowerCase()
 		keyboardLookupLastTime = now
 
-		const item = items.value.find((item) => item.title?.toLowerCase().startsWith(keyboardLookupPrefix))
+		const item = items.value.find((item) => !isStructural(item as IInternalListItem) && item.title?.toLowerCase().startsWith(keyboardLookupPrefix))
 
 		if (item !== undefined) {
 			model.value = [item as IInternalListItem]
@@ -1121,6 +1162,7 @@
 			disabled: item.props?.disabled,
 			border: true,
 			rounded: true,
+			closeLabel: t('origam.select.remove_item', { title: item.title }),
 			'onClick:close': (e: Event) => handleChipClose(e, item),
 			onKeydown: (e: KeyboardEvent) => handleChipKeydown(e, item),
 			onMousedown: (e: MouseEvent) => handleChipMousedown(e),
@@ -1380,6 +1422,12 @@
 		lang="scss"
 		scoped
 >
+	@use '../../assets/scss/helpers' as ds;
+
+	.origam-select__announcement {
+		@include ds.ds-visually-hidden;
+	}
+
 	.origam-select {
 		$this: &;
 

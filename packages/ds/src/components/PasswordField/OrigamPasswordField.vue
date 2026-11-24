@@ -33,8 +33,8 @@
 						@click="handleControlClick"
 						@mousedown="handleControlMousedown"
 						@click:clear="handleClear"
-						@click:prepend-inner="handleClickPrependInner"
-						@click:append-inner="handleClickAppendInner"
+						@click:prepend-inner="prependInnerRelay"
+						@click:append-inner="appendInnerRelay"
 				>
 					<template
 							v-if="slots.loader"
@@ -251,7 +251,7 @@
 										class="origam-password-field__requirement-icon"
 										:icon="isRuleSatisfied(rule) ? 'mdi:mdi-check-circle-outline' : 'mdi:mdi-close-circle-outline'"
 								/>
-								<span class="origam-password-field__requirement-label">{{ rule.label }}</span>
+								<span class="origam-password-field__requirement-label">{{ ruleLabel(rule) }}</span>
 							</li>
 						</ul>
 						<div
@@ -267,7 +267,7 @@
 										]"
 									:bg-color="isRuleSatisfied(rule) ? 'success' : undefined"
 									:prepend-icon="isRuleSatisfied(rule) ? 'mdi:mdi-check-circle-outline' : 'mdi:mdi-close-circle-outline'"
-									:text="rule.label"
+									:text="ruleLabel(rule)"
 									:data-requirement-id="rule.id"
 									:data-satisfied="isRuleSatisfied(rule) ? 'true' : 'false'"
 							/>
@@ -322,7 +322,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { BORDER_PROP_KEYS } from '../../consts/Commons/border.const'
-	import { DEFAULT_PASSWORD_REQUIREMENTS, REQUIREMENT_MIN_LENGTH, REQUIREMENT_NUMBER, REQUIREMENT_SPECIAL, REQUIREMENT_TINY, REQUIREMENT_UPPERCASE } from '../../consts/PasswordField/password-field.const'
+	import { DEFAULT_MIN_LENGTH, DEFAULT_PASSWORD_REQUIREMENTS, REQUIREMENT_MIN_LENGTH, REQUIREMENT_NUMBER, REQUIREMENT_SPECIAL, REQUIREMENT_TINY, REQUIREMENT_UPPERCASE } from '../../consts/PasswordField/password-field.const'
 	import vIntersect from '../../directives/Intersect/intersect.directive'
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
@@ -350,7 +350,6 @@
 	 *     so consumers don't have to repeat the regex in their `rules`.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IPasswordFieldProps>(), {
-		minLength: 8,
 		eager: true,
 		offIcon: 'mdi:mdi-eye-off',
 		onIcon: 'mdi:mdi-eye-outline',
@@ -392,8 +391,8 @@
 	 ********************************************************/
 
 	const {
-		onClickPrependInner: handleClickPrependInner,
-		onClickAppendInner: handleClickAppendInner
+		appendInnerRelay,
+		prependInnerRelay
 	} = useAdjacentInner(props)
 
 	/*********************************************************
@@ -515,7 +514,7 @@
 	 ********************************************************/
 	const infos = computed(() => {
 		const localeInfos: { [key: string]: any } = {
-			minLength: REQUIREMENT_MIN_LENGTH(props.minLength)
+			minLength: REQUIREMENT_MIN_LENGTH(props.minLength ?? DEFAULT_MIN_LENGTH)
 		}
 
 		if (props.needTiny) localeInfos.tiny = REQUIREMENT_TINY
@@ -595,6 +594,10 @@
 		return !!props.strengthBar || hasInlineRequirements.value
 	})
 
+	const ruleLabel = (rule: IPasswordRequirement): string => {
+		return rule.labelKey ? t(rule.labelKey, rule.labelParams) : rule.label
+	}
+
 	const isRuleSatisfied = (rule: IPasswordRequirement): boolean => {
 		const v = (model.value ?? '').toString()
 		try {
@@ -649,12 +652,23 @@
 	const enrichedRules = computed(() => {
 		const base = Array.isArray(props.rules) ? [...props.rules] : []
 
+		/*********************************************************
+		 * #1334 — the length rule is opt-in: explicit `minLength`, `requirements`
+		 * or `strengthBar`. An empty value is left to the caller's `rules` / `required`.
+		 ********************************************************/
+		const lengthEnforced = props.minLength != null || props.requirements === true || !!props.strengthBar
+
 		Object.keys(infos.value).forEach((key) => {
+			if (key === 'minLength' && !lengthEnforced) return
+
 			const info = infos.value[key]
 
 			base.push((value: any) => {
-				return info.reg.test(value || '') ||
-						t('origam.validation.must_contains', {value: info.message})
+				if (!value || info.reg.test(value)) return true
+
+				if (key === 'minLength' && props.minLengthMessage) return props.minLengthMessage
+
+				return t('origam.validation.must_contains', {value: t(info.messageKey, {count: info.count})})
 			})
 		})
 
@@ -664,7 +678,13 @@
 	/*********************************************************
 	 * Props passed down
 	 ********************************************************/
-	const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
+	/*********************************************************
+	 * #1110 — computed, not a setup snapshot: attrs set after mount
+	 * (aria-invalid…) must reach the <input>.
+	 ********************************************************/
+	const filteredAttrs = computed(() => filterInputAttrs(attrs))
+	const rootAttrs = computed(() => filteredAttrs.value[0])
+	const inputAttrs = computed(() => filteredAttrs.value[1])
 	/*********************************************************
 	 * inputProps
 	 *

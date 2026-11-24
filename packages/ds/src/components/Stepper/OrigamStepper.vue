@@ -23,7 +23,28 @@
 							:index="index"
 							:data-cy="`stepper-item-${index}`"
 							@click="handleItemClick"
-					/>
+					>
+						<template
+								v-if="$slots['item-prepend']"
+								#prepend="slotProps"
+						>
+							<slot
+									name="item-prepend"
+									v-bind="slotProps"
+									:item="item"
+							/>
+						</template>
+						<template
+								v-if="$slots['item-append']"
+								#append="slotProps"
+						>
+							<slot
+									name="item-append"
+									v-bind="slotProps"
+									:item="item"
+							/>
+						</template>
+					</origam-stepper-item>
 				</template>
 			</template>
 		</slot>

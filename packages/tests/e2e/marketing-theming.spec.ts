@@ -58,7 +58,7 @@ async function getBodyBg (page: Page): Promise<string> {
 
 // ── constants ──────────────────────────────────────────────────────────────
 
-const BRANDS = ['sobre', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple'] as const
+const BRANDS = ['origam', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple'] as const
 const MODES  = ['light', 'dark'] as const
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -86,12 +86,12 @@ test.describe('A · Vérif finale install model', () => {
     // ── A2. body background = token surface-default ───────────────────────
 
     test.describe('A2 · body bg token-driven', () => {
-        test('sobre/dark = rgb(10, 10, 10)', async ({ page }) => {
-            await page.goto('/'); await applyTheme(page, 'sobre', 'dark')
+        test('origam/dark = rgb(10, 10, 10)', async ({ page }) => {
+            await page.goto('/'); await applyTheme(page, 'origam', 'dark')
             expect(await getBodyBg(page)).toBe('rgb(10, 10, 10)')
         })
-        test('sobre/light = rgb(255, 255, 255)', async ({ page }) => {
-            await page.goto('/'); await applyTheme(page, 'sobre', 'light')
+        test('origam/light = rgb(255, 255, 255)', async ({ page }) => {
+            await page.goto('/'); await applyTheme(page, 'origam', 'light')
             expect(await getBodyBg(page)).toBe('rgb(255, 255, 255)')
         })
         test('apple/dark = rgb(0, 0, 0)', async ({ page }) => {
@@ -212,7 +212,7 @@ test.describe('A · Vérif finale install model', () => {
             expect(count, `ThemeSwitcher: ${count} options, attendu 8`).toBe(8)
         })
 
-        test("aucune option ne porte le label 'origam'", async ({ page }) => {
+        test("la marque de base s'appelle 'Origam' — plus aucune option 'Sobre' (#245)", async ({ page }) => {
             await page.goto('/')
             await page.waitForLoadState('networkidle')
             const activatorBtn = page.getByRole('button', { name: 'Switch brand theme' })
@@ -223,8 +223,9 @@ test.describe('A · Vérif finale install model', () => {
             const options = page.locator('[data-cy^="theme-menu-"]')
             await options.first().waitFor({ state: 'visible', timeout: 3000 }).catch(() => {})
             const labels = await options.allTextContents()
+            expect(labels.some(label => label.trim() === 'Origam')).toBe(true)
             for (const label of labels) {
-                expect(label.toLowerCase()).not.toContain('origam')
+                expect(label.toLowerCase()).not.toContain('sobre')
             }
         })
     })

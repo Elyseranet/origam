@@ -140,6 +140,7 @@
 	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
 
 	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { usePopupDialogAria } from '../../composables/Commons/popup-dialog-aria.composable'
 	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
 	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
@@ -404,17 +405,14 @@
 		'--origam-color-picker-edit__label---font-size': fontSize
 	}))
 
-	const comboboxAriaAttrs = computed(() => ({
-		role: 'combobox',
-		'aria-haspopup': 'dialog',
-		'aria-expanded': menu.value ? 'true' : 'false'
-	}))
+	const { comboboxAriaAttrs, menuAriaProps } = usePopupDialogAria('origam-color-picker-field', () => (props.label ? t(props.label) : undefined), menu)
 
 	const menuProps = computed(() => {
 		const consumerContentProps = (props.menuProps?.contentProps ?? {}) as Record<string, any>
 
 		return {
 			...props.menuProps,
+			...menuAriaProps.value,
 			activatorProps: {
 				/*********************************************************
 				 * role + aria-haspopup — #818

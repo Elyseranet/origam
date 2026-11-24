@@ -8,11 +8,11 @@ import type { IThemeChip, IThemePreviewTile } from '~/interfaces/themes-showcase
 export const HOME_THEMES_BUILDER_HREF = '/theming'
 
 /**
- * Theme chips — Sobre first (current page theme), then alphabetical variants.
+ * Theme chips — Origam first (the DS baseline identity), then alphabetical variants.
  * Rendered as a plain flex-wrap <ul> (no OrigamChipGroup slide behaviour).
  */
 export const THEME_CHIPS: IThemeChip[] = [
-    { key: 'sobre', labelKey: 'home.themes.chip_sobre', labelFallback: 'Sobre' },
+    { key: 'origam', labelKey: 'home.themes.chip_origam', labelFallback: 'Origam' },
     { key: 'glass', labelKey: 'home.themes.chip_glass', labelFallback: 'Glass' },
     { key: 'geek', labelKey: 'home.themes.chip_geek', labelFallback: 'Geek' },
     { key: 'cartoon', labelKey: 'home.themes.chip_cartoon', labelFallback: 'Cartoon' },

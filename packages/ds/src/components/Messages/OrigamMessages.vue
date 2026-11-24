@@ -120,7 +120,7 @@
 		'OrigamMessages',
 		'active',
 		'visibility is driven by `messages` being non-empty, never by this prop.',
-		() => props.active !== undefined
+		() => props.active === true
 	)
 	const {typographyStyles: childTypographyStyles} = useTypography(props, 'messages__message')
 

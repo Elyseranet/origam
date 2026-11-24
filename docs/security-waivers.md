@@ -160,7 +160,7 @@ were published. Neither carries GitHub release notes, which is why the change wa
 easy to miss — the advisories' own vulnerable range is `<=2.0.2`, so any version
 above it is out of scope.
 
-The upgrade is pinned by `pnpm.overrides` (`"image-size": "^2.0.4"`).
+The upgrade was pinned by an `image-size` override until #1140, which removed it: no package of the tree resolves `image-size` any more, so the override targeted nothing.
 
 #### The fix was verified in the code, not only in the semver range
 

@@ -409,7 +409,7 @@
  * Maquette showcase pills (for "Data", "Primary", etc.) measured in both modes:
  *   bg: #ffe5a5 (amber), color: #3a2a2e, border: 3px #171717,
  *   shadow: #171717 3px 3px 0.
- * The neutral pill (Neutral, Sobre, Glass, etc.) has:
+ * The neutral pill (Neutral, Origam, Glass, etc.) has:
  *   bg: #c5e8ff (light blue), color: #1e3a5f.
  * In the live (light + dark), showcase chips use DS intent colors (1px violet border).
  * We force all showcase chips to amber pill style in BOTH modes.

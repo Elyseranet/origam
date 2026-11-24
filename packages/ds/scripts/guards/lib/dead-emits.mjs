@@ -189,8 +189,8 @@ const EXTRA_RELAYS = [
         composable: 'useAdjacentInner',
         callPattern: /\buseAdjacentInner\(\s*props\b/,
         events: [
-            { name: 'click:prependInner', handler: 'onClickPrependInner' },
-            { name: 'click:appendInner', handler: 'onClickAppendInner' },
+            { name: 'click:prependInner', handler: 'onClickPrependInner', relay: 'prependInnerRelay' },
+            { name: 'click:appendInner', handler: 'onClickAppendInner', relay: 'appendInnerRelay' },
             { name: 'click:clear', handler: 'clickClear' }
         ]
     },
@@ -355,8 +355,8 @@ function computeExtraRelayEmitted (src) {
     const found = new Set()
     for (const relay of EXTRA_RELAYS) {
         if (!relay.callPattern.test(src)) continue
-        for (const { name, handler } of relay.events) {
-            if (!handler || isHandlerWired(src, handler)) found.add(name)
+        for (const { name, handler, relay: relayName } of relay.events) {
+            if (!handler || isHandlerWired(src, handler) || (relayName && isHandlerWired(src, relayName))) found.add(name)
         }
     }
     return found

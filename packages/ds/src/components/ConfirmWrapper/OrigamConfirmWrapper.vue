@@ -106,7 +106,6 @@
 			>
 				<origam-messages
 						:id="messagesId"
-						:active="hasMessages"
 						:messages="messages"
 				>
 					<template

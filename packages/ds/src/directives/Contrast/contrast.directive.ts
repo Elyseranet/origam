@@ -42,6 +42,45 @@ function srgbToRgb (color: string): string | null {
 }
 
 /*********************************************************
+ * oklabToRgb
+ *
+ * @description
+ * Convert `oklab(L a b [/ α])` / `oklch(L C h [/ α])` to a legacy `rgb()/rgba()`
+ * string (Björn Ottosson's matrices, sRGB-gamut clamped). Chromium reports an
+ * element's `background-color` in this form mid-transition (and at hydration,
+ * #1131), and neither `canvas.fillStyle` nor `rgbaParts` can read it. A
+ * component the parser does not understand (`none`, unknown angle unit) returns
+ * null so the caller abstains.
+ ********************************************************/
+function oklabToRgb (color: string): string | null {
+    const m = /^\s*(oklab|oklch)\(\s*([^\s/)]+)\s+([^\s/)]+)\s+([^\s/)]+)(?:\s*\/\s*([^\s)]+))?\s*\)\s*$/i.exec(color)
+    if (!m) return null
+    const num = (v: string, pct: number): number => (/^-?[\d.]+(?:e-?\d+)?%$/i.test(v) ? parseFloat(v) / 100 * pct : /^-?[\d.]+(?:e-?\d+)?(?:deg)?$/i.test(v) ? parseFloat(v) : NaN)
+    const L = num(m[2], 1)
+    let a = num(m[3], m[1].toLowerCase() === 'oklab' ? 0.4 : 0.4)
+    let b = num(m[4], 0.4)
+    const alpha = m[5] === undefined ? 1 : num(m[5], 1)
+    if ([L, a, b, alpha].some(Number.isNaN)) return null
+    if (m[1].toLowerCase() === 'oklch') {
+        const h = b * Math.PI / 180
+        b = a * Math.sin(h)
+        a = a * Math.cos(h)
+    }
+    const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3
+    const mm = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3
+    const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3
+    const enc = (c: number): number => {
+        const v = Math.min(1, Math.max(0, c))
+        return Math.round((v <= 0.0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - 0.055) * 255)
+    }
+    const r = enc(4.0767416621 * l - 3.3077115913 * mm + 0.2309699292 * s)
+    const g = enc(-1.2684380046 * l + 2.6097574011 * mm - 0.3413193965 * s)
+    const bl = enc(-0.0041960863 * l - 0.7034186147 * mm + 1.707614701 * s)
+    const al = Math.min(1, Math.max(0, alpha))
+    return al < 1 ? `rgba(${r}, ${g}, ${bl}, ${al})` : `rgb(${r}, ${g}, ${bl})`
+}
+
+/*********************************************************
  * hexToRgb
  *
  * @description
@@ -76,7 +115,7 @@ function hexToRgb (hex: string): string | null {
 function toRgb (color: string | null | undefined): string | null {
     if (!color) return null
 
-    const direct = srgbToRgb(color)
+    const direct = srgbToRgb(color) ?? oklabToRgb(color)
     if (direct) return direct
 
     /*********************************************************
@@ -150,25 +189,31 @@ function over (top: TRgba, bottom: TRgba): TRgba {
  * of being mistaken for an opaque colour — the bug that forced white text
  * onto a light fill. Returns a normalised opaque rgb string, or null when a
  * background IMAGE (gradient, picture) is met first: it paints above the
- * colour and cannot be measured, so the directive abstains.
+ * colour and cannot be measured, so the directive abstains. It abstains the
+ * same way on a `background-color` it cannot convert to sRGB (#1131): skipping
+ * that layer would measure the one beneath it and force black / white against
+ * the wrong surface.
  */
-function resolvePaintedBackground (el: HTMLElement): string | null {
-    const layers: TRgba[] = []
-    let node: HTMLElement | null = el
+/*********************************************************
+ * mustAbstain
+ *
+ * @description
+ * True when a layer's paint cannot be measured: a background image, or a
+ * non-empty, non-transparent `background-color` that did not parse to sRGB.
+ ********************************************************/
+function mustAbstain (style: CSSStyleDeclaration, parts: TRgba | null): boolean {
+    if (style.backgroundImage && style.backgroundImage !== 'none') return true
+    return !parts && !!style.backgroundColor && style.backgroundColor !== 'transparent'
+}
 
-    while (node) {
-        const style = getComputedStyle(node)
-        if (style.backgroundImage && style.backgroundImage !== 'none') return null
-        const parts = rgbaParts(toRgb(style.backgroundColor))
-        if (parts && parts.a > 0) {
-            layers.push(parts)
-            if (parts.a >= 1) break
-        }
-        node = node.parentElement
-    }
-
-    if (!layers.length) return null
-
+/*********************************************************
+ * compositeLayers
+ *
+ * @description
+ * Alpha-composite the collected layers over their opaque base, white when the
+ * walk ended on a translucent layer.
+ ********************************************************/
+function compositeLayers (layers: TRgba[]): string {
     const deepest = layers[layers.length - 1]
     let acc: TRgba = deepest.a >= 1 ? layers.pop()! : { r: 255, g: 255, b: 255, a: 1 }
 
@@ -177,6 +222,24 @@ function resolvePaintedBackground (el: HTMLElement): string | null {
     }
 
     return `rgb(${Math.round(acc.r)}, ${Math.round(acc.g)}, ${Math.round(acc.b)})`
+}
+
+function resolvePaintedBackground (el: HTMLElement): string | null {
+    const layers: TRgba[] = []
+    let node: HTMLElement | null = el
+
+    while (node) {
+        const style = getComputedStyle(node)
+        const parts = rgbaParts(toRgb(style.backgroundColor))
+        if (mustAbstain(style, parts)) return null
+        if (parts && parts.a > 0) {
+            layers.push(parts)
+            if (parts.a >= 1) break
+        }
+        node = node.parentElement
+    }
+
+    return layers.length ? compositeLayers(layers) : null
 }
 
 function channelsOf (rgb: string | null): [number, number, number] | null {
@@ -214,9 +277,19 @@ const BLACK: [number, number, number] = [0, 0, 0]
 function enforceContrast (el: HTMLElement, enabled: boolean): void {
     // The directive's own per-binding override flag prevents the `updated`
     // hook from re-processing the colour we just forced.
+    const wasFixed = el.dataset.origamContrastFixed === 'true'
     delete el.dataset.origamContrastFixed
 
-    if (!enabled || typeof window === 'undefined') return
+    if (!enabled || typeof window === 'undefined') {
+        /*********************************************************
+         * Opt-out (#1097)
+         *
+         * @description
+         * A Btn that becomes disabled opts out: drop the colour we forced.
+         ********************************************************/
+        if (wasFixed) el.style.removeProperty('color')
+        return
+    }
 
     // The consumer EXPLICITLY chose a foreground colour (`color="danger"`,
     // etc.) — respect it. Auto-contrast must never override an intentional

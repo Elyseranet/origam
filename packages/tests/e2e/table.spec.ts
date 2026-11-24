@@ -10,11 +10,12 @@ import { expect, test } from '@playwright/test'
  *   0  → Design
  *   1  → State
  *   2  → Functional
- *   3  → Slots - Default
- *   4  → Slots - Top
- *   5  → Slots - Bottom
- *   6  → Slots - Wrapper
- *   7  → Default (playground)
+ *   3  → Events - update:hover
+ *   4  → Slots - Default
+ *   5  → Slots - Top
+ *   6  → Slots - Bottom
+ *   7  → Slots - Wrapper
+ *   8  → Default (playground)
  *
  * Covers: density cell-padding, fixed-header sticky positioning,
  * rounded border-radius.

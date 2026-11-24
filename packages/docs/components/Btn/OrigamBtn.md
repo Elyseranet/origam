@@ -103,10 +103,12 @@ For one-off custom colors, use a `:style` binding instead of `color`:
 
 `loading` is `true`, a number (`0..100`, determinate), or
 `{ type: 'circular' | 'line', … }`. The label **stays rendered** (the
-accessible name is unchanged and the width does not move); an indicator is
-laid over it. The button is `aria-busy="true"` **and**
+accessible name is unchanged and an indicator
+is shown with it. The button is `aria-busy="true"` **and**
 `aria-disabled="true"` - never the native `disabled`, so it keeps focus -
 and ignores clicks (pointer, Enter and Space alike) until the action ends.
+
+In a circular loading the spinner **replaces** the `prepend` (or, on an icon button, the icon) in the same box, so the width does not move; without either, it is added before the label and the button grows by its width.
 
 `{ type: 'skeleton' }` is **refused at compile time** (`TControlLoadingValue`):
 a button that is mid-action is not a placeholder. Use `OrigamSkeleton` for
@@ -247,6 +249,8 @@ utility wins on its own and this inline path is the thing to delete.
     <OrigamBtn :to="{ name: 'home' }" text="Home" />
 </template>
 ```
+
+A Btn with `to` is painted active (`origam-btn--active`) only when `to` matches the current route **exactly** (vue-router's `isExactActive`, query included when `exact` is set). It is **not** active just because its route is a parent of the current one. An explicit `active` prop always wins, and inside an `<OrigamBtnToggle>` the selection (not the route) owns the active state.
 
 ## Slots
 
@@ -483,6 +487,13 @@ The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
     spec's first rule is that a native element beats an ARIA attribute.
   - `tag="a"` has no native `disabled`, so the anchor gets
     `aria-disabled="true"` and its `href` is dropped instead.
+  - A disabled button shows `cursor: not-allowed` (the root keeps its pointer
+    events; a disabled anchor's click is swallowed by the component). It reads
+    `--origam-btn---background-color-disabled` / `--origam-btn---color-disabled`
+    (grey, not a faded brand colour) with **no opacity veil** (the label stays
+    around 2:1 against its fill; `--origam-btn---opacity-disabled` is no longer
+    read); `text` / `outlined` / `plain` / `ghost` keep their see-through fill, and
+    the automatic contrast correction (`v-contrast`) is off while disabled.
 - ⚠️ **Icon-only mode needs an `aria-label` you supply yourself.** The
   component does **not** derive one from the `icon` prop, and there is no
   `ariaLabel` prop: an icon name (`mdi-content-save`) is an identifier, not

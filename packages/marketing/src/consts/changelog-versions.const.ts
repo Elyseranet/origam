@@ -22,14 +22,60 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 addition and 7 fixes. See the full changelog for detail.',
+        summaryFallback: '2 additions and 14 fixes. See the full changelog for detail.',
         highlights: [
             { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamOverlay : Échap n\'est plus ignoré juste après l\'ouverture (#1357)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'v-contrast ne force plus de couleur sur un fond en dégradé (#1427)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'v-ripple : center / circle enfin appliqués (#1378)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamFileField : anneau de focus sur la dropzone et attributs natifs sur l\'<input> seul (#1383)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamCounter : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'origam-card cliquable : l\'overlay n\'est plus opaque au repos (#1276)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'avertissements console dev émis par le DS lui-même (#1156, #1157)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamColorPickerField : menu ouvert en role="dialog" avec aria-controls (#1458)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamField : l\'<input> natif n\'a plus de padding propre, la hauteur minimale suit --origam-input---line-height (#1280)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h5', textFallback: 'OrigamNumberField / champs : basculer hideControls (ou un slot *Inner) après le premier rendu met à jour la zone (#1448)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h6', textFallback: 'OrigamNumberField : plus de div de contrôles vide dans prependInner sans split (#1449)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.43.0',
+        date: '2026-11-22',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2430.summary',
+        summaryFallback: '1 change and 3 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'changed', textKey: 'changelog.versions.v2430.h1', textFallback: 'complexité de v-contrast (#1398)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2430.h2', textFallback: 'OrigamNumberField : plus de retrait vide avec hideControls, plus d\'écriture du modèle au montage, bornage désactivable (#1327)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2430.h3', textFallback: 'OrigamTable : update:hover est déclaré (#1155)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2430.h4', textFallback: 'v-contrast : un fond oklab() / oklch() n\'est plus sauté (#1131)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.42.0',
+        date: '2026-11-22',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2420.summary',
+        summaryFallback: '10 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2420.h1', textFallback: 'OrigamBtn en chargement circulaire : le libellé reste visible (#1086)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2420.h2', textFallback: 'OrigamProgressLinear : plus de <div> dans un <button> en chargement line (#1087)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2420.h3', textFallback: 'OrigamPasswordField : aria-invalid / aria-describedby suivent la validation du consommateur (#1110)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2420.h4', textFallback: 'OrigamPasswordField : la règle de longueur n\'est plus imposée par défaut (#1334)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2420.h5', textFallback: 'OrigamPasswordField : plus aucune chaîne anglaise en dur dans les exigences (#1434)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2420.h6', textFallback: 'OrigamSelect : les items subheader / divider ne sont plus des options (#1426)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.41.1',
+        date: '2026-11-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2411.summary',
+        summaryFallback: '1 addition, 1 change and 7 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'changed', textKey: 'changelog.versions.v2411.h1', textFallback: 'complexité cognitive : scatterExtent et compareBySortItem (#1398)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2411.h2', textFallback: 'OrigamTextareaField : texte noir illisible en mode sombre (#1150)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2411.h3', textFallback: 'v-contrast ne force plus de couleur sur un fond en dégradé (#1427)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2411.h4', textFallback: 'v-ripple : center / circle enfin appliqués (#1378)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2411.h5', textFallback: 'OrigamFileField : anneau de focus sur la dropzone et attributs natifs sur l\'<input> seul (#1383)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2411.h6', textFallback: 'OrigamCounter : « 0 / 12 » ne se coupe plus sur deux lignes (#1360)' }
         ]
     },
     {

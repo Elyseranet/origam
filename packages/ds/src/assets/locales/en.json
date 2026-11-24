@@ -7,6 +7,9 @@
     "open": "Open",
     "close": "Close",
     "dismiss": "Dismiss",
+    "select": {
+      "remove_item": "Remove {title}"
+    },
     "confirm_edit": {
       "ok": "OK",
       "cancel": "Cancel"
@@ -123,7 +126,16 @@
     },
     "password_field": {
       "show": "Show password",
-      "hide": "Hide password"
+      "hide": "Hide password",
+      "requirement_min_length": "At least {count} characters",
+      "requirement_uppercase": "At least 1 uppercase letter",
+      "requirement_number": "At least 1 number",
+      "requirement_special": "At least 1 special character",
+      "message_min_length": "{count} characters",
+      "message_tiny": "a lowercase letter",
+      "message_uppercase": "an uppercase letter",
+      "message_number": "a number",
+      "message_special": "a special character (!@#$%)"
     },
     "file_field": {
       "counter": "{0} files",

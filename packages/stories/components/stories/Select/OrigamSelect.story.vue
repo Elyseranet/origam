@@ -540,6 +540,32 @@
 					data-cy="select-long-list"
 			/>
 		</Variant>
+
+		<!--
+			#1426 — `{ type: 'subheader' }` / `{ type: 'divider' }` : structure,
+			ni option ni atteignable au clavier. Appendue EN DERNIER (index 31).
+		-->
+		<Variant title="Items - subheader / divider">
+			<origam-select
+					:items="groupedItems"
+					label="Networks"
+					data-cy="select-grouped-items"
+			/>
+		</Variant>
+
+		<!-- #1425 — multiple + chips fermables : aria-label « Retirer {title} », cases d'option décoratives. Index 32. -->
+		<Variant title="Multiple - closable chips">
+			<origam-select
+					v-model="closableChipsModel"
+					:items="stringItems"
+					autocomplete
+					chips
+					closable-chips
+					multiple
+					label="Closable chips"
+					data-cy="select-closable-chips"
+			/>
+		</Variant>
 	</Story>
 </template>
 
@@ -602,13 +628,22 @@
 	const stringItems = ['France', 'Germany', 'Spain', 'Italy', 'Portugal']
 
 	// 30 entrées — volume de la page /changelog qui a révélé #742.
-	const longItems = Array.from({ length: 30 }, (_, i) => `Option ${ i + 1 }`)
+	const groupedItems = [
+		{ type: 'subheader', title: 'Automatic' },
+		{ value: 'linkedin', title: 'LinkedIn' },
+		{ value: 'bluesky', title: 'Bluesky' },
+		{ type: 'divider' },
+		{ type: 'subheader', title: 'Manual' },
+		{ value: 'instagram', title: 'Instagram' }
+	]
+	const longItems =Array.from({ length: 30 }, (_, i) => `Option ${ i + 1 }`)
 
 	const designModel        = ref<string | null>(null)
 	const functionalModel    = ref<any>(null)
 	const clearSlotModel     = ref<string | null>(null)
 	const chipSlotModel      = ref<string[]>([])
 	const selectionSlotModel = ref<string[]>([])
+	const closableChipsModel = ref<string[]>([ 'France', 'Germany' ])
 	const itemSlotModel      = ref<string | null>(null)
 	const emitModel          = ref<string | null>(null)
 	const emitMenuModel      = ref<string | null>(null)

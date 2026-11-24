@@ -1,0 +1,27 @@
+{
+  "name": "@origam/mcp",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Serveur MCP (stdio) pour piloter l'API du site marketing origam et tester les composants via le playground. Prive, jamais publie.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "type-check": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@origam/playground": "workspace:*",
+    "@playwright/test": "^1.48.0",
+    "tsx": "^4.20.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0"
+  }
+}

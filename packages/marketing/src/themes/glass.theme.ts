@@ -126,7 +126,7 @@ export const glassLightTheme: IOrigamTheme = {
                     border: '#2563eb'
                 }
             },
-            'btn-primary-text': '#1a1538',
+            'btn-primary-text': '#ffffff',
             'btn-secondary-bg': 'rgba(255, 255, 255, 0.22)',
             'btn-secondary-border': 'transparent',
             'btn-secondary-text': '#1a1538'

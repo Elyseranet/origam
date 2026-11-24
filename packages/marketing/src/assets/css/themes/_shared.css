@@ -62,7 +62,7 @@
     --origam-shadow---btn-secondary: none;
 
     /* ── Display-text gradients (peints via background-clip:text) ──────────
-       Défaut SOBRE = encre solide (dégradé dégénéré) pour que le titre du
+       Défaut ORIGAM (ex-sobre) = encre solide (dégradé dégénéré) pour que le titre du
        hero et les valeurs KPI restent VISIBLES sur le thème par défaut.
        Les thèmes de marque (material/glass/geek/…) les surchargent. */
     --origam-gradient---hero-title: linear-gradient(var(--origam-color__text---ink, #0a0a0a), var(--origam-color__text---ink, #0a0a0a));

@@ -199,6 +199,18 @@
       "source": "types"
     },
     {
+      "name": "clamp",
+      "label": "clamp",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "*******************************************************\nclamp",
+      "source": "types"
+    },
+    {
       "name": "compact",
       "label": "compact",
       "tsType": "boolean | undefined",
