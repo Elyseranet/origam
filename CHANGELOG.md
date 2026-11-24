@@ -29,6 +29,11 @@ This project follows [Semantic Versioning](https://semver.org).
 - La case `origam-checkbox-btn` d'une option est `aria-hidden` + `inert` : plus de contrôle focusable dans un `option` (`label` critical, `nested-interactive`), l'état reste porté par `aria-selected`.
 - Le bouton de fermeture d'une pastille se nomme `Retirer {title}` (clé `origam.select.remove_item`, en + fr) ; `chipProps.closeLabel` reste prioritaire.
 
+### Fixed — `OrigamDataTable` : le tri des colonnes est atteignable au clavier (#1341)
+
+- Cause : le tri n'était déclenché que par un `@click` sur le `<th>`, sans élément focusable.
+- Correctif : une colonne triable rend son contenu dans un `<button type="button">` (motif APG « Sortable Table »), activable à Entrée et Espace ; `aria-sort` reste sur le `<th>`. Le rendu visuel est inchangé (reset natif du bouton).
+
 ### Fixed — `OrigamDatePickerField` : le menu ouvert est un `dialog` relié au combobox, plus un `role="menu"` sans `menuitem` (#1382)
 
 - Cause : `OrigamMenu` pose `role="menu"` sur sa surface ; le contenu d'un date picker est un calendrier, pas des `menuitem` (`aria-required-children`, critical). Le combobox ne pointait vers aucune surface.
