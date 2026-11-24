@@ -68,6 +68,8 @@
 		</template>
 
 		<template #default>
+			<output class="origam-select__announcement">{{ menu && hasNoData ? t(noDataText) : '' }}</output>
+
 			<origam-menu
 					ref="origamMenuRef"
 					v-model="menu"
@@ -96,7 +98,6 @@
 							:selected="selectedValues"
 							:size="listSize"
 							:tabindex="-1"
-							aria-live="polite"
 							v-bind="{ ...listProps }"
 							@focusin="handleFocusin"
 							@focusout="handleFocusout"
@@ -123,10 +124,12 @@
 									<template #item.renderless="{item, index, itemRef}">
 										<origam-divider
 												v-if="isDivider(item)"
+												role="presentation"
 												v-bind="item.props"
 										/>
 										<origam-list-subheader
 												v-else-if="isSubheader(item)"
+												role="presentation"
 												v-bind="item.props"
 										/>
 										<slot
@@ -147,6 +150,8 @@
 															:model-value="isSelected"
 															:ripple="false"
 															:tabindex="-1"
+															aria-hidden="true"
+															inert
 													/>
 
 													<origam-avatar
@@ -595,6 +600,7 @@
 
 		return {
 			...consumerProps,
+			role: consumerProps.role ?? 'presentation',
 			/*********************************************************
 			 * Menu activator ARIA — #1247
 			 *
@@ -602,7 +608,8 @@
 			 * `activator="parent"` is the role-less `.origam-field` wrapper: OrigamMenu's
 			 * default aria-haspopup/expanded/owns are illegal there (aria-allowed-attr).
 			 * The combobox ARIA lives on the <input> (`comboboxAriaAttrs`); `undefined`
-			 * suppresses the defaults.
+			 * suppresses the defaults. #1331: `role` below replaces the overlay's hardcoded
+			 * `role="menu"`, illegal around a listbox.
 			 ********************************************************/
 			activatorProps: {
 				...MENU_WRAPPER_ARIA_RESET,
@@ -1152,6 +1159,7 @@
 			disabled: item.props?.disabled,
 			border: true,
 			rounded: true,
+			closeLabel: t('origam.select.remove_item', { title: item.title }),
 			'onClick:close': (e: Event) => handleChipClose(e, item),
 			onKeydown: (e: KeyboardEvent) => handleChipKeydown(e, item),
 			onMousedown: (e: MouseEvent) => handleChipMousedown(e),
@@ -1411,6 +1419,12 @@
 		lang="scss"
 		scoped
 >
+	@use '../../assets/scss/helpers' as ds;
+
+	.origam-select__announcement {
+		@include ds.ds-visually-hidden;
+	}
+
 	.origam-select {
 		$this: &;
 

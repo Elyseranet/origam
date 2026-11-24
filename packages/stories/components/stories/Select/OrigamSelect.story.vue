@@ -552,6 +552,20 @@
 					data-cy="select-grouped-items"
 			/>
 		</Variant>
+
+		<!-- #1425 — multiple + chips fermables : aria-label « Retirer {title} », cases d'option décoratives. Index 32. -->
+		<Variant title="Multiple - closable chips">
+			<origam-select
+					v-model="closableChipsModel"
+					:items="stringItems"
+					autocomplete
+					chips
+					closable-chips
+					multiple
+					label="Closable chips"
+					data-cy="select-closable-chips"
+			/>
+		</Variant>
 	</Story>
 </template>
 
@@ -629,6 +643,7 @@
 	const clearSlotModel     = ref<string | null>(null)
 	const chipSlotModel      = ref<string[]>([])
 	const selectionSlotModel = ref<string[]>([])
+	const closableChipsModel = ref<string[]>([ 'France', 'Germany' ])
 	const itemSlotModel      = ref<string | null>(null)
 	const emitModel          = ref<string | null>(null)
 	const emitMenuModel      = ref<string | null>(null)
