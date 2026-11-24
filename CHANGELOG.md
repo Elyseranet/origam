@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamColorPickerField` : menu ouvert en `role="dialog"` avec `aria-controls` (#1458)
+
+- Le menu gardait le `role="menu"` d'`OrigamMenu` sans `menuitem` (`aria-required-children`) et le combobox n'avait pas d'`aria-controls`. Le menu est désormais un `dialog` nommé par le `label`, relié au combobox par `aria-controls`, comme `OrigamDatePickerField` (#1382).
+
 ### Added — `OrigamStepperItem` : slots `prepend` / `append`, `OrigamStepper` : `item-prepend` / `item-append` (#1338)
 
 - `OrigamStepperItem` n'avait aucun slot ; le slot `default` d'`OrigamStepper` supprime les connecteurs. Les nouveaux slots reçoivent `{ index, status }` (+ `item` côté stepper) et gardent `show-connectors`. Sans slot, le rendu est inchangé.

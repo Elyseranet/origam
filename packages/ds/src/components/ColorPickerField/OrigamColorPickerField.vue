@@ -68,14 +68,17 @@
 
 		<template #default>
 			<origam-menu
+					:id="menuId"
 					ref="origamMenuRef"
 					v-model="menu"
+					:aria-label="label ? t(label) : undefined"
 					:close-on-content-click="false"
 					:disabled="menuDisabled"
 					:location="BLOCK.BOTTOM"
 					:open-on-click="false"
 					activator="parent"
 					content-class="origam-color-picker-field__content"
+					role="dialog"
 					v-bind="{ ...menuProps }"
 					@after-leave="handleAfterLeave"
 			>
@@ -141,6 +144,7 @@
 
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
@@ -404,9 +408,19 @@
 		'--origam-color-picker-edit__label---font-size': fontSize
 	}))
 
+	/*********************************************************
+	 * Menu id — #1458
+	 *
+	 * @description
+	 * The menu surface is a color-picker dialog, not a `role="menu"`; the
+	 * combobox points at it through `aria-controls`.
+	 ********************************************************/
+	const menuId = `origam-color-picker-field-menu-${getUid()}`
+
 	const comboboxAriaAttrs = computed(() => ({
 		role: 'combobox',
 		'aria-haspopup': 'dialog',
+		'aria-controls': menuId,
 		'aria-expanded': menu.value ? 'true' : 'false'
 	}))
 
