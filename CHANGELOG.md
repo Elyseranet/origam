@@ -23,6 +23,17 @@ This project follows [Semantic Versioning](https://semver.org).
 - #1156 : les champs (`OrigamTextField`, `TextareaField`, `PasswordField`, `NumberField`, `FileField`, `OtpInputField`, `Select`) liaient `@click:append-inner` / `@click:prepend-inner` sans condition pour re-émettre ; `OrigamField` voyait donc toujours un écouteur et avertissait « click listener but no accessible name » sur tout champ doté d'une icône interne. Le relais passe par `appendInnerRelay` / `prependInnerRelay` (`useAdjacentInner`) et n'existe que si le consommateur écoute. Un vrai écouteur sans nom avertit toujours.
 - #1157 : `OrigamMessages` avertissait « prop "active" has no effect » à chaque montage (prop booléenne absente = `false`, jamais `undefined`) ; `Input`, `Form`, `ConfirmWrapper` et `OtpInputField` ne lui passent plus `:active`. `OrigamToolbar` avertissait pour `modelValue` à chaque montage (défaut `true`) : le prédicat compare désormais au défaut. Passer réellement la prop morte avertit toujours.
 
+### Fixed — `OrigamDataTable` : le tri des colonnes est atteignable au clavier (#1341)
+
+- Cause : le tri n'était déclenché que par un `@click` sur le `<th>`, sans élément focusable.
+- Correctif : une colonne triable rend son contenu dans un `<button type="button">` (motif APG « Sortable Table »), activable à Entrée et Espace ; `aria-sort` reste sur le `<th>`. Le rendu visuel est inchangé (reset natif du bouton).
+
+### Fixed — `OrigamDatePickerField` : le menu ouvert est un `dialog` relié au combobox, plus un `role="menu"` sans `menuitem` (#1382)
+
+- Cause : `OrigamMenu` pose `role="menu"` sur sa surface ; le contenu d'un date picker est un calendrier, pas des `menuitem` (`aria-required-children`, critical). Le combobox ne pointait vers aucune surface.
+- Correctif : le menu reçoit `role="dialog"` (cohérent avec `aria-haspopup="dialog"` déjà posé), un `aria-label` issu de `label`, et le combobox reçoit `aria-controls` vers son id.
+- Mesure navigateur (axe, menu ouvert) : `aria-required-children` critical sur `#origam-menu-v-*` avant, 0 violation après. `aria-required-attr` n'a pas été reproduit avec l'axe du dépôt.
+
 ### Added — `OrigamStepperItem` : slots `prepend` / `append`, `OrigamStepper` : `item-prepend` / `item-append` (#1338)
 
 - `OrigamStepperItem` n'avait aucun slot ; le slot `default` d'`OrigamStepper` supprime les connecteurs. Les nouveaux slots reçoivent `{ index, status }` (+ `item` côté stepper) et gardent `show-connectors`. Sans slot, le rendu est inchangé.
