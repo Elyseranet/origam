@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.44.1] - 2026-11-25
+
 ### Security — `useStyle` : une valeur de style ne peut plus sortir de sa déclaration (#1113)
 
 - Cause : `toDeclarations` (`style.composable.ts`) concaténait `clé: valeur` tel quel dans le texte du `<style>` injecté en `<head>`. Une valeur libre (`color`, `bgColor`, dimension, prop `style`…) contenant `red; } body { … } .x {` fermait la règle `#id { … }` et injectait des règles arbitraires dans la page (mesuré sous jsdom : 3 règles parsées au lieu d'une). Les 147 composants qui appellent `useStyle` étaient concernés.
