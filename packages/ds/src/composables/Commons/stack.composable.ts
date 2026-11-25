@@ -1,5 +1,5 @@
 import { useToggleScope } from './toggleScope.composable'
-import { GLOBAL_STACK, ORIGAM_STACK_KEY, STACK_Z_INDEX_STEP } from '../../consts/Commons/stack.const'
+import { GLOBAL_STACK, KEYDOWN_STACK_TOP, ORIGAM_STACK_KEY, STACK_Z_INDEX_STEP } from '../../consts/Commons/stack.const'
 import type { IStackProvide } from '../../interfaces/Commons/stack.interface'
 
 import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
@@ -69,10 +69,29 @@ export function useStack (
      ********************************************************/
     const globalTop = computed(() => !createStackEntry.value || GLOBAL_STACK.at(-1)?.[0] === vm.uid)
 
+    /*********************************************************
+     * Sommet de pile au debut d'un evenement (#1492)
+     *
+     * @description
+     * `globalTop` est lu en direct : si un handler intermediaire ferme un
+     * overlay pendant le MEME evenement (le scope est arrete au microtask
+     * qui suit chaque handler natif), le suivant se croit au sommet.
+     * `snapshotTop` (capture, a brancher avant tout autre handler) fige le
+     * sommet une fois par evenement ; `wasTopAt` le relit.
+     ********************************************************/
+    const snapshotTop = (e: Event) => {
+        if (!KEYDOWN_STACK_TOP.has(e)) KEYDOWN_STACK_TOP.set(e, GLOBAL_STACK.at(-1)?.[0])
+    }
+
+    const wasTopAt = (e: Event) => !createStackEntry.value ||
+        (KEYDOWN_STACK_TOP.has(e) ? KEYDOWN_STACK_TOP.get(e) === vm.uid : globalTop.value)
+
     const localTop = computed(() => !stack.activeChildren.size)
 
     return {
         globalTop,
+        snapshotTop,
+        wasTopAt,
         localTop,
         stackStyles: computed(() => ({zIndex: _zIndex.value}))
     }

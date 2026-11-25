@@ -492,6 +492,12 @@
 							<origam-btn v-bind="a" text="Open menu" data-cy="nested-menu-open"/>
 						</template>
 					</origam-menu>
+					<origam-select
+							v-model="nestedSelectValue"
+							:items="['Alpha', 'Beta', 'Gamma']"
+							label="Nested select"
+							data-cy="nested-select"
+					/>
 				</origam-dialog>
 			</div>
 		</Variant>
@@ -505,7 +511,7 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamBtn, OrigamDialog, OrigamIcon } from '@origam/components'
+	import { OrigamBtn, OrigamDialog, OrigamIcon, OrigamSelect } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type { IDialogProps } from '@origam/interfaces'
 
@@ -534,6 +540,7 @@
 	const overflowContentOpen  = ref(false)
 	const contentGapOpen  = ref(false)
 	const nestedOuterOpen = ref(false)
+	const nestedSelectValue = ref<string | undefined>(undefined)
 	const nestedInnerOpen = ref(false)
 	const slotContentOpen    = ref(false)
 	const slotDefaultOpen    = ref(false)

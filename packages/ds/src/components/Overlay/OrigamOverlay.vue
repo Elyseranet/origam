@@ -208,7 +208,7 @@
 	const {teleportTarget} = useTeleport(computed(() => props.attach || props.contained))
 	const {hasContent, onAfterLeave} = useLazy(props, isActive)
 	const disableGlobalStack = computed(() => !!props.disableGlobalStack)
-	const {globalTop, localTop, stackStyles} = useStack(isActive, toRef(props, 'zIndex'), disableGlobalStack)
+	const {globalTop, snapshotTop, wasTopAt, localTop, stackStyles} = useStack(isActive, toRef(props, 'zIndex'), disableGlobalStack)
 	const {
 		activatorEl,
 		activatorRef,
@@ -310,7 +310,7 @@
 	const handleKeydown = (e: KeyboardEvent) => {
 		emits('keydown', e)
 
-		if (e.key === KEYBOARD_VALUES.ESC && globalTop.value) {
+		if (e.key === KEYBOARD_VALUES.ESC && wasTopAt(e)) {
 			if (!props.persistent) {
 				isActive.value = false
 				if (contentEl.value?.contains(document.activeElement)) {
@@ -323,8 +323,10 @@
 	if (IN_BROWSER) {
 		watch(isActive, val => {
 			if (val) {
+				window.addEventListener('keydown', snapshotTop, true)
 				window.addEventListener('keydown', handleKeydown)
 			} else {
+				window.removeEventListener('keydown', snapshotTop, true)
 				window.removeEventListener('keydown', handleKeydown)
 			}
 		}, {immediate: true})
@@ -333,6 +335,7 @@
 	onBeforeUnmount(() => {
 		if (!IN_BROWSER) return
 
+		window.removeEventListener('keydown', snapshotTop, true)
 		window.removeEventListener('keydown', handleKeydown)
 	})
 
