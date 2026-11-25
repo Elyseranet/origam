@@ -128,17 +128,17 @@ fixed, not a way to close a ticket.
 - **Exit**: drop the `ignoreGhsas` entry as soon as a patched `deepmerge` is
   published or `@rollup/plugin-node-resolve` stops depending on it.
 
-### Related: `patches/@nuxt__devtools@3.4.2.patch` (not a waiver)
+### Retired: `patches/@nuxt__devtools@3.4.2.patch` (not a waiver)
 
-Fixing `simple-git` (3 critical/high advisories, fixed only in `>=4`) forces
-`simple-git@3` to `^4.0.2`, outside the range `@nuxt/devtools` declares
-(`^3.36.0`). `simple-git` 4 has no default export, so `@nuxt/devtools` failed
-at import time. The patch changes one line (`import { simpleGit as Git }`).
-It is bound to the exact version 3.4.2: the next 3.x makes `pnpm install` fail
-loudly. When that happens, check whether the new release already imports
-`simple-git` 4 correctly; if so delete the patch, `pnpm.patchedDependencies`
-and, if no longer needed, the `simple-git@3` override; otherwise regenerate the
-patch with `pnpm patch @nuxt/devtools@<version>`. Tracked in #1070.
+Forcing `simple-git@3` to `^4.0.2` (3 critical/high advisories, fixed only in
+`>=4`) broke `@nuxt/devtools` 3.4.2, which did `import Git from 'simple-git'`;
+`simple-git` 4 has no default export. A one-line patch switched it to a named
+import.
+
+**Retired on 2026-11-25 (#1070).** `@nuxt/devtools` 3.4.4 no longer depends on
+`simple-git`, and devtools was its only consumer in the tree. The devtools
+override moved to `^3.4.4`; the patch, `pnpm.patchedDependencies` and the
+`simple-git@3` override were removed. `simple-git` is no longer in the lockfile.
 
 ---
 

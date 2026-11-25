@@ -1,8 +1,8 @@
 {
   "kind": "util",
-  "exportedAt": "2026-11-24T23:58:01.391Z",
-  "sourceCommit": "3f19eaf7f",
-  "entryCount": 408,
+  "exportedAt": "2026-11-25T09:44:37.983Z",
+  "sourceCommit": "275da4ff9",
+  "entryCount": 410,
   "entries": [
     {
       "entry": {
@@ -32585,6 +32585,129 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "to-safe-css-declaration",
+        "name": "toSafeCssDeclaration",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function toSafeCssDeclaration(name: string, value: string): string | null",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/style.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "string | null",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "to-safe-css-declarations",
+        "name": "toSafeCssDeclarations",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function toSafeCssDeclarations(style: string): string[]",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/style.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "style",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "string[]",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
