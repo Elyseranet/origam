@@ -22,9 +22,10 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 change. See the full changelog for detail.',
+        summaryFallback: '1 change and 1 fix. See the full changelog for detail.',
         highlights: [
-            { type: 'changed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamDataList ne peint plus de surface ; text optionnel sur DataTitle / DataText (#1128) — rupture assumée' }
+            { type: 'changed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamDataList ne peint plus de surface ; text optionnel sur DataTitle / DataText (#1128) — rupture assumée' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'Ripple : .origam-ripple__container n\'était stylé par aucune feuille (#1177)' }
         ]
     },
     {

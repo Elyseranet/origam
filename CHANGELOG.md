@@ -24,6 +24,13 @@ This project follows [Semantic Versioning](https://semver.org).
 - **Rupture** : ces trois tokens valent désormais `transparent` / `inherit` / `visible`. Pour retrouver une surface : `bg-color` / `color`, et `--origam-data-list---overflow: hidden` pour que `rounded` coupe le débordement (voir la doc).
 - `text` devient optionnel sur `OrigamDataTitle` et `OrigamDataText` (le slot par défaut suffit ; plus d'avertissement « Missing required prop »).
 
+### Fixed — Ripple : `.origam-ripple__container` n'était stylé par aucune feuille (#1177)
+
+- Cause : la directive `v-ripple` ajoute `span.origam-ripple__container > span.origam-ripple__animation` à son hôte, mais aucune règle CSS ne ciblait ces classes. Le conteneur restait `position: static` dans le flux (largeur d'un `OrigamBtn` 77,0 → 78,1 px à l'appui) et l'ondulation n'avait ni fond ni opacité.
+- Correctif : nouvelle feuille `assets/scss/_ripple.scss`, transmise par `main.scss` (donc par `origam/styles`) : conteneur absolu, `overflow: hidden`, `pointer-events: none`, rayon hérité de l'hôte ; ondulation en `currentColor` avec ses états `--enter` / `--in` / `--out`, sans transition sous `prefers-reduced-motion`.
+- Pas de nouvelle variable `--origam-*`.
+- Vérifié : `e2e/ripple-container.spec.ts` rouge avant (`position: static`), vert après.
+
 ## [2.44.1] - 2026-11-25
 
 ### Security — `useStyle` : une valeur de style ne peut plus sortir de sa déclaration (#1113)
