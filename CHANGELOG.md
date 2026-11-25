@@ -22,6 +22,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 - Cause : `resolveRoundedCornerValue` filtrait par `CUSTOM_BORDER_RADIUS_REGEX` puis jetait en silence ce qu'elle ne reconnaissait pas (`"0"` sans unité, rayon elliptique `"10px 4px"`), là où `resolveSpacingValue` renvoie la chaîne telle quelle. Désormais tout ce qui n'est pas un échelon, un nom de variante ou un nombre est émis verbatim ; `shaped` / `shaped-invert` restent `null`. Le navigateur écarte lui-même une valeur invalide.
 
+### Fixed — `useUnsupportedProp` voit désormais une prop morte posée par un thème (#1483)
+
+- Cause : le prédicat était évalué dans un `watchEffect` créé dans `setup()`, donc avant le `beforeCreate` où le résolveur de thème (ADR-005) écrit `instance.props` ; une prop morte réglée par `theme.components` n'avertissait jamais. L'évaluation démarre maintenant en `onBeforeMount` (toujours réactive, dédoublonnage par (composant, prop) inchangé).
+
 ## [2.45.0] - 2026-11-25
 
 ### Changed — `OrigamDataList` ne peint plus de surface ; `text` optionnel sur DataTitle / DataText (#1128) — rupture assumée
