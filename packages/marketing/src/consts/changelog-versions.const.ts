@@ -18,15 +18,15 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
+        version: '2.45.0',
+        date: '2026-11-25',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2450.summary',
         summaryFallback: '1 change and 2 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'changed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamDataList ne peint plus de surface ; text optionnel sur DataTitle / DataText (#1128) — rupture assumée' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'OrigamListItem : Entrée sur un item href / to sans prop link navigue (#1066)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'Ripple : .origam-ripple__container n\'était stylé par aucune feuille (#1177)' }
+            { type: 'changed', textKey: 'changelog.versions.v2450.h1', textFallback: 'OrigamDataList ne peint plus de surface ; text optionnel sur DataTitle / DataText (#1128) — rupture assumée' },
+            { type: 'fixed', textKey: 'changelog.versions.v2450.h2', textFallback: 'OrigamListItem : Entrée sur un item href / to sans prop link navigue (#1066)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2450.h3', textFallback: 'Ripple : .origam-ripple__container n\'était stylé par aucune feuille (#1177)' }
         ]
     },
     {

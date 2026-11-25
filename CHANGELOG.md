@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.45.0] - 2026-11-25
+
 ### Changed — `OrigamDataList` ne peint plus de surface ; `text` optionnel sur DataTitle / DataText (#1128) — rupture assumée
 
 - Cause : `light.css` / `dark.css` (et jumeaux SCSS) déclaraient `--origam-data-list---background-color: surface`, `---color: text-primary` et `---overflow: hidden` sur `:root`. Ces tokens héritent, donc un `<dl>` posé sur un fond coloré ou un dégradé devenait un bloc opaque, et `--origam-data-list---color: inherit` ne servait à rien.
