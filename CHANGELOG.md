@@ -24,6 +24,12 @@ This project follows [Semantic Versioning](https://semver.org).
 - **Rupture** : ces trois tokens valent désormais `transparent` / `inherit` / `visible`. Pour retrouver une surface : `bg-color` / `color`, et `--origam-data-list---overflow: hidden` pour que `rounded` coupe le débordement (voir la doc).
 - `text` devient optionnel sur `OrigamDataTitle` et `OrigamDataText` (le slot par défaut suffit ; plus d'avertissement « Missing required prop »).
 
+### Fixed — `OrigamListItem` : Entrée sur un item `href` / `to` sans prop `link` navigue (#1066)
+
+- Cause : `handleKeyDown` n'ignorait que `props.link && link.isLink`. Sans `link`, un item `href` / `to` (rendu en `<a>`) voyait son Entrée interceptée : `preventDefault()` annulait l'activation native, puis `navigate(e)` de vue-router abandonne un événement `defaultPrevented`. Aucune navigation au clavier (WCAG 2.1.1) ; le menu de l'app bar marketing était touché.
+- Correctif : un item portant `href` / `to` laisse Entrée au `<a>` natif. Le contournement par la prop `link` n'est plus nécessaire.
+- Test : `list-item-enter-link.spec.ts` — rouge sur le code parent (`defaultPrevented` = true), vert après.
+
 ### Fixed — Ripple : `.origam-ripple__container` n'était stylé par aucune feuille (#1177)
 
 - Cause : la directive `v-ripple` ajoute `span.origam-ripple__container > span.origam-ripple__animation` à son hôte, mais aucune règle CSS ne ciblait ces classes. Le conteneur restait `position: static` dans le flux (largeur d'un `OrigamBtn` 77,0 → 78,1 px à l'appui) et l'ondulation n'avait ni fond ni opacité.

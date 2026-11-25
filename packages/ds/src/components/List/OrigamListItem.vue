@@ -357,9 +357,6 @@
 	const ariaDisabled = computed(() => {
 		return isOption.value ? props.disabled : undefined
 	})
-	const isLink = computed(() => {
-		return props.link && link.isLink.value
-	})
 	// `isClickable` drives cursor: pointer, the ripple, the keydown
 	// handler, the `--link` modifier class, the focusable tabindex, and
 	// the click bridge. It must be true whenever the item is interactive
@@ -432,7 +429,7 @@
 	 * handleKeyDown (#439)
 	 *
 	 * @description
-	 * `@keydown="isClickable && !isLink && handleKeyDown"` used to compile
+	 * `@keydown="isClickable && !link.isLink && handleKeyDown"` used to compile
 	 * to `$event => (cond && _ctx.handleKeyDown)` — Vue's inline-statement
 	 * form for anything more complex than a bare member expression. The
 	 * expression EVALUATES `handleKeyDown` (a function reference) and
@@ -442,9 +439,12 @@
 	 * form Vue auto-invokes with `$event`) — the guard moves in here,
 	 * where wrapping it in `&&`/`?:` again can't silently undo the fix
 	 * (see issue #439 / #397).
+	 * @description
+	 * #1066 — a row with `href`/`to` is a real <a>: Enter is native. Intercepting it
+	 * (preventDefault) made vue-router's navigate() bail on `defaultPrevented`.
 	 ********************************************************/
 	const handleKeyDown = (e: KeyboardEvent) => {
-		if (!isClickable.value || isLink.value) return
+		if (!isClickable.value || link.isLink.value) return
 
 		if (e.key === KEYBOARD_VALUES.ENTER || e.key === ' ') {
 			e.preventDefault()

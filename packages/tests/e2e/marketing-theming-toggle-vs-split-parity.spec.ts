@@ -28,19 +28,12 @@
  * between the active segment's border-box and the group's content-box is
  * 0px on every side.
  *
- * Runs across 7 of the 8 registered brand themes (glass, geek, cartoon,
- * editorial, material, ecom, apple) × light/dark = 14 combos.
+ * Light/dark for each theme.
  *
- * NOTE: the nav's "Switch brand theme" menu exposes an 8th chip, "Origam"
- * (formerly "Sobre", which set a data-theme matching no theme, #245). It is
- * deliberately excluded from the chrome-parity assertion. Measured on
- * `origam` (2026-11-22): the toggle's border-color is the primary-tinted
- * `rgb(109, 40, 217)` (light) while Split's is the neutral `rgb(23, 23, 23)`
- * — with no theme-level border-color token to dominate, the toggle falls back
- * to `currentColor`, which `color="primary"` tints on the group root, and
- * Split (no color prop) falls back to the neutral default. A real divergence
- * on the baseline theme, out of scope here; `geek` fails the same spec on
- * other fields (pre-existing).
+ * Runs across all 8 registered brand themes (origam, glass, geek, cartoon,
+ * editorial, material, ecom, apple). `origam` joined the matrix with #1488: it
+ * declares a neutral `--origam-btn---border-color` like the other brands, so the
+ * toggle's `color="primary"` no longer tints its border via `currentColor`.
  *
  * Prérequis : serveur marketing opérationnel (port 3000 ou MARKETING_BASE_URL).
  * Run : npx playwright test --config=playwright.marketing.config.ts \
@@ -53,7 +46,7 @@ import { requireMarketingDb } from './_support/require-marketing-db'
 // #835 — voir marketing-theme-builder.spec.ts pour le contexte complet.
 requireMarketingDb()
 
-const THEMES = ['glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
+const THEMES = ['origam', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
 const MODES = ['light', 'dark'] as const
 
 // .origam-btn transitions box-shadow/background/transform over 0.28s (see

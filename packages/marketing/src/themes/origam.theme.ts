@@ -36,13 +36,21 @@ import { ORIGAM_COMPONENT_RESET_DARK, ORIGAM_COMPONENT_RESET_LIGHT } from '../co
 export const origamLightTheme: IOrigamTheme = {
     ...baseLight,
     name: 'origam',
-    cssVars: ORIGAM_COMPONENT_RESET_LIGHT
+    cssVars: {
+        ...ORIGAM_COMPONENT_RESET_LIGHT,
+        // #1488 — bordure neutre comme les 7 autres marques : sans ça le toggle (color=primary) hérite de currentColor (violet), Split reste neutre.
+        '--origam-btn---border-color': '#171717'
+    }
 }
 
 export const origamDarkTheme: IOrigamTheme = {
     ...baseDark,
     name: 'origam',
-    cssVars: ORIGAM_COMPONENT_RESET_DARK
+    cssVars: {
+        ...ORIGAM_COMPONENT_RESET_DARK,
+        // #1488 — bordure neutre comme les 7 autres marques : sans ça le toggle (color=primary) hérite de currentColor (violet), Split reste neutre.
+        '--origam-btn---border-color': '#fafafa'
+    }
 }
 
 export const origamThemes = [origamLightTheme, origamDarkTheme]
