@@ -9,8 +9,11 @@
 					:is="tag"
 					v-if="isActive"
 					:id="id"
-					:ref="rootEl"
+					ref="rootEl"
 					:aria-label="drawerAriaLabel"
+					:aria-modal="isModal ? 'true' : undefined"
+					:role="isModal ? 'dialog' : undefined"
+					:tabindex="isModal ? -1 : undefined"
 					:class="drawerClasses"
 					:style="drawerStyles"
 					v-bind="{...scopeId, ...$attrs}"
@@ -64,6 +67,7 @@
 		isRef,
 		nextTick,
 		onBeforeMount,
+		onBeforeUnmount,
 		onServerPrefetch,
 		Ref,
 		ref,
@@ -84,6 +88,7 @@
 	import { useRouter } from '../../composables/Commons/router.composable'
 	import { useScopeId } from '../../composables/Commons/scopeId.composable'
 	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStack } from '../../composables/Commons/stack.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
 	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useSticky } from '../../composables/Commons/sticky.composable'
@@ -94,12 +99,14 @@
 	import { useTouch } from '../../composables/Commons/touch.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
+	import { IN_BROWSER } from '../../consts/Commons/commons.const'
 	import { INLINE } from '../../enums/Commons/anchor.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 
 	import type { IDrawerProps, IDrawerEmits, IDrawerSlots } from '../../interfaces/Drawer/drawer.interface'
 
 
-	import { int } from '../../utils/Commons/commons.util'
+	import { focusableChildren, int } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * inheritAttrs — #916 / #853
@@ -268,6 +275,68 @@
 	 * inactive on the server but active on the client (mismatch).
 	 ********************************************************/
 	onServerPrefetch(initActive)
+
+	/*********************************************************
+	 * Modal behaviour — #1454
+	 *
+	 * @description
+	 * A `temporary` drawer with a scrim blocks the page behind it, so it is
+	 * modal: `role="dialog"` + `aria-modal`, focus trapped inside, Escape
+	 * closes it (top of the global stack only, same `useStack` as the
+	 * Overlay family), and focus returns to whatever held it before opening.
+	 ********************************************************/
+	const isModal = computed(() => isActive.value && isTemporary.value && !!props.scrim)
+	const {globalTop} = useStack(isModal, shallowRef(1000), shallowRef(false))
+	let returnFocusEl: HTMLElement | null = null
+
+	/*********************************************************
+	 * Tab wrap
+	 *
+	 * @description
+	 * Leaving the last focusable moves focus out of the document (no
+	 * `focusin` fires), so only a keydown guard can trap it.
+	 ********************************************************/
+	const handleModalKeydown = (e: KeyboardEvent) => {
+		if (!globalTop.value) return
+		if (e.key === KEYBOARD_VALUES.ESC) {
+			isActive.value = false
+			return
+		}
+		const el = rootEl.value
+		if (e.key !== KEYBOARD_VALUES.TAB || !el) return
+
+		const focusable = focusableChildren(el)
+		const first = focusable[0] ?? el
+		const last = focusable.at(-1) ?? el
+		const outside = !el.contains(document.activeElement) || document.activeElement === el
+
+		if (e.shiftKey && (document.activeElement === first || outside)) {
+			e.preventDefault()
+			last.focus()
+		} else if (!e.shiftKey && (document.activeElement === last || (outside && !focusable.length))) {
+			e.preventDefault()
+			first.focus()
+		}
+	}
+
+	if (IN_BROWSER) {
+		watch(isModal, async val => {
+			if (val) {
+				returnFocusEl = document.activeElement as HTMLElement | null
+				window.addEventListener('keydown', handleModalKeydown)
+				await nextTick()
+				rootEl.value?.focus({preventScroll: true})
+			} else {
+				window.removeEventListener('keydown', handleModalKeydown)
+				returnFocusEl?.focus({preventScroll: true})
+				returnFocusEl = null
+			}
+		}, {immediate: true})
+
+		onBeforeUnmount(() => {
+			window.removeEventListener('keydown', handleModalKeydown)
+		})
+	}
 
 	/*********************************************************
 	 * Drag
