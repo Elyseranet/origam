@@ -29,6 +29,12 @@ This project follows [Semantic Versioning](https://semver.org).
 - Correctif : clé retirée des deux thèmes. Rendu inchangé (la clé n'était jamais appliquée).
 - Test : `theme-components-declared-props-1475.spec.ts` vérifie, sur le descripteur de props compilé, que tout le bloc `components` du thème de base ne nomme que des props déclarées — rouge sur le parent (`origam-chip.variant`), vert après.
 
+### Fixed — `OrigamDrawer` : un tiroir `temporary` avec voile est maintenant modal (#1454)
+
+- Cause : le tiroir `temporary` bloquait la page par son voile mais n'exposait ni `aria-modal`, ni piège à focus, ni fermeture sur Échap (la doc l'annonçait pourtant).
+- Correctif : quand `temporary` et `scrim`, le tiroir porte `role="dialog"` + `aria-modal="true"`, prend le focus à l'ouverture, referme Tab / Maj+Tab sur lui-même, se ferme sur Échap s'il est au sommet de `useStack` (même pile que la famille Overlay), et rend le focus à l'élément précédent. `:ref="rootEl"` devient `ref="rootEl"` (la ref n'était pas peuplée). Sans API nouvelle ; `:scrim="false"` reste non modal.
+- Test : `drawer-temporary-a11y-1454.spec.ts` — rouge sur le commit parent (`aria-modal` absent), vert après.
+
 ## [2.44.0] - 2026-11-25
 
 ### Fixed — `OrigamField` : les labels ne reprennent plus l'`id` de l'input (#1149)
