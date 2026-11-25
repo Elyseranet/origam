@@ -24,6 +24,11 @@ This project follows [Semantic Versioning](https://semver.org).
 - Correctif : validation à la source unique, `toDeclarations`, via `toSafeCssDeclaration` / `toSafeCssDeclarations` (`utils/Commons/style.util.ts`). Une déclaration est écartée si son nom n'est pas un nom de propriété (`--custom` ou `[-]ident`) ou si sa valeur, chaînes entre guillemets et corps de `url(…)` masqués, contient `;` `{` `}` `<` `>` `@` `\`, un retour ligne, un commentaire, un guillemet non fermé ou `expression(`. Une chaîne `style` est découpée sur ses `;` hors chaînes / `url(…)` et chaque déclaration est validée séparément : les déclarations saines voisines restent émises. Restent acceptés : longueurs, `var(--origam-…, fallback)`, `calc()`, `clamp()`, `color-mix()`, `rgb()` / `oklch()` / `#hex`, `!important`, `font-family` entre guillemets, `url(…)` y compris `data:` (même pouvoir qu'un attribut `style` en ligne).
 - Test : `style-injection.spec.ts` — 21 échecs sur le code parent, 49/49 après ; suite TU complète verte.
 
+### Fixed — thème de base `origam` : plus de `variant` sur `origam-chip`, prop que Chip ne déclare pas (#1475)
+- Cause : `origamLightTheme` / `origamDarkTheme` posaient `variant: 'outlined'` sur `origam-chip`. Le résolveur de thème (ADR-005) ignore une prop non déclarée et émet un avertissement dev : config morte, et un `console.warn` à chaque chargement chez tout consommateur.
+- Correctif : clé retirée des deux thèmes. Rendu inchangé (la clé n'était jamais appliquée).
+- Test : `theme-components-declared-props-1475.spec.ts` vérifie, sur le descripteur de props compilé, que tout le bloc `components` du thème de base ne nomme que des props déclarées — rouge sur le parent (`origam-chip.variant`), vert après.
+
 ## [2.44.0] - 2026-11-25
 
 ### Fixed — `OrigamField` : les labels ne reprennent plus l'`id` de l'input (#1149)
