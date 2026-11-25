@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.44.0] - 2026-11-25
+
 ### Fixed — `OrigamField` : les labels ne reprennent plus l'`id` de l'input (#1149)
 
 - Cause : `labelProps` / `floatingLabelProps` recopiaient la prop `id` du champ sur les deux `<origam-label>` via `filterProps` ; l'input et les deux labels partageaient donc le même `id` (`label[for]` visait le premier label, pas le contrôle). `id` est désormais exclu du forward. Touche tous les champs construits sur `OrigamField`. Aucun changement d'API. Corollaire : le label d'origine n'est plus masqué par `visibility: hidden` quand le champ est actif mais rogné (`clip-path`), car axe (`label-title-only`) ne lit que le premier `label[for]` et le trouvait vide dès qu'un `aria-describedby` existait (NumberField).
