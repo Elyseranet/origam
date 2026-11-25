@@ -267,17 +267,19 @@ export function useThemeBuilder () {
             mode,
             label: `${state.label.trim() || state.name} (${mode})`
         }
-        const cssEntries = Object.entries(state.cssVars[mode])
-        if (cssEntries.length) {
-            const cssVars: Record<string, string> = {}
-            cssEntries.forEach(([k, v]) => { cssVars[k] = v })
-            theme.cssVars = cssVars
-        }
+        // PROPS-FIRST: components before cssVars. This key order is the ONLY ordering —
+        // generatedJson and generatedCode both derive from it (#1055).
         const defaultEntries = Object.entries(state.defaults)
         if (defaultEntries.length) {
             const component: Record<string, Record<string, unknown>> = {}
             defaultEntries.forEach(([compKey, props]) => { component[compKey] = { ...props } })
             theme.components = component
+        }
+        const cssEntries = Object.entries(state.cssVars[mode])
+        if (cssEntries.length) {
+            const cssVars: Record<string, string> = {}
+            cssEntries.forEach(([k, v]) => { cssVars[k] = v })
+            theme.cssVars = cssVars
         }
         return theme
     }
@@ -311,31 +313,35 @@ export function useThemeBuilder () {
             lines.push(`        mode: ${JSON.stringify(entry.mode)},`)
             lines.push(`        label: ${JSON.stringify(entry.label)},`)
 
-            const cssEntries = Object.entries(state.cssVars[mode])
-            const defaultEntries = Object.entries(state.defaults)
-
-            if (cssEntries.length) {
-                lines.push('        cssVars: {')
-                cssEntries.forEach(([k, v], i) => {
-                    const comma = i < cssEntries.length - 1 ? ',' : ''
-                    lines.push(`            ${JSON.stringify(k)}: ${JSON.stringify(v)}${comma}`)
-                })
-                lines.push(defaultEntries.length ? '        },' : '        }')
-            }
-
-            if (defaultEntries.length) {
-                lines.push('        components: {')
-                defaultEntries.forEach(([compKey, props], ci) => {
-                    lines.push(`            ${JSON.stringify(compKey)}: {`)
-                    const propEntries = Object.entries(props)
-                    propEntries.forEach(([p, value], pi) => {
-                        const comma = pi < propEntries.length - 1 ? ',' : ''
-                        lines.push(`                ${p}: ${serialiseValue(value)}${comma}`)
+            // Blocks follow the key order of `entry` (see buildThemeEntry) — no second ordering here.
+            const blocks: string[][] = []
+            for (const key of Object.keys(entry)) {
+                if (key === 'components' && entry.components) {
+                    const comps = Object.entries(entry.components)
+                    const block = ['        components: {']
+                    comps.forEach(([compKey, props], ci) => {
+                        block.push(`            ${JSON.stringify(compKey)}: {`)
+                        const propEntries = Object.entries(props as Record<string, unknown>)
+                        propEntries.forEach(([p, value], pi) => {
+                            block.push(`                ${p}: ${serialiseValue(value)}${pi < propEntries.length - 1 ? ',' : ''}`)
+                        })
+                        block.push(`            }${ci < comps.length - 1 ? ',' : ''}`)
                     })
-                    lines.push(`            }${ci < defaultEntries.length - 1 ? ',' : ''}`)
-                })
-                lines.push('        }')
+                    block.push('        }')
+                    blocks.push(block)
+                } else if (key === 'cssVars' && entry.cssVars) {
+                    const vars = Object.entries(entry.cssVars)
+                    blocks.push([
+                        '        cssVars: {',
+                        ...vars.map(([k, v], i) => `            ${JSON.stringify(k)}: ${JSON.stringify(v)}${i < vars.length - 1 ? ',' : ''}`),
+                        '        }'
+                    ])
+                }
             }
+            blocks.forEach((block, i) => {
+                if (i < blocks.length - 1) block[block.length - 1] += ','
+                lines.push(...block)
+            })
 
             lines.push(`    }${trailingComma}`)
         })

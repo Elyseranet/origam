@@ -80,6 +80,12 @@ export const THEME_BUILDER_CATEGORY_META: IThemeBuilderCategoryMeta[] = [
 export const THEME_BUILDER_COLOR_TYPE_HINTS = ['TColor', 'TIntent'] as const
 
 /**
+ * Interface refs (`IBtnProps`, `IChartSeries`, `Array<IFoo>`) — object payloads.
+ * Anchored: an `I` after a word character is not an interface ref (`TIntent`, `TIcon`).
+ */
+export const THEME_BUILDER_SKIP_INTERFACE_REF = /\bI[A-Z]/
+
+/**
  * Type labels that are NON-themable (data, callbacks, complex objects). A prop
  * whose type label contains any of these fragments is skipped entirely — it is
  * not a visual default a theme can override. This keeps the panel scalar-only,
@@ -98,7 +104,6 @@ export const THEME_BUILDER_SKIP_TYPE_HINTS = [
     'Function',
     'Component',
     'VNode',
-    'I', // interface refs like IBtnProps, IChartSeries — object payloads
     'Map<',
     'Set<'
 ] as const
