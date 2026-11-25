@@ -144,7 +144,7 @@ export const cartoonLightTheme: IOrigamTheme = {
         // GAGNE sur la migration lossless #122-126 (qui avait posé
         // rounded:'lg' + pill:false, sans elevation). `pill:false` reste
         // conservé (pas couvert par l'arbitrage, pas de raison de l'enlever).
-        'origam-chip': { variant: 'outlined', rounded: 'md', border: true, pill: false, elevation: 1 },
+        'origam-chip': { rounded: 'md', border: true, pill: false, elevation: 1 },
         'origam-alert': { rounded: 'lg', border: true, elevation: 2 },
         'origam-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-text-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
