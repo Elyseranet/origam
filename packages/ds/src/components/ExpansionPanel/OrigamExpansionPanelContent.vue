@@ -129,7 +129,7 @@
 	 * `aria-controls` at the REAL id instead of guessing the
 	 * generated-fallback naming scheme (#519, #520).
 	 ********************************************************/
-	const contentDomId = computed(() => props.id || `expansion-panel-content-${expansionPanel.id}`)
+	const contentDomId = computed(() => props.id || `expansion-panel-content-${expansionPanel.uid}`)
 
 	watchEffect(() => {
 		expansionPanel.contentId.value = contentDomId.value
