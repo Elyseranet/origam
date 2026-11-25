@@ -228,7 +228,7 @@
 		'OrigamChartRadar',
 		'showTooltip',
 		'no tooltip component is rendered by the radar — `ChartTooltip` appears nowhere in its template.',
-		() => props.showTooltip !== undefined
+		() => props.showTooltip === true
 	)
 	const chartAnimationStyle = useChartAnimationStyle(props)
 

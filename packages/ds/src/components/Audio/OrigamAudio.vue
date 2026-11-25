@@ -1073,7 +1073,7 @@
 		'OrigamAudio',
 		'waveformColor',
 		'the waveform paints from `currentColor`; this prop reaches no declaration.',
-		() => props.waveformColor !== undefined
+		() => props.waveformColor !== 'currentColor'
 	)
 	const hasColorProp = computed(() => !!props.color)
 	const hasBgColorProp = computed(() => !!props.bgColor)

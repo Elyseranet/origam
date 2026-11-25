@@ -29,6 +29,12 @@ This project follows [Semantic Versioning](https://semver.org).
 - Correctif : clé retirée des deux thèmes. Rendu inchangé (la clé n'était jamais appliquée).
 - Test : `theme-components-declared-props-1475.spec.ts` vérifie, sur le descripteur de props compilé, que tout le bloc `components` du thème de base ne nomme que des props déclarées — rouge sur le parent (`origam-chip.variant`), vert après.
 
+### Fixed — avertissements `useUnsupportedProp` émis à tort (#1476)
+
+- Cause : même défaut que #1157 — un prédicat `!== undefined` (ou `=== true` sur une prop à défaut `true`) est vrai dès le montage, car Vue convertit une prop booléenne absente en `false` et `withDefaults` fixe une valeur. L'avertissement « has no effect » partait à chaque montage, sans que le consommateur ait rien passé.
+- Correctif : chaque prédicat compare à la valeur par défaut réelle. `OrigamVideo` `showCenterControls` (défaut `true`) ; `OrigamAudio` `waveformColor` (défaut `'currentColor'`) ; `OrigamDatePickerControls` `active`, `OrigamListChildren` `returnObject`, `OrigamChartRadar` `showTooltip` (booléens). Les 18 autres composants appelants ont été mesurés : aucun défaut.
+- Test : `packages/tests/TU/components/Commons/unsupported-prop-predicates.spec.ts` — 7 cas rouges sur le parent, verts ; contrôle positif (prop morte réellement passée => 1 avertissement) pour chaque appel.
+
 ### Fixed — `OrigamExpansionPanel` : titre rendu côté serveur et ids stables à l'hydratation (#1469)
 
 - Cause : les props du header / du content venaient de template refs (`ref.value?.filterProps`), `undefined` côté serveur : ni titre ni props relayées dans le HTML servi. Les ids `expansion-panel-header-N` / `-content-N` dérivaient du compteur de module de `useGroupItem` (valeur différente serveur / client, écart d'hydratation).

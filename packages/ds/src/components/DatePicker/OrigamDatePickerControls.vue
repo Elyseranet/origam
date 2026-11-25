@@ -110,7 +110,7 @@
 		'OrigamDatePickerControls',
 		'active',
 		'the controls row reflects the picker view state of its parent; it has no active state of its own.',
-		() => props.active !== undefined
+		() => props.active === true
 	)
 
 	const emits = defineEmits<IDatePickerControlsEmits>()
