@@ -188,6 +188,25 @@ declared in `packages/ds/src/assets/css/tokens/light.css` (and its `dark.css`
 twin). Overriding one at the document root — or on any ancestor — re-skins
 every list.
 
+### Surface — none by default (#1128)
+
+The `<dl>` paints **no surface of its own**: background `transparent`, text
+colour `inherit`, overflow `visible`. It can therefore sit on a hero stage or a
+gradient without becoming an opaque block. To get a surface back, opt in:
+
+```vue
+<!-- a surface and a clipped, rounded block -->
+<origam-data-list bg-color="surface" color="primary" rounded="lg" border :items="items"/>
+```
+
+- **Background / text colour** — `bg-color` / `color` (inline, beats the tokens).
+- **Rounded corners clipping children** — `rounded` rounds the `<dl>` but no
+  longer clips what overflows it. Restore clipping with
+  `--origam-data-list---overflow: hidden` (token, on the list or an ancestor).
+
+⚠️ Breaking change: before this change the tokens painted `surface` / `text-primary`
+and `overflow: hidden` on every list.
+
 ### Root (`<dl>`, both modes)
 
 | Token                                     | Description                    |

@@ -33,7 +33,7 @@ foreground-contrast pass applies as it does on the other surfaces.
 
 | Prop   | Type               | Default | Description                       |
 |--------|--------------------|---------|-----------------------------------|
-| `text` | `string \| number` | —       | Row content. Required. Overridden by the `default` slot. |
+| `text` | `string \| number` | —       | Row content. Optional when the `default` slot supplies it (#1128). Overridden by the `default` slot. |
 
 ### Adjacent props (`IAdjacentProps`)
 

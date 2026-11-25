@@ -13,7 +13,7 @@ import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
 
 export interface IDataTitleProps extends ICommonsComponentProps, IAdjacentProps, IDensityProps, IMarginProps, IPaddingProps, IColorProps, IBgColorProps {
-    text: string | number
+    text?: string | number
 }
 
 /*********************************************************
@@ -27,5 +27,5 @@ export interface IDataTitleEmits extends IAdjacentEmits {}
 
 /** Slot signatures for `<OrigamDataTitle>`. */
 export interface IDataTitleSlots extends IAdjacentSlots {
-    default?: (data: { text: string | number }) => any
+    default?: (data: { text?: string | number }) => any
 }
