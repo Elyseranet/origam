@@ -30,6 +30,9 @@
 // equal specificity (0,1,0) thanks to source order.
 @forward 'tokens/origam-utilities';
 
+// Ripple directive nodes (#1177).
+@forward 'ripple';
+
 // Public mixin surface.
 @forward 'helpers';
 
