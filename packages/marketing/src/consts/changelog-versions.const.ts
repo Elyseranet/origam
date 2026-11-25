@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamListItem : Entrée sur un item href / to sans prop link navigue (#1066)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.44.1',
         date: '2026-11-25',
         type: 'patch',

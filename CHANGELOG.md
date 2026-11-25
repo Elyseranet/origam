@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamListItem` : Entrée sur un item `href` / `to` sans prop `link` navigue (#1066)
+
+- Cause : `handleKeyDown` n'ignorait que `props.link && link.isLink`. Sans `link`, un item `href` / `to` (rendu en `<a>`) voyait son Entrée interceptée : `preventDefault()` annulait l'activation native, puis `navigate(e)` de vue-router abandonne un événement `defaultPrevented`. Aucune navigation au clavier (WCAG 2.1.1) ; le menu de l'app bar marketing était touché.
+- Correctif : un item portant `href` / `to` laisse Entrée au `<a>` natif. Le contournement par la prop `link` n'est plus nécessaire.
+- Test : `list-item-enter-link.spec.ts` — rouge sur le code parent (`defaultPrevented` = true), vert après.
+
 ## [2.44.1] - 2026-11-25
 
 ### Security — `useStyle` : une valeur de style ne peut plus sortir de sa déclaration (#1113)
