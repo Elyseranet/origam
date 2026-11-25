@@ -146,5 +146,5 @@ entirely.
   every other built-in label — it is **not** a hardcoded English string.
   Give each drawer its own `name` as soon as a page carries more than one
   navigation landmark, so they can be told apart.
-- In temporary mode, focus is trapped within the drawer; `ESC` closes it.
+- A `temporary` drawer with a `scrim` is modal: it renders `role="dialog"` + `aria-modal="true"`, moves focus into the drawer on open, traps `Tab` / `Shift+Tab` inside it, closes on `Escape` (when it is the topmost overlay) and returns focus to the previously focused element. With `:scrim="false"` the page stays interactive and none of this applies.
 - The scrim is `aria-hidden`.

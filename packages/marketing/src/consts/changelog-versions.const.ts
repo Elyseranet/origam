@@ -22,11 +22,12 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '3 fixes. See the full changelog for detail.',
+        summaryFallback: '4 fixes. See the full changelog for detail.',
         highlights: [
             { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'useStyle : une valeur de style ne peut plus sortir de sa déclaration (#1113)' },
             { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'thème de base origam : plus de variant sur origam-chip, prop que Chip ne déclare pas (#1475)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamExpansionPanel : titre rendu côté serveur et ids stables à l\'hydratation (#1469)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamExpansionPanel : titre rendu côté serveur et ids stables à l\'hydratation (#1469)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h4', textFallback: 'OrigamDrawer : un tiroir temporary avec voile est maintenant modal (#1454)' }
         ]
     },
     {
