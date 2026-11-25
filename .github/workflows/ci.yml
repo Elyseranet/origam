@@ -289,11 +289,7 @@ jobs:
       - name: Run typecheck-ratchet guard self-test (detector check)
         run: node packages/marketing/scripts/guard-typecheck-ratchet.selftest.mjs
 
-      # `nuxt typecheck` resolves `origam/interfaces` etc. against the DS
-      # package, so it must be built first — mirrors `build-marketing` below.
-      - name: Build library (marketing imports `origam`)
-        run: pnpm -F origam build
-
+      # No DS build needed: `origam` is type-checked against the sources (#1193).
       - name: Run typecheck-ratchet guard
         run: node packages/marketing/scripts/guard-typecheck-ratchet.mjs
 
