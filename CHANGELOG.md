@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `useUnsupportedProp` voit désormais une prop morte posée par un thème (#1483)
+
+- Cause : le prédicat était évalué dans un `watchEffect` créé dans `setup()`, donc avant le `beforeCreate` où le résolveur de thème (ADR-005) écrit `instance.props` ; une prop morte réglée par `theme.components` n'avertissait jamais. L'évaluation démarre maintenant en `onBeforeMount` (toujours réactive, dédoublonnage par (composant, prop) inchangé).
+
 ## [2.45.0] - 2026-11-25
 
 ### Changed — `OrigamDataList` ne peint plus de surface ; `text` optionnel sur DataTitle / DataText (#1128) — rupture assumée

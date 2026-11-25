@@ -1,4 +1,4 @@
-import { watchEffect } from 'vue'
+import { onBeforeMount, watchEffect } from 'vue'
 
 import { warnUnsupportedProp } from '../../utils/Commons/color.util'
 
@@ -29,6 +29,11 @@ import { warnUnsupportedProp } from '../../utils/Commons/color.util'
  * Effet de bord utile : lire la prop dans le predicat la rend CONSOMMEE au
  * sens du garde `unconsumed-props`. La surface cesse donc d'etre comptee
  * morte, ce qui est exact — elle est desormais surveillee, pas ignoree.
+ *
+ * @description
+ * #1483 — l'evaluation attend `onBeforeMount` : setup() s'execute AVANT le
+ * `beforeCreate` ou le resolveur de theme (ADR-005) ecrit `instance.props`,
+ * donc une valeur posee par `theme.components` n'y serait jamais vue.
  ********************************************************/
 export function useUnsupportedProp (
     component: string,
@@ -36,9 +41,11 @@ export function useUnsupportedProp (
     reason: string,
     isPassed: () => boolean,
 ): void {
-    watchEffect(() => {
-        if (isPassed()) {
-            warnUnsupportedProp(component, prop, reason)
-        }
+    onBeforeMount(() => {
+        watchEffect(() => {
+            if (isPassed()) {
+                warnUnsupportedProp(component, prop, reason)
+            }
+        })
     })
 }
