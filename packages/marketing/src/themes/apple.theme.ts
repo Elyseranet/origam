@@ -114,7 +114,7 @@ export const appleLightTheme: IOrigamTheme = {
         'origam-btn-group': { variant: 'flat', rounded: 'md', elevation: 1 },
         'origam-btn-toggle': { variant: 'flat', rounded: 'md', elevation: 1 },
         'origam-card': { rounded: 'md', flat: false, elevation: 2, border: false },
-        'origam-chip': { variant: 'tonal', rounded: 'md', pill: false, border: false },
+        'origam-chip': { rounded: 'md', pill: false, border: false },
         'origam-alert': { rounded: 'md', elevation: 1 },
         'origam-field': { variant: 'outlined', rounded: 'md', border: true },
         'origam-text-field': { variant: 'outlined', rounded: 'md', density: 'compact' },

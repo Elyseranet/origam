@@ -18,6 +18,19 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '3 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'useStyle : une valeur de style ne peut plus sortir de sa déclaration (#1113)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'thème de base origam : plus de variant sur origam-chip, prop que Chip ne déclare pas (#1475)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h3', textFallback: 'OrigamDrawer : un tiroir temporary avec voile est maintenant modal (#1454)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.44.0',
         date: '2026-11-25',
         type: 'minor',
