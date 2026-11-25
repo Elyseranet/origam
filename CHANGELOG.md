@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `TShikiHighlighter` accepte un highlighter `shiki/core` (#1136)
+
+- Cause : `codeToHtml` y déclarait `themes?` et `defaultColor?: false | string` optionnels. Les paramètres d'une fonction étant contravariants, `{ themes?: … }` n'est pas assignable au `CodeOptionsMultipleThemes` de shiki (où `themes` est requis) : ni `createHighlighterCore` (`shiki/core`) ni même `createHighlighter` ne satisfaisaient le type, malgré la doc.
+- Correctif : `themes` et `defaultColor: false` deviennent requis — `useCode()` les passe toujours. Un highlighter `shiki/core` s'utilise sans cast. Test de type : `packages/ds/src/types/Code/__tests__/shiki-highlighter.type-test.ts` (vérifié par `pnpm -F origam type-check`).
+
 ## [2.45.0] - 2026-11-25
 
 ### Changed — `OrigamDataList` ne peint plus de surface ; `text` optionnel sur DataTitle / DataText (#1128) — rupture assumée
