@@ -891,7 +891,7 @@
 		'OrigamVideo',
 		'showCenterControls',
 		'no centre overlay is rendered; the controls live in the bottom bar only.',
-		() => props.showCenterControls === true
+		() => props.showCenterControls !== true
 	)
 
 	const hasColorProp = computed(() => !!props.color)

@@ -129,7 +129,7 @@
 		'OrigamListChildren',
 		'returnObject',
 		'this renderer emits nothing — selection payload shape is decided by `<origam-list>` upstream.',
-		() => props.returnObject !== undefined
+		() => props.returnObject === true
 	)
 
 	/*********************************************************

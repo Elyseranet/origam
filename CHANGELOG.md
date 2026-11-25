@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — avertissements `useUnsupportedProp` émis à tort (#1476)
+
+- Cause : même défaut que #1157 — un prédicat `!== undefined` (ou `=== true` sur une prop à défaut `true`) est vrai dès le montage, car Vue convertit une prop booléenne absente en `false` et `withDefaults` fixe une valeur. L'avertissement « has no effect » partait à chaque montage, sans que le consommateur ait rien passé.
+- Correctif : chaque prédicat compare à la valeur par défaut réelle. `OrigamVideo` `showCenterControls` (défaut `true`) ; `OrigamAudio` `waveformColor` (défaut `'currentColor'`) ; `OrigamDatePickerControls` `active`, `OrigamListChildren` `returnObject`, `OrigamChartRadar` `showTooltip` (booléens). Les 18 autres composants appelants ont été mesurés : aucun défaut.
+- Test : `packages/tests/TU/components/Commons/unsupported-prop-predicates.spec.ts` — 7 cas rouges sur le parent, verts ; contrôle positif (prop morte réellement passée => 1 avertissement) pour chaque appel.
+
 ## [2.44.0] - 2026-11-25
 
 ### Fixed — `OrigamField` : les labels ne reprennent plus l'`id` de l'input (#1149)
