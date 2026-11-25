@@ -163,7 +163,7 @@
 	 * `aria-labelledby` at the REAL id instead of guessing the
 	 * generated-fallback naming scheme (#519, #520).
 	 ********************************************************/
-	const headerDomId = computed(() => props.id || `expansion-panel-header-${expansionPanel.id}`)
+	const headerDomId = computed(() => props.id || `expansion-panel-header-${expansionPanel.uid}`)
 
 	watchEffect(() => {
 		expansionPanel.headerId.value = headerDomId.value

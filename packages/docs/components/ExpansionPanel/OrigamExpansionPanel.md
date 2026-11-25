@@ -80,6 +80,16 @@ By default the content is **lazy**: it doesn't mount until the panel is
 opened for the first time, and unmounts again after the closing transition
 ends (`useLazy`). Pass `eager` to keep it mounted (and hidden) at all times.
 
+### Server-side rendering
+
+The title and a stable `id` (`useId`) are rendered in the server HTML. The
+content is in the server HTML only with `eager` (served hidden); otherwise it
+is mounted on first open.
+
+```vue
+<origam-expansion-panel eager title="Described in the HTML" content="Served hidden, readable by crawlers"/>
+```
+
 ## Loading state
 
 `loading` accepts a boolean, a 0–100 progress number, or an explicit

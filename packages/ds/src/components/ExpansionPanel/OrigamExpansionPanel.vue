@@ -118,10 +118,12 @@
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
 	import { useLoader } from '../../composables/Commons/loader.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
+	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
 	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
+
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
@@ -214,7 +216,7 @@
 	const contentId = ref<string>()
 
 	if (groupItem !== null) {
-		provide(ORIGAM_EXPANSION_PANEL_KEY, {...groupItem, headerId, contentId})
+		provide(ORIGAM_EXPANSION_PANEL_KEY, {...groupItem, headerId, contentId, uid: getUid()})
 	}
 
 	/*********************************************************
@@ -265,10 +267,10 @@
 	 ********************************************************/
 
 	const expansionPanelHeaderProps = computed(() => {
-		return origamExpansionPanelHeaderRef.value?.filterProps(props, ['class', 'id', 'style', 'tag'])
+		return filterPropsOf(OrigamExpansionPanelHeader, props, ['class', 'id', 'style', 'tag'])
 	})
 	const expansionPanelContentProps = computed(() => {
-		return origamExpansionPanelContentRef.value?.filterProps(props, ['class', 'id', 'style', 'tag'])
+		return filterPropsOf(OrigamExpansionPanelContent, props, ['class', 'id', 'style', 'tag'])
 	})
 
 	/*********************************************************

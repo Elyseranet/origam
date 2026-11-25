@@ -86,6 +86,8 @@ const GREEN_SPECS = [
     'tooltip.spec.ts',
     // #1357 — Echap pris en compte des l'ouverture ; rouge sur le parent.
     'overlay-escape-1357.spec.ts',
+    // #1454 — Drawer temporary : aria-modal, piege a focus, Echap, retour du focus ; rouge sur le parent.
+    'drawer-temporary-a11y-1454.spec.ts',
     // wave 2
     'divider.spec.ts',
     'kbd.spec.ts',

@@ -35,6 +35,18 @@ This project follows [Semantic Versioning](https://semver.org).
 - Correctif : chaque prédicat compare à la valeur par défaut réelle. `OrigamVideo` `showCenterControls` (défaut `true`) ; `OrigamAudio` `waveformColor` (défaut `'currentColor'`) ; `OrigamDatePickerControls` `active`, `OrigamListChildren` `returnObject`, `OrigamChartRadar` `showTooltip` (booléens). Les 18 autres composants appelants ont été mesurés : aucun défaut.
 - Test : `packages/tests/TU/components/Commons/unsupported-prop-predicates.spec.ts` — 7 cas rouges sur le parent, verts ; contrôle positif (prop morte réellement passée => 1 avertissement) pour chaque appel.
 
+### Fixed — `OrigamExpansionPanel` : titre rendu côté serveur et ids stables à l'hydratation (#1469)
+
+- Cause : les props du header / du content venaient de template refs (`ref.value?.filterProps`), `undefined` côté serveur : ni titre ni props relayées dans le HTML servi. Les ids `expansion-panel-header-N` / `-content-N` dérivaient du compteur de module de `useGroupItem` (valeur différente serveur / client, écart d'hydratation).
+- Correctif : `filterPropsOf(OrigamExpansionPanelHeader|Content, …)` (définition statique, comme `OrigamTextareaField`) ; le panel fournit `uid: getUid()` (`useId`) et header / content en dérivent leurs ids. Sans changement d'API publique. Le corps reste lazy par conception : `eager` pour le mettre dans le HTML serveur. Le titre et l'id stable sont toujours rendus côté serveur ; le contenu n'est dans le HTML serveur (masqué) qu'avec `eager`, sinon il est monté à la première ouverture.
+- Test : `OrigamExpansionPanel.ssr-1469.spec.ts` (`renderToString`) — rouge sur le commit parent, vert après.
+
+### Fixed — `OrigamDrawer` : un tiroir `temporary` avec voile est maintenant modal (#1454)
+
+- Cause : le tiroir `temporary` bloquait la page par son voile mais n'exposait ni `aria-modal`, ni piège à focus, ni fermeture sur Échap (la doc l'annonçait pourtant).
+- Correctif : quand `temporary` et `scrim`, le tiroir porte `role="dialog"` + `aria-modal="true"`, prend le focus à l'ouverture, referme Tab / Maj+Tab sur lui-même, se ferme sur Échap s'il est au sommet de `useStack` (même pile que la famille Overlay), et rend le focus à l'élément précédent. `:ref="rootEl"` devient `ref="rootEl"` (la ref n'était pas peuplée). Sans API nouvelle ; `:scrim="false"` reste non modal.
+- Test : `drawer-temporary-a11y-1454.spec.ts` — rouge sur le commit parent (`aria-modal` absent), vert après.
+
 ## [2.44.0] - 2026-11-25
 
 ### Fixed — `OrigamField` : les labels ne reprennent plus l'`id` de l'input (#1149)
