@@ -88,6 +88,8 @@ const GREEN_SPECS = [
     'overlay-escape-1357.spec.ts',
     // #1454 — Drawer temporary : aria-modal, piege a focus, Echap, retour du focus ; rouge sur le parent.
     'drawer-temporary-a11y-1454.spec.ts',
+    // #1177 — conteneur du ripple : absolu, clippe, hote inchange ; rouge sur le parent (position: static).
+    'ripple-container.spec.ts',
     // wave 2
     'divider.spec.ts',
     'kbd.spec.ts',
