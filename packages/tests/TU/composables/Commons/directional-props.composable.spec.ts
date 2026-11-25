@@ -329,18 +329,11 @@ describe('documented no-ops', () => {
             .toContain('margin-inline-end: calc(100% - 4rem)')
     })
 
-    it('⚠️ a logical CORNER does NOT share that verbatim fallthrough', () => {
-        // Asymmetry worth pinning because it is surprising and it bit the
-        // reading of this lot: `resolveRoundedCornerValue` gates on
-        // `CUSTOM_BORDER_RADIUS_REGEX` instead of falling through, so
-        // var()/calc() pass but an unrecognised expression is DROPPED —
-        // where the same string on a padding prop would be emitted.
+    it('a logical CORNER shares the verbatim fallthrough (#1022)', () => {
         expect(roundedApi({roundedStartStart: 'calc(4px + 2px)'}).roundedStyles.value)
             .toContain('border-start-start-radius: calc(4px + 2px)')
-
-        // Not a radius the regex can describe, and not a var()/calc():
-        // nothing is emitted, by design.
-        expect(roundedApi({roundedStartStart: 'fit-content'}).roundedStyles.value).toEqual([])
+        expect(roundedApi({roundedStartStart: 'fit-content'}).roundedStyles.value)
+            .toContain('border-start-start-radius: fit-content')
     })
 
     it('shaped / shaped-invert stay owned by component SCSS', () => {

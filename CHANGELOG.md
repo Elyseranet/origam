@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `rounded` par coin : une valeur non reconnue passe verbatim, comme `padding*` (#1022)
+
+- Cause : `resolveRoundedCornerValue` filtrait par `CUSTOM_BORDER_RADIUS_REGEX` puis jetait en silence ce qu'elle ne reconnaissait pas (`"0"` sans unité, rayon elliptique `"10px 4px"`), là où `resolveSpacingValue` renvoie la chaîne telle quelle. Désormais tout ce qui n'est pas un échelon, un nom de variante ou un nombre est émis verbatim ; `shaped` / `shaped-invert` restent `null`. Le navigateur écarte lui-même une valeur invalide.
+
 ## [2.45.0] - 2026-11-25
 
 ### Changed — `OrigamDataList` ne peint plus de surface ; `text` optionnel sur DataTitle / DataText (#1128) — rupture assumée
