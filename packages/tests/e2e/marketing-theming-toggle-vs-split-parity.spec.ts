@@ -87,7 +87,14 @@ test.describe('Theme Builder — mode toggle chrome matches Split button', () =>
     for (const theme of THEMES) {
         for (const mode of MODES) {
             test(`${theme}/${mode}: toggle root computed style equals Split root`, async ({ page }) => {
-                await page.goto('/theming', { waitUntil: 'networkidle' })
+                await page.goto('/theming', { waitUntil: 'load' })
+                // Le dev server Nuxt garde une SSE ouverte (/__nuxt_dev__/error/events) :
+                // `networkidle` n'arrive jamais. On attend donc l'hydratation elle-même,
+                // sans quoi le clic sur le menu de marque part dans un DOM inerte.
+                await page.waitForFunction(() => {
+                    const w = window as unknown as { useNuxtApp?: () => { isHydrating: boolean } }
+                    return w.useNuxtApp !== undefined && !w.useNuxtApp().isHydrating
+                })
                 await switchTheme(page, theme, mode)
 
                 const htmlAttrs = await page.evaluate(() => ({

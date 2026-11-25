@@ -51,7 +51,7 @@ test.describe('HomeKpis — T2', () => {
 
     test.beforeEach(async ({ page }) => {
         await page.goto(BASE)
-        await page.waitForLoadState('networkidle')
+        await page.waitForLoadState('load')
     })
 
     test('section #kpis est dans le DOM avec aria-labelledby', async ({ page }) => {
@@ -71,14 +71,12 @@ test.describe('HomeKpis — T2', () => {
         await expect(dl).toBeAttached()
     })
 
-    test('5 items <dd> (valeurs) présents', async ({ page }) => {
-        const dds = page.locator('#kpis dd')
-        await expect(dds).toHaveCount(5)
-    })
-
-    test('5 items <dt> (labels) présents', async ({ page }) => {
-        const dts = page.locator('#kpis dt')
-        await expect(dts).toHaveCount(5)
+    // Les 5 KPI statiques sont toujours rendus ; LIVE_KPIS (npm / GitHub, 2 max)
+    // n'apparaissent que si l'API répond — le total vaut donc 5 à 7, jamais 5 pile.
+    test('5 à 7 items <dd> (valeurs) présents, autant que de <dt>', async ({ page }) => {
+        await expect.poll(async () => page.locator('#kpis dd').count()).toBeGreaterThanOrEqual(5)
+        await expect.poll(async () => page.locator('#kpis dd').count()).toBeLessThanOrEqual(7)
+        await expect(page.locator('#kpis dt')).toHaveCount(await page.locator('#kpis dd').count())
     })
 
     for (const value of EXPECTED_VALUES) {
