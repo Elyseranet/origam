@@ -24,6 +24,13 @@ This project follows [Semantic Versioning](https://semver.org).
 - Correctif : un item portant `href` / `to` laisse Entrée au `<a>` natif. Le contournement par la prop `link` n'est plus nécessaire.
 - Test : `list-item-enter-link.spec.ts` — rouge sur le code parent (`defaultPrevented` = true), vert après.
 
+### Fixed — Ripple : `.origam-ripple__container` n'était stylé par aucune feuille (#1177)
+
+- Cause : la directive `v-ripple` ajoute `span.origam-ripple__container > span.origam-ripple__animation` à son hôte, mais aucune règle CSS ne ciblait ces classes. Le conteneur restait `position: static` dans le flux (largeur d'un `OrigamBtn` 77,0 → 78,1 px à l'appui) et l'ondulation n'avait ni fond ni opacité.
+- Correctif : nouvelle feuille `assets/scss/_ripple.scss`, transmise par `main.scss` (donc par `origam/styles`) : conteneur absolu, `overflow: hidden`, `pointer-events: none`, rayon hérité de l'hôte ; ondulation en `currentColor` avec ses états `--enter` / `--in` / `--out`, sans transition sous `prefers-reduced-motion`.
+- Pas de nouvelle variable `--origam-*`.
+- Vérifié : `e2e/ripple-container.spec.ts` rouge avant (`position: static`), vert après.
+
 ## [2.44.1] - 2026-11-25
 
 ### Security — `useStyle` : une valeur de style ne peut plus sortir de sa déclaration (#1113)

@@ -22,9 +22,10 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 fix. See the full changelog for detail.',
+        summaryFallback: '2 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamListItem : Entrée sur un item href / to sans prop link navigue (#1066)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamListItem : Entrée sur un item href / to sans prop link navigue (#1066)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'Ripple : .origam-ripple__container n\'était stylé par aucune feuille (#1177)' }
         ]
     },
     {

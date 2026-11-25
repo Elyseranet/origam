@@ -90,6 +90,8 @@ const GREEN_SPECS = [
     'drawer-temporary-a11y-1454.spec.ts',
     // #1066 — Entree sur un ListItem href/to sans `link` navigue ; rouge sur le parent.
     'list-item-enter-link.spec.ts',
+    // #1177 — conteneur du ripple : absolu, clippe, hote inchange ; rouge sur le parent (position: static).
+    'ripple-container.spec.ts',
     // wave 2
     'divider.spec.ts',
     'kbd.spec.ts',

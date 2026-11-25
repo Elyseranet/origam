@@ -20,6 +20,9 @@ import '@origam/assets/css/tokens/dark.css'
 // specificity tie at 0,1,0).
 import '@origam/assets/css/tokens/origam-utilities.css'
 
+// `v-ripple` nodes (#1177) — shipped to consumers through `main.scss`.
+import '@origam/assets/scss/_ripple.scss'
+
 // Material Design Icons font — every component that renders an icon
 // (OrigamIcon, OrigamListGroup activator's expand chevron, OrigamBtn
 // prepend-icon, OrigamChip close button, …) ships with class names
