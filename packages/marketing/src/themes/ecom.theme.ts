@@ -118,7 +118,7 @@ export const ecomLightTheme: IOrigamTheme = {
         'origam-btn-group': { variant: 'flat', rounded: 'sm', elevation: 1 },
         'origam-btn-toggle': { variant: 'flat', rounded: 'sm', elevation: 1 },
         'origam-card': { rounded: 'md', border: true, flat: false, elevation: 1 },
-        'origam-chip': { variant: 'outlined', rounded: 'sm', border: true, pill: false },
+        'origam-chip': { rounded: 'sm', border: true, pill: false },
         'origam-alert': { rounded: 'sm', border: true },
         'origam-field': { variant: 'outlined', rounded: 'sm', border: true },
         'origam-text-field': { variant: 'outlined', rounded: 'sm', border: true },
