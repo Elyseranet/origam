@@ -20270,7 +20270,7 @@
               "name": "--origam-btn---opacity",
               "defaultValue": "1",
               "descriptionKey": "components.btn.css_vars.opacity",
-              "descriptionFallback": "Button opacity. Set to --origam-btn---opacity-disabled (0.5) when disabled."
+              "descriptionFallback": "Button opacity. Stays 1 when disabled: the greyed color tokens carry the state, no opacity veil."
             },
             {
               "name": "--origam-btn---box-shadow-elevated",
