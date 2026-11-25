@@ -55,6 +55,7 @@ export interface IExpansionPanelProps extends ITagProps, ICommonsComponentProps,
 export interface IExpansionPanelGroupItemProvide extends IGroupItemProvide {
     headerId: Ref<string | undefined>
     contentId: Ref<string | undefined>
+    uid: string
 }
 
 /** Emits fired by `<OrigamExpansionPanel>` — group membership lifecycle. */
