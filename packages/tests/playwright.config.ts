@@ -88,6 +88,8 @@ const GREEN_SPECS = [
     'overlay-escape-1357.spec.ts',
     // #1454 — Drawer temporary : aria-modal, piege a focus, Echap, retour du focus ; rouge sur le parent.
     'drawer-temporary-a11y-1454.spec.ts',
+    // #1066 — Entree sur un ListItem href/to sans `link` navigue ; rouge sur le parent.
+    'list-item-enter-link.spec.ts',
     // wave 2
     'divider.spec.ts',
     'kbd.spec.ts',
