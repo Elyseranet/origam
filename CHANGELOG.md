@@ -21,7 +21,7 @@ This project follows [Semantic Versioning](https://semver.org).
 ### Fixed — `OrigamExpansionPanel` : titre rendu côté serveur et ids stables à l'hydratation (#1469)
 
 - Cause : les props du header / du content venaient de template refs (`ref.value?.filterProps`), `undefined` côté serveur : ni titre ni props relayées dans le HTML servi. Les ids `expansion-panel-header-N` / `-content-N` dérivaient du compteur de module de `useGroupItem` (valeur différente serveur / client, écart d'hydratation).
-- Correctif : `filterPropsOf(OrigamExpansionPanelHeader|Content, …)` (définition statique, comme `OrigamTextareaField`) ; le panel fournit `uid: getUid()` (`useId`) et header / content en dérivent leurs ids. Sans changement d'API publique. Le corps reste lazy par conception : `eager` pour le mettre dans le HTML serveur.
+- Correctif : `filterPropsOf(OrigamExpansionPanelHeader|Content, …)` (définition statique, comme `OrigamTextareaField`) ; le panel fournit `uid: getUid()` (`useId`) et header / content en dérivent leurs ids. Sans changement d'API publique. Le corps reste lazy par conception : `eager` pour le mettre dans le HTML serveur. Le titre et l'id stable sont toujours rendus côté serveur ; le contenu n'est dans le HTML serveur (masqué) qu'avec `eager`, sinon il est monté à la première ouverture.
 - Test : `OrigamExpansionPanel.ssr-1469.spec.ts` (`renderToString`) — rouge sur le commit parent, vert après.
 
 ## [2.44.0] - 2026-11-25
