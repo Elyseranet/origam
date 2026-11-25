@@ -3,6 +3,7 @@ import { computed, getCurrentInstance, inject, onMounted, toValue } from 'vue'
 import { ORIGAM_SSR_STYLES_KEY, SSR_STYLE_TAG_PREFIX } from '../../consts/Commons/ssr-style.const'
 import { escapeCssIdent } from '../../utils/Commons/dom.util'
 import { getCurrentInstanceName, getUid } from '../../utils/Commons/getCurrentInstance.util'
+import { toSafeCssDeclaration, toSafeCssDeclarations } from '../../utils/Commons/style.util'
 import { useStyleTag } from './styleTag.composable'
 
 /**
@@ -49,7 +50,7 @@ function toKebabCase (key: string): string {
 function toDeclarations (value: unknown): string[] {
     if (value == null || typeof value === 'boolean' || typeof value === 'number') return []
 
-    if (typeof value === 'string') return value.length > 0 ? [value] : []
+    if (typeof value === 'string') return toSafeCssDeclarations(value)
 
     if (Array.isArray(value)) return value.flatMap(toDeclarations)
 
@@ -58,7 +59,8 @@ function toDeclarations (value: unknown): string[] {
 
         return Object.keys(bag)
             .filter((key) => typeof bag[key] !== 'undefined')
-            .map((key) => `${toKebabCase(key)}: ${bag[key]}`)
+            .map((key) => toSafeCssDeclaration(toKebabCase(key), String(bag[key])))
+            .filter((declaration): declaration is string => declaration !== null)
     }
 
     return []

@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Security — `useStyle` : une valeur de style ne peut plus sortir de sa déclaration (#1113)
+
+- Cause : `toDeclarations` (`style.composable.ts`) concaténait `clé: valeur` tel quel dans le texte du `<style>` injecté en `<head>`. Une valeur libre (`color`, `bgColor`, dimension, prop `style`…) contenant `red; } body { … } .x {` fermait la règle `#id { … }` et injectait des règles arbitraires dans la page (mesuré sous jsdom : 3 règles parsées au lieu d'une). Les 147 composants qui appellent `useStyle` étaient concernés.
+- Correctif : validation à la source unique, `toDeclarations`, via `toSafeCssDeclaration` / `toSafeCssDeclarations` (`utils/Commons/style.util.ts`). Une déclaration est écartée si son nom n'est pas un nom de propriété (`--custom` ou `[-]ident`) ou si sa valeur, chaînes entre guillemets et corps de `url(…)` masqués, contient `;` `{` `}` `<` `>` `@` `\`, un retour ligne, un commentaire, un guillemet non fermé ou `expression(`. Une chaîne `style` est découpée sur ses `;` hors chaînes / `url(…)` et chaque déclaration est validée séparément : les déclarations saines voisines restent émises. Restent acceptés : longueurs, `var(--origam-…, fallback)`, `calc()`, `clamp()`, `color-mix()`, `rgb()` / `oklch()` / `#hex`, `!important`, `font-family` entre guillemets, `url(…)` y compris `data:` (même pouvoir qu'un attribut `style` en ligne).
+- Test : `style-injection.spec.ts` — 21 échecs sur le code parent, 49/49 après ; suite TU complète verte.
+
 ## [2.44.0] - 2026-11-25
 
 ### Fixed — `OrigamField` : les labels ne reprennent plus l'`id` de l'input (#1149)
