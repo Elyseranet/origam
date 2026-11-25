@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed — `OrigamDataList` ne peint plus de surface ; `text` optionnel sur DataTitle / DataText (#1128) — rupture assumée
+
+- Cause : `light.css` / `dark.css` (et jumeaux SCSS) déclaraient `--origam-data-list---background-color: surface`, `---color: text-primary` et `---overflow: hidden` sur `:root`. Ces tokens héritent, donc un `<dl>` posé sur un fond coloré ou un dégradé devenait un bloc opaque, et `--origam-data-list---color: inherit` ne servait à rien.
+- **Rupture** : ces trois tokens valent désormais `transparent` / `inherit` / `visible`. Pour retrouver une surface : `bg-color` / `color`, et `--origam-data-list---overflow: hidden` pour que `rounded` coupe le débordement (voir la doc).
+- `text` devient optionnel sur `OrigamDataTitle` et `OrigamDataText` (le slot par défaut suffit ; plus d'avertissement « Missing required prop »).
+
 ### Fixed — `OrigamListItem` : Entrée sur un item `href` / `to` sans prop `link` navigue (#1066)
 
 - Cause : `handleKeyDown` n'ignorait que `props.link && link.isLink`. Sans `link`, un item `href` / `to` (rendu en `<a>`) voyait son Entrée interceptée : `preventDefault()` annulait l'activation native, puis `navigate(e)` de vue-router abandonne un événement `defaultPrevented`. Aucune navigation au clavier (WCAG 2.1.1) ; le menu de l'app bar marketing était touché.

@@ -113,6 +113,12 @@
 			</template>
 		</Variant>
 
+		<Variant title="Surface - on a coloured stage">
+			<div style="padding: 1rem; background: linear-gradient(135deg, #6d28d9, #db2777); color: #fff;">
+				<origam-data-list :items="basicItems"/>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<origam-data-list :items="basicItems">
 				<span>Custom default slot content</span>

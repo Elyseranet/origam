@@ -1955,13 +1955,13 @@
   --origam-expansion-panel__popout---max-width-active: calc(100% + 16px);
   --origam-expansion-panel__inset---max-width: 100%;
   --origam-expansion-panel__inset---max-width-active: calc(100% - 32px);
-  --origam-data-list---background-color: var(--origam-color__surface---default);
-  --origam-data-list---color: var(--origam-color__text---primary);
+  --origam-data-list---background-color: transparent;
+  --origam-data-list---color: inherit;
   --origam-data-list---border-radius: var(--origam-radius---none);
   --origam-data-list---padding: var(--origam-space---0);
   --origam-data-list---gap: var(--origam-space---0);
   --origam-data-list---display: block;
-  --origam-data-list---overflow: hidden;
+  --origam-data-list---overflow: visible;
   --origam-data-list__item---background-color: rgba(0, 0, 0, 0);
   --origam-data-list__item---padding: var(--origam-space---0);
   --origam-data-list__item---hover-background-color: var(--origam-color__surface---overlay);

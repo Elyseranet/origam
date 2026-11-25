@@ -7,12 +7,12 @@
     {
       "name": "text",
       "label": "text",
-      "tsType": "string | number",
+      "tsType": "string | number | undefined",
       "runtimeType": [
         "String",
         "Number"
       ],
-      "required": true,
+      "required": false,
       "hasFactoryDefault": false,
       "control": "text",
       "source": "types"

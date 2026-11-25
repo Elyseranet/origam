@@ -167,6 +167,8 @@ const GREEN_SPECS = [
     'textarea-richtext.spec.ts',
     // #1267 — tokens kv de DataList : defauts inchanges + effet mesure par token.
     'data-list-kv-tokens.spec.ts',
+    // #1128 — le <dl> ne peint plus de surface (fond transparent, couleur heritee, overflow visible). RED/GREEN mesure.
+    'data-list-surface.spec.ts',
     // #1245 - jetons typo des en-tetes Table/DataTable : defauts inchanges + effet.
     'table-header-typography-tokens.spec.ts',
     'defaults-provider.spec.ts',
