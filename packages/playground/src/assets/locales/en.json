@@ -60,6 +60,8 @@
     "playground.events.clear": "Clear",
     "playground.events.empty": "No emit yet — interact with the rendered component.",
     "playground.preview.aria_label": "Preview",
+    "playground.preview.append_inner_label": "End icon",
+    "playground.preview.prepend_inner_label": "Start icon",
     "playground.preview.scene_summary": "{roots} root(s) · {count} instance(s)",
     "playground.scene_tree.node_with_hint": "{label} — {hint}",
     "playground.scene_tree.node_in_slot": "{label} (#{slot})",

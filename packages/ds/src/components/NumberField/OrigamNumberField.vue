@@ -85,8 +85,8 @@
 			@click:clear="handleClear"
 			@click:prepend="handleClickPrepend"
 			@click:append="handleClickAppend"
-			@click:prepend-inner="handleClickPrependInner"
-			@click:append-inner="handleClickAppendInner"
+			@click:prepend-inner="prependInnerRelay"
+			@click:append-inner="appendInnerRelay"
 	>
 		<template
 				v-if="slots.prepend"
@@ -113,11 +113,11 @@
 		</template>
 
 		<template
-				v-if="!hideControls || slots.prependInner"
+				v-if="hasPrependControls || slots.prependInner"
 				#prependInner
 		>
 			<div
-					v-if="!hideControls"
+					v-if="hasPrependControls"
 					class="origam-number-field__control"
 			>
 				<template v-if="split">
@@ -443,8 +443,8 @@
 	 ********************************************************/
 
 	const {
-		onClickPrependInner: handleClickPrependInner,
-		onClickAppendInner: handleClickAppendInner
+		appendInnerRelay,
+		prependInnerRelay
 	} = useAdjacentInner(props)
 
 	/*********************************************************
@@ -812,6 +812,15 @@
 	const textFieldProps = computed(() => {
 		return filterPropsOf(OrigamTextField, props, ['modelValue', 'class', 'style', 'validationValue'])
 	})
+
+	/*********************************************************
+	 * hasPrependControls
+	 *
+	 * @description
+	 * #1449 — the prepend-inner controls only exist in `split` mode
+	 * (otherwise they live in appendInner).
+	 ********************************************************/
+	const hasPrependControls = computed(() => props.split && !props.hideControls)
 
 	const hasAppendInner = computed(() => {
 		return slots.appendInner || !props.hideControls

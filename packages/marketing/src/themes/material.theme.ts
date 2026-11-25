@@ -134,7 +134,7 @@ export const materialLightTheme: IOrigamTheme = {
         'origam-btn-group': { variant: 'elevated', rounded: 'lg', elevation: 1 },
         'origam-btn-toggle': { variant: 'tonal', rounded: 'lg', elevation: 1 },
         'origam-card': { rounded: 'lg', flat: false, border: false, elevation: 1 },
-        'origam-chip': { variant: 'tonal', rounded: 'lg', pill: true, border: false },
+        'origam-chip': { rounded: 'lg', pill: true, border: false },
         'origam-alert': { rounded: 'lg', elevation: 1 },
         // CHAMPS OUTLINED (correction utilisateur) — vérifié IFieldProps / ITextFieldProps
         // etc. acceptent `variant: 'outlined'` (TFieldVariant). `origam-select` était déjà

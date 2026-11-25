@@ -51,7 +51,7 @@ test.describe('HomeKpis — T2', () => {
 
     test.beforeEach(async ({ page }) => {
         await page.goto(BASE)
-        await page.waitForLoadState('networkidle')
+        await page.waitForLoadState('load')
     })
 
     test('section #kpis est dans le DOM avec aria-labelledby', async ({ page }) => {
@@ -71,14 +71,12 @@ test.describe('HomeKpis — T2', () => {
         await expect(dl).toBeAttached()
     })
 
-    test('5 items <dd> (valeurs) présents', async ({ page }) => {
-        const dds = page.locator('#kpis dd')
-        await expect(dds).toHaveCount(5)
-    })
-
-    test('5 items <dt> (labels) présents', async ({ page }) => {
-        const dts = page.locator('#kpis dt')
-        await expect(dts).toHaveCount(5)
+    // Les 5 KPI statiques sont toujours rendus ; LIVE_KPIS (npm / GitHub, 2 max)
+    // n'apparaissent que si l'API répond — le total vaut donc 5 à 7, jamais 5 pile.
+    test('5 à 7 items <dd> (valeurs) présents, autant que de <dt>', async ({ page }) => {
+        await expect.poll(async () => page.locator('#kpis dd').count()).toBeGreaterThanOrEqual(5)
+        await expect.poll(async () => page.locator('#kpis dd').count()).toBeLessThanOrEqual(7)
+        await expect(page.locator('#kpis dt')).toHaveCount(await page.locator('#kpis dd').count())
     })
 
     for (const value of EXPECTED_VALUES) {
@@ -134,9 +132,9 @@ test.describe('HomeKpis — T2', () => {
         await expect(grid).toBeAttached()
     })
 
-    // ── Sobre computed-style assertions (≥3) ───────────────────────────────
+    // ── origam computed-style assertions (≥3) ───────────────────────────────
 
-    test('Sobre — le nombre KPI est peint via gradient (kpi-value)', async ({ page }) => {
+    test('origam — le nombre KPI est peint via gradient (kpi-value)', async ({ page }) => {
         const value = page.locator('#kpis dd.home-kpis__value').first()
         const styles = await value.evaluate(el => {
             const s = getComputedStyle(el)
@@ -152,10 +150,10 @@ test.describe('HomeKpis — T2', () => {
         expect(styles.bgImage.toLowerCase()).toContain('gradient')
     })
 
-    // ⛔ Ce test DEMANDE le thème sobre — voir la note dans `home-cta.spec.ts`
+    // ⛔ Ce test DEMANDE le thème origam — voir la note dans `home-cta.spec.ts`
     // et `_support/marketing-theme.ts`.
-    test('Sobre — le label KPI est uppercase + gris secondaire', async ({ page }) => {
-        await applyBrand(page, 'sobre')
+    test('origam — le label KPI est uppercase + gris secondaire', async ({ page }) => {
+        await applyBrand(page, 'origam')
 
         const label = page.locator('#kpis dt.home-kpis__label').first()
         const styles = await label.evaluate(el => {
@@ -163,11 +161,11 @@ test.describe('HomeKpis — T2', () => {
             return { transform: s.textTransform, color: s.color }
         })
         expect(styles.transform).toBe('uppercase')
-        // sobre text---secondary = #525252 = rgb(82, 82, 82)
+        // origam text---secondary = #525252 = rgb(82, 82, 82)
         expect(styles.color).toBe('rgb(82, 82, 82)')
     })
 
-    test('Sobre — la règle (divider) lit le token border à pleine opacité', async ({ page }) => {
+    test('origam — la règle (divider) lit le token border à pleine opacité', async ({ page }) => {
         const rule = page.locator('[data-cy="kpis-rule-top"]')
         const opacity = await rule.evaluate(el => getComputedStyle(el).opacity)
         expect(opacity).toBe('1')

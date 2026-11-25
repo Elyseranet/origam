@@ -1,8 +1,8 @@
 {
   "kind": "util",
-  "exportedAt": "2026-11-18T16:12:23.391Z",
-  "sourceCommit": "fe36f02cc",
-  "entryCount": 395,
+  "exportedAt": "2026-11-24T23:58:01.391Z",
+  "sourceCommit": "3f19eaf7f",
+  "entryCount": 408,
   "entries": [
     {
       "entry": {
@@ -2213,6 +2213,90 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "build-sankey-link-specs",
+        "name": "buildSankeyLinkSpecs",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function buildSankeyLinkSpecs(data: ReadonlyArray<IChartSankeyDatum>, nodeMap: Map<string, IChartSankeyNode>, sums: { incomingSum: Map<string, number>, outgoingSum: Map<string, number> }, resolveColor: (raw: IChartSankeyDatum['color']) => string): Array<TChartSankeyLinkSpec>",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Chart/sankey-layout.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "data",
+          "type": "ReadonlyArray<IChartSankeyDatum>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "nodeMap",
+          "type": "Map<string, IChartSankeyNode>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "sums",
+          "type": "{ incomingSum: Map<string, number>, outgoingSum: Map<string, number> }",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "resolveColor",
+          "type": "(raw: IChartSankeyDatum['color']) => string",
+          "required": true,
+          "default_value": null,
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "Array<TChartSankeyLinkSpec>",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "calculate",
         "name": "calculate",
         "category": "Commons",
@@ -2617,6 +2701,120 @@
         {
           "name": null,
           "type": "string",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "chart-point-value",
+        "name": "chartPointValue",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function chartPointValue(raw: unknown): number",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Chart/chart-point.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "raw",
+          "type": "unknown",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "number",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "chart-safe-value",
+        "name": "chartSafeValue",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function chartSafeValue(raw: unknown): number",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Chart/chart-point.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "raw",
+          "type": "unknown",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "number",
           "position": 0,
           "description_key": null,
           "description_fallback": null
@@ -6757,7 +6955,7 @@
         "description_key": "utils.catalog.filter_items.description",
         "description_fallback": "Filters a list of items against a query string using a configurable filter function. Supports per-key custom filters, key allowlists, and three filter modes: any-key (default), union, every, and intersection.",
         "definition": null,
-        "signature": "function filterItems(items: readonly (readonly [item: IInternalItem, transformed: Record<string, unknown>])[] | readonly IInternalItem[], query: string, options?: { customKeyFilter?: TFilterKeyFunctions default?: TFilterFunction filterKeys?: TFilterKeys filterMode?: TFilterMode noFilter?: boolean }): { index: number; matches: Record<string, TFilterMatch>; }[]",
+        "signature": "function filterItems(items: readonly (readonly [item: IInternalItem, transformed: Record<string, unknown>])[] | readonly IInternalItem[], query: string, options?: IFilterItemsOptions): { index: number; matches: Record<string, TFilterMatch>; }[]",
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/utils/Commons/filters.util.ts",
@@ -6797,7 +6995,7 @@
         },
         {
           "name": "options",
-          "type": "{\n        customKeyFilter?: TFilterKeyFunctions\n        default?: TFilterFunction\n        filterKeys?: TFilterKeys\n        filterMode?: TFilterMode\n        noFilter?: boolean\n    }",
+          "type": "IFilterItemsOptions",
           "required": false,
           "default_value": null,
           "position": 2,
@@ -9246,6 +9444,63 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "get-breakpoint-name",
+        "name": "getBreakpointName",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function getBreakpointName(flags: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', boolean>): TBreakpoint",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/display.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "flags",
+          "type": "Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', boolean>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "TBreakpoint",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -14731,6 +14986,63 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "group-sankey-columns",
+        "name": "groupSankeyColumns",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function groupSankeyColumns(columns: Map<string, number>): Map<number, Array<string>>",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Chart/sankey-layout.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "columns",
+          "type": "Map<string, number>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "Map<number, Array<string>>",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -22941,6 +23253,81 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "order-sankey-columns",
+        "name": "orderSankeyColumns",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function orderSankeyColumns(byColumn: Map<number, Array<string>>, edges: ReadonlyArray<{ from: string, to: string }>, nodeNames: ReadonlyArray<string>): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Chart/sankey-layout.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "byColumn",
+          "type": "Map<number, Array<string>>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "edges",
+          "type": "ReadonlyArray<{ from: string, to: string }>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "nodeNames",
+          "type": "ReadonlyArray<string>",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "void",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "pad-end",
         "name": "padEnd",
         "category": "Commons",
@@ -25738,6 +26125,72 @@
           "required": true,
           "default_value": null,
           "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "string",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "render-theme-css",
+        "name": "renderThemeCss",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function renderThemeCss(themes: readonly IOrigamTheme[], options?: IRenderThemeCssOptions = {}): string",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/theme-ssr.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "themes",
+          "type": "readonly IOrigamTheme[]",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "options",
+          "type": "IRenderThemeCssOptions",
+          "required": false,
+          "default_value": "{}",
+          "position": 1,
           "description_key": null,
           "description_fallback": null
         }
@@ -28577,6 +29030,174 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "sankey-node-height",
+        "name": "sankeyNodeHeight",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function sankeyNodeHeight(value: number, columnTotal: number, availableHeight: number, nodeCount: number): number",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Chart/sankey-layout.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "value",
+          "type": "number",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "columnTotal",
+          "type": "number",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "availableHeight",
+          "type": "number",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "nodeCount",
+          "type": "number",
+          "required": true,
+          "default_value": null,
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "number",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "sankey-ribbon-path",
+        "name": "sankeyRibbonPath",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function sankeyRibbonPath(x0: number, x1: number, source: { yTop: number, bandH: number }, target: { yTop: number, bandH: number }): string",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Chart/sankey-layout.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "x0",
+          "type": "number",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "x1",
+          "type": "number",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "source",
+          "type": "{ yTop: number, bandH: number }",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "target",
+          "type": "{ yTop: number, bandH: number }",
+          "required": true,
+          "default_value": null,
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "string",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "scroll-to",
         "name": "scrollTo",
         "category": "Commons",
@@ -29434,7 +30055,7 @@
         "description_key": "utils.catalog.sort_items.description",
         "description_fallback": "Sort an array of internal data-table items by one or more sort keys and directions, with optional custom compare functions per key.",
         "definition": null,
-        "signature": "function sortItems(items: T[], sortByItems: Array<IDataTableSortItem>, options?: { transform?: (item: T) => Record<string, any> sortFunctions?: Record<string, TDataTableCompareFunction> sortRawFunctions?: Record<string, TDataTableCompareFunction> }): T[]",
+        "signature": "function sortItems(items: T[], sortByItems: Array<IDataTableSortItem>, options?: IDataTableSortItemsOptions<T>): T[]",
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/utils/DataTable/sort.util.ts",
@@ -29474,7 +30095,7 @@
         },
         {
           "name": "options",
-          "type": "{\n        transform?: (item: T) => Record<string, any>\n        sortFunctions?: Record<string, TDataTableCompareFunction>\n        sortRawFunctions?: Record<string, TDataTableCompareFunction>\n    }",
+          "type": "IDataTableSortItemsOptions<T>",
           "required": false,
           "default_value": null,
           "position": 2,
@@ -29742,6 +30363,81 @@
         {
           "name": null,
           "type": "ISkeletonOverrides",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "stack-sankey-bands",
+        "name": "stackSankeyBands",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function stackSankeyBands(specs: ReadonlyArray<TChartSankeyLinkSpec>, nodeMap: Map<string, IChartSankeyNode>, side: 'source' | 'target'): Map<number, { yTop: number, bandH: number }>",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Chart/sankey-layout.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "specs",
+          "type": "ReadonlyArray<TChartSankeyLinkSpec>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "nodeMap",
+          "type": "Map<string, IChartSankeyNode>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "side",
+          "type": "'source' | 'target'",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "Map<number, { yTop: number, bandH: number }>",
           "position": 0,
           "description_key": null,
           "description_fallback": null
@@ -30583,6 +31279,72 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "sum-sankey-flows",
+        "name": "sumSankeyFlows",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function sumSankeyFlows(data: ReadonlyArray<Pick<IChartSankeyDatum, 'from' | 'to' | 'value'>>, names: Iterable<string>): { incomingSum: Map<string, number>, outgoingSum: Map<string, number> }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Chart/sankey-layout.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "data",
+          "type": "ReadonlyArray<Pick<IChartSankeyDatum, 'from' | 'to' | 'value'>>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "names",
+          "type": "Iterable<string>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "{ incomingSum: Map<string, number>, outgoingSum: Map<string, number> }",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -32519,6 +33281,63 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "trim-blank-lines",
+        "name": "trimBlankLines",
+        "category": "Code",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function trimBlankLines(text: string): string",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Code/trim-blank-lines.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "text",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "string",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "try-on-mounted",
         "name": "tryOnMounted",
         "category": "Commons",
@@ -33527,6 +34346,72 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "warn-async-rejection",
+        "name": "warnAsyncRejection",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function warnAsyncRejection(context: string, err: unknown): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/console.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "context",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "err",
+          "type": "unknown",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "void",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {

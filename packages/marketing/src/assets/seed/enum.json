@@ -1,7 +1,7 @@
 {
   "kind": "enum",
-  "exportedAt": "2026-11-18T16:12:23.215Z",
-  "sourceCommit": "fe36f02cc",
+  "exportedAt": "2026-11-24T23:58:01.181Z",
+  "sourceCommit": "3f19eaf7f",
   "entryCount": 141,
   "entries": [
     {
@@ -1057,7 +1057,7 @@
         "icon": null,
         "description_key": "enums.catalog.bottom_nav_position.description",
         "description_fallback": "TypeScript enum for horizontal placement of the BottomNav bar when it does not span full width (start, center, end).",
-        "definition": "export enum BOTTOM_NAV_POSITION {\n    START = ALIGN.START,\n    CENTER = ALIGN.CENTER,\n    END = ALIGN.END\n}",
+        "definition": "export enum BOTTOM_NAV_POSITION {\n    START = 'start',\n    CENTER = 'center',\n    END = 'end'\n}",
         "signature": null,
         "tag": null,
         "value": null,

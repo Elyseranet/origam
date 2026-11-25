@@ -230,6 +230,16 @@ describe('useStack — localTop', () => {
 // ---------------------------------------------------------------------------
 
 describe('useStack — globalTop', () => {
+    it('#1357 globalTop=true synchronously on activation, without flushing timers', async () => {
+        const { isActive, api } = mountStack(false)
+        await nextTick()
+        vi.runAllTimers()
+        expect(api().globalTop.value).toBe(false)
+        isActive.value = true
+        await nextTick()
+        expect(api().globalTop.value).toBe(true)
+    })
+
     it('globalTop=true for the single active layer after timers flush', async () => {
         const { isActive, api } = mountStack(false)
         isActive.value = true

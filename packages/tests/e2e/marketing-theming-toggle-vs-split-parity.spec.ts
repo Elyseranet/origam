@@ -28,21 +28,19 @@
  * between the active segment's border-box and the group's content-box is
  * 0px on every side.
  *
- * Runs across the 7 REAL registered brand themes (glass, geek, cartoon,
+ * Runs across 7 of the 8 registered brand themes (glass, geek, cartoon,
  * editorial, material, ecom, apple) × light/dark = 14 combos.
  *
- * NOTE: the nav's "Switch brand theme" menu exposes an 8th chip, "Sobre",
- * which sets data-theme="sobre" — a value that matches NO registered theme
- * (packages/marketing/src/themes/origam.theme.ts registers itself as
- * 'origam', not 'sobre'; a pre-existing, separately-flagged naming
- * mismatch, out of scope here). It is deliberately excluded from the
- * chrome-parity assertion: with no theme-level border-color token to
- * dominate, the toggle's border-color legitimately falls back to
- * `currentColor`, which now resolves to the primary-tinted text colour
- * `color="primary"` produces on the group root — while Split (no color
- * prop) falls back to the theme-agnostic neutral default instead. That
- * one-off divergence is a symptom of the 'sobre'/'origam' naming bug, not
- * of this fix; it does not occur on any of the 7 real themes.
+ * NOTE: the nav's "Switch brand theme" menu exposes an 8th chip, "Origam"
+ * (formerly "Sobre", which set a data-theme matching no theme, #245). It is
+ * deliberately excluded from the chrome-parity assertion. Measured on
+ * `origam` (2026-11-22): the toggle's border-color is the primary-tinted
+ * `rgb(109, 40, 217)` (light) while Split's is the neutral `rgb(23, 23, 23)`
+ * — with no theme-level border-color token to dominate, the toggle falls back
+ * to `currentColor`, which `color="primary"` tints on the group root, and
+ * Split (no color prop) falls back to the neutral default. A real divergence
+ * on the baseline theme, out of scope here; `geek` fails the same spec on
+ * other fields (pre-existing).
  *
  * Prérequis : serveur marketing opérationnel (port 3000 ou MARKETING_BASE_URL).
  * Run : npx playwright test --config=playwright.marketing.config.ts \
@@ -89,7 +87,14 @@ test.describe('Theme Builder — mode toggle chrome matches Split button', () =>
     for (const theme of THEMES) {
         for (const mode of MODES) {
             test(`${theme}/${mode}: toggle root computed style equals Split root`, async ({ page }) => {
-                await page.goto('/theming', { waitUntil: 'networkidle' })
+                await page.goto('/theming', { waitUntil: 'load' })
+                // Le dev server Nuxt garde une SSE ouverte (/__nuxt_dev__/error/events) :
+                // `networkidle` n'arrive jamais. On attend donc l'hydratation elle-même,
+                // sans quoi le clic sur le menu de marque part dans un DOM inerte.
+                await page.waitForFunction(() => {
+                    const w = window as unknown as { useNuxtApp?: () => { isHydrating: boolean } }
+                    return w.useNuxtApp !== undefined && !w.useNuxtApp().isHydrating
+                })
                 await switchTheme(page, theme, mode)
 
                 const htmlAttrs = await page.evaluate(() => ({

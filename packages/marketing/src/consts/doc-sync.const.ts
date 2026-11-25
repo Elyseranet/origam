@@ -15,10 +15,12 @@ export const ROLLBACK = '__ROLLBACK_CHECK__'
  *   • `doc_entry.signature` is [SRC], and for a DIRECTIVE it holds hand-written
  *     usage forms (`v-ripple.center`, `v-hover.callback="fn"`) that no
  *     declaration contains. A derived signature would overwrite all six.
- *   • `doc_entry.definition` is [SRC], and for a TYPE it is often the source
- *     line PLUS a hand-added expansion of the enum it interpolates
- *     (`TAudioLoopMode` carries the whole `AUDIO_LOOP_MODE` body). Re-deriving
- *     it strips that.
+ *   • `doc_entry.definition` of a TYPE was once hand-curated: the source line
+ *     PLUS a hand-aligned expansion of the enum it interpolates. That is how
+ *     `TTokenName` kept listing a removed token. Since #1088 it is [SRC]: the
+ *     extractor rebuilds it as the source line + one `// Where X is:` block per
+ *     interpolated enum, taken from the CURRENT source (`typeDefinition`).
+ *     Owner decision: the source wins, hand-aligned expansions are regenerated.
  *   • `doc_entry.parent_slug` is [SRC], and for a COMPONENT it is an editorial
  *     family grouping: it disagrees with the directory on 3 of the 188 live
  *     curated components (see `parentSlugOf` in extract-vue.mjs).
@@ -78,7 +80,7 @@ export const RESYNC_POLICY = {
         orphanEntries: true,
     },
     types: {
-        entryCols: ['name', 'source_file'],
+        entryCols: ['name', 'definition', 'source_file'],
         collections: ['values'],
         relations: false,
         orphanEntries: true,

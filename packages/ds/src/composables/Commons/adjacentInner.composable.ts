@@ -1,4 +1,4 @@
-import { computed, useSlots } from 'vue'
+import { computed, onBeforeUpdate, shallowRef, useSlots } from 'vue'
 import type { IAdjacentInnerProps } from '../../interfaces/Commons/adjacent.interface'
 import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 import { hasEvent } from '../../utils/Commons/commons.util'
@@ -48,20 +48,40 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
 
     const slots = useSlots()
 
+    /*********************************************************
+     * slotsVersion
+     *
+     * @description
+     * ⛔ #1448 — `slots` is not reactive: a slot that appears/disappears
+     * on a parent re-render never invalidated the computeds below.
+     * Bumped before each update so they re-read it.
+     * `slotPresence` reads it as a property (`version`) so every
+     * consumer subscribes without a bare `void` read (Sonar S3735).
+     ********************************************************/
+    const slotsVersion = shallowRef(0)
+    onBeforeUpdate(() => { slotsVersion.value++ })
+
+    const slotPresence = computed(() => ({
+        version: slotsVersion.value,
+        prependInner: !!slots.prependInner,
+        appendInner: !!slots.appendInner,
+        clear: !!slots.clear
+    }))
+
     const hasPrependInnerMedia = computed(() => {
         return !!(props.prependInnerAvatar || props.prependInnerIcon)
     })
     const hasPrependInner = computed(() => {
-        return slots.prependInner || hasPrependInnerMedia.value
+        return slotPresence.value.prependInner || hasPrependInnerMedia.value
     })
     const hasAppendInnerMedia = computed(() => {
         return !!(props.appendInnerAvatar || props.appendInnerIcon)
     })
     const hasAppendInner = computed(() => {
-        return slots.appendInner || hasAppendInnerMedia.value
+        return slotPresence.value.appendInner || hasAppendInnerMedia.value
     })
     const hasClear = computed(() => {
-        return props.clearable || slots.clear
+        return !!props.clearable || slotPresence.value.clear
     })
 
     const onClickPrependInner = (e: Event) => {
@@ -91,6 +111,21 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
     })
 
     /*********************************************************
+     * appendInnerRelay / prependInnerRelay
+     *
+     * @description
+     * #1156 — a wrapper (TextField, Select, …) re-emits the inner click from its
+     * inner `<origam-field>`. Binding that relay unconditionally made the Field
+     * see a listener on every instance and dev-warn about a missing name nobody
+     * could set. A wrapper binds `@click:append-inner="appendInnerRelay"` (a
+     * simple path, NOT a ternary: Vue wraps an expression in a handler and the
+     * key would then always exist) so the Field only sees a listener when the
+     * consumer attached one.
+     ********************************************************/
+    const appendInnerRelay = computed(() => isAppendInnerClickable.value ? onClickAppendInner : undefined)
+    const prependInnerRelay = computed(() => isPrependInnerClickable.value ? onClickPrependInner : undefined)
+
+    /*********************************************************
      * ownsKey — la zone ne confisque QUE ses propres touches
      *
      * @description
@@ -112,10 +147,10 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
      * mais inactionnable a l'Espace.
      *
      * @description
-     * ⛔ Et ce n'est pas un cas de bord rare : `OrigamTextField` lie
-     * `@click:append-inner` a `<origam-field>` SANS CONDITION, donc
-     * `isAppendInnerClickable` vaut `true` sur CHAQUE champ texte du
-     * catalogue, que le consommateur ait cable quoi que ce soit ou non.
+     * ⛔ Et ce n'est pas un cas de bord rare : `OrigamTextField` liait
+     * `@click:append-inner` a `<origam-field>` SANS CONDITION (avant #1156 ;
+     * il passe desormais par `appendInnerRelay`), donc `isAppendInnerClickable`
+     * valait `true` sur CHAQUE champ texte du catalogue.
      * C'est aussi ce qui donnait a la zone `role="button"` + `tabindex`
      * partout avant #747 — d'ou le `nested-interactive` de #614, que
      * #747 a fait disparaitre en refusant un role qu'il ne peut nommer.
@@ -181,6 +216,8 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
         hasClear,
         isPrependInnerClickable,
         isAppendInnerClickable,
+        appendInnerRelay,
+        prependInnerRelay,
         onClickPrependInner,
         onClickAppendInner,
         onKeydownPrependInner,

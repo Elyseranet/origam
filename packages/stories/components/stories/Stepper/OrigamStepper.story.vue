@@ -107,6 +107,56 @@
 			</origam-stepper>
 		</Variant>
 
+		<Variant title="Slots - Item prepend">
+			<origam-stepper :items="defaultItems" :model-value="1">
+				<template #item-prepend="{ index }">
+					<span data-cy="story-item-prepend">#{{ index }}</span>
+				</template>
+			</origam-stepper>
+		</Variant>
+
+		<Variant title="Slots - Item append">
+			<div style="inline-size: 316px">
+				<origam-stepper :items="defaultItems" :model-value="1" orientation="vertical">
+					<template #item-append="{ status }">
+						<span data-cy="story-item-append">{{ status }}</span>
+					</template>
+				</origam-stepper>
+			</div>
+		</Variant>
+
+		<Variant title="Tokens - Status colors">
+			<div
+					data-cy="story-status-colors"
+					style="--origam-stepper---color-done: rgb(0, 128, 0); --origam-stepper---color-active: rgb(0, 0, 255)"
+			>
+				<origam-stepper :items="defaultItems" :model-value="1" />
+			</div>
+		</Variant>
+
+		<Variant title="Tokens - Wrapping">
+			<div
+					data-cy="story-wrapping"
+					style="inline-size: 316px"
+			>
+				<origam-stepper :items="longItems" :model-value="1" orientation="vertical" />
+			</div>
+		</Variant>
+
+		<Variant
+				title="Prop - color on statuses"
+				:init-state="() => useStoryInitState<Partial<IStepperProps>>({ color: 'success' })"
+		>
+			<template #default="{ state }">
+				<origam-stepper :items="defaultItems" :model-value="1" :color="state.color" />
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Color">
+					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IStepperProps>({ modelValue: 1, orientation: 'horizontal', clickable: false, showConnectors: true, color: 'primary' })"
@@ -172,6 +222,11 @@
 		{ title: 'Profile', subtitle: 'Personal info' },
 		{ title: 'Plan', subtitle: 'Choose plan' },
 		{ title: 'Confirm', subtitle: 'Review & submit' }
+	]
+
+	const longItems: Array<IStepperItem> = [
+		{ title: 'Qualifications', subtitle: 'En cours · 68 / 105 validés · 7 saisis · 30 sans score' },
+		{ title: 'Barrages', subtitle: 'À venir' }
 	]
 </script>
 

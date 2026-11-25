@@ -229,7 +229,6 @@
   --origam-btn---text-decoration: none;
   --origam-btn---text-indent: var(--origam-font__letterSpacing---widest);
   --origam-btn---opacity: 1;
-  --origam-btn---opacity-disabled: var(--origam-opacity---50);
   --origam-btn---opacity-plain: var(--origam-opacity---70);
   --origam-btn---overlay-opacity-hover: var(--origam-opacity---12);
   --origam-btn---overlay-opacity-active: 0.2;
@@ -2490,6 +2489,11 @@
   --origam-stepper---connector-color: var(--origam-color__border---subtle);
   --origam-stepper---connector-color-done: var(--origam-color__action--primary---bg);
   --origam-stepper---connector-thickness: var(--origam-border__width---thin);
+  --origam-stepper---color-active: var(--origam-stepper---color);
+  --origam-stepper---color-done: var(--origam-stepper---color);
+  --origam-stepper-item__title---white-space: nowrap;
+  --origam-stepper-item__subtitle---white-space: nowrap;
+  --origam-stepper-item--vertical__subtitle---white-space: normal;
   --origam-timeline---background-color: var(--origam-color__surface---default);
   --origam-timeline---color: var(--origam-color__text---primary);
   --origam-timeline---gap: var(--origam-space---4);

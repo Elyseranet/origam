@@ -34,7 +34,7 @@ import { requireMarketingDb } from './_support/require-marketing-db'
 requireMarketingDb()
 
 // Les 8 marques marketing (celles qui posent un `[data-theme]` au document).
-const BRANDS = ['cartoon', 'glass', 'geek', 'editorial', 'material', 'ecom', 'apple', 'sobre'] as const
+const BRANDS = ['cartoon', 'glass', 'geek', 'editorial', 'material', 'ecom', 'apple', 'origam'] as const
 const MODES = ['light', 'dark'] as const
 
 // Vars COMPOSANT que les marques surchargent — leur valeur résolue doit rester

@@ -45,7 +45,7 @@ import { requireMarketingDb } from './_support/require-marketing-db'
 // #835 — voir marketing-theme-builder.spec.ts pour le contexte complet.
 requireMarketingDb()
 
-const BRAND_THEMES = ['cartoon', 'glass', 'geek', 'sobre'] as const
+const BRAND_THEMES = ['cartoon', 'glass', 'geek', 'origam'] as const
 
 async function applyBrand (page: Page, theme: string): Promise<void> {
     await page.context().addCookies([
@@ -121,7 +121,7 @@ test.describe('Theme Builder · lot A — themed background covers the full page
  * popover (out of scope for #294) and keeps its own trigger markup.
  */
 test.describe('Theme Builder · lot B — Color/Rounded/Elevation/Border render as plain inline selects (no popover)', () => {
-    for (const theme of ['cartoon', 'sobre'] as const) {
+    for (const theme of ['cartoon', 'origam'] as const) {
         test(`color select height is within the panel's select-row range and value is not clipped — ${theme}`, async ({ page }) => {
             await page.setViewportSize({ width: 1512, height: 829 })
             await applyBrand(page, theme)
@@ -156,7 +156,7 @@ test.describe('Theme Builder · lot B — Color/Rounded/Elevation/Border render 
 })
 
 test.describe('Theme Builder · lot D — Color select chrome matches the Rounded select chrome (both are `<origam-select>`)', () => {
-    const THEMES = ['cartoon', 'glass', 'geek', 'sobre'] as const
+    const THEMES = ['cartoon', 'glass', 'geek', 'origam'] as const
     const MODES = ['light', 'dark'] as const
 
     for (const theme of THEMES) {

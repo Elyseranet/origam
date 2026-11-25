@@ -1,8 +1,8 @@
 {
   "kind": "interface",
-  "exportedAt": "2026-11-18T16:12:23.312Z",
-  "sourceCommit": "fe36f02cc",
-  "entryCount": 995,
+  "exportedAt": "2026-11-24T23:58:01.269Z",
+  "sourceCommit": "3f19eaf7f",
+  "entryCount": 1010,
   "entries": [
     {
       "entry": {
@@ -118,7 +118,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_activator_props.description",
         "description_fallback": "Contract for components that open/close a floating surface via an activator element — includes pointer, hover, focus and context-menu triggers plus open/close delays.",
-        "definition": "export interface IActivatorProps extends IDelayProps {\n    target?: 'parent' | 'cursor' | TAnyString | Element | ComponentPublicInstance | [x: number, y: number] | undefined\n    activator?: 'parent' | 'cursor' | TAnyString | Element | ComponentPublicInstance\n    activatorProps?: any\n\n    openOnClick?: boolean\n    openOnContextMenu?: boolean\n    openOnHover?: boolean\n    openOnFocus?: boolean\n\n    closeOnContentClick?: boolean\n}",
+        "definition": "export interface IActivatorProps extends IDelayProps {\n    target?: 'parent' | 'cursor' | TAnyString | Element | ComponentPublicInstance | [x: number, y: number]\n    activator?: 'parent' | 'cursor' | TAnyString | Element | ComponentPublicInstance\n    activatorProps?: any\n\n    openOnClick?: boolean\n    openOnContextMenu?: boolean\n    openOnHover?: boolean\n    openOnFocus?: boolean\n\n    closeOnContentClick?: boolean\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -139,7 +139,7 @@
       "props": [
         {
           "name": "target",
-          "type_label": "'parent' | 'cursor' | TAnyString | Element | ComponentPublicInstance | [x: number, y: number] | undefined",
+          "type_label": "'parent' | 'cursor' | TAnyString | Element | ComponentPublicInstance | [x: number, y: number]",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -5714,7 +5714,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_border_props.description",
         "description_fallback": "Full border contract — shorthand plus per-side, logical (block/inline), color and style props, consumed via useBorder().borderClasses and borderStyles.",
-        "definition": "export interface IBorderProps {\n    border?: boolean | number | string | TDirectionBoth | Array<TDirectionBoth>\n    borderTop?: boolean | number | string\n    borderLeft?: boolean | number | string\n    borderBottom?: boolean | number | string\n    borderRight?: boolean | number | string\n    /**\n     * Logical-axis shorthand for the block-start + block-end edges (top +\n     * bottom in the default horizontal-tb writing mode). Resolves to the\n     * native CSS `border-block-{width,style,color}` properties — same\n     * value grammar as `borderTop` / `borderRight` / `borderBottom` /\n     * `borderLeft` (boolean opt-in, bare width number, or a free-form\n     * `\"width style color\"` string). Precedence: beats the global `border`\n     * shorthand for the edges it targets, but a physical `borderTop` /\n     * `borderBottom` still wins over it for that specific edge — see\n     * `useBorder` JSDoc for the full precedence table.\n     */\n    borderBlock?: boolean | number | string\n    /**\n     * Logical-axis shorthand for the inline-start + inline-end edges (left\n     * + right in LTR). Same grammar and precedence rules as `borderBlock`,\n     * mapped onto `border-inline-{width,style,color}`.\n     */\n    borderInline?: boolean | number | string\n    /*********************************************************\n     * borderInlineStart\n     *\n     * @description\n     * Largeur/style/couleur LOGIQUE PAR COTE pour l'arete inline-start —\n     * gauche en LTR, droite en RTL (#1013). Le jumeau relatif au mode\n     * d'ecriture de `borderLeft`, resolu vers les longhands natifs\n     * `border-inline-start-{width,style,color}`, que le navigateur mappe\n     * lui-meme sur la bonne arete physique.\n     *\n     * @description\n     * A preferer a `borderLeft` des que l'intention de design est « l'arete\n     * ou le texte commence » (filet d'accent d'une citation, indicateur de\n     * nav, guide d'arborescence) : `borderLeft` epingle la peinture a la\n     * gauche physique et inverse silencieusement le design en RTL.\n     *\n     * @description\n     * Meme grammaire de valeur que toute autre prop directionnelle de\n     * bordure — opt-in booleen (token `thin`), largeur numerique nue, ou\n     * chaine libre `\"width style color\"`.\n     *\n     * @description\n     * Precedence : bat `borderInline` et le `border` global pour cette\n     * seule arete, mais un `borderLeft` PHYSIQUE l'emporte encore en LTR\n     * (les deux orthographes visent la meme arete a specificite egale,\n     * donc le dernier push gagne — voir la table de precedence de\n     * `useBorder`).\n     *\n     * @description\n     * ⚠️ Herite des limites partagees de `BORDER_REGEX` : un `calc()` ou\n     * une largeur fractionnaire (`\"0.5rem solid red\"`) ne parse pas et\n     * n'emet RIEN — mesure dans `BORDER_LOGICAL_SIDE_MAP`.\n     ********************************************************/\n    borderInlineStart?: boolean | number | string\n    /*********************************************************\n     * borderInlineEnd\n     *\n     * @description\n     * Jumeau logique par cote de `borderInlineStart` pour l'arete\n     * inline-end — droite en LTR, gauche en RTL. Mappe sur\n     * `border-inline-end-{width,style,color}`. Meme grammaire, memes\n     * regles de precedence (un `borderRight` physique l'emporte en LTR).\n     ********************************************************/\n    borderInlineEnd?: boolean | number | string\n    /*********************************************************\n     * borderBlockStart\n     *\n     * @description\n     * Jumeau logique par cote de `borderInlineStart` pour l'arete\n     * block-start — le haut dans le mode d'ecriture `horizontal-tb` par\n     * defaut. Mappe sur `border-block-start-{width,style,color}`. Meme\n     * grammaire, memes regles de precedence (un `borderTop` physique\n     * l'emporte).\n     ********************************************************/\n    borderBlockStart?: boolean | number | string\n    /*********************************************************\n     * borderBlockEnd\n     *\n     * @description\n     * Jumeau logique par cote de `borderInlineStart` pour l'arete\n     * block-end — le bas dans le mode d'ecriture `horizontal-tb` par\n     * defaut. Mappe sur `border-block-end-{width,style,color}`. Meme\n     * grammaire, memes regles de precedence (un `borderBottom` physique\n     * l'emporte).\n     ********************************************************/\n    borderBlockEnd?: boolean | number | string\n    borderColor?: string\n    borderStyle?: string\n    /**\n     * Per-side color override (issue #215). Additive: absent by default,\n     * no behaviour change for existing consumers.\n     *\n     * Precedence (specific > global): `borderTopColor` wins over any\n     * color implied by `borderTop` (e.g. `borderTop=\"2px dashed red\"`),\n     * which itself wins over the global `borderColor` / `border` shorthand\n     * for the top side. See `useBorder` JSDoc for the full precedence\n     * table.\n     *\n     * Accepts a {@link TColor} (semantic intent, raw CSS color, or falsy\n     * to opt out) — same input family as `color` / `bgColor`. Gradients\n     * are NOT supported on border colors (CSS `border-color` has no\n     * gradient form) and are silently ignored.\n     */\n    borderTopColor?: TColor\n    borderRightColor?: TColor\n    borderBottomColor?: TColor\n    borderLeftColor?: TColor\n    /*********************************************************\n     * borderInlineStartColor\n     *\n     * @description\n     * Surcharge de couleur PAR ARETE pour l'arete inline-start (#1013) —\n     * le jumeau logique de `borderLeftColor`, emis en\n     * `border-inline-start-color`.\n     *\n     * @description\n     * Memes semantiques que la famille `*Color` physique : additive, bat\n     * toute couleur impliquee par `borderInlineStart` lui-meme (ex.\n     * `borderInlineStart=\"2px dashed red\"`), la couleur d'axe de\n     * `borderInline`, et le `borderColor` / `border` global — pour cette\n     * arete seulement. Un `borderLeftColor` PHYSIQUE l'emporte encore en\n     * LTR, meme sens que pour les props de largeur.\n     *\n     * @description\n     * Accepte un {@link TColor} (intent semantique, couleur CSS brute, ou\n     * valeur fausse pour se desengager). Une bordure est un TRAIT, donc un\n     * intent se resout via la famille de tokens de PREMIER PLAN (comme la\n     * prop `color`), jamais un token de fond.\n     *\n     * @description\n     * Les degrades ne sont PAS supportes — `border-color` en CSS n'a pas de\n     * forme degradee — et sont ignores silencieusement.\n     ********************************************************/\n    borderInlineStartColor?: TColor\n    /*********************************************************\n     * borderInlineEndColor\n     *\n     * @description\n     * Surcharge de couleur par arete pour l'arete inline-end — jumeau\n     * logique de `borderRightColor`, emis en `border-inline-end-color`.\n     * Meme grammaire {@link TColor} et meme precedence que\n     * `borderInlineStartColor`.\n     ********************************************************/\n    borderInlineEndColor?: TColor\n    /*********************************************************\n     * borderBlockStartColor\n     *\n     * @description\n     * Surcharge de couleur par arete pour l'arete block-start — jumeau\n     * logique de `borderTopColor`, emis en `border-block-start-color`.\n     * Meme grammaire {@link TColor} et meme precedence que\n     * `borderInlineStartColor`.\n     ********************************************************/\n    borderBlockStartColor?: TColor\n    /*********************************************************\n     * borderBlockEndColor\n     *\n     * @description\n     * Surcharge de couleur par arete pour l'arete block-end — jumeau\n     * logique de `borderBottomColor`, emis en `border-block-end-color`.\n     * Meme grammaire {@link TColor} et meme precedence que\n     * `borderInlineStartColor`.\n     ********************************************************/\n    borderBlockEndColor?: TColor\n}",
+        "definition": "export interface IBorderProps {\n    border?: boolean | number | string | TDirectionBoth | Array<TDirectionBoth>\n    borderTop?: TBoxValue\n    borderLeft?: TBoxValue\n    borderBottom?: TBoxValue\n    borderRight?: TBoxValue\n    /**\n     * Logical-axis shorthand for the block-start + block-end edges (top +\n     * bottom in the default horizontal-tb writing mode). Resolves to the\n     * native CSS `border-block-{width,style,color}` properties — same\n     * value grammar as `borderTop` / `borderRight` / `borderBottom` /\n     * `borderLeft` (boolean opt-in, bare width number, or a free-form\n     * `\"width style color\"` string). Precedence: beats the global `border`\n     * shorthand for the edges it targets, but a physical `borderTop` /\n     * `borderBottom` still wins over it for that specific edge — see\n     * `useBorder` JSDoc for the full precedence table.\n     */\n    borderBlock?: TBoxValue\n    /**\n     * Logical-axis shorthand for the inline-start + inline-end edges (left\n     * + right in LTR). Same grammar and precedence rules as `borderBlock`,\n     * mapped onto `border-inline-{width,style,color}`.\n     */\n    borderInline?: TBoxValue\n    /*********************************************************\n     * borderInlineStart\n     *\n     * @description\n     * Largeur/style/couleur LOGIQUE PAR COTE pour l'arete inline-start —\n     * gauche en LTR, droite en RTL (#1013). Le jumeau relatif au mode\n     * d'ecriture de `borderLeft`, resolu vers les longhands natifs\n     * `border-inline-start-{width,style,color}`, que le navigateur mappe\n     * lui-meme sur la bonne arete physique.\n     *\n     * @description\n     * A preferer a `borderLeft` des que l'intention de design est « l'arete\n     * ou le texte commence » (filet d'accent d'une citation, indicateur de\n     * nav, guide d'arborescence) : `borderLeft` epingle la peinture a la\n     * gauche physique et inverse silencieusement le design en RTL.\n     *\n     * @description\n     * Meme grammaire de valeur que toute autre prop directionnelle de\n     * bordure — opt-in booleen (token `thin`), largeur numerique nue, ou\n     * chaine libre `\"width style color\"`.\n     *\n     * @description\n     * Precedence : bat `borderInline` et le `border` global pour cette\n     * seule arete, mais un `borderLeft` PHYSIQUE l'emporte encore en LTR\n     * (les deux orthographes visent la meme arete a specificite egale,\n     * donc le dernier push gagne — voir la table de precedence de\n     * `useBorder`).\n     *\n     * @description\n     * ⚠️ Herite des limites partagees de `BORDER_REGEX` : un `calc()` ou\n     * une largeur fractionnaire (`\"0.5rem solid red\"`) ne parse pas et\n     * n'emet RIEN — mesure dans `BORDER_LOGICAL_SIDE_MAP`.\n     ********************************************************/\n    borderInlineStart?: TBoxValue\n    /*********************************************************\n     * borderInlineEnd\n     *\n     * @description\n     * Jumeau logique par cote de `borderInlineStart` pour l'arete\n     * inline-end — droite en LTR, gauche en RTL. Mappe sur\n     * `border-inline-end-{width,style,color}`. Meme grammaire, memes\n     * regles de precedence (un `borderRight` physique l'emporte en LTR).\n     ********************************************************/\n    borderInlineEnd?: TBoxValue\n    /*********************************************************\n     * borderBlockStart\n     *\n     * @description\n     * Jumeau logique par cote de `borderInlineStart` pour l'arete\n     * block-start — le haut dans le mode d'ecriture `horizontal-tb` par\n     * defaut. Mappe sur `border-block-start-{width,style,color}`. Meme\n     * grammaire, memes regles de precedence (un `borderTop` physique\n     * l'emporte).\n     ********************************************************/\n    borderBlockStart?: TBoxValue\n    /*********************************************************\n     * borderBlockEnd\n     *\n     * @description\n     * Jumeau logique par cote de `borderInlineStart` pour l'arete\n     * block-end — le bas dans le mode d'ecriture `horizontal-tb` par\n     * defaut. Mappe sur `border-block-end-{width,style,color}`. Meme\n     * grammaire, memes regles de precedence (un `borderBottom` physique\n     * l'emporte).\n     ********************************************************/\n    borderBlockEnd?: TBoxValue\n    borderColor?: string\n    borderStyle?: string\n    /**\n     * Per-side color override (issue #215). Additive: absent by default,\n     * no behaviour change for existing consumers.\n     *\n     * Precedence (specific > global): `borderTopColor` wins over any\n     * color implied by `borderTop` (e.g. `borderTop=\"2px dashed red\"`),\n     * which itself wins over the global `borderColor` / `border` shorthand\n     * for the top side. See `useBorder` JSDoc for the full precedence\n     * table.\n     *\n     * Accepts a {@link TColor} (semantic intent, raw CSS color, or falsy\n     * to opt out) — same input family as `color` / `bgColor`. Gradients\n     * are NOT supported on border colors (CSS `border-color` has no\n     * gradient form) and are silently ignored.\n     */\n    borderTopColor?: TColor\n    borderRightColor?: TColor\n    borderBottomColor?: TColor\n    borderLeftColor?: TColor\n    /*********************************************************\n     * borderInlineStartColor\n     *\n     * @description\n     * Surcharge de couleur PAR ARETE pour l'arete inline-start (#1013) —\n     * le jumeau logique de `borderLeftColor`, emis en\n     * `border-inline-start-color`.\n     *\n     * @description\n     * Memes semantiques que la famille `*Color` physique : additive, bat\n     * toute couleur impliquee par `borderInlineStart` lui-meme (ex.\n     * `borderInlineStart=\"2px dashed red\"`), la couleur d'axe de\n     * `borderInline`, et le `borderColor` / `border` global — pour cette\n     * arete seulement. Un `borderLeftColor` PHYSIQUE l'emporte encore en\n     * LTR, meme sens que pour les props de largeur.\n     *\n     * @description\n     * Accepte un {@link TColor} (intent semantique, couleur CSS brute, ou\n     * valeur fausse pour se desengager). Une bordure est un TRAIT, donc un\n     * intent se resout via la famille de tokens de PREMIER PLAN (comme la\n     * prop `color`), jamais un token de fond.\n     *\n     * @description\n     * Les degrades ne sont PAS supportes — `border-color` en CSS n'a pas de\n     * forme degradee — et sont ignores silencieusement.\n     ********************************************************/\n    borderInlineStartColor?: TColor\n    /*********************************************************\n     * borderInlineEndColor\n     *\n     * @description\n     * Surcharge de couleur par arete pour l'arete inline-end — jumeau\n     * logique de `borderRightColor`, emis en `border-inline-end-color`.\n     * Meme grammaire {@link TColor} et meme precedence que\n     * `borderInlineStartColor`.\n     ********************************************************/\n    borderInlineEndColor?: TColor\n    /*********************************************************\n     * borderBlockStartColor\n     *\n     * @description\n     * Surcharge de couleur par arete pour l'arete block-start — jumeau\n     * logique de `borderTopColor`, emis en `border-block-start-color`.\n     * Meme grammaire {@link TColor} et meme precedence que\n     * `borderInlineStartColor`.\n     ********************************************************/\n    borderBlockStartColor?: TColor\n    /*********************************************************\n     * borderBlockEndColor\n     *\n     * @description\n     * Surcharge de couleur par arete pour l'arete block-end — jumeau\n     * logique de `borderBottomColor`, emis en `border-block-end-color`.\n     * Meme grammaire {@link TColor} et meme precedence que\n     * `borderInlineStartColor`.\n     ********************************************************/\n    borderBlockEndColor?: TColor\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -5747,7 +5747,7 @@
         },
         {
           "name": "borderTop",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -5759,7 +5759,7 @@
         },
         {
           "name": "borderLeft",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -5771,7 +5771,7 @@
         },
         {
           "name": "borderBottom",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -5783,7 +5783,7 @@
         },
         {
           "name": "borderRight",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -5795,7 +5795,7 @@
         },
         {
           "name": "borderBlock",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -5807,7 +5807,7 @@
         },
         {
           "name": "borderInline",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -5819,7 +5819,7 @@
         },
         {
           "name": "borderInlineStart",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -5831,7 +5831,7 @@
         },
         {
           "name": "borderInlineEnd",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -5843,7 +5843,7 @@
         },
         {
           "name": "borderBlockStart",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -5855,7 +5855,7 @@
         },
         {
           "name": "borderBlockEnd",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -15623,6 +15623,165 @@
     {
       "entry": {
         "kind": "interface",
+        "slug": "i-chart-bar-path-frame",
+        "name": "IChartBarPathFrame",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IChartBarPathFrame extends IChartSeriesPathFrame {\n    plot: IChartPlotRect\n    groupCount: number\n    visibleCount: number\n    visibleIdxInGroup: number\n    stacked: boolean\n    isPercent: boolean\n    stackOffsets: Array<number>\n    percentShares?: Array<number>\n    yRange: IChartYRange\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Chart/chart.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "plot",
+          "type_label": "IChartPlotRect",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "groupCount",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "visibleCount",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 2,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "visibleIdxInGroup",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 3,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "stacked",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 4,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "isPercent",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 5,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "stackOffsets",
+          "type_label": "Array<number>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 6,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "percentShares",
+          "type_label": "Array<number>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 7,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "yRange",
+          "type_label": "IChartYRange",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 8,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "extends",
+          "to_kind": "interface",
+          "to_slug": "i-chart-series-path-frame",
+          "to_name": "IChartSeriesPathFrame",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "interface",
         "slug": "i-chart-base-emits",
         "name": "IChartBaseEmits",
         "category": "Chart",
@@ -20683,6 +20842,70 @@
     {
       "entry": {
         "kind": "interface",
+        "slug": "i-chart-indexed-series",
+        "name": "IChartIndexedSeries",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IChartIndexedSeries {\n    s: IChartSeries\n    i: number\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Chart/chart.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "s",
+          "type_label": "IChartSeries",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "i",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "interface",
         "slug": "i-chart-legend-emits",
         "name": "IChartLegendEmits",
         "category": "Chart",
@@ -21022,6 +21245,157 @@
     {
       "entry": {
         "kind": "interface",
+        "slug": "i-chart-line-geometry",
+        "name": "IChartLineGeometry",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IChartLineGeometry {\n    dLine: string\n    areaMode: boolean | 'monotone' | 'stepped'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Chart/chart.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "dLine",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "areaMode",
+          "type_label": "boolean | 'monotone' | 'stepped'",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "interface",
+        "slug": "i-chart-line-path-frame",
+        "name": "IChartLinePathFrame",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IChartLinePathFrame extends IChartSeriesPathFrame {\n    pts: Array<TPathPoint>\n    smoothing: TChartSmoothing\n    baseline: number\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Chart/chart.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "pts",
+          "type_label": "Array<TPathPoint>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "smoothing",
+          "type_label": "TChartSmoothing",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "baseline",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 2,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "extends",
+          "to_kind": "interface",
+          "to_slug": "i-chart-series-path-frame",
+          "to_name": "IChartSeriesPathFrame",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "interface",
         "slug": "i-chart-map-choropleth-datum",
         "name": "IChartMapChoroplethDatum",
         "category": "Chart",
@@ -21294,7 +21668,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_chart_map_props.description",
         "description_fallback": "Props for <OrigamChartMap>. Supports two modes: choropleth (country shapes coloured by interpolated value) and flight-routes (curved arcs between pairs of country centroids). Extends IChartBaseProps.",
-        "definition": "export interface IChartMapProps extends IChartBaseProps {\n    /**\n     * Rendering mode. Default `'choropleth'`.\n     */\n    mode?: TChartMapMode\n    /**\n     * Colour gradient endpoints for choropleth mode.\n     * First colour = min value; second colour = max value.\n     * Supports intent names and raw CSS strings.\n     * Default `['info', 'danger']`.\n     */\n    colorRange?: [TIntent | string, TIntent | string]\n    /**\n     * Fill colour for countries that have no value in the dataset.\n     * Supports intent names and raw CSS strings, resolved the same way as\n     * `borderColor` / `lineColor` (#411 — was applied to `fill` verbatim,\n     * an intent keyword is invalid CSS there and the browser dropped the\n     * declaration, making dataless countries disappear under a theme).\n     * Default stays the literal `'rgba(0,0,0,0.08)'` — no intent token\n     * reproduces it: the literal is a semi-transparent SCRIM composited\n     * over whatever `bgColor` the chart itself renders on top of (so it\n     * self-adjusts to light/dark and to a custom `bgColor`), whereas an\n     * intent resolves to a fixed OPAQUE colour unrelated to the chart's\n     * own background. Swapping the default would trade an adaptive\n     * behaviour for a fixed one, not just move a pixel.\n     */\n    defaultCountryFill?: TIntent | string\n    /**\n     * Stroke colour applied to all country path outlines.\n     * Supports intent names and raw CSS strings, resolved the same way as\n     * `lineColor` (#411 — was a hardcoded literal the theme could not reach).\n     * Default `'neutral'`.\n     */\n    borderColor?: TIntent | string\n    /**\n     * Default stroke colour for flight-route arcs.\n     * Overridden per route via `IChartMapRouteDatum.color`.\n     * Default `'primary'`.\n     */\n    lineColor?: TIntent | string\n    /**\n     * Radius in SVG pixels of the endpoint circles on each route.\n     * Default `4`.\n     */\n    nodeRadius?: number\n    /**\n     * Bezier control-point offset as a fraction of the chord length [0..1].\n     * `0` = straight line; `0.3` = gentle arc (default); `0.5` = visible arc.\n     */\n    routeCurvature?: number\n    /**\n     * Y-axis value formatter used in tooltips and the choropleth legend.\n     * When omitted, values are displayed as-is.\n     */\n    yAxisFormat?: (value: number) => string\n}",
+        "definition": "export interface IChartMapProps extends IChartBaseProps {\n    /**\n     * Rendering mode. Default `'choropleth'`.\n     */\n    mode?: TChartMapMode\n    /**\n     * Colour gradient endpoints for choropleth mode.\n     * First colour = min value; second colour = max value.\n     * Supports intent names and raw CSS strings.\n     * Default `['info', 'danger']`.\n     */\n    colorRange?: [TIntent | string, TIntent | string]\n    /**\n     * Fill colour for countries that have no value in the dataset.\n     * Supports intent names and raw CSS strings, resolved the same way as\n     * `borderColor` / `lineColor` (#411 — was applied to `fill` verbatim,\n     * an intent keyword is invalid CSS there and the browser dropped the\n     * declaration, making dataless countries disappear under a theme).\n     * Default stays the literal `'rgba(0,0,0,0.08)'` — no intent token\n     * reproduces it: the literal is a semi-transparent SCRIM composited\n     * over whatever `bgColor` the chart itself renders on top of (so it\n     * self-adjusts to light/dark and to a custom `bgColor`), whereas an\n     * intent resolves to a fixed OPAQUE colour unrelated to the chart's\n     * own background. Swapping the default would trade an adaptive\n     * behaviour for a fixed one, not just move a pixel.\n     */\n    defaultCountryFill?: TIntent | TAnyString\n    /**\n     * Stroke colour applied to all country path outlines.\n     * Supports intent names and raw CSS strings, resolved the same way as\n     * `lineColor` (#411 — was a hardcoded literal the theme could not reach).\n     * Default `'neutral'`.\n     */\n    borderColor?: TIntent | TAnyString\n    /**\n     * Default stroke colour for flight-route arcs.\n     * Overridden per route via `IChartMapRouteDatum.color`.\n     * Default `'primary'`.\n     */\n    lineColor?: TIntent | TAnyString\n    /**\n     * Radius in SVG pixels of the endpoint circles on each route.\n     * Default `4`.\n     */\n    nodeRadius?: number\n    /**\n     * Bezier control-point offset as a fraction of the chord length [0..1].\n     * `0` = straight line; `0.3` = gentle arc (default); `0.5` = visible arc.\n     */\n    routeCurvature?: number\n    /**\n     * Y-axis value formatter used in tooltips and the choropleth legend.\n     * When omitted, values are displayed as-is.\n     */\n    yAxisFormat?: (value: number) => string\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -21339,7 +21713,7 @@
         },
         {
           "name": "defaultCountryFill",
-          "type_label": "TIntent | string",
+          "type_label": "TIntent | TAnyString",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -21351,7 +21725,7 @@
         },
         {
           "name": "borderColor",
-          "type_label": "TIntent | string",
+          "type_label": "TIntent | TAnyString",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -21363,7 +21737,7 @@
         },
         {
           "name": "lineColor",
-          "type_label": "TIntent | string",
+          "type_label": "TIntent | TAnyString",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -21626,7 +22000,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_chart_map_route_datum.description",
         "description_fallback": "A single flight-route datum connecting two country centroids. Used in series[0].data when mode='flight-routes' on <OrigamChartMap>.",
-        "definition": "export interface IChartMapRouteDatum {\n    /** ISO-3166-1 alpha-2 code for the route origin. */\n    from: string\n    /** ISO-3166-1 alpha-2 code for the route destination. */\n    to: string\n    /** Optional flow weight — drives the stroke width via `Math.log(value + 1) * 1.5`. */\n    value?: number\n    /** Overrides `lineColor` for this route specifically. */\n    color?: TIntent | string\n}",
+        "definition": "export interface IChartMapRouteDatum {\n    /** ISO-3166-1 alpha-2 code for the route origin. */\n    from: string\n    /** ISO-3166-1 alpha-2 code for the route destination. */\n    to: string\n    /** Optional flow weight — drives the stroke width via `Math.log(value + 1) * 1.5`. */\n    value?: number\n    /** Overrides `lineColor` for this route specifically. */\n    color?: TIntent | TAnyString\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -21683,7 +22057,7 @@
         },
         {
           "name": "color",
-          "type_label": "TIntent | string",
+          "type_label": "TIntent | TAnyString",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -21815,6 +22189,94 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "interface",
+        "slug": "i-chart-normalised-point",
+        "name": "IChartNormalisedPoint",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IChartNormalisedPoint {\n    x: number | string\n    y: number\n    z?: number\n    dataIndex: number\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Chart/chart.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "x",
+          "type_label": "number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "y",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "z",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 2,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "dataIndex",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 3,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -23061,6 +23523,142 @@
     {
       "entry": {
         "kind": "interface",
+        "slug": "i-chart-pie-frame",
+        "name": "IChartPieFrame",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IChartPieFrame {\n    series: Array<IChartSeries>\n    pieSeriesList: Array<IChartSeries>\n    plot: IChartPlotRect\n    isDonut: boolean\n    donutHoleSize: number\n    scheme: Array<TIntent | string>\n    hidden: Set<string>\n    categories: Array<string>\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Chart/chart.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "series",
+          "type_label": "Array<IChartSeries>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "pieSeriesList",
+          "type_label": "Array<IChartSeries>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "plot",
+          "type_label": "IChartPlotRect",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 2,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "isDonut",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 3,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "donutHoleSize",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 4,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "scheme",
+          "type_label": "Array<TIntent | string>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 5,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "hidden",
+          "type_label": "Set<string>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 6,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "categories",
+          "type_label": "Array<string>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 7,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "interface",
         "slug": "i-chart-plot-band",
         "name": "IChartPlotBand",
         "category": "Chart",
@@ -23387,6 +23985,118 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "interface",
+        "slug": "i-chart-plot-rect",
+        "name": "IChartPlotRect",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IChartPlotRect {\n    x0: number\n    y0: number\n    x1: number\n    y1: number\n    cx: number\n    cy: number\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Chart/chart.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "x0",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "y0",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "x1",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 2,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "y1",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 3,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "cx",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 4,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "cy",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 5,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -25186,6 +25896,93 @@
     {
       "entry": {
         "kind": "interface",
+        "slug": "i-chart-radar-path-frame",
+        "name": "IChartRadarPathFrame",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IChartRadarPathFrame extends IChartSeriesPathFrame {\n    plot: IChartPlotRect\n    axes: number\n    yRange: IChartYRange\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Chart/chart.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "plot",
+          "type_label": "IChartPlotRect",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "axes",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "yRange",
+          "type_label": "IChartYRange",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 2,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "extends",
+          "to_kind": "interface",
+          "to_slug": "i-chart-series-path-frame",
+          "to_name": "IChartSeriesPathFrame",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "interface",
         "slug": "i-chart-radar-props",
         "name": "IChartRadarProps",
         "category": "Chart",
@@ -26428,6 +27225,81 @@
     {
       "entry": {
         "kind": "interface",
+        "slug": "i-chart-scatter-path-frame",
+        "name": "IChartScatterPathFrame",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IChartScatterPathFrame extends IChartSeriesPathFrame {\n    plot: IChartPlotRect\n    scatterSeries: Array<IChartSeries>\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Chart/chart.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "plot",
+          "type_label": "IChartPlotRect",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "scatterSeries",
+          "type_label": "Array<IChartSeries>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "extends",
+          "to_kind": "interface",
+          "to_slug": "i-chart-series-path-frame",
+          "to_name": "IChartSeriesPathFrame",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "interface",
         "slug": "i-chart-secondary-y-axis",
         "name": "IChartSecondaryYAxis",
         "category": "Data Visualisation",
@@ -26702,6 +27574,118 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "interface",
+        "slug": "i-chart-series-path-frame",
+        "name": "IChartSeriesPathFrame",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IChartSeriesPathFrame {\n    series: IChartSeries\n    seriesIdx: number\n    color: string\n    kind: TChartType\n    normalised: Array<IChartNormalisedPoint>\n    yFn: (value: number) => number\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Chart/chart.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "series",
+          "type_label": "IChartSeries",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "seriesIdx",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "color",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 2,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "kind",
+          "type_label": "TChartType",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 3,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "normalised",
+          "type_label": "Array<IChartNormalisedPoint>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 4,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "yFn",
+          "type_label": "(value: number) => number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 5,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -30176,6 +31160,70 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "interface",
+        "slug": "i-chart-y-range",
+        "name": "IChartYRange",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IChartYRange {\n    min: number\n    max: number\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Chart/chart.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "min",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "max",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -35717,7 +36765,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_color_picker_props.description",
         "description_fallback": "Props for OrigamColorPicker — a full-featured HSVA colour picker that composes Canvas, Preview, Edit and Swatches sub-components with optional sections controlled via hide* / show* flags.",
-        "definition": "export interface IColorPickerProps extends ICommonsComponentProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps, IPickerProps, IColorProps, IColorPickerCanvasProps, IColorPickerPreviewProps, IColorPickerEditProps, IColorPickerSwatchesProps {\n    canvasHeight?: string | number\n    canvasWidth?: string | number\n    hideCanvas?: boolean\n    hideSliders?: boolean\n    hideInputs?: boolean\n    showSwatches?: boolean\n    swatchesMaxHeight?: string | number\n    modelValue?: Record<string, unknown> | string | undefined | null\n}",
+        "definition": "export interface IColorPickerProps extends ICommonsComponentProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps, IPickerProps, IColorProps, IColorPickerCanvasProps, IColorPickerPreviewProps, IColorPickerEditProps, IColorPickerSwatchesProps {\n    canvasHeight?: string | number\n    canvasWidth?: string | number\n    hideCanvas?: boolean\n    hideSliders?: boolean\n    hideInputs?: boolean\n    showSwatches?: boolean\n    swatchesMaxHeight?: string | number\n    modelValue?: Record<string, unknown> | string | null\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -35822,7 +36870,7 @@
         },
         {
           "name": "modelValue",
-          "type_label": "Record<string, unknown> | string | undefined | null",
+          "type_label": "Record<string, unknown> | string | null",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -46978,6 +48026,82 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "interface",
+        "slug": "i-data-table-sort-items-options",
+        "name": "IDataTableSortItemsOptions",
+        "category": "DataTable",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IDataTableSortItemsOptions<T extends IInternalItem = IInternalItem> {\n    transform?: (item: T) => Record<string, any>\n    sortFunctions?: Record<string, TDataTableCompareFunction>\n    sortRawFunctions?: Record<string, TDataTableCompareFunction>\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/DataTable/sort.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "transform",
+          "type_label": "(item: T) => Record<string, any>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "sortFunctions",
+          "type_label": "Record<string, TDataTableCompareFunction>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "sortRawFunctions",
+          "type_label": "Record<string, TDataTableCompareFunction>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 2,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -58680,6 +59804,106 @@
     {
       "entry": {
         "kind": "interface",
+        "slug": "i-filter-items-options",
+        "name": "IFilterItemsOptions",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IFilterItemsOptions {\n    customKeyFilter?: TFilterKeyFunctions\n    default?: TFilterFunction\n    filterKeys?: TFilterKeys\n    filterMode?: TFilterMode\n    noFilter?: boolean\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Commons/filters.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "customKeyFilter",
+          "type_label": "TFilterKeyFunctions",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "default",
+          "type_label": "TFilterFunction",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "filterKeys",
+          "type_label": "TFilterKeys",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 2,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "filterMode",
+          "type_label": "TFilterMode",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 3,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "noFilter",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 4,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "interface",
         "slug": "i-filter-props-options",
         "name": "IFilterPropsOptions",
         "category": "Utilities & Internals",
@@ -60740,7 +61964,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_grid_props.description",
         "description_fallback": "Props contract for OrigamGrid — a declarative CSS Grid container. Covers track templates (columns/rows), gap, areas, auto-flow, alignment, and all standard visual surfaces (color, border, elevation, dimension).",
-        "definition": "export interface IGridProps extends ICommonsComponentProps, ITagProps, IDimensionProps, IMarginProps, IPaddingProps, IRoundedProps, IElevationProps, IBgColorProps, IColorProps, IBorderProps {\n    /**\n     * Track template for the inline axis (`grid-template-columns`).\n     *\n     * - `number` (e.g. `12`) — sugar for `repeat(N, 1fr)`.\n     * - `string` (e.g. `'1fr 2fr 1fr'` or `'repeat(auto-fill, minmax(200px, 1fr))'`)\n     *   — passed verbatim.\n     * - `string[]` (e.g. `['200px', '1fr', '200px']`) — joined with single space.\n     *\n     * @default 'auto'\n     */\n    columns?: TGridTracks\n    /**\n     * Track template for the block axis (`grid-template-rows`).\n     * Same accepted shapes as `columns`.\n     *\n     * @default 'auto'\n     */\n    rows?: TGridTracks\n    /**\n     * Both-axis gap. Accepts:\n     *\n     * - one of the size tokens `'xs' | 'sm' | 'md' | 'lg' | 'xl'`\n     *   (resolved to `var(--origam-grid---gap-{token})`, declared in\n     *   `assets/css/tokens/light.css` / `dark.css`).\n     * - any CSS length string (`'24px'`, `'1rem'`, `'1rem 2rem'`).\n     * - a plain `number` interpreted as pixels.\n     *\n     * `columnGap` / `rowGap` take precedence on their respective axis.\n     *\n     * @default 'md'\n     */\n    gap?: TGridGapSize | string | number\n    /**\n     * Inline-axis-only gap override. Same accepted shapes as `gap`.\n     */\n    columnGap?: TGridGapSize | string | number\n    /**\n     * Block-axis-only gap override. Same accepted shapes as `gap`.\n     */\n    rowGap?: TGridGapSize | string | number\n    /**\n     * `grid-template-areas`. Two accepted shapes:\n     *\n     * - `string[]` — every entry is one row of the template\n     *   (`['header header', 'sidebar main']`). Each entry is wrapped in\n     *   quotes by the component, so the consumer doesn't have to.\n     * - `string` — raw CSS, passed verbatim. Use it when you want to\n     *   inline `\". header .\"` style escape hatches with multiple double-\n     *   quoted rows yourself.\n     */\n    areas?: string | ReadonlyArray<string>\n    /**\n     * `grid-auto-flow`. Controls how implicit tracks are filled when\n     * items don't declare an explicit area.\n     *\n     * @default 'row'\n     */\n    autoFlow?: TGridAutoFlow\n    /**\n     * `grid-auto-columns` — sizes for implicit columns. Free-form CSS.\n     */\n    autoColumns?: string\n    /**\n     * `grid-auto-rows` — sizes for implicit rows. Free-form CSS.\n     */\n    autoRows?: string\n    /**\n     * `align-items` — block-axis alignment of grid items inside their cells.\n     *\n     * @default 'stretch'\n     */\n    alignItems?: TGridPlaceItems\n    /**\n     * `justify-items` — inline-axis alignment of grid items inside their cells.\n     *\n     * @default 'stretch'\n     */\n    justifyItems?: TGridPlaceItems\n    /**\n     * `align-content` — block-axis alignment of the whole grid inside\n     * its container (only relevant when the grid is smaller than its\n     * container on that axis).\n     */\n    alignContent?: TGridPlaceContent\n    /**\n     * `justify-content` — inline-axis alignment of the whole grid\n     * inside its container.\n     */\n    justifyContent?: TGridPlaceContent\n    /**\n     * Toggles `display: inline-grid` instead of `display: grid`. Useful\n     * for inline-flow layouts (e.g. a label + tag pill where you want\n     * the grid to size to its content).\n     *\n     * @default false\n     */\n    inline?: boolean\n}",
+        "definition": "export interface IGridProps extends ICommonsComponentProps, ITagProps, IDimensionProps, IMarginProps, IPaddingProps, IRoundedProps, IElevationProps, IBgColorProps, IColorProps, IBorderProps {\n    /**\n     * Track template for the inline axis (`grid-template-columns`).\n     *\n     * - `number` (e.g. `12`) — sugar for `repeat(N, 1fr)`.\n     * - `string` (e.g. `'1fr 2fr 1fr'` or `'repeat(auto-fill, minmax(200px, 1fr))'`)\n     *   — passed verbatim.\n     * - `string[]` (e.g. `['200px', '1fr', '200px']`) — joined with single space.\n     *\n     * @default 'auto'\n     */\n    columns?: TGridTracks\n    /**\n     * Track template for the block axis (`grid-template-rows`).\n     * Same accepted shapes as `columns`.\n     *\n     * @default 'auto'\n     */\n    rows?: TGridTracks\n    /**\n     * Both-axis gap. Accepts:\n     *\n     * - one of the size tokens `'xs' | 'sm' | 'md' | 'lg' | 'xl'`\n     *   (resolved to `var(--origam-grid---gap-{token})`, declared in\n     *   `assets/css/tokens/light.css` / `dark.css`).\n     * - any CSS length string (`'24px'`, `'1rem'`, `'1rem 2rem'`).\n     * - a plain `number` interpreted as pixels.\n     *\n     * `columnGap` / `rowGap` take precedence on their respective axis.\n     *\n     * @default 'md'\n     */\n    gap?: TGridGap\n    /**\n     * Inline-axis-only gap override. Same accepted shapes as `gap`.\n     */\n    columnGap?: TGridGap\n    /**\n     * Block-axis-only gap override. Same accepted shapes as `gap`.\n     */\n    rowGap?: TGridGap\n    /**\n     * `grid-template-areas`. Two accepted shapes:\n     *\n     * - `string[]` — every entry is one row of the template\n     *   (`['header header', 'sidebar main']`). Each entry is wrapped in\n     *   quotes by the component, so the consumer doesn't have to.\n     * - `string` — raw CSS, passed verbatim. Use it when you want to\n     *   inline `\". header .\"` style escape hatches with multiple double-\n     *   quoted rows yourself.\n     */\n    areas?: string | ReadonlyArray<string>\n    /**\n     * `grid-auto-flow`. Controls how implicit tracks are filled when\n     * items don't declare an explicit area.\n     *\n     * @default 'row'\n     */\n    autoFlow?: TGridAutoFlow\n    /**\n     * `grid-auto-columns` — sizes for implicit columns. Free-form CSS.\n     */\n    autoColumns?: string\n    /**\n     * `grid-auto-rows` — sizes for implicit rows. Free-form CSS.\n     */\n    autoRows?: string\n    /**\n     * `align-items` — block-axis alignment of grid items inside their cells.\n     *\n     * @default 'stretch'\n     */\n    alignItems?: TGridPlaceItems\n    /**\n     * `justify-items` — inline-axis alignment of grid items inside their cells.\n     *\n     * @default 'stretch'\n     */\n    justifyItems?: TGridPlaceItems\n    /**\n     * `align-content` — block-axis alignment of the whole grid inside\n     * its container (only relevant when the grid is smaller than its\n     * container on that axis).\n     */\n    alignContent?: TGridPlaceContent\n    /**\n     * `justify-content` — inline-axis alignment of the whole grid\n     * inside its container.\n     */\n    justifyContent?: TGridPlaceContent\n    /**\n     * Toggles `display: inline-grid` instead of `display: grid`. Useful\n     * for inline-flow layouts (e.g. a label + tag pill where you want\n     * the grid to size to its content).\n     *\n     * @default false\n     */\n    inline?: boolean\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -60785,7 +62009,7 @@
         },
         {
           "name": "gap",
-          "type_label": "TGridGapSize | string | number",
+          "type_label": "TGridGap",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -60797,7 +62021,7 @@
         },
         {
           "name": "columnGap",
-          "type_label": "TGridGapSize | string | number",
+          "type_label": "TGridGap",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -60809,7 +62033,7 @@
         },
         {
           "name": "rowGap",
-          "type_label": "TGridGapSize | string | number",
+          "type_label": "TGridGap",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -73073,7 +74297,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_margin_props.description",
         "description_fallback": "Margin spacing contract — all four sides plus logical block/inline shorthands. Values map to the DS spacing scale when a number or scale key is passed, or accept any CSS length string.",
-        "definition": "export interface IMarginProps {\n    /**\n     * Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\n     * design rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n     * `--marged` class.\n     */\n    margin?: boolean | number | string\n    /** Overrides `margin` and `marginBlock` for the top edge. */\n    marginTop?: boolean | number | string\n    /** Overrides `margin` and `marginInline` for the left edge. */\n    marginLeft?: boolean | number | string\n    /** Overrides `margin` and `marginBlock` for the bottom edge. */\n    marginBottom?: boolean | number | string\n    /** Overrides `margin` and `marginInline` for the right edge. */\n    marginRight?: boolean | number | string\n    /** Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`. */\n    marginBlock?: boolean | number | string\n    /** Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`. */\n    marginInline?: boolean | number | string\n    /*********************************************************\n     * Logical per-side margin — rung 3 (issue #1013)\n     *\n     * @description\n     * One WRITING-MODE-RELATIVE edge each, emitted as the native logical\n     * longhands (`margin-inline-start`, …) so the browser flips them under\n     * RTL and in vertical writing modes.\n     *\n     * @description\n     * `marginInlineStart` — left in LTR, **right in RTL**.\n     * `marginInlineEnd` — right in LTR, **left in RTL**.\n     * `marginBlockStart` — top in horizontal-tb.\n     * `marginBlockEnd` — bottom in horizontal-tb.\n     *\n     * @description\n     * Same vocabulary as `margin`, the `auto` keyword included — and that\n     * is their best argument: `marginInlineStart=\"auto\"` pushes an element\n     * to the far end of its line in BOTH reading directions, where\n     * `marginLeft=\"auto\"` pushes it the wrong way under RTL.\n     *\n     * @description\n     * Each overrides `margin` and its axis prop for the one edge it\n     * targets, and is beaten by the matching PHYSICAL prop.\n     ********************************************************/\n    marginInlineStart?: boolean | number | string\n    marginInlineEnd?: boolean | number | string\n    marginBlockStart?: boolean | number | string\n    marginBlockEnd?: boolean | number | string\n}",
+        "definition": "export interface IMarginProps {\n    /**\n     * Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\n     * design rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n     * `--marged` class.\n     */\n    margin?: TBoxValue\n    /** Overrides `margin` and `marginBlock` for the top edge. */\n    marginTop?: TBoxValue\n    /** Overrides `margin` and `marginInline` for the left edge. */\n    marginLeft?: TBoxValue\n    /** Overrides `margin` and `marginBlock` for the bottom edge. */\n    marginBottom?: TBoxValue\n    /** Overrides `margin` and `marginInline` for the right edge. */\n    marginRight?: TBoxValue\n    /** Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`. */\n    marginBlock?: TBoxValue\n    /** Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`. */\n    marginInline?: TBoxValue\n    /*********************************************************\n     * Logical per-side margin — rung 3 (issue #1013)\n     *\n     * @description\n     * One WRITING-MODE-RELATIVE edge each, emitted as the native logical\n     * longhands (`margin-inline-start`, …) so the browser flips them under\n     * RTL and in vertical writing modes.\n     *\n     * @description\n     * `marginInlineStart` — left in LTR, **right in RTL**.\n     * `marginInlineEnd` — right in LTR, **left in RTL**.\n     * `marginBlockStart` — top in horizontal-tb.\n     * `marginBlockEnd` — bottom in horizontal-tb.\n     *\n     * @description\n     * Same vocabulary as `margin`, the `auto` keyword included — and that\n     * is their best argument: `marginInlineStart=\"auto\"` pushes an element\n     * to the far end of its line in BOTH reading directions, where\n     * `marginLeft=\"auto\"` pushes it the wrong way under RTL.\n     *\n     * @description\n     * Each overrides `margin` and its axis prop for the one edge it\n     * targets, and is beaten by the matching PHYSICAL prop.\n     ********************************************************/\n    marginInlineStart?: TBoxValue\n    marginInlineEnd?: TBoxValue\n    marginBlockStart?: TBoxValue\n    marginBlockEnd?: TBoxValue\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -73094,7 +74318,7 @@
       "props": [
         {
           "name": "margin",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -73106,7 +74330,7 @@
         },
         {
           "name": "marginTop",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -73118,7 +74342,7 @@
         },
         {
           "name": "marginLeft",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -73130,7 +74354,7 @@
         },
         {
           "name": "marginBottom",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -73142,7 +74366,7 @@
         },
         {
           "name": "marginRight",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -73154,7 +74378,7 @@
         },
         {
           "name": "marginBlock",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -73166,7 +74390,7 @@
         },
         {
           "name": "marginInline",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -73178,7 +74402,7 @@
         },
         {
           "name": "marginInlineStart",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -73190,7 +74414,7 @@
         },
         {
           "name": "marginInlineEnd",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -73202,7 +74426,7 @@
         },
         {
           "name": "marginBlockStart",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -73214,7 +74438,7 @@
         },
         {
           "name": "marginBlockEnd",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -76716,7 +77940,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_number_field_props.description",
         "description_fallback": "Props for <OrigamNumberField> — a numeric input with increment/decrement controls, precision formatting, min/max clamping, and hold-repeat support. Extends the full field and input surface plus variant styling.",
-        "definition": "export interface INumberFieldProps extends IFieldProps, IInputProps, IInputVariantProps {\n    autofocus?: boolean\n    placeholder?: string\n    persistentPlaceholder?: boolean\n    role?: string\n    modelModifiers?: string | boolean\n    inset?: boolean\n    hideInput?: boolean\n    modelValue?: number | null\n    min?: number\n    max?: number\n    step?: number\n    precision?: number\n    incrementIcon?: TIcon\n    decrementIcon?: TIcon\n    holdDelay?: number\n    holdRepeat?: number\n    split?: boolean\n    hideControls?: boolean\n    compact?: boolean\n    /*********************************************************\n     * decrementAriaLabel / incrementAriaLabel\n     *\n     * @description\n     * i18n keys for the compact-mode decrement / increment buttons'\n     * `aria-label` (#459 — previously hardcoded \"Decrement\" / \"Increment\"\n     * literals). Default to 'origam.number_field.aria_label.decrement' /\n     * 'origam.number_field.aria_label.increment'.\n     ********************************************************/\n    decrementAriaLabel?: string\n    incrementAriaLabel?: string\n}",
+        "definition": "export interface INumberFieldProps extends IFieldProps, IInputProps, IInputVariantProps {\n    autofocus?: boolean\n    placeholder?: string\n    persistentPlaceholder?: boolean\n    role?: string\n    modelModifiers?: string | boolean\n    inset?: boolean\n    hideInput?: boolean\n    modelValue?: number | null\n    min?: number\n    max?: number\n    step?: number\n    precision?: number\n    incrementIcon?: TIcon\n    decrementIcon?: TIcon\n    holdDelay?: number\n    holdRepeat?: number\n    split?: boolean\n    hideControls?: boolean\n    /*********************************************************\n     * clamp\n     *\n     * @description\n     * Bounds the value to `min`/`max` on blur and on write (default `true`).\n     * `false` keeps an out-of-range value so validation can reject it.\n     ********************************************************/\n    clamp?: boolean\n    compact?: boolean\n    /*********************************************************\n     * decrementAriaLabel / incrementAriaLabel\n     *\n     * @description\n     * i18n keys for the compact-mode decrement / increment buttons'\n     * `aria-label` (#459 — previously hardcoded \"Decrement\" / \"Increment\"\n     * literals). Default to 'origam.number_field.aria_label.decrement' /\n     * 'origam.number_field.aria_label.increment'.\n     ********************************************************/\n    decrementAriaLabel?: string\n    incrementAriaLabel?: string\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -76952,13 +78176,25 @@
           "description_fallback": "Hides the increment/decrement control buttons entirely, leaving a plain numeric input."
         },
         {
-          "name": "compact",
+          "name": "clamp",
           "type_label": "boolean",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
           "required": false,
           "position": 18,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "compact",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 19,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Reduces the field height for dense UIs."
@@ -76970,7 +78206,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 19,
+          "position": 20,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -76982,7 +78218,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 20,
+          "position": 21,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -77789,7 +79025,7 @@
         "icon": null,
         "description_key": "",
         "description_fallback": "Options passed by a consumer in `nuxt.config.ts` under the `origam` key.\n\nAll fields are optional — the module applies sensible defaults (see\n`DEFAULTS` in `src/nuxt/module.ts`). Themes are installed as runtime OBJECTS\n(ADR-004): the module passes the `themes` array straight through to the\nruntime config and on to `createOrigam` in the plugins, which inject each as\na name×mode scoped `--origam-*` block. The theme-invariant `primitive` +\n`utilities` sheets are still loaded as CSS. Two orthogonal axes are resolved\nSSR-side to avoid FOUC: the brand `theme` (cookie) and the color `mode`\n(cookie + `Sec-CH-Prefers-Color-Scheme` hint).\n\nADR-004 (Implemented): the DS ships exactly ONE neutral identity (the origam\nbaseline). Brand themes live in the consuming app (e.g. the marketing\npackage) and are passed here as `IOrigamTheme[]` objects authored in\nsemantic JSON — the DS no longer resolves preset names or ships brand\ntoken sheets.",
-        "definition": "export interface IOrigamNuxtModuleOptions {\n    /**\n     * Themes to install, as `IOrigamTheme` objects (one per brand×mode). The\n     * objects are passed verbatim to `createOrigam`, which injects each as a\n     * scoped CSS-var block — no pre-generated per-theme CSS file is loaded.\n     * When omitted, `createOrigam` installs the DS built-in baseline (neutral identity).\n     */\n    themes?: IOrigamTheme[]\n\n    /*********************************************************\n     * locale\n     *\n     * @description\n     * Locale of Origam's built-in strings (aria-labels, button labels, …), forwarded to `createOrigam({ locale })` by BOTH plugins (client and server) so the SSR markup and the hydration render agree.\n     * @description\n     * Must stay serialisable — it travels through `runtimeConfig`. `messages` is MERGED over the built-in `en` / `fr` catalogues: a site can supply a complete `ja`, or override a few `fr` keys. Origam does NOT follow `<html lang>`.\n     * @description\n     * The key list to translate is `origam/assets/locales/en.json`.\n     *\n     * @example\n     * origam: { locale: { locale: 'ja', fallbackLocale: 'en', messages: { ja } } }\n     ********************************************************/\n    locale?: ILocaleOptions\n\n    /*********************************************************\n     * icons\n     *\n     * @description\n     * `defaultSet` and `aliases` of `createOrigam({ icons })`, forwarded by BOTH plugins. Serialisable subset only (it travels through `runtimeConfig`): aliases are strings or path arrays, never components. `sets` (render functions) is NOT relayed — keep a manual plugin for custom icon sets.\n     *\n     * @example\n     * origam: { icons: { aliases: { info: 'mdi-information-outline' } } }\n     ********************************************************/\n    icons?: TNuxtIconOptions\n\n    /**\n     * Theme (brand) applied when no cookie is set. Use `'auto'` to render no\n     * `data-theme` attribute (the default brand).\n     *\n     * @default 'auto'\n     */\n    defaultTheme?: string\n\n    /**\n     * Color modes supported by the loaded token sheets. Used to validate the\n     * resolved mode before applying it.\n     *\n     * @default ['light', 'dark']\n     */\n    modes?: string[]\n\n    /**\n     * Color mode applied when no cookie is set. `'light'` / `'dark'` pins it.\n     * `'auto'` leaves it to the system: the server inlines both modes, the dark\n     * one under `@media (prefers-color-scheme: dark)` (#1103).\n     *\n     * @default 'auto'\n     */\n    defaultMode?: string\n\n    /**\n     * Cookie name used to persist the user's chosen theme (brand) across\n     * sessions.\n     *\n     * @default 'origam-theme'\n     */\n    cookieName?: string\n\n    /**\n     * Cookie name used to persist the user's chosen color mode across\n     * sessions.\n     *\n     * @default 'origam-mode'\n     */\n    modeCookieName?: string\n\n    /**\n     * Cookie `max-age` in seconds (shared by the theme and mode cookies).\n     *\n     * @default 31_536_000 (1 year)\n     */\n    cookieMaxAge?: number\n\n    /**\n     * Register components and composables as Nuxt auto-imports. Disable if\n     * you want to opt-out and import everything explicitly (or namespace\n     * the imports to avoid conflicts with another design system).\n     *\n     * @default true\n     */\n    autoImport?: boolean\n\n    /**\n     * Inject the generated utility classes stylesheet (`origam-utilities.css`).\n     * Keep it on unless the consumer ships their own utility layer.\n     *\n     * @default true\n     */\n    includeUtilities?: boolean\n\n    /**\n     * Prefix applied to auto-imported components. Origam ships components\n     * already prefixed `Origam*` so the default is an empty prefix — set\n     * this to override if you need a custom namespace.\n     *\n     * @default 'Origam'\n     */\n    prefix?: string\n}",
+        "definition": "export interface IOrigamNuxtModuleOptions {\n    /**\n     * Themes to install, as `IOrigamTheme` objects (one per brand×mode). The\n     * objects are passed verbatim to `createOrigam`, which injects each as a\n     * scoped CSS-var block — no pre-generated per-theme CSS file is loaded.\n     * When omitted, `createOrigam` installs the DS built-in baseline (neutral identity).\n     */\n    themes?: IOrigamTheme[]\n\n    /*********************************************************\n     * locale\n     *\n     * @description\n     * Locale of Origam's built-in strings (aria-labels, button labels, …), forwarded to `createOrigam({ locale })` by BOTH plugins (client and server) so the SSR markup and the hydration render agree.\n     * @description\n     * Must stay serialisable — it travels through `runtimeConfig`. `messages` is MERGED over the built-in `en` / `fr` catalogues: a site can supply a complete `ja`, or override a few `fr` keys. Origam does NOT follow `<html lang>`.\n     * @description\n     * The key list to translate is `origam/assets/locales/en.json`.\n     *\n     * @example\n     * origam: { locale: { locale: 'ja', fallbackLocale: 'en', messages: { ja } } }\n     ********************************************************/\n    locale?: ILocaleOptions\n\n    /*********************************************************\n     * icons\n     *\n     * @description\n     * `defaultSet` and `aliases` of `createOrigam({ icons })`, forwarded by BOTH plugins. Serialisable subset only (it travels through `runtimeConfig`): aliases are strings or path arrays, never components. `sets` (render functions) is NOT relayed — keep a manual plugin for custom icon sets.\n     *\n     * @example\n     * origam: { icons: { aliases: { info: 'mdi-information-outline' } } }\n     ********************************************************/\n    icons?: TNuxtIconOptions\n\n    /**\n     * Theme (brand) applied when no cookie is set. Use `'auto'` to render no\n     * `data-theme` attribute (the default brand).\n     *\n     * @default 'auto'\n     */\n    defaultTheme?: string\n\n    /**\n     * Color modes supported by the loaded token sheets. Used to validate the\n     * resolved mode before applying it.\n     *\n     * @default ['light', 'dark']\n     */\n    modes?: string[]\n\n    /**\n     * Color mode applied when no cookie is set. `'light'` / `'dark'` pins it.\n     * `'auto'` leaves it to the system: the server inlines both modes, the dark\n     * one under `@media (prefers-color-scheme: dark)` (#1103).\n     *\n     * @default 'auto'\n     */\n    defaultMode?: string\n\n    /**\n     * Cookie name used to persist the user's chosen theme (brand) across\n     * sessions.\n     *\n     * @default 'origam-theme'\n     */\n    cookieName?: string\n\n    /**\n     * Cookie name used to persist the user's chosen color mode across\n     * sessions.\n     *\n     * @default 'origam-mode'\n     */\n    modeCookieName?: string\n\n    /**\n     * Cookie `max-age` in seconds (shared by the theme and mode cookies).\n     *\n     * @default 31_536_000 (1 year)\n     */\n    cookieMaxAge?: number\n\n    /**\n     * Register components and composables as Nuxt auto-imports. Disable if\n     * you want to opt-out and import everything explicitly (or namespace\n     * the imports to avoid conflicts with another design system).\n     *\n     * @default true\n     */\n    autoImport?: boolean\n\n    /**\n     * Inject the generated utility classes stylesheet (`origam-utilities.css`).\n     * Keep it on unless the consumer ships their own utility layer.\n     *\n     * @default true\n     */\n    includeUtilities?: boolean\n\n    /*********************************************************\n     * lite (#1384)\n     *\n     * @description\n     * Build the app with `createOrigamCore` instead of `createOrigam`: no `import *` of the components and directives, no MDI stylesheet. Themes, PROPS-FIRST, locale, display and SSR styles are unchanged; components come from Nuxt's on-demand auto-import, so only the ones a template uses are bundled.\n     * @description\n     * Icons become opt-in: add `@mdi/font/css/materialdesignicons.css` to `css` yourself, or pass SVG icons.\n     *\n     * @default false\n     ********************************************************/\n    lite?: boolean\n\n    /*********************************************************\n     * include (#1384)\n     *\n     * @description\n     * Only meaningful with `lite` and `autoImport`: names of the components Nuxt may auto-import (`['OrigamBtn', 'OrigamTitle']`). When omitted, every component stays available on demand. An unknown name fails the build.\n     *\n     * @default undefined\n     ********************************************************/\n    include?: string[]\n\n    /**\n     * Prefix applied to auto-imported components. Origam ships components\n     * already prefixed `Origam*` so the default is an empty prefix — set\n     * this to override if you need a custom namespace.\n     *\n     * @default 'Origam'\n     */\n    prefix?: string\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -77941,13 +79177,37 @@
           "description_fallback": "Inject the generated utility classes stylesheet (`origam-utilities.css`).\nKeep it on unless the consumer ships their own utility layer."
         },
         {
+          "name": "lite",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 11,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "include",
+          "type_label": "string[]",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 12,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
           "name": "prefix",
           "type_label": "string",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 11,
+          "position": 13,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Prefix applied to auto-imported components. Origam ships components\nalready prefixed `Origam*` so the default is an empty prefix — set\nthis to override if you need a custom namespace."
@@ -79648,7 +80908,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_padding_props.description",
         "description_fallback": "Padding spacing contract — all four sides plus logical block/inline shorthands. Values map to the DS spacing scale when a number or scale key is passed, or accept any CSS length string.",
-        "definition": "export interface IPaddingProps {\n    /**\n     * Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\n     * design rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n     * `--padded` class.\n     */\n    padding?: boolean | number | string\n    /** Overrides `padding` and `paddingBlock` for the top edge. */\n    paddingTop?: boolean | number | string\n    /** Overrides `padding` and `paddingInline` for the left edge. */\n    paddingLeft?: boolean | number | string\n    /** Overrides `padding` and `paddingBlock` for the bottom edge. */\n    paddingBottom?: boolean | number | string\n    /** Overrides `padding` and `paddingInline` for the right edge. */\n    paddingRight?: boolean | number | string\n    /** Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`. */\n    paddingBlock?: boolean | number | string\n    /** Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`. */\n    paddingInline?: boolean | number | string\n    /*********************************************************\n     * Logical per-side padding — rung 3 (issue #1013)\n     *\n     * @description\n     * One WRITING-MODE-RELATIVE edge each. They emit the native logical\n     * longhands (`padding-inline-start`, …), so the browser flips them\n     * under RTL and in vertical writing modes for you.\n     *\n     * @description\n     * `paddingInlineStart` — left in LTR, **right in RTL**.\n     * `paddingInlineEnd` — right in LTR, **left in RTL**.\n     * `paddingBlockStart` — top in horizontal-tb.\n     * `paddingBlockEnd` — bottom in horizontal-tb.\n     *\n     * @description\n     * Same vocabulary as `padding` (`16`, `\"4\"`, `\"8px\"`, `\"var(…)\"`,\n     * `\"calc(…)\"`). Each overrides `padding` and its axis prop for the one\n     * edge it targets, and is in turn beaten by the matching PHYSICAL prop\n     * (`paddingLeft` & co) — see the precedence note above.\n     *\n     * @description\n     * Prefer these over the physical four whenever the value is a\n     * reading-order offset — an indent, a gutter beside an accent rule —\n     * rather than a genuinely physical one.\n     ********************************************************/\n    paddingInlineStart?: boolean | number | string\n    paddingInlineEnd?: boolean | number | string\n    paddingBlockStart?: boolean | number | string\n    paddingBlockEnd?: boolean | number | string\n}",
+        "definition": "export interface IPaddingProps {\n    /**\n     * Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\n     * design rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n     * `--padded` class.\n     */\n    padding?: TBoxValue\n    /** Overrides `padding` and `paddingBlock` for the top edge. */\n    paddingTop?: TBoxValue\n    /** Overrides `padding` and `paddingInline` for the left edge. */\n    paddingLeft?: TBoxValue\n    /** Overrides `padding` and `paddingBlock` for the bottom edge. */\n    paddingBottom?: TBoxValue\n    /** Overrides `padding` and `paddingInline` for the right edge. */\n    paddingRight?: TBoxValue\n    /** Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`. */\n    paddingBlock?: TBoxValue\n    /** Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`. */\n    paddingInline?: TBoxValue\n    /*********************************************************\n     * Logical per-side padding — rung 3 (issue #1013)\n     *\n     * @description\n     * One WRITING-MODE-RELATIVE edge each. They emit the native logical\n     * longhands (`padding-inline-start`, …), so the browser flips them\n     * under RTL and in vertical writing modes for you.\n     *\n     * @description\n     * `paddingInlineStart` — left in LTR, **right in RTL**.\n     * `paddingInlineEnd` — right in LTR, **left in RTL**.\n     * `paddingBlockStart` — top in horizontal-tb.\n     * `paddingBlockEnd` — bottom in horizontal-tb.\n     *\n     * @description\n     * Same vocabulary as `padding` (`16`, `\"4\"`, `\"8px\"`, `\"var(…)\"`,\n     * `\"calc(…)\"`). Each overrides `padding` and its axis prop for the one\n     * edge it targets, and is in turn beaten by the matching PHYSICAL prop\n     * (`paddingLeft` & co) — see the precedence note above.\n     *\n     * @description\n     * Prefer these over the physical four whenever the value is a\n     * reading-order offset — an indent, a gutter beside an accent rule —\n     * rather than a genuinely physical one.\n     ********************************************************/\n    paddingInlineStart?: TBoxValue\n    paddingInlineEnd?: TBoxValue\n    paddingBlockStart?: TBoxValue\n    paddingBlockEnd?: TBoxValue\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -79669,7 +80929,7 @@
       "props": [
         {
           "name": "padding",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -79681,7 +80941,7 @@
         },
         {
           "name": "paddingTop",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -79693,7 +80953,7 @@
         },
         {
           "name": "paddingLeft",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -79705,7 +80965,7 @@
         },
         {
           "name": "paddingBottom",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -79717,7 +80977,7 @@
         },
         {
           "name": "paddingRight",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -79729,7 +80989,7 @@
         },
         {
           "name": "paddingBlock",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -79741,7 +81001,7 @@
         },
         {
           "name": "paddingInline",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -79753,7 +81013,7 @@
         },
         {
           "name": "paddingInlineStart",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -79765,7 +81025,7 @@
         },
         {
           "name": "paddingInlineEnd",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -79777,7 +81037,7 @@
         },
         {
           "name": "paddingBlockStart",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -79789,7 +81049,7 @@
         },
         {
           "name": "paddingBlockEnd",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -81363,7 +82623,7 @@
         "icon": null,
         "description_key": "",
         "description_fallback": "Provide context exposed by the enriched OrigamParallax to its\n`<OrigamParallaxLayer>` children. Distinct from the legacy\n`IParallaxProvide` consumed by `<OrigamParallaxElement>` (kept\nseparate to avoid coupling the two APIs).",
-        "definition": "export interface IParallaxLayerProvide {\n    direction: Ref<TParallaxDirection>\n    easing: Ref<TParallaxEasing | string>\n    disabled: Ref<boolean>\n    /**\n     * Live scroll progress, normalised to `[0, 1]`. `0` = host just entered\n     * the viewport, `1` = host just left.\n     */\n    progress: Ref<number>\n    /**\n     * Live mouse-ratio for `direction=\"both\"` on `event=\"move\"` —\n     * `{ x: 0..1, y: 0..1 }`. Falls back to `{ x: 0.5, y: 0.5 }` when no\n     * mouse data is available.\n     */\n    mouseRatio: Ref<{ x: number, y: number }>\n    /**\n     * Whether the runtime is using the CSS scroll-driven path (true) or the\n     * JS rAF fallback (false). Layers may opt out of the JS work when the\n     * CSS path is active.\n     */\n    cssScrollDriven: Ref<boolean>\n    /**\n     * Whether `prefers-reduced-motion: reduce` is honoured — layers MUST\n     * stay at offset 0 when this is true.\n     */\n    reducedMotion: Ref<boolean>\n    /**\n     * Register / unregister a layer with the parent. The parent reads the\n     * registry to compute and apply per-layer transforms each frame.\n     */\n    register: (layer: IParallaxLayerRegistry) => void\n    unregister: (id: symbol) => void\n    /**\n     * Patches a REGISTERED layer's `speed`/`offsetX`/`offsetY` in place —\n     * see #449. `register()` only runs once, at mount; without this, a\n     * reactive change to those props after mount never reaches the\n     * running rAF loop / CSS scroll-driven animation, which both read the\n     * registry entry directly rather than through Vue reactivity.\n     */\n    update: (id: symbol, patch: Pick<IParallaxLayerRegistry, 'speed' | 'offsetX' | 'offsetY'>) => void\n}",
+        "definition": "export interface IParallaxLayerProvide {\n    direction: Ref<TParallaxDirection>\n    easing: Ref<TParallaxEasing | TAnyString>\n    disabled: Ref<boolean>\n    /**\n     * Live scroll progress, normalised to `[0, 1]`. `0` = host just entered\n     * the viewport, `1` = host just left.\n     */\n    progress: Ref<number>\n    /**\n     * Live mouse-ratio for `direction=\"both\"` on `event=\"move\"` —\n     * `{ x: 0..1, y: 0..1 }`. Falls back to `{ x: 0.5, y: 0.5 }` when no\n     * mouse data is available.\n     */\n    mouseRatio: Ref<{ x: number, y: number }>\n    /**\n     * Whether the runtime is using the CSS scroll-driven path (true) or the\n     * JS rAF fallback (false). Layers may opt out of the JS work when the\n     * CSS path is active.\n     */\n    cssScrollDriven: Ref<boolean>\n    /**\n     * Whether `prefers-reduced-motion: reduce` is honoured — layers MUST\n     * stay at offset 0 when this is true.\n     */\n    reducedMotion: Ref<boolean>\n    /**\n     * Register / unregister a layer with the parent. The parent reads the\n     * registry to compute and apply per-layer transforms each frame.\n     */\n    register: (layer: IParallaxLayerRegistry) => void\n    unregister: (id: symbol) => void\n    /**\n     * Patches a REGISTERED layer's `speed`/`offsetX`/`offsetY` in place —\n     * see #449. `register()` only runs once, at mount; without this, a\n     * reactive change to those props after mount never reaches the\n     * running rAF loop / CSS scroll-driven animation, which both read the\n     * registry entry directly rather than through Vue reactivity.\n     */\n    update: (id: symbol, patch: Pick<IParallaxLayerRegistry, 'speed' | 'offsetX' | 'offsetY'>) => void\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -81396,7 +82656,7 @@
         },
         {
           "name": "easing",
-          "type_label": "Ref<TParallaxEasing | string>",
+          "type_label": "Ref<TParallaxEasing | TAnyString>",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
@@ -82298,7 +83558,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_password_field_props.description",
         "description_fallback": "Props contract for <OrigamPasswordField>. Extends ITextFieldProps with show/hide toggle icons, strength bar, configurable requirements checklist and a minimal mode that strips all adornments.",
-        "definition": "export interface IPasswordFieldProps extends ITextFieldProps {\n    /** Icon shown when the password is HIDDEN (toggle reveals). */\n    onIcon?: TIcon\n    /** Icon shown when the password is VISIBLE (toggle hides). */\n    offIcon?: TIcon\n    /** Native maxlength attribute mirrored into the requirements popup. */\n    maxlength?: number\n    /**\n     * Master switch for the strength-requirements popup. When false, the\n     * field behaves exactly like a TextField with type=\"password\".\n     */\n    requirements?: boolean\n    /**\n     * Keep the requirements popup open even when the field is not focused.\n     * Useful for forms that want the requirements always visible.\n     */\n    persistentRequirements?: boolean\n    /** Minimum password length (default 8) — drives the `minLength` rule. */\n    minLength?: number\n    /** Require at least one lowercase letter. */\n    needTiny?: boolean\n    /** Require at least one uppercase letter. */\n    needUppercase?: boolean\n    /** Require at least one digit. */\n    needNumber?: boolean\n    /** Require at least one non-alphanumeric character. */\n    needSpecial?: boolean\n    /** Forwarded to the internal `<OrigamMenu>` (location, delays, etc.). */\n    menuProps?: IMenuProps\n    /** Reserved — toggle the requirements menu programmatically. */\n    menu?: boolean\n    /**\n     * Renders a 4-segment strength bar under the input. Each segment fills\n     * as the password gets stronger (weak → fair → good → strong) using\n     * `--origam-password-field__strength---bg-{level}` semantic tokens.\n     */\n    strengthBar?: boolean\n    /**\n     * Inline requirements checklist (the modern, layout-aware API).\n     * Pass an array of `IPasswordRequirement` predicates to render a\n     * checklist under the input. When `requirements === true` and\n     * `requirementRules` is undefined, the component falls back to\n     * `DEFAULT_PASSWORD_REQUIREMENTS` (≥8 chars, ≥1 uppercase, ≥1\n     * number, ≥1 special).\n     *\n     * Distinct from `rules` (inherited from `IValidationProps`) which\n     * is the form-level validation rule array — those still flow through\n     * to the underlying `<origam-input>`.\n     */\n    requirementRules?: IPasswordRequirement[]\n    /**\n     * Layout for the requirements checklist:\n     *   - `list` (default) — vertical `<ul>` of `<li>` rows\n     *   - `tiles` — wrap of `<OrigamChip>` pills\n     */\n    requirementsLayout?: 'list' | 'tiles'\n    /**\n     * Strip every decoration (toggle eye, strength bar, requirements\n     * checklist). Useful for confirm-password sub-fields where the\n     * adornments would only add noise.\n     */\n    minimal?: boolean\n}",
+        "definition": "export interface IPasswordFieldProps extends ITextFieldProps {\n    /** Icon shown when the password is HIDDEN (toggle reveals). */\n    onIcon?: TIcon\n    /** Icon shown when the password is VISIBLE (toggle hides). */\n    offIcon?: TIcon\n    /** Native maxlength attribute mirrored into the requirements popup. */\n    maxlength?: number\n    /**\n     * Master switch for the strength-requirements popup. When false, the\n     * field behaves exactly like a TextField with type=\"password\".\n     */\n    requirements?: boolean\n    /**\n     * Keep the requirements popup open even when the field is not focused.\n     * Useful for forms that want the requirements always visible.\n     */\n    persistentRequirements?: boolean\n    /** Minimum length. Enforced only when set explicitly, or with `requirements` / `strengthBar` (default 8 there). */\n    minLength?: number\n    /*********************************************************\n     * Replaces the default (translated) message of the length rule for this field.\n     ********************************************************/\n    minLengthMessage?: string\n    /** Require at least one lowercase letter. */\n    needTiny?: boolean\n    /** Require at least one uppercase letter. */\n    needUppercase?: boolean\n    /** Require at least one digit. */\n    needNumber?: boolean\n    /** Require at least one non-alphanumeric character. */\n    needSpecial?: boolean\n    /** Forwarded to the internal `<OrigamMenu>` (location, delays, etc.). */\n    menuProps?: IMenuProps\n    /** Reserved — toggle the requirements menu programmatically. */\n    menu?: boolean\n    /**\n     * Renders a 4-segment strength bar under the input. Each segment fills\n     * as the password gets stronger (weak → fair → good → strong) using\n     * `--origam-password-field__strength---bg-{level}` semantic tokens.\n     */\n    strengthBar?: boolean\n    /**\n     * Inline requirements checklist (the modern, layout-aware API).\n     * Pass an array of `IPasswordRequirement` predicates to render a\n     * checklist under the input. When `requirements === true` and\n     * `requirementRules` is undefined, the component falls back to\n     * `DEFAULT_PASSWORD_REQUIREMENTS` (≥8 chars, ≥1 uppercase, ≥1\n     * number, ≥1 special).\n     *\n     * Distinct from `rules` (inherited from `IValidationProps`) which\n     * is the form-level validation rule array — those still flow through\n     * to the underlying `<origam-input>`.\n     */\n    requirementRules?: IPasswordRequirement[]\n    /**\n     * Layout for the requirements checklist:\n     *   - `list` (default) — vertical `<ul>` of `<li>` rows\n     *   - `tiles` — wrap of `<OrigamChip>` pills\n     */\n    requirementsLayout?: 'list' | 'tiles'\n    /**\n     * Strip every decoration (toggle eye, strength bar, requirements\n     * checklist). Useful for confirm-password sub-fields where the\n     * adornments would only add noise.\n     */\n    minimal?: boolean\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -82390,13 +83650,25 @@
           "description_fallback": "Minimum password length (default 8). Drives the minLength rule injected automatically."
         },
         {
+          "name": "minLengthMessage",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 6,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
           "name": "needTiny",
           "type_label": "boolean",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 6,
+          "position": 7,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Require at least one lowercase letter."
@@ -82408,7 +83680,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 7,
+          "position": 8,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Require at least one uppercase letter."
@@ -82420,7 +83692,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 8,
+          "position": 9,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Require at least one digit."
@@ -82432,7 +83704,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 9,
+          "position": 10,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Require at least one non-alphanumeric character."
@@ -82444,7 +83716,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 10,
+          "position": 11,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Props forwarded to the internal <OrigamMenu> (location, delays, etc.)."
@@ -82456,7 +83728,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 11,
+          "position": 12,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Programmatically controls the requirements menu open/close state."
@@ -82468,7 +83740,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 12,
+          "position": 13,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Renders a 4-segment strength bar under the input. Segments fill as the password grows stronger using semantic colour tokens."
@@ -82480,7 +83752,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 13,
+          "position": 14,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Inline requirements checklist. Pass an array of IPasswordRequirement predicates. Falls back to DEFAULT_PASSWORD_REQUIREMENTS when requirements=true and this is omitted."
@@ -82492,7 +83764,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 14,
+          "position": 15,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Layout for the requirements checklist — \"list\" (default) vertical ul/li rows, or \"tiles\" OrigamChip pills."
@@ -82504,7 +83776,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 15,
+          "position": 16,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Strips every decoration (toggle eye, strength bar, requirements checklist). Useful for confirm-password fields where adornments add noise."
@@ -82674,7 +83946,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_password_requirement.description",
         "description_fallback": "Descriptor for one rule shown in the requirements checklist or tile grid of <OrigamPasswordField>. The test() predicate is evaluated reactively against the current password value.",
-        "definition": "export interface IPasswordRequirement {\n    /** Stable id (used as `:key` and as `data-cy` suffix in stories). */\n    id: string\n    /** Human-readable label rendered next to the check/cross icon. */\n    label: string\n    /**\n     * Predicate evaluated against the current password value.\n     * Return `true` when the rule is satisfied.\n     */\n    test: (value: string) => boolean\n}",
+        "definition": "export interface IPasswordRequirement {\n    /** Stable id (used as `:key` and as `data-cy` suffix in stories). */\n    id: string\n    /** Human-readable label rendered next to the check/cross icon. */\n    label: string\n    /*********************************************************\n     * Locale key resolved with `t()` instead of `label` (used by the DS defaults).\n     ********************************************************/\n    labelKey?: string\n    /*********************************************************\n     * Params for `labelKey` (e.g. `{count}`).\n     ********************************************************/\n    labelParams?: Record<string, string | number>\n    /**\n     * Predicate evaluated against the current password value.\n     * Return `true` when the rule is satisfied.\n     */\n    test: (value: string) => boolean\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -82718,13 +83990,37 @@
           "description_fallback": "Human-readable label rendered next to the check/cross icon."
         },
         {
+          "name": "labelKey",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 2,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "labelParams",
+          "type_label": "Record<string, string | number>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 3,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
           "name": "test",
           "type_label": "(value: string) => boolean",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 2,
+          "position": 4,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Predicate evaluated against the current password value. Returns true when the rule is satisfied."
@@ -85189,7 +86485,7 @@
         "icon": null,
         "description_key": null,
         "description_fallback": null,
-        "definition": "export interface IRadioBtnSlots {\n    default?: () => any\n    input?: (data: { model: any, color?: TColor, bgColor?: TColor, icon?: TIcon, props: any }) => any\n    label?: () => any\n}",
+        "definition": "export interface IRadioBtnSlots {\n    default?: () => any\n    input?: (data: { model: any, color?: TColor, bgColor?: TColor, icon?: TIcon, props: any }) => any\n    label?: ISelectionControlSlots['label']\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -85234,7 +86530,7 @@
         },
         {
           "name": "label",
-          "type_label": "() => any",
+          "type_label": "ISelectionControlSlots['label']",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -85795,7 +87091,7 @@
         "icon": null,
         "description_key": null,
         "description_fallback": null,
-        "definition": "export interface IRadioSlots extends IAdjacentSlots {\n    /**\n     * Scoped when rendered at the `<OrigamInput>` level\n     * (`{id, messagesId, isDisabled, isReadonly, isValid}`), but the\n     * SAME slot is also forwarded unscoped one level down into\n     * `<OrigamRadioBtn>`'s own `default` — hence the optional param.\n     */\n    default?: (data?: { id: string, messagesId: string, isDisabled: boolean, isReadonly: boolean, isValid: boolean | undefined }) => any\n    input?: (data: { props: any, icon?: TIcon, model: any }) => any\n    label?: () => any\n    details?: (props: any) => any\n    messages?: (data: { hasMessages: boolean, messages: Array<string> | Record<string, string> }) => any\n    message?: (data: { message: any }) => any\n}",
+        "definition": "export interface IRadioSlots extends IAdjacentSlots {\n    /**\n     * Scoped when rendered at the `<OrigamInput>` level\n     * (`{id, messagesId, isDisabled, isReadonly, isValid}`), but the\n     * SAME slot is also forwarded unscoped one level down into\n     * `<OrigamRadioBtn>`'s own `default` — hence the optional param.\n     */\n    default?: (data?: { id: string, messagesId: string, isDisabled: boolean, isReadonly: boolean, isValid: boolean | undefined }) => any\n    input?: (data: { props: any, icon?: TIcon, model: any }) => any\n    label?: ISelectionControlSlots['label']\n    details?: (props: any) => any\n    messages?: (data: { hasMessages: boolean, messages: Array<string> | Record<string, string> }) => any\n    message?: (data: { message: any }) => any\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -85840,7 +87136,7 @@
         },
         {
           "name": "label",
-          "type_label": "() => any",
+          "type_label": "ISelectionControlSlots['label']",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -86924,6 +88220,70 @@
     {
       "entry": {
         "kind": "interface",
+        "slug": "i-render-theme-css-options",
+        "name": "IRenderThemeCssOptions",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IRenderThemeCssOptions {\n    theme?: TTheme\n    mode?: TMode\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Commons/theme.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "theme",
+          "type_label": "TTheme",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "mode",
+          "type_label": "TMode",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "interface",
         "slug": "i-resize-state",
         "name": "IResizeState",
         "category": "Utilities & Internals",
@@ -87923,7 +89283,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_ripple_directive_binding.description",
         "description_fallback": "Typed directive binding for `v-ripple` — extends Vue's DirectiveBinding with a narrowed `value` (boolean or `{ class }` object) and typed `modifiers` for center, circle and stop behaviours.",
-        "definition": "export interface IRippleDirectiveBinding extends Omit<DirectiveBinding, 'modifiers' | 'value'> {\n    value?: boolean | { class: string }\n    modifiers: {\n        center?: boolean\n        circle?: boolean\n        stop?: boolean\n    }\n}",
+        "definition": "export interface IRippleDirectiveBinding extends Omit<DirectiveBinding, 'modifiers' | 'value'> {\n    value?: boolean | IRippleOptions\n    modifiers: {\n        center?: boolean\n        circle?: boolean\n        stop?: boolean\n    }\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -87944,7 +89304,7 @@
       "props": [
         {
           "name": "value",
-          "type_label": "boolean | { class: string }",
+          "type_label": "boolean | IRippleOptions",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -88654,7 +90014,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_rounded_props.description",
         "description_fallback": "Corner-radius contract for every component whose surface can be rounded. Supports named token rungs (small/default/large/…), a boolean shorthand for the default token, or raw CSS border-radius values.",
-        "definition": "export interface IRoundedProps {\n    /**\n     * Corner-radius selector. Three modes:\n     *  - **named variant** (`'small' | 'default' | 'large' | …`,\n     *    cf. `ROUNDED` enum) → emits `--rounded-{name}` class so the\n     *    component's SCSS can pick the right token rung.\n     *  - **boolean `true`** (or empty string `''`) → emits the legacy\n     *    `--rounded` class for components that only have a single rounded\n     *    state (e.g. `OrigamBtn` defaulting to `radius.2xl`).\n     *  - **CSS value** (`'4px'`, `'4px 0 4px 0'`, `100`) → emits inline\n     *    `border-radius` declarations via `useRounded.roundedStyles`.\n     */\n    rounded?: boolean | number | string | TRounded | null | undefined\n    /**\n     * Top-right corner only. Takes the same vocabulary as `rounded`\n     * (`8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`), minus `shaped` /\n     * `shaped-invert` which are asymmetric by definition.\n     */\n    roundedTopRight?: boolean | number | string\n    /** Top-left corner only. Same vocabulary as `roundedTopRight`. */\n    roundedTopLeft?: boolean | number | string\n    /** Bottom-left corner only. Same vocabulary as `roundedTopRight`. */\n    roundedBottomLeft?: boolean | number | string\n    /** Bottom-right corner only. Same vocabulary as `roundedTopRight`. */\n    roundedBottomRight?: boolean | number | string\n    /*********************************************************\n     * Logical per-corner radius — rung 2 (issue #1013)\n     *\n     * @description\n     * One WRITING-MODE-RELATIVE corner each, emitted as the native logical\n     * longhands (`border-start-start-radius`, …) — the same family the\n     * 4-value `rounded` shorthand already emits, so these four address one\n     * of its corners instead of all four.\n     *\n     * @description\n     * ⚠️ THE NAME READS `{block}-{inline}`, per CSS. The first half is the\n     * block end, the second the inline end — it is NOT a clockwise walk,\n     * and the two halves are not interchangeable:\n     *\n     * @description\n     * `roundedStartStart` — block-start inline-start = top-LEFT in LTR.\n     * `roundedStartEnd` — block-start inline-end = top-RIGHT in LTR.\n     * `roundedEndStart` — block-end inline-start = bottom-LEFT in LTR.\n     * `roundedEndEnd` — block-end inline-end = bottom-RIGHT in LTR.\n     *\n     * @description\n     * Swapping the halves silently rounds the opposite corner — nothing\n     * warns, and the result looks deliberate.\n     *\n     * @description\n     * Same vocabulary as `roundedTopRight` (`8`, `'8px'`, `'md'`,\n     * `'large'`, `'var(…)'`), minus `shaped` / `shaped-invert`. Each\n     * overrides `rounded` for its corner and is beaten by the matching\n     * PHYSICAL corner prop.\n     ********************************************************/\n    roundedStartStart?: boolean | number | string\n    roundedStartEnd?: boolean | number | string\n    roundedEndStart?: boolean | number | string\n    roundedEndEnd?: boolean | number | string\n}",
+        "definition": "export interface IRoundedProps {\n    /**\n     * Corner-radius selector. Three modes:\n     *  - **named variant** (`'small' | 'default' | 'large' | …`,\n     *    cf. `ROUNDED` enum) → emits `--rounded-{name}` class so the\n     *    component's SCSS can pick the right token rung.\n     *  - **boolean `true`** (or empty string `''`) → emits the legacy\n     *    `--rounded` class for components that only have a single rounded\n     *    state (e.g. `OrigamBtn` defaulting to `radius.2xl`).\n     *  - **CSS value** (`'4px'`, `'4px 0 4px 0'`, `100`) → emits inline\n     *    `border-radius` declarations via `useRounded.roundedStyles`.\n     */\n    rounded?: TBoxValue | TRounded | null\n    /**\n     * Top-right corner only. Takes the same vocabulary as `rounded`\n     * (`8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`), minus `shaped` /\n     * `shaped-invert` which are asymmetric by definition.\n     */\n    roundedTopRight?: TBoxValue\n    /** Top-left corner only. Same vocabulary as `roundedTopRight`. */\n    roundedTopLeft?: TBoxValue\n    /** Bottom-left corner only. Same vocabulary as `roundedTopRight`. */\n    roundedBottomLeft?: TBoxValue\n    /** Bottom-right corner only. Same vocabulary as `roundedTopRight`. */\n    roundedBottomRight?: TBoxValue\n    /*********************************************************\n     * Logical per-corner radius — rung 2 (issue #1013)\n     *\n     * @description\n     * One WRITING-MODE-RELATIVE corner each, emitted as the native logical\n     * longhands (`border-start-start-radius`, …) — the same family the\n     * 4-value `rounded` shorthand already emits, so these four address one\n     * of its corners instead of all four.\n     *\n     * @description\n     * ⚠️ THE NAME READS `{block}-{inline}`, per CSS. The first half is the\n     * block end, the second the inline end — it is NOT a clockwise walk,\n     * and the two halves are not interchangeable:\n     *\n     * @description\n     * `roundedStartStart` — block-start inline-start = top-LEFT in LTR.\n     * `roundedStartEnd` — block-start inline-end = top-RIGHT in LTR.\n     * `roundedEndStart` — block-end inline-start = bottom-LEFT in LTR.\n     * `roundedEndEnd` — block-end inline-end = bottom-RIGHT in LTR.\n     *\n     * @description\n     * Swapping the halves silently rounds the opposite corner — nothing\n     * warns, and the result looks deliberate.\n     *\n     * @description\n     * Same vocabulary as `roundedTopRight` (`8`, `'8px'`, `'md'`,\n     * `'large'`, `'var(…)'`), minus `shaped` / `shaped-invert`. Each\n     * overrides `rounded` for its corner and is beaten by the matching\n     * PHYSICAL corner prop.\n     ********************************************************/\n    roundedStartStart?: TBoxValue\n    roundedStartEnd?: TBoxValue\n    roundedEndStart?: TBoxValue\n    roundedEndEnd?: TBoxValue\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -88675,7 +90035,7 @@
       "props": [
         {
           "name": "rounded",
-          "type_label": "boolean | number | string | TRounded | null | undefined",
+          "type_label": "TBoxValue | TRounded | null",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -88687,7 +90047,7 @@
         },
         {
           "name": "roundedTopRight",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -88699,7 +90059,7 @@
         },
         {
           "name": "roundedTopLeft",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -88711,7 +90071,7 @@
         },
         {
           "name": "roundedBottomLeft",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -88723,7 +90083,7 @@
         },
         {
           "name": "roundedBottomRight",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -88735,7 +90095,7 @@
         },
         {
           "name": "roundedStartStart",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -88747,7 +90107,7 @@
         },
         {
           "name": "roundedStartEnd",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -88759,7 +90119,7 @@
         },
         {
           "name": "roundedEndStart",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -88771,7 +90131,7 @@
         },
         {
           "name": "roundedEndEnd",
-          "type_label": "boolean | number | string",
+          "type_label": "TBoxValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -90981,7 +92341,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_selection_control_slots.description",
         "description_fallback": "Slot signatures for <OrigamSelectionControl>. Three slots give full control over the rendering: default replaces the entire control surface, label replaces the label text, and input replaces the underlying native input element.",
-        "definition": "export interface ISelectionControlSlots {\n    default?: (data: { model: any, color?: TColor, bgColor?: TColor, icon?: TIcon, props: any }) => any\n    label?: () => any\n    input?: (data: { model: any, color?: TColor, bgColor?: TColor, icon?: TIcon, props: any, textColorStyles?: any, backgroundColorStyles?: any }) => any\n}",
+        "definition": "export interface ISelectionControlSlots {\n    default?: (data: { model: any, color?: TColor, bgColor?: TColor, icon?: TIcon, props: any }) => any\n    label?: (data: { text?: string, color?: TColor, props: any }) => any\n    input?: (data: { model: any, color?: TColor, bgColor?: TColor, icon?: TIcon, props: any, textColorStyles?: any, backgroundColorStyles?: any }) => any\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -91014,7 +92374,7 @@
         },
         {
           "name": "label",
-          "type_label": "() => any",
+          "type_label": "(data: { text?: string, color?: TColor, props: any }) => any",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -91211,7 +92571,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_select_props.description",
         "description_fallback": "Full prop surface for <OrigamSelect>. Aggregates the text-field base, density, adjacent slots, field chrome, input contract, spacing, border, rounded, elevation, item list configuration, transitions, filters, and lazy loading, then adds select-specific behaviour: chips, multiple selection, menu control, autocomplete, and search.",
-        "definition": "export interface ISelectProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ITextFieldProps, IDensityProps, IAdjacentProps, IAdjacentInnerProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IItemProps, ITransitionComponentProps, IFiltersProps, ILazyProps {\n    chips?: boolean\n    closableChips?: boolean\n    hideNoData?: boolean\n    hideSelected?: boolean\n    listProps?: IListProps\n    menu?: boolean\n    menuIcon?: TIcon\n    menuProps?: IMenuProps\n    chipProps?: IChipProps\n    multiple?: boolean\n    noDataText?: string\n    openOnClear?: boolean\n\n    autocomplete?: boolean\n    autoSelectFirst?: boolean | string\n    clearOnSelect?: boolean\n    divider?: string\n    search?: string\n    closeText?: string\n    openText?: string\n}",
+        "definition": "export interface ISelectProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ITextFieldProps, IDensityProps, IAdjacentProps, IAdjacentInnerProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IItemProps, ITransitionComponentProps, IFiltersProps, ILazyProps {\n    chips?: boolean\n    closableChips?: boolean\n    hideNoData?: boolean\n    hideSelected?: boolean\n    listProps?: IListProps\n    itemType?: string\n    menu?: boolean\n    menuIcon?: TIcon\n    menuProps?: IMenuProps\n    chipProps?: IChipProps\n    multiple?: boolean\n    noDataText?: string\n    openOnClear?: boolean\n\n    autocomplete?: boolean\n    autoSelectFirst?: boolean | string\n    clearOnSelect?: boolean\n    divider?: string\n    search?: string\n    closeText?: string\n    openText?: string\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -91291,13 +92651,25 @@
           "description_fallback": "Props forwarded to the internal OrigamList rendered inside the dropdown."
         },
         {
+          "name": "itemType",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 5,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
           "name": "menu",
           "type_label": "boolean",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 5,
+          "position": 6,
           "default_value": null,
           "description_key": null,
           "description_fallback": "v-model:menu — controls the open/closed state of the dropdown programmatically."
@@ -91309,7 +92681,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 6,
+          "position": 7,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Icon shown in the append-inner slot to indicate the dropdown is available. Defaults to mdi-chevron-down."
@@ -91321,7 +92693,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 7,
+          "position": 8,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Props forwarded to the internal OrigamMenu (position, max-height, transition, etc.)."
@@ -91333,7 +92705,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 8,
+          "position": 9,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Props forwarded to every selection chip (color, size, variant…)."
@@ -91345,7 +92717,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 9,
+          "position": 10,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Allows selecting more than one item. modelValue becomes an array."
@@ -91357,7 +92729,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 10,
+          "position": 11,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Text displayed when the dropdown list is empty or the search yields no results."
@@ -91369,7 +92741,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 11,
+          "position": 12,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Re-opens the dropdown after the user clears the selection via the clear icon."
@@ -91381,7 +92753,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 12,
+          "position": 13,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Enables text-input filtering — the user types to narrow the dropdown list."
@@ -91393,7 +92765,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 13,
+          "position": 14,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Auto-highlights the first matching item while the user types. Pass \"exact\" to restrict to exact-match prefix."
@@ -91405,7 +92777,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 14,
+          "position": 15,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Clears the search input after an item is selected (useful for multiple autocomplete)."
@@ -91417,7 +92789,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 15,
+          "position": 16,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Character used to separate multi-select values in the display string."
@@ -91429,7 +92801,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 16,
+          "position": 17,
           "default_value": null,
           "description_key": null,
           "description_fallback": "v-model:search — exposes the autocomplete search string for external control."
@@ -91441,7 +92813,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 17,
+          "position": 18,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Accessible label for the close/collapse action on the dropdown."
@@ -91453,7 +92825,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 18,
+          "position": 19,
           "default_value": null,
           "description_key": null,
           "description_fallback": "Accessible label for the open/expand action on the dropdown."
@@ -93455,7 +94827,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_slider_field_emits.description",
         "description_fallback": "Emits contract for <OrigamSliderField> — v-model value updates, focus/blur lifecycle, and drag start/end events.",
-        "definition": "export interface ISliderFieldEmits extends ICommonsComponentEmits, IFocusEmits {\n    (e: 'start', value: number | string | Array<number> | Array<string>): void\n    (e: 'end', value: number | string | Array<number> | Array<string>): void\n}",
+        "definition": "export interface ISliderFieldEmits extends ICommonsComponentEmits, IFocusEmits {\n    (e: 'start', value: TSliderFieldValue): void\n    (e: 'end', value: TSliderFieldValue): void\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -93533,7 +94905,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_slider_field_props.description",
         "description_fallback": "Full props contract for <OrigamSliderField> — a range input with three visual variants (field, timer, audio), optional waveform peaks, range mode, tick marks, hover tooltip, and the full design surface.",
-        "definition": "export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps, IColorProps, IInputProps, IFocusProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IRippleProps, IDirectionProps {\n    disabled?: boolean\n    required?: boolean\n    label?: string\n    error?: boolean\n    readonly?: boolean\n    max?: number | string\n    min?: number | string\n    step?: number | string\n    /**\n     * Visual props forwarded to the track sub-component (rail / fill / ticks).\n     * Color / size / rounded only — pointer math is owned by the native\n     * `<input type=\"range\">`.\n     */\n    trackProps?: ISliderFieldTrackProps\n    reverse?: boolean\n    modelValue?: number | string | Array<number> | Array<string>\n    range?: boolean\n\n    showTicks?: TAlways\n    ticks?: Array<number> | Record<string, string>\n    tickSize?: TSize | number\n    /**\n     * Compact \"inset\" style — the draggable thumb sits **inside** the\n     * track (smaller, no overflow). Mirrors `OrigamSwitch`'s `inset`\n     * flag. Useful in tight contexts like a volume tooltip or a compact\n     * form row.\n     *\n     * @default false\n     */\n    inset?: boolean\n\n    /**\n     * Visual variant of the slider.\n     *\n     * - `'field'`  → default, wraps the slider in `<origam-input>` chrome\n     *               (label, messages, prepend/append). Use for form-grade\n     *               sliders (e.g. settings panels, ColorPicker HSL slider).\n     * - `'timer'`  → bare wrapper without `<origam-input>`. Hairline rail\n     *               (2 px at rest, 4 px on hover/focus), thumb hidden\n     *               until hover/focus/scrub. Use for media-scrubber-style\n     *               UI (video timeline, volume slider).\n     * - `'audio'`  → same as `timer`, plus a waveform background painted\n     *               from `peaks`. Use for `OrigamAudio` waveform scrubbing.\n     *\n     * @default 'field'\n     */\n    variant?: TSliderFieldVariant\n\n    /**\n     * Secondary fill rendered from `min` to `buffered`, layered behind\n     * the active fill at reduced opacity. Mirrors a video player's\n     * \"loaded ranges\" indicator. Has no effect when undefined.\n     */\n    buffered?: number\n\n    /**\n     * Hide the thumb at rest and only reveal it on container `:hover`,\n     * `:focus-within`, or during a drag. CSS-only — no JS state.\n     *\n     * For `variant='timer'` and `variant='audio'`, this is effectively\n     * always on (forced via the variant's class). For `variant='field'`,\n     * the consumer must opt in explicitly.\n     *\n     * @default false\n     */\n    showThumbOnHoverOnly?: boolean\n\n    /**\n     * Render a small floating tooltip above the rail showing the value\n     * under the cursor. The cursor X position is forwarded as a CSS\n     * variable updated in a single RAF-throttled `pointermove` handler.\n     *\n     * @default false\n     */\n    showHoverTooltip?: boolean\n\n    /**\n     * Formatter applied to the hover tooltip text. Receives the value\n     * under the cursor (clamped to `[min, max]`).\n     *\n     * @default (value: number) => String(value)\n     */\n    formatHoverTooltip?: (value: number) => string\n\n    /**\n     * Waveform peaks in the range `[0, 1]`. When set with\n     * `variant='audio'`, peaks are painted as vertical bars BEHIND the\n     * track via inline SVG: bars left of the thumb use the active color,\n     * bars right use a 35 %-mixed fade. No effect for other variants.\n     */\n    peaks?: ReadonlyArray<number>\n}",
+        "definition": "export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps, IColorProps, IInputProps, IFocusProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IRippleProps, IDirectionProps {\n    disabled?: boolean\n    required?: boolean\n    label?: string\n    error?: boolean\n    readonly?: boolean\n    max?: number | string\n    min?: number | string\n    step?: number | string\n    /**\n     * Visual props forwarded to the track sub-component (rail / fill / ticks).\n     * Color / size / rounded only — pointer math is owned by the native\n     * `<input type=\"range\">`.\n     */\n    trackProps?: ISliderFieldTrackProps\n    reverse?: boolean\n    modelValue?: TSliderFieldValue\n    range?: boolean\n\n    showTicks?: TAlways\n    ticks?: Array<number> | Record<string, string>\n    tickSize?: TSize | number\n    /**\n     * Compact \"inset\" style — the draggable thumb sits **inside** the\n     * track (smaller, no overflow). Mirrors `OrigamSwitch`'s `inset`\n     * flag. Useful in tight contexts like a volume tooltip or a compact\n     * form row.\n     *\n     * @default false\n     */\n    inset?: boolean\n\n    /**\n     * Visual variant of the slider.\n     *\n     * - `'field'`  → default, wraps the slider in `<origam-input>` chrome\n     *               (label, messages, prepend/append). Use for form-grade\n     *               sliders (e.g. settings panels, ColorPicker HSL slider).\n     * - `'timer'`  → bare wrapper without `<origam-input>`. Hairline rail\n     *               (2 px at rest, 4 px on hover/focus), thumb hidden\n     *               until hover/focus/scrub. Use for media-scrubber-style\n     *               UI (video timeline, volume slider).\n     * - `'audio'`  → same as `timer`, plus a waveform background painted\n     *               from `peaks`. Use for `OrigamAudio` waveform scrubbing.\n     *\n     * @default 'field'\n     */\n    variant?: TSliderFieldVariant\n\n    /**\n     * Secondary fill rendered from `min` to `buffered`, layered behind\n     * the active fill at reduced opacity. Mirrors a video player's\n     * \"loaded ranges\" indicator. Has no effect when undefined.\n     */\n    buffered?: number\n\n    /**\n     * Hide the thumb at rest and only reveal it on container `:hover`,\n     * `:focus-within`, or during a drag. CSS-only — no JS state.\n     *\n     * For `variant='timer'` and `variant='audio'`, this is effectively\n     * always on (forced via the variant's class). For `variant='field'`,\n     * the consumer must opt in explicitly.\n     *\n     * @default false\n     */\n    showThumbOnHoverOnly?: boolean\n\n    /**\n     * Render a small floating tooltip above the rail showing the value\n     * under the cursor. The cursor X position is forwarded as a CSS\n     * variable updated in a single RAF-throttled `pointermove` handler.\n     *\n     * @default false\n     */\n    showHoverTooltip?: boolean\n\n    /**\n     * Formatter applied to the hover tooltip text. Receives the value\n     * under the cursor (clamped to `[min, max]`).\n     *\n     * @default (value: number) => String(value)\n     */\n    formatHoverTooltip?: (value: number) => string\n\n    /**\n     * Waveform peaks in the range `[0, 1]`. When set with\n     * `variant='audio'`, peaks are painted as vertical bars BEHIND the\n     * track via inline SVG: bars left of the thumb use the active color,\n     * bars right use a 35 %-mixed fade. No effect for other variants.\n     */\n    peaks?: ReadonlyArray<number>\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -93674,7 +95046,7 @@
         },
         {
           "name": "modelValue",
-          "type_label": "number | string | Array<number> | Array<string>",
+          "type_label": "TSliderFieldValue",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -97273,14 +98645,14 @@
     {
       "entry": {
         "kind": "interface",
-        "slug": "i-stepper-item-slots",
-        "name": "IStepperItemSlots",
+        "slug": "i-stepper-item-slot-props",
+        "name": "IStepperItemSlotProps",
         "category": "Stepper",
         "domain": null,
         "icon": null,
         "description_key": null,
         "description_fallback": null,
-        "definition": "export interface IStepperItemSlots {}",
+        "definition": "export interface IStepperItemSlotProps {\n    index: number\n    status: TStepperItemStatus\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -97298,7 +98670,96 @@
         "svg_desc_fallback": null,
         "edited_by_user": false
       },
-      "props": [],
+      "props": [
+        {
+          "name": "index",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "status",
+          "type_label": "TStepperItemStatus",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "interface",
+        "slug": "i-stepper-item-slots",
+        "name": "IStepperItemSlots",
+        "category": "Stepper",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IStepperItemSlots {\n    prepend?: (props: IStepperItemSlotProps) => any\n    append?: (props: IStepperItemSlotProps) => any\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Stepper/stepper-item.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "prepend",
+          "type_label": "(props: IStepperItemSlotProps) => any",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "append",
+          "type_label": "(props: IStepperItemSlotProps) => any",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
       "values": [],
       "params": [],
       "returns": [],
@@ -97665,7 +99126,7 @@
         "icon": null,
         "description_key": null,
         "description_fallback": null,
-        "definition": "export interface IStepperSlots {\n    /** Overrides the whole auto-generated item list. */\n    default?: () => any\n}",
+        "definition": "export interface IStepperSlots {\n    /** Overrides the whole auto-generated item list. */\n    default?: () => any\n    'item-prepend'?: (props: IStepperItemSlotProps & { item: IStepperItem }) => any\n    'item-append'?: (props: IStepperItemSlotProps & { item: IStepperItem }) => any\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -97692,6 +99153,30 @@
           "optional": true,
           "required": false,
           "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "'item-prepend'",
+          "type_label": "(props: IStepperItemSlotProps & { item: IStepperItem }) => any",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "'item-append'",
+          "type_label": "(props: IStepperItemSlotProps & { item: IStepperItem }) => any",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 2,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -99142,7 +100627,7 @@
         "icon": null,
         "description_key": null,
         "description_fallback": null,
-        "definition": "export interface ITableEmits {}",
+        "definition": "export interface ITableEmits extends IHoverEmits {}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -99169,7 +100654,18 @@
       "examples": [],
       "directiveArgs": [],
       "directiveModifiers": [],
-      "relations": []
+      "relations": [
+        {
+          "rel_type": "extends",
+          "to_kind": "interface",
+          "to_slug": "i-hover-emits",
+          "to_name": "IHoverEmits",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
     },
     {
       "entry": {
@@ -109231,7 +110727,7 @@
         "icon": null,
         "description_key": null,
         "description_fallback": null,
-        "definition": "export interface IUseParallaxRuntimeOptions {\n    target: Ref<HTMLElement | undefined>\n    direction: Ref<TParallaxDirection>\n    easing: Ref<TParallaxEasing | string>\n    threshold: Ref<number>\n    disabled: Ref<boolean>\n    /**\n     * Fallback speed used when `slot=default` carries raw content (no\n     * `<OrigamParallaxLayer>`). Mirrors `IParallaxProps.speed`.\n     */\n    speed: Ref<number>\n    onEnter?: () => void\n    onLeave?: () => void\n    onProgress?: (progress: number) => void\n}",
+        "definition": "export interface IUseParallaxRuntimeOptions {\n    target: Ref<HTMLElement | undefined>\n    direction: Ref<TParallaxDirection>\n    easing: Ref<TParallaxEasing | TAnyString>\n    threshold: Ref<number>\n    disabled: Ref<boolean>\n    /**\n     * Fallback speed used when `slot=default` carries raw content (no\n     * `<OrigamParallaxLayer>`). Mirrors `IParallaxProps.speed`.\n     */\n    speed: Ref<number>\n    onEnter?: () => void\n    onLeave?: () => void\n    onProgress?: (progress: number) => void\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -109276,7 +110772,7 @@
         },
         {
           "name": "easing",
-          "type_label": "Ref<TParallaxEasing | string>",
+          "type_label": "Ref<TParallaxEasing | TAnyString>",
           "type_slug": null,
           "type_kind": null,
           "optional": false,

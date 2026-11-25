@@ -18,15 +18,32 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.44.0',
+        date: '2026-11-25',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2440.summary',
+        summaryFallback: '2 additions and 15 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2440.h1', textFallback: 'OrigamField : les labels ne reprennent plus l\'id de l\'input (#1149)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2440.h2', textFallback: 'OrigamOverlay : Échap n\'est plus ignoré juste après l\'ouverture (#1357)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2440.h3', textFallback: 'avertissements console dev émis par le DS lui-même (#1156, #1157)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2440.h4', textFallback: 'OrigamColorPickerField : menu ouvert en role="dialog" avec aria-controls (#1458)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2440.h5', textFallback: 'OrigamField : l\'<input> natif n\'a plus de padding propre, la hauteur minimale suit --origam-input---line-height (#1280)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2440.h6', textFallback: 'OrigamNumberField / champs : basculer hideControls (ou un slot *Inner) après le premier rendu met à jour la zone (#1448)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.43.0',
         date: '2026-11-22',
         type: 'minor',
         summaryKey: 'changelog.versions.v2430.summary',
-        summaryFallback: '3 fixes. See the full changelog for detail.',
+        summaryFallback: '1 change and 3 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.v2430.h1', textFallback: 'OrigamNumberField : plus de retrait vide avec hideControls, plus d\'écriture du modèle au montage, bornage désactivable (#1327)' },
-            { type: 'fixed', textKey: 'changelog.versions.v2430.h2', textFallback: 'OrigamTable : update:hover est déclaré (#1155)' },
-            { type: 'fixed', textKey: 'changelog.versions.v2430.h3', textFallback: 'v-contrast : un fond oklab() / oklch() n\'est plus sauté (#1131)' }
+            { type: 'changed', textKey: 'changelog.versions.v2430.h1', textFallback: 'complexité de v-contrast (#1398)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2430.h2', textFallback: 'OrigamNumberField : plus de retrait vide avec hideControls, plus d\'écriture du modèle au montage, bornage désactivable (#1327)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2430.h3', textFallback: 'OrigamTable : update:hover est déclaré (#1155)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2430.h4', textFallback: 'v-contrast : un fond oklab() / oklch() n\'est plus sauté (#1131)' }
         ]
     },
     {

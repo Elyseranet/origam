@@ -119,7 +119,20 @@
       "source": "types"
     }
   ],
-  "slots": [],
+  "slots": [
+    {
+      "name": "prepend",
+      "label": "prepend",
+      "slotPropsType": "IStepperItemSlotProps",
+      "source": "types"
+    },
+    {
+      "name": "append",
+      "label": "append",
+      "slotPropsType": "IStepperItemSlotProps",
+      "source": "types"
+    }
+  ],
   "snippets": [],
   "requiresParent": false
 }

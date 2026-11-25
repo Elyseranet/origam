@@ -10,7 +10,7 @@
     <component
             :is="resolved"
             v-else-if="resolved"
-            v-bind="instance.props"
+            v-bind="previewProps"
             data-cy="playground-preview-instance"
             :data-instance-id="instance.id"
             :data-playground-instance="instance.id"
@@ -38,6 +38,7 @@
 <script setup lang="ts">
     import { computed, onErrorCaptured, shallowRef, watch } from 'vue'
     import { useT } from '../../composables/I18n/useT'
+    import { INNER_ZONE_LABELS } from '../../consts/Commons/inner-zone-label.const'
     import { DEFAULT_SLOT_NAME } from '../../consts/Commons/scene-code.const'
     import type { IPlaygroundSceneNodeEmits, IPlaygroundSceneNodeProps, IPlaygroundSceneNodeSlot, IPlaygroundSceneNodeSlots } from '../../interfaces/Components/playground-scene-node.interface'
     import type { TComponentResolution } from '../../types/Commons/prop-value.type'
@@ -114,7 +115,26 @@
         return Object.fromEntries(events.map(event => [event.name, (...args: unknown[]) => emits('instance-emit', instance.id, event.name, args)]))
     })
 
-    const handleChildEmit = (instanceId: string, name: string, args: unknown[]) => {
+    /*********************************************************
+     * previewProps
+     *
+     * @description
+     * `instance.props` plus a default accessible name for an inner zone the
+     * preview itself listens to (#1156). A name set on the instance wins; the
+     * scene and the generated code never see it.
+     ********************************************************/
+    const previewProps = computed(() => {
+        const own = props.instance.props ?? {}
+        const extra: Record<string, string> = {}
+
+        for (const { event, prop, key, fallback } of INNER_ZONE_LABELS) {
+            if (event in emitListeners.value && !(prop in own)) extra[prop] = t(key, fallback)
+        }
+
+        return { ...own, ...extra }
+    })
+
+    const handleChildEmit =(instanceId: string, name: string, args: unknown[]) => {
         emits('instance-emit', instanceId, name, args)
     }
 

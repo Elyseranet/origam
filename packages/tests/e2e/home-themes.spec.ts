@@ -18,10 +18,12 @@
 
 import { expect, test } from '@playwright/test'
 
+import { readSettledStyle } from './_support/settled-style'
+
 test.describe('HomeThemes section', () => {
 
     test.beforeEach(async ({ page }) => {
-        await page.goto('/', { waitUntil: 'networkidle' })
+        await page.goto('/', { waitUntil: 'load' })
     })
 
     // ── 1. Section presence & labelling ───────────────────────────────────
@@ -59,16 +61,16 @@ test.describe('HomeThemes section', () => {
         await expect(h2).toContainText('One design system')
     })
 
-    // ── 4. Exactly 8 brand chips (Sobre inclus en v5-phase1) ──────────────
+    // ── 4. Exactly 8 brand chips (Origam inclus en v5-phase1) ──────────────
 
-    test('renders exactly 8 brand chips (Sobre + 7 variants)', async ({ page }) => {
+    test('renders exactly 8 brand chips (Origam + 7 variants)', async ({ page }) => {
         const chips = page.locator('section.home-themes .home-themes__chips .origam-chip')
         await expect(chips).toHaveCount(8)
     })
 
     test('all 8 brand chip labels are visible', async ({ page }) => {
         const section = page.locator('section.home-themes')
-        await expect(section).toContainText('Sobre')
+        await expect(section).toContainText('Origam')
         await expect(section).toContainText('Glass')
         await expect(section).toContainText('Geek')
         await expect(section).toContainText('Cartoon')
@@ -79,7 +81,7 @@ test.describe('HomeThemes section', () => {
     })
 
     test('chips have data-cy attributes', async ({ page }) => {
-        const chipKeys = ['sobre', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
+        const chipKeys = ['origam', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
         for (const key of chipKeys) {
             const chip = page.locator(`[data-cy="themes-chip-${key}"]`)
             await expect(chip).toBeVisible()
@@ -201,16 +203,17 @@ test.describe('HomeThemes section', () => {
     // En v5-phase1 les tooling mentions sont des <span> dans un <p.home-themes__tooling>,
     // plus des OrigamChip pills avec data-cy. On assert le texte dans la section.
 
-    test('tokens.studio mention is visible in the tooling <p>', async ({ page }) => {
+    test('props-first theming mention is visible in the tooling <p>', async ({ page }) => {
         const tooling = page.locator('section.home-themes p.home-themes__tooling')
         await expect(tooling).toBeVisible()
-        await expect(tooling).toContainText('tokens.studio compatible')
+        await expect(tooling).toContainText('props-first theming')
     })
 
-    test('Style Dictionary v4 mention is visible in the tooling <p>', async ({ page }) => {
+    test('hand-maintained CSS/SCSS mention is visible in the tooling <p> (pipeline Style Dictionary retiré)', async ({ page }) => {
         const tooling = page.locator('section.home-themes p.home-themes__tooling')
         await expect(tooling).toBeVisible()
-        await expect(tooling).toContainText('Style Dictionary v4')
+        await expect(tooling).toContainText('hand-maintained CSS/SCSS')
+        await expect(tooling).not.toContainText('Style Dictionary')
     })
 
     // ── 7. Semantic structure ─────────────────────────────────────────────
@@ -247,13 +250,13 @@ test.describe('HomeThemes section', () => {
  * external CSS rule regardless of specificity — so every theme's active-chip
  * text override needed `!important` to actually take effect. Verified via
  * WCAG contrast ratio (not just "is it white/dark") because the fix for
- * ecom/apple/sobre dark mode required darkening the fill itself, not just
+ * ecom/apple/origam dark mode required darkening the fill itself, not just
  * swapping to white text (their brand accent is too light for white text
  * to reach 4.5:1 even once the inline-style override works).
  */
 test.describe('HomeThemes section · selected chip contrast (#28)', () => {
     const COMBOS: Array<{ theme: string; mode: 'light' | 'dark' }> = [
-        { theme: 'sobre', mode: 'light' }, { theme: 'sobre', mode: 'dark' },
+        { theme: 'origam', mode: 'light' }, { theme: 'origam', mode: 'dark' },
         { theme: 'glass', mode: 'light' }, { theme: 'glass', mode: 'dark' },
         { theme: 'cartoon', mode: 'light' }, { theme: 'cartoon', mode: 'dark' },
         { theme: 'geek', mode: 'light' }, { theme: 'geek', mode: 'dark' },
@@ -294,16 +297,26 @@ test.describe('HomeThemes section · selected chip contrast (#28)', () => {
                 { name: 'origam-theme', value: theme, url: 'http://localhost:3000' },
                 { name: 'origam-mode', value: mode, url: 'http://localhost:3000' }
             ])
-            await page.goto('/', { waitUntil: 'networkidle' })
+            await page.goto('/', { waitUntil: 'load' })
+            // Dev server Nuxt : `networkidle` n'arrive jamais (SSE d'erreur). On
+            // attend l'hydratation — avant elle le chip porte le style SSR, stable
+            // mais pas final (ecom/dark 3.83, apple/dark 4.33 mesurés ainsi).
+            await page.waitForFunction(() => {
+                const w = window as unknown as { useNuxtApp?: () => { isHydrating: boolean } }
+                return w.useNuxtApp !== undefined && !w.useNuxtApp().isHydrating
+            })
 
             const chip = page.locator(`[data-cy="themes-chip-${theme}"]`)
             await expect(chip).toBeVisible()
             await expect(chip).toHaveAttribute('data-active', 'true')
 
-            const styles = await chip.evaluate((el) => {
+            // Le chip transitionne color/background quand le thème s'applique : une
+            // lecture synchrone attrape une valeur à mi-course (ecom/dark 3.83,
+            // apple/dark 4.33 mesurés ainsi, alors que le rendu posé est blanc/AA).
+            const styles = await readSettledStyle(() => chip.evaluate((el) => {
                 const cs = getComputedStyle(el)
                 return { color: cs.color, backgroundColor: cs.backgroundColor }
-            })
+            }))
 
             const ratio = contrastRatio(styles.color, styles.backgroundColor)
             expect(ratio, `could not parse computed colours: ${JSON.stringify(styles)}`).not.toBeNull()

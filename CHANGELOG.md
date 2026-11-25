@@ -18,7 +18,96 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.44.0] - 2026-11-25
+
+### Fixed — `OrigamField` : les labels ne reprennent plus l'`id` de l'input (#1149)
+
+- Cause : `labelProps` / `floatingLabelProps` recopiaient la prop `id` du champ sur les deux `<origam-label>` via `filterProps` ; l'input et les deux labels partageaient donc le même `id` (`label[for]` visait le premier label, pas le contrôle). `id` est désormais exclu du forward. Touche tous les champs construits sur `OrigamField`. Aucun changement d'API. Corollaire : le label d'origine n'est plus masqué par `visibility: hidden` quand le champ est actif mais rogné (`clip-path`), car axe (`label-title-only`) ne lit que le premier `label[for]` et le trouvait vide dès qu'un `aria-describedby` existait (NumberField).
+
+### Fixed — `OrigamOverlay` : Échap n'est plus ignoré juste après l'ouverture (#1357)
+
+- Cause : `globalTop` (`useStack`) était mis à jour dans un `setTimeout` lancé par un `watchEffect` ; tant que le timer n'avait pas tourné, `globalTop` valait encore `false` et `handleKeydown` ignorait Échap (2 à 55 ms mesurées côté consommateur).
+- Correctif : `globalTop` est un `computed` sur `GLOBAL_STACK` (réactif), donc synchrone ; plus de timer. Sans changement d'API.
+- Test : `stack.composable.spec.ts` — rouge sur le commit parent, vert après.
+
+### Fixed — avertissements console dev émis par le DS lui-même (#1156, #1157)
+
+- #1156 : les champs (`OrigamTextField`, `TextareaField`, `PasswordField`, `NumberField`, `FileField`, `OtpInputField`, `Select`) liaient `@click:append-inner` / `@click:prepend-inner` sans condition pour re-émettre ; `OrigamField` voyait donc toujours un écouteur et avertissait « click listener but no accessible name » sur tout champ doté d'une icône interne. Le relais passe par `appendInnerRelay` / `prependInnerRelay` (`useAdjacentInner`) et n'existe que si le consommateur écoute. Un vrai écouteur sans nom avertit toujours.
+- #1157 : `OrigamMessages` avertissait « prop "active" has no effect » à chaque montage (prop booléenne absente = `false`, jamais `undefined`) ; `Input`, `Form`, `ConfirmWrapper` et `OtpInputField` ne lui passent plus `:active`. `OrigamToolbar` avertissait pour `modelValue` à chaque montage (défaut `true`) : le prédicat compare désormais au défaut. Passer réellement la prop morte avertit toujours.
+
+### Fixed — `OrigamColorPickerField` : menu ouvert en `role="dialog"` avec `aria-controls` (#1458)
+
+- Le menu gardait le `role="menu"` d'`OrigamMenu` sans `menuitem` (`aria-required-children`) et le combobox n'avait pas d'`aria-controls`. Le menu est désormais un `dialog` nommé par le `label`, relié au combobox par `aria-controls`, comme `OrigamDatePickerField` (#1382). Le bloc ARIA commun aux deux champs (`menuId`, `role="dialog"`, `aria-label`, `aria-controls`) est factorisé dans le composable `usePopupDialogAria`, consommé par les deux.
+
+### Fixed — `OrigamField` : l'`<input>` natif n'a plus de padding propre, la hauteur minimale suit `--origam-input---line-height` (#1280)
+
+- Le `<input>` / `<textarea>` natif gardait le padding du navigateur (`1px 2px`) : le texte démarrait 2 px après le retrait du champ, contre 0 px pour le texte d'un `OrigamSelect`. `padding: 0` posé sur l'élément natif ; texte désormais aligné au retrait (`--origam-field---padding-start`) sur tous les champs. Hauteur des champs inchangée (36 px, textarea 62/70 px) ; la boîte de l'input perd 2 px de hauteur (padding vertical UA), texte recentré.
+- `min-height` de `.origam-field__input` (et du préfixe/suffixe) comptait une ligne de `1.5rem` quel que soit l'interligne ; elle vaut maintenant `calc(1rem * var(--origam-input---line-height, 1.5))` — identique au défaut (1,5), suit un interligne personnalisé.
+
+### Fixed — `OrigamNumberField` / champs : basculer `hideControls` (ou un slot `*Inner`) après le premier rendu met à jour la zone (#1448)
+
+- `useAdjacentInner` lisait `slots` (non réactif) dans des `computed` mis en cache : un slot `prependInner` / `appendInner` / `clear` qui apparaît ou disparaît à l'exécution laissait la zone vide rendue. Les `computed` sont désormais invalidés avant chaque mise à jour. Touche tous les consommateurs (`OrigamField`, `OrigamTextField`, `OrigamTextareaField`, `OrigamPasswordField`, `OrigamFileField`, `OrigamNumberField`).
+
+### Fixed — `OrigamNumberField` : plus de `div` de contrôles vide dans `prependInner` sans `split` (#1449)
+
+- Sans `split`, les contrôles vivent dans `appendInner` ; la zone `prependInner` vide décalait le texte de 12 px au lieu des 16 px d'un champ simple. Le texte démarre désormais à la même position qu'avec `hideControls`.
+
+### Fixed — `OrigamSelect` : un seul `combobox`, plus de `role="menu"` autour du `listbox` (#1331)
+
+- Mesure (Chromium, axe-core, menu ouvert, Histoire statique) : le second `role="combobox"` sur `.origam-field` n'existe plus sur `develop` (corrigé par #1247) ; restait l'overlay `role="menu"` posé en dur par `OrigamMenu` autour du `listbox` du select (`aria-required-children`), et, depuis #1426, les lignes subheader / séparateur (`<hr role="separator">`) enfants directs du `listbox`.
+- `aria-live="polite"` retiré de la listbox ; le message « aucun résultat » est annoncé par une région `<output>` visuellement masquée hors de la listbox.
+- Correctif : le menu du select passe `role="presentation"` à l'overlay (surchargeable via `menuProps.role`) ; les lignes de structure sont `role="presentation"`.
+
+### Fixed — `OrigamSelect` multiple : cases d'option décoratives, fermeture de pastille nommée (#1425)
+
+- La case `origam-checkbox-btn` d'une option est `aria-hidden` + `inert` : plus de contrôle focusable dans un `option` (`label` critical, `nested-interactive`), l'état reste porté par `aria-selected`.
+- Le bouton de fermeture d'une pastille se nomme `Retirer {title}` (clé `origam.select.remove_item`, en + fr) ; `chipProps.closeLabel` reste prioritaire.
+
+### Fixed — `OrigamDataTable` : le tri des colonnes est atteignable au clavier (#1341)
+
+- Cause : le tri n'était déclenché que par un `@click` sur le `<th>`, sans élément focusable.
+- Correctif : une colonne triable rend son contenu dans un `<button type="button">` (motif APG « Sortable Table »), activable à Entrée et Espace ; `aria-sort` reste sur le `<th>`. Le rendu visuel est inchangé (reset natif du bouton).
+
+### Fixed — `OrigamDatePickerField` : le menu ouvert est un `dialog` relié au combobox, plus un `role="menu"` sans `menuitem` (#1382)
+
+- Cause : `OrigamMenu` pose `role="menu"` sur sa surface ; le contenu d'un date picker est un calendrier, pas des `menuitem` (`aria-required-children`, critical). Le combobox ne pointait vers aucune surface.
+- Correctif : le menu reçoit `role="dialog"` (cohérent avec `aria-haspopup="dialog"` déjà posé), un `aria-label` issu de `label`, et le combobox reçoit `aria-controls` vers son id.
+- Mesure navigateur (axe, menu ouvert) : `aria-required-children` critical sur `#origam-menu-v-*` avant, 0 violation après. `aria-required-attr` n'a pas été reproduit avec l'axe du dépôt.
+
+### Added — `OrigamStepperItem` : slots `prepend` / `append`, `OrigamStepper` : `item-prepend` / `item-append` (#1338)
+
+- `OrigamStepperItem` n'avait aucun slot ; le slot `default` d'`OrigamStepper` supprime les connecteurs. Les nouveaux slots reçoivent `{ index, status }` (+ `item` côté stepper) et gardent `show-connectors`. Sans slot, le rendu est inchangé.
+
+### Added — `OrigamStepper` : couleur par statut `--origam-stepper---color-done` / `-color-active` (#1339)
+
+- `done` et `active` partageaient `--origam-stepper---color`. Deux jetons, repli sur `---color` : rendu inchangé sans réglage. La prop `color` du stepper s'applique désormais aux items `active` et `done` (elle prime sur les jetons par statut).
+
+### Fixed — `OrigamStepperItem` : retour à la ligne réglable, sous-titre vertical à la ligne par défaut (#1340)
+
+- Jetons `--origam-stepper-item__title---white-space`, `--origam-stepper-item__subtitle---white-space` (`nowrap`) et `--origam-stepper-item--vertical__subtitle---white-space` (`normal`). Mesuré à 316 px : le sous-titre vertical `nowrap` coupé et la nav défilait ; il passe à la ligne, sans défilement. Horizontal inchangé.
+
+### Fixed — `OrigamDataTable` : le libellé « Items per page » du pied n'est plus rogné à gauche (#1162)
+
+- Cause : `OrigamDataTableFooter` enveloppait ses blocs dans un `OrigamRow` au gutter par défaut (24 px) dont la marge inline négative (−12 px) n'est compensée que par le padding des `OrigamCol` ; ici les enfants sont des `div`, rien ne compense, et avec 4 px de padding de pied le libellé sortait à −7 px (« ems per page »).
+- Correctif : `:gutters="ROW_GUTTER.NONE"` sur ce `OrigamRow` (plus de marge négative). Mesuré en Chromium, Histoire statique : bord gauche du libellé −7 px → +5 px, identique à 320 / 375 / 768 / 1280 px, modes light et dark. Le pied perd aussi sa marge verticale négative (le pied gagne en hauteur le gutter).
+
+### Fixed — `OrigamBtn` : `disabled` lit enfin les jetons grisés et affiche `not-allowed` (#1097)
+
+- Cause : `disabled` se résumait à `opacity` + `pointer-events: none` ; `--origam-btn---background-color-disabled` / `--origam-btn---color-disabled` étaient déclarés mais jamais lus, et `pointer-events: none` rendait `cursor: not-allowed` impossible. `plain` écrivait en outre sa propre `opacity`, qui battait le voile : un `plain` désactivé restait à 70 %.
+- Correctif : un Btn désactivé lit les deux jetons (le remplissage passe par `--origam-btn---background-color`, donc `text` / `outlined` / `plain` / `ghost` gardent leur fond transparent), pose `cursor: not-allowed`, garde ses événements de pointeur (le clic d'une ancre désactivée est avalé par `handleClickCapture`) désactive hover / `v-contrast`, et ne pose AUCUN voile d'opacité (décision du propriétaire : gris seul ; `--origam-btn---opacity-disabled` est supprimé des feuilles). Ratio libellé/fond mesuré en clair : 2,02 à 2,52:1 ; en sombre, CALCULÉ depuis les jetons (non mesuré, Histoire impose le thème clair) : 1,94:1 sur les looks pleins, 2,53:1 sur les transparents — sous 2:1 assumé, les contrôles inactifs sont exemptés de WCAG 1.4.3. Mesuré avant → après en Chromium : curseur `pointer` → `not-allowed`, `flat` primaire `rgb(124, 58, 237)` → `rgb(230, 230, 230)`, `plain` opacité `0.7` → `1`.
+- Rupture assumée (sans consommateur) : un Btn désactivé n'est plus `pointer-events: none`.
+
+### Fixed — `OrigamBtn` : un bouton dont `to` est une route parente n'est plus peint actif (#1125)
+
+- Cause : un Btn seul avec `to` prenait l'état actif sur le `isActive` de vue-router, vrai dès que la route du bouton figure dans la chaîne matchée (route parente comprise).
+- Correctif (décision du propriétaire) : actif seulement sur correspondance EXACTE (`isExactActive`, query comprise comme la branche `exact`). Un `to="/login"` sur `/login` reste actif ; `to="/parent"` sur `/parent/enfant` ne l'est plus. `active` explicite prioritaire ; `BtnToggle` (`group.isSelected`) inchangé. `useLink` expose `isExactActive` ; `ListItem` / `BreadcrumbItem` gardent `isActive`.
+- Rupture assumée (sans consommateur) : les items de `OrigamBottomNav` / `OrigamBtnGroup` portant `to` ne sont plus actifs sur une sous-route.
+
 ## [2.43.0] - 2026-11-22
+
+### Changed — complexité de `v-contrast` (#1398)
+
+- `resolvePaintedBackground` passait à 16 de complexité cognitive (seuil Sonar 15) après #1427 et #1131. Refactor pur : l'abstention (`mustAbstain`) et la composition des couches (`compositeLayers`) sont extraites, comportement identique. Complexité 16 → 10.
 
 ### Fixed — `OrigamNumberField` : plus de retrait vide avec `hideControls`, plus d'écriture du modèle au montage, bornage désactivable (#1327)
 

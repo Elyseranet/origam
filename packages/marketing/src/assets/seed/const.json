@@ -1,8 +1,8 @@
 {
   "kind": "const",
-  "exportedAt": "2026-11-18T16:12:23.157Z",
-  "sourceCommit": "fe36f02cc",
-  "entryCount": 447,
+  "exportedAt": "2026-11-24T23:58:01.086Z",
+  "sourceCommit": "3f19eaf7f",
+  "entryCount": 450,
   "entries": [
     {
       "entry": {
@@ -2151,10 +2151,10 @@
         "icon": null,
         "description_key": "consts.catalog.border_radius_regex.description",
         "description_fallback": "Regular expression used to detect a free-form CSS border-radius string passed via the rounded prop. Accepts 1–4 values with standard CSS length units or a unit-less 0. Non-matching values fall through to the named-variant or boolean branches of useRounded.",
-        "definition": "export const BORDER_RADIUS_REGEX = /^(?<radius>(?: ?(?:0|(?:[0-9]+(?:\\.[0-9]+)?)(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr))){0,4})$/",
+        "definition": "export const BORDER_RADIUS_REGEX = new RegExp(`^(?<radius>(?: ?(?:0|${RADIUS_NUMBER}(?:${RADIUS_UNITS}))){0,4})$`)",
         "signature": null,
         "tag": null,
-        "value": "/^(?<radius>(?: ?(?:0|(?:[0-9]+(?:\\.[0-9]+)?)(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr))){0,4})$/",
+        "value": "new RegExp(`^(?<radius>(?: ?(?:0|${RADIUS_NUMBER}(?:${RADIUS_UNITS}))){0,4})$`)",
         "source_file": "packages/ds/src/consts/Commons/rounded.const.ts",
         "package_note": null,
         "note_key": null,
@@ -8628,10 +8628,10 @@
         "icon": null,
         "description_key": "consts.catalog.custom_border_radius_regex.description",
         "description_fallback": "Regex that detects free-form CSS border-radius values not covered by the fixed-unit BORDER_RADIUS_REGEX whitelist: custom-property references (var(…)), CSS math functions (calc/clamp/min/max/env), and single lengths with viewport or advanced units (vw, vh, lh, …). Mirrors the convertToUnit escape hatch used by useDimension.",
-        "definition": "export const CUSTOM_BORDER_RADIUS_REGEX = /^(?:var|calc|clamp|min|max|env)\\(.*\\)$|^-?(?:0|[0-9]*\\.?[0-9]+)(?:px|pt|pc|in|cm|mm|q|em|rem|ex|ch|cap|ic|lh|rlh|vw|vh|vi|vb|vmin|vmax|%)$/i",
+        "definition": "export const CUSTOM_BORDER_RADIUS_REGEX = new RegExp(`^(?:${CUSTOM_RADIUS_FUNCTIONS})\\\\(.*\\\\)$|^-?(?:0|\\\\d*\\\\.?\\\\d+)(?:${CUSTOM_RADIUS_UNITS})$`, 'i')",
         "signature": null,
         "tag": null,
-        "value": "/^(?:var|calc|clamp|min|max|env)\\(.*\\)$|^-?(?:0|[0-9]*\\.?[0-9]+)(?:px|pt|pc|in|cm|mm|q|em|rem|ex|ch|cap|ic|lh|rlh|vw|vh|vi|vb|vmin|vmax|%)$/i",
+        "value": "new RegExp(`^(?:${CUSTOM_RADIUS_FUNCTIONS})\\\\(.*\\\\)$|^-?(?:0|\\\\d*\\\\.?\\\\d+)(?:${CUSTOM_RADIUS_UNITS})$`, 'i')",
         "source_file": "packages/ds/src/consts/Commons/rounded.const.ts",
         "package_note": null,
         "note_key": null,
@@ -9498,6 +9498,45 @@
     {
       "entry": {
         "kind": "const",
+        "slug": "default-min-length",
+        "name": "DEFAULT_MIN_LENGTH",
+        "category": "PasswordField",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const DEFAULT_MIN_LENGTH = 8",
+        "signature": null,
+        "tag": null,
+        "value": "8",
+        "source_file": "packages/ds/src/consts/PasswordField/password-field.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "const",
         "slug": "default-password-requirements",
         "name": "DEFAULT_PASSWORD_REQUIREMENTS",
         "category": "Form & Input",
@@ -9505,7 +9544,7 @@
         "icon": null,
         "description_key": "consts.catalog.default_password_requirements.description",
         "description_fallback": "Default set of password strength rules used by OrigamPasswordField when `requirements: true` is passed without an explicit array. Each rule has an id, an English label, and a predicate function.",
-        "definition": "export const DEFAULT_PASSWORD_REQUIREMENTS: IPasswordRequirement[] = [\n    {\n        id: 'min-length',\n        label: `At least ${PASSWORD_MIN_LENGTH} characters`,\n        test: (v: string) => (v ?? '').length >= PASSWORD_MIN_LENGTH\n    },\n    {\n        id: 'uppercase',\n        label: 'At least 1 uppercase letter',\n        test: (v: string) => PASSWORD_PATTERN_UPPERCASE.test(v ?? '')\n    },\n    {\n        id: 'number',\n        label: 'At least 1 number',\n        test: (v: string) => PASSWORD_PATTERN_DIGIT.test(v ?? '')\n    },\n    {\n        id: 'special',\n        label: 'At least 1 special character',\n        test: (v: string) => PASSWORD_PATTERN_SPECIAL.test(v ?? '')\n    }\n]",
+        "definition": "export const DEFAULT_PASSWORD_REQUIREMENTS: IPasswordRequirement[] = [\n    {\n        id: 'min-length',\n        label: '',\n        labelKey: 'origam.password_field.requirement_min_length',\n        labelParams: {count: PASSWORD_MIN_LENGTH},\n        test: (v: string) => (v ?? '').length >= PASSWORD_MIN_LENGTH\n    },\n    {\n        id: 'uppercase',\n        label: '',\n        labelKey: 'origam.password_field.requirement_uppercase',\n        test: (v: string) => PASSWORD_PATTERN_UPPERCASE.test(v ?? '')\n    },\n    {\n        id: 'number',\n        label: '',\n        labelKey: 'origam.password_field.requirement_number',\n        test: (v: string) => PASSWORD_PATTERN_DIGIT.test(v ?? '')\n    },\n    {\n        id: 'special',\n        label: '',\n        labelKey: 'origam.password_field.requirement_special',\n        test: (v: string) => PASSWORD_PATTERN_SPECIAL.test(v ?? '')\n    }\n]",
         "signature": null,
         "tag": null,
         "value": null,
@@ -9526,25 +9565,25 @@
       "props": [],
       "values": [
         {
-          "value": "{ id: 'min-length', label: `At least ${PASSWORD_MIN_LENGTH} characters`, test: (v: string) => (v ?? '').length >= PASSWORD_MIN_LENGTH }",
+          "value": "{ id: 'min-length', label: '', labelKey: 'origam.password_field.requirement_min_length', labelParams: {count: PASSWORD_MIN_LENGTH}, test: (v: string) => (v ?? '').length >= PASSWORD_MIN_LENGTH }",
           "position": 0,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "{ id: 'uppercase', label: 'At least 1 uppercase letter', test: (v: string) => PASSWORD_PATTERN_UPPERCASE.test(v ?? '') }",
+          "value": "{ id: 'uppercase', label: '', labelKey: 'origam.password_field.requirement_uppercase', test: (v: string) => PASSWORD_PATTERN_UPPERCASE.test(v ?? '') }",
           "position": 1,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "{ id: 'number', label: 'At least 1 number', test: (v: string) => PASSWORD_PATTERN_DIGIT.test(v ?? '') }",
+          "value": "{ id: 'number', label: '', labelKey: 'origam.password_field.requirement_number', test: (v: string) => PASSWORD_PATTERN_DIGIT.test(v ?? '') }",
           "position": 2,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "{ id: 'special', label: 'At least 1 special character', test: (v: string) => PASSWORD_PATTERN_SPECIAL.test(v ?? '') }",
+          "value": "{ id: 'special', label: '', labelKey: 'origam.password_field.requirement_special', test: (v: string) => PASSWORD_PATTERN_SPECIAL.test(v ?? '') }",
           "position": 3,
           "description_key": null,
           "description_fallback": null
@@ -10528,7 +10567,7 @@
         "icon": null,
         "description_key": "consts.catalog.empty_state_preset_config.description",
         "description_fallback": "Per-preset bundle mapping each TEmptyStatePreset to its default icon (MDI) and semantic intent. Consumers can override icon and iconColor at the prop level without leaving the preset system.",
-        "definition": "export const EMPTY_STATE_PRESET_CONFIG: Record<TEmptyStatePreset, IEmptyStatePresetConfig> = {\n    [EMPTY_STATE_PRESET.NO_DATA]: {\n        icon: MDI_ICONS.DATABASE_OFF_OUTLINE,\n        intent: 'neutral'\n    },\n    [EMPTY_STATE_PRESET.NO_RESULTS]: {\n        icon: MDI_ICONS.MAGNIFY_CLOSE,\n        intent: 'neutral'\n    },\n    [EMPTY_STATE_PRESET.ERROR]: {\n        icon: MDI_ICONS.ALERT_CIRCLE_OUTLINE,\n        intent: 'danger'\n    },\n    [EMPTY_STATE_PRESET.OFFLINE]: {\n        icon: MDI_ICONS.WIFI_OFF,\n        intent: 'warning'\n    },\n    [EMPTY_STATE_PRESET.LOCKED]: {\n        icon: MDI_ICONS.LOCK_OUTLINE,\n        intent: 'secondary'\n    }\n}",
+        "definition": "export const EMPTY_STATE_PRESET_CONFIG: Record<TEmptyStatePreset, IEmptyStatePresetConfig> = {\n    [EMPTY_STATE_PRESET.NO_DATA]: {\n        icon: 'mdi:mdi-database-off-outline',\n        intent: 'neutral'\n    },\n    [EMPTY_STATE_PRESET.NO_RESULTS]: {\n        icon: 'mdi:mdi-magnify-close',\n        intent: 'neutral'\n    },\n    [EMPTY_STATE_PRESET.ERROR]: {\n        icon: 'mdi:mdi-alert-circle-outline',\n        intent: 'danger'\n    },\n    [EMPTY_STATE_PRESET.OFFLINE]: {\n        icon: 'mdi:mdi-wifi-off',\n        intent: 'warning'\n    },\n    [EMPTY_STATE_PRESET.LOCKED]: {\n        icon: 'mdi:mdi-lock-outline',\n        intent: 'secondary'\n    }\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -10549,31 +10588,31 @@
       "props": [],
       "values": [
         {
-          "value": "[EMPTY_STATE_PRESET.NO_DATA]: { icon: MDI_ICONS.DATABASE_OFF_OUTLINE, intent: 'neutral' }",
+          "value": "[EMPTY_STATE_PRESET.NO_DATA]: { icon: 'mdi:mdi-database-off-outline', intent: 'neutral' }",
           "position": 0,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "[EMPTY_STATE_PRESET.NO_RESULTS]: { icon: MDI_ICONS.MAGNIFY_CLOSE, intent: 'neutral' }",
+          "value": "[EMPTY_STATE_PRESET.NO_RESULTS]: { icon: 'mdi:mdi-magnify-close', intent: 'neutral' }",
           "position": 1,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "[EMPTY_STATE_PRESET.ERROR]: { icon: MDI_ICONS.ALERT_CIRCLE_OUTLINE, intent: 'danger' }",
+          "value": "[EMPTY_STATE_PRESET.ERROR]: { icon: 'mdi:mdi-alert-circle-outline', intent: 'danger' }",
           "position": 2,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "[EMPTY_STATE_PRESET.OFFLINE]: { icon: MDI_ICONS.WIFI_OFF, intent: 'warning' }",
+          "value": "[EMPTY_STATE_PRESET.OFFLINE]: { icon: 'mdi:mdi-wifi-off', intent: 'warning' }",
           "position": 3,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "[EMPTY_STATE_PRESET.LOCKED]: { icon: MDI_ICONS.LOCK_OUTLINE, intent: 'secondary' }",
+          "value": "[EMPTY_STATE_PRESET.LOCKED]: { icon: 'mdi:mdi-lock-outline', intent: 'secondary' }",
           "position": 4,
           "description_key": null,
           "description_fallback": null
@@ -15099,10 +15138,10 @@
         "icon": null,
         "description_key": "consts.catalog.margin_regex.description",
         "description_fallback": "Regular expression that validates a CSS shorthand margin/padding string (up to four space-separated values with valid units: px, pt, PC, in, cm, mm, em, rem, %, ex, ch, fr). Used by useMargin and usePadding to distinguish shorthand strings from single token values.",
-        "definition": "export const MARGIN_REGEX = /^(?<margin>(?: ?(?:[0-9]+)(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr)){0,4})$/",
+        "definition": "export const MARGIN_REGEX = /^(?<margin>(?: ?(?:\\d+)(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr)){0,4})$/",
         "signature": null,
         "tag": null,
-        "value": "/^(?<margin>(?: ?(?:[0-9]+)(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr)){0,4})$/",
+        "value": "/^(?<margin>(?: ?(?:\\d+)(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr)){0,4})$/",
         "source_file": "packages/ds/src/consts/Commons/margin.const.ts",
         "package_note": null,
         "note_key": null,
@@ -15156,6 +15195,106 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "markdown-wrappers",
+        "name": "MARKDOWN_WRAPPERS",
+        "category": "TextareaField",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const MARKDOWN_WRAPPERS: Readonly<Record<string, (inner: string) => string>> = {\n    strong: (inner) => inner ? `**${inner}**` : '',\n    b: (inner) => inner ? `**${inner}**` : '',\n    em: (inner) => inner ? `*${inner}*` : '',\n    i: (inner) => inner ? `*${inner}*` : '',\n    u: (inner) => inner ? `<u>${inner}</u>` : '',\n    code: (inner) => inner ? `\\`${inner}\\`` : '',\n    p: (inner) => inner ? `\\n\\n${inner}\\n\\n` : '',\n    h1: (inner) => inner ? `\\n\\n# ${inner}\\n\\n` : '',\n    h2: (inner) => inner ? `\\n\\n## ${inner}\\n\\n` : '',\n    h3: (inner) => inner ? `\\n\\n### ${inner}\\n\\n` : ''\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/consts/TextareaField/textarea-field.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "strong: (inner) => inner ? `**${inner}**` : ''",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "b: (inner) => inner ? `**${inner}**` : ''",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "em: (inner) => inner ? `*${inner}*` : ''",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "i: (inner) => inner ? `*${inner}*` : ''",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "u: (inner) => inner ? `<u>${inner}</u>` : ''",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "code: (inner) => inner ? `\\`${inner}\\`` : ''",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "p: (inner) => inner ? `\\n\\n${inner}\\n\\n` : ''",
+          "position": 6,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "h1: (inner) => inner ? `\\n\\n# ${inner}\\n\\n` : ''",
+          "position": 7,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "h2: (inner) => inner ? `\\n\\n## ${inner}\\n\\n` : ''",
+          "position": 8,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "h3: (inner) => inner ? `\\n\\n### ${inner}\\n\\n` : ''",
+          "position": 9,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -15450,7 +15589,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/consts/Commons/mdi.const.ts",
+        "source_file": "packages/ds/src/consts/Commons/mdi-core.const.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -15531,7 +15670,7 @@
         "icon": null,
         "description_key": "consts.catalog.mdi_aliases.description",
         "description_fallback": "Semantic icon aliases for the MDI icon set. Spreads all MDI_ICONS enum values and adds named overrides (collapse, complete, cancel, close, delete, clear, success, info, warning, error, prev, next, checkboxOn/Off/Indeterminate, delimiter, sortAsc/Desc, expand, menu, subgroup, dropdown, radioOn/Off, edit, ratingEmpty/Full/Half, loading, first, last, unfold, file, plus, minus, calendar, eyeDropper, eyeOff, eyeOn). Pass alongside MDI to the icons.aliases option.",
-        "definition": "export const MDI_ALIASES: IIconAliases = {\n    ...MDI_ICONS,\n    collapse: 'mdi-chevron-up',\n    complete: 'mdi-check',\n    cancel: 'mdi-close-circle',\n    close: 'mdi-close',\n    delete: 'mdi-close-circle',\n    clear: 'mdi-close-circle',\n    success: 'mdi-check-circle',\n    info: 'mdi-information',\n    warning: 'mdi-alert-circle',\n    error: 'mdi-close-circle',\n    prev: 'mdi-chevron-left',\n    next: 'mdi-chevron-right',\n    checkboxOn: 'mdi-checkbox-marked',\n    checkboxOff: 'mdi-checkbox-blank-outline',\n    checkboxIndeterminate: 'mdi-minus-box',\n    delimiter: 'mdi-circle',\n    sortAsc: 'mdi-arrow-up',\n    sortDesc: 'mdi-arrow-down',\n    expand: 'mdi-chevron-down',\n    menu: 'mdi-menu',\n    subgroup: 'mdi-menu-down',\n    dropdown: 'mdi-menu-down',\n    radioOn: 'mdi-radiobox-marked',\n    radioOff: 'mdi-radiobox-blank',\n    edit: 'mdi-pencil',\n    ratingEmpty: 'mdi-star-outline',\n    ratingFull: 'mdi-star',\n    ratingHalf: 'mdi-star-half-full',\n    loading: 'mdi-cached',\n    first: 'mdi-page-first',\n    last: 'mdi-page-last',\n    unfold: 'mdi-unfold-more-horizontal',\n    file: 'mdi-paperclip',\n    plus: 'mdi-plus',\n    minus: 'mdi-minus',\n    calendar: 'mdi-calendar',\n    eyeDropper: 'mdi-eyedropper',\n    eyeOff: 'mdi-eye-off-outline',\n    eyeOn: 'mdi-eye-outline'\n}",
+        "definition": "export const MDI_ALIASES: IIconAliases = {\n    ...MDI_ICONS,\n    ...MDI_CORE_ALIASES\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -15550,30 +15689,108 @@
         "edited_by_user": false
       },
       "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "consts.detail.mdi_aliases.example",
+          "title_fallback": "Using a semantic alias in a component",
+          "code": "import { createOrigam, MDI, MDI_ALIASES } from 'origam'\n\nconst origam = createOrigam({\n  icons: {\n    defaultSet: 'mdi',\n    sets: { mdi: MDI },\n    aliases: MDI_ALIASES\n  }\n})\n\n// Then in templates, use the semantic alias name:\n// <origam-icon icon=\"$success\" />",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": null,
+          "to_name": "MDI",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": "icon",
+          "to_name": "OrigamIcon",
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": null,
+          "to_name": "useIcon",
+          "prop_name": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "mdi-core-aliases",
+        "name": "MDI_CORE_ALIASES",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const MDI_CORE_ALIASES: IIconAliases = {\n    collapse: 'mdi-chevron-up',\n    complete: 'mdi-check',\n    cancel: 'mdi-close-circle',\n    close: 'mdi-close',\n    delete: 'mdi-close-circle',\n    clear: 'mdi-close-circle',\n    success: 'mdi-check-circle',\n    info: 'mdi-information',\n    warning: 'mdi-alert-circle',\n    error: 'mdi-close-circle',\n    prev: 'mdi-chevron-left',\n    next: 'mdi-chevron-right',\n    checkboxOn: 'mdi-checkbox-marked',\n    checkboxOff: 'mdi-checkbox-blank-outline',\n    checkboxIndeterminate: 'mdi-minus-box',\n    delimiter: 'mdi-circle',\n    sortAsc: 'mdi-arrow-up',\n    sortDesc: 'mdi-arrow-down',\n    expand: 'mdi-chevron-down',\n    menu: 'mdi-menu',\n    subgroup: 'mdi-menu-down',\n    dropdown: 'mdi-menu-down',\n    radioOn: 'mdi-radiobox-marked',\n    radioOff: 'mdi-radiobox-blank',\n    edit: 'mdi-pencil',\n    ratingEmpty: 'mdi-star-outline',\n    ratingFull: 'mdi-star',\n    ratingHalf: 'mdi-star-half-full',\n    loading: 'mdi-cached',\n    first: 'mdi-page-first',\n    last: 'mdi-page-last',\n    unfold: 'mdi-unfold-more-horizontal',\n    file: 'mdi-paperclip',\n    plus: 'mdi-plus',\n    minus: 'mdi-minus',\n    calendar: 'mdi-calendar',\n    eyeDropper: 'mdi-eyedropper',\n    eyeOff: 'mdi-eye-off-outline',\n    eyeOn: 'mdi-eye-outline'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/consts/Commons/mdi-core.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
       "values": [
         {
           "value": "collapse: 'mdi-chevron-up'",
           "position": 0,
-          "description_key": "consts.detail.mdi_aliases.collapse",
-          "description_fallback": "Collapse / hide action icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "complete: 'mdi-check'",
           "position": 1,
-          "description_key": "consts.detail.mdi_aliases.complete",
-          "description_fallback": "Completed / confirmed state icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "cancel: 'mdi-close-circle'",
           "position": 2,
-          "description_key": "consts.detail.mdi_aliases.cancel",
-          "description_fallback": "Cancel action icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "close: 'mdi-close'",
           "position": 3,
-          "description_key": "consts.detail.mdi_aliases.close",
-          "description_fallback": "Close / dismiss icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "delete: 'mdi-close-circle'",
@@ -15590,8 +15807,8 @@
         {
           "value": "success: 'mdi-check-circle'",
           "position": 6,
-          "description_key": "consts.detail.mdi_aliases.success",
-          "description_fallback": "Success state icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "info: 'mdi-information'",
@@ -15602,14 +15819,14 @@
         {
           "value": "warning: 'mdi-alert-circle'",
           "position": 8,
-          "description_key": "consts.detail.mdi_aliases.warning",
-          "description_fallback": "Warning state icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "error: 'mdi-close-circle'",
           "position": 9,
-          "description_key": "consts.detail.mdi_aliases.error",
-          "description_fallback": "Error state icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "prev: 'mdi-chevron-left'",
@@ -15650,20 +15867,20 @@
         {
           "value": "sortAsc: 'mdi-arrow-up'",
           "position": 16,
-          "description_key": "consts.detail.mdi_aliases.sort_asc",
-          "description_fallback": "Sort ascending icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "sortDesc: 'mdi-arrow-down'",
           "position": 17,
-          "description_key": "consts.detail.mdi_aliases.sort_desc",
-          "description_fallback": "Sort descending icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "expand: 'mdi-chevron-down'",
           "position": 18,
-          "description_key": "consts.detail.mdi_aliases.expand",
-          "description_fallback": "Expand / show-more icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "menu: 'mdi-menu'",
@@ -15722,8 +15939,8 @@
         {
           "value": "loading: 'mdi-cached'",
           "position": 28,
-          "description_key": "consts.detail.mdi_aliases.loading",
-          "description_fallback": "Loading / refresh spinner icon."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "first: 'mdi-page-first'",
@@ -15790,49 +16007,10 @@
       "returns": [],
       "emits": [],
       "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "consts.detail.mdi_aliases.example",
-          "title_fallback": "Using a semantic alias in a component",
-          "code": "import { createOrigam, MDI, MDI_ALIASES } from 'origam'\n\nconst origam = createOrigam({\n  icons: {\n    defaultSet: 'mdi',\n    sets: { mdi: MDI },\n    aliases: MDI_ALIASES\n  }\n})\n\n// Then in templates, use the semantic alias name:\n// <origam-icon icon=\"$success\" />",
-          "lang": "typescript"
-        }
-      ],
+      "examples": [],
       "directiveArgs": [],
       "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": null,
-          "to_name": "MDI",
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": "icon",
-          "to_name": "OrigamIcon",
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": null,
-          "to_name": "useIcon",
-          "prop_name": null,
-          "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
+      "relations": []
     },
     {
       "entry": {
@@ -21896,10 +22074,10 @@
         "icon": null,
         "description_key": "consts.catalog.padding_regex.description",
         "description_fallback": "RegExp that validates a CSS shorthand padding string (0 to 4 space-separated values each followed by a supported unit: px, pt, PC, in, cm, mm, em, rem, %, ex, ch, or fr). Returns null for invalid input.",
-        "definition": "export const PADDING_REGEX = /^(?<padding>(?: ?(?:[0-9]+)(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr)){0,4})$/",
+        "definition": "export const PADDING_REGEX = /^(?<padding>(?: ?(?:\\d+)(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr)){0,4})$/",
         "signature": null,
         "tag": null,
-        "value": "/^(?<padding>(?: ?(?:[0-9]+)(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr)){0,4})$/",
+        "value": "/^(?<padding>(?: ?(?:\\d+)(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr)){0,4})$/",
         "source_file": "packages/ds/src/consts/Commons/padding.const.ts",
         "package_note": null,
         "note_key": null,
@@ -24366,10 +24544,10 @@
         "icon": null,
         "description_key": "consts.catalog.requirement_min_length.description",
         "description_fallback": "Factory function that produces a password-strength requirement descriptor for a minimum character count. Returns key, human-readable message, icon glyph, and a parametric regex matching at least N characters.",
-        "definition": "export const REQUIREMENT_MIN_LENGTH = (length: number) => ({\n    key: 'minLength',\n    message: `${length} characters`,\n    icon: `+${length}`,\n    reg: new RegExp(`(.{${length},})`)\n})",
+        "definition": "export const REQUIREMENT_MIN_LENGTH = (length: number) => ({\n    key: 'minLength',\n    messageKey: 'origam.password_field.message_min_length',\n    count: length,\n    icon: `+${length}`,\n    reg: new RegExp(`(.{${length},})`)\n})",
         "signature": null,
         "tag": null,
-        "value": "(length: number) => ({ key: 'minLength', message: `${length} characters`, icon: `+${length}`, reg: new RegExp(`(.{${length},})`) })",
+        "value": "(length: number) => ({ key: 'minLength', messageKey: 'origam.password_field.message_min_length', count: length, icon: `+${length}`, reg: new RegExp(`(.{${length},})`) })",
         "source_file": "packages/ds/src/consts/PasswordField/password-field.const.ts",
         "package_note": null,
         "note_key": null,
@@ -24424,7 +24602,7 @@
         "icon": null,
         "description_key": "consts.catalog.requirement_number.description",
         "description_fallback": "Password strength requirement descriptor asserting that the value contains at least one digit (0-9). Used by OrigamPasswordField to display and validate the numeric character rule.",
-        "definition": "export const REQUIREMENT_NUMBER = {\n    key: 'number',\n    message: 'a number',\n    icon: '1',\n    reg: /(?=.*[0-9])/\n} as const",
+        "definition": "export const REQUIREMENT_NUMBER = {\n    key: 'number',\n    messageKey: 'origam.password_field.message_number',\n    icon: '1',\n    reg: /(?=.*\\d)/\n} as const",
         "signature": null,
         "tag": null,
         "value": null,
@@ -24451,10 +24629,10 @@
           "description_fallback": "Internal identifier matched by infos and locale interpolation."
         },
         {
-          "value": "message: 'a number'",
+          "value": "messageKey: 'origam.password_field.message_number'",
           "position": 1,
-          "description_key": "consts.detail.requirement_number.message",
-          "description_fallback": "Human-readable validation message label."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "icon: '1'",
@@ -24463,10 +24641,10 @@
           "description_fallback": "Single-character glyph rendered in the requirements popup tile."
         },
         {
-          "value": "reg: /(?=.*[0-9])/",
+          "value": "reg: /(?=.*\\d)/",
           "position": 3,
-          "description_key": "consts.detail.requirement_number.reg",
-          "description_fallback": "Regex matching any string containing at least one digit."
+          "description_key": null,
+          "description_fallback": null
         }
       ],
       "params": [],
@@ -24507,7 +24685,7 @@
         "icon": null,
         "description_key": "consts.catalog.requirement_special.description",
         "description_fallback": "Password strength requirement descriptor asserting that the value contains at least one special character (any non-alphanumeric, non-space character). Used by OrigamPasswordField to display and validate the symbol rule.",
-        "definition": "export const REQUIREMENT_SPECIAL = {\n    key: 'special',\n    message: 'a special character (!@#$%)',\n    icon: '@',\n    reg: /(?=.*[^a-zA-Z0-9\\s])/\n} as const",
+        "definition": "export const REQUIREMENT_SPECIAL = {\n    key: 'special',\n    messageKey: 'origam.password_field.message_special',\n    icon: '@',\n    reg: /(?=.*[^a-zA-Z0-9\\s])/\n} as const",
         "signature": null,
         "tag": null,
         "value": null,
@@ -24534,10 +24712,10 @@
           "description_fallback": "Internal identifier matched by infos and locale interpolation."
         },
         {
-          "value": "message: 'a special character (!@#$%)'",
+          "value": "messageKey: 'origam.password_field.message_special'",
           "position": 1,
-          "description_key": "consts.detail.requirement_special.message",
-          "description_fallback": "Human-readable validation message label."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "icon: '@'",
@@ -24590,7 +24768,7 @@
         "icon": null,
         "description_key": "consts.catalog.requirement_tiny.description",
         "description_fallback": "Password strength requirement descriptor asserting that the value contains at least one lowercase letter (a-z). Used by OrigamPasswordField to display and validate the lowercase character rule.",
-        "definition": "export const REQUIREMENT_TINY = {\n    key: 'tiny',\n    message: 'a tiny',\n    icon: 'a',\n    reg: /(?=.*[a-z])/\n} as const",
+        "definition": "export const REQUIREMENT_TINY = {\n    key: 'tiny',\n    messageKey: 'origam.password_field.message_tiny',\n    icon: 'a',\n    reg: /(?=.*[a-z])/\n} as const",
         "signature": null,
         "tag": null,
         "value": null,
@@ -24617,10 +24795,10 @@
           "description_fallback": "Internal identifier matched by infos and locale interpolation."
         },
         {
-          "value": "message: 'a tiny'",
+          "value": "messageKey: 'origam.password_field.message_tiny'",
           "position": 1,
-          "description_key": "consts.detail.requirement_tiny.message",
-          "description_fallback": "Human-readable validation message label (lowercase letter)."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "icon: 'a'",
@@ -24673,7 +24851,7 @@
         "icon": null,
         "description_key": "consts.catalog.requirement_uppercase.description",
         "description_fallback": "Password strength requirement descriptor asserting that the value contains at least one uppercase letter (A-Z). Used by OrigamPasswordField to display and validate the uppercase character rule.",
-        "definition": "export const REQUIREMENT_UPPERCASE = {\n    key: 'uppercase',\n    message: 'a uppercase',\n    icon: 'A',\n    reg: /(?=.*[A-Z])/\n} as const",
+        "definition": "export const REQUIREMENT_UPPERCASE = {\n    key: 'uppercase',\n    messageKey: 'origam.password_field.message_uppercase',\n    icon: 'A',\n    reg: /(?=.*[A-Z])/\n} as const",
         "signature": null,
         "tag": null,
         "value": null,
@@ -24700,10 +24878,10 @@
           "description_fallback": "Internal identifier matched by infos and locale interpolation."
         },
         {
-          "value": "message: 'a uppercase'",
+          "value": "messageKey: 'origam.password_field.message_uppercase'",
           "position": 1,
-          "description_key": "consts.detail.requirement_uppercase.message",
-          "description_fallback": "Human-readable validation message label (uppercase letter)."
+          "description_key": null,
+          "description_fallback": null
         },
         {
           "value": "icon: 'A'",

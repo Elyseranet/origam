@@ -39,9 +39,13 @@ describe('OrigamNumberField #1327', () => {
         mountNf({ hideControls: true }, { prependInner: () => 'x' })
         expect(seenPrependInner).toBe(true)
     })
-    it('controls shown: prependInner slot passed', () => {
-        mountNf({})
+    it('split + controls shown: prependInner slot passed', () => {
+        mountNf({ split: true })
         expect(seenPrependInner).toBe(true)
+    })
+    it('#1449 no split: controls live in appendInner, no (empty) prependInner slot', () => {
+        mountNf({})
+        expect(seenPrependInner).toBe(false)
     })
     it('mount never writes the model, even out of bounds', () => {
         const w = mountNf({ modelValue: 27, min: 2000, max: 2100 })
