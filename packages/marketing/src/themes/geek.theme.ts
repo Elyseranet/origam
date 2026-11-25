@@ -221,8 +221,9 @@ export const geekLightTheme: IOrigamTheme = {
         //
         // `variant` / `border` / `elevation` restent : seul `rounded` part.
         'origam-btn': { variant: 'outlined', border: true, elevation: 2 },
-        'origam-btn-group': { variant: 'outlined', rounded: 'sm', border: true, elevation: 2 },
-        'origam-btn-toggle': { variant: 'outlined', rounded: 'sm', border: true, elevation: 2 },
+        // Pas de `rounded` : même raison que `origam-btn` ci-dessus — épinglé sur `sm` (4px), le groupe/toggle lisait plus anguleux que le Split (8px).
+        'origam-btn-group': { variant: 'outlined', border: true, elevation: 2 },
+        'origam-btn-toggle': { variant: 'outlined', border: true, elevation: 2 },
 
         // ── Overlay & Surface (SYNTHESE §3) ──────────────────────────────
         'origam-card': { rounded: 'sm', border: true, flat: false, elevation: 2 },

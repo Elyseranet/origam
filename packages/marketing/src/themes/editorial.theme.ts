@@ -118,7 +118,7 @@ export const editorialLightTheme: IOrigamTheme = {
         'origam-btn-group': { variant: 'outlined', rounded: 'none', border: true, elevation: 0 },
         'origam-btn-toggle': { variant: 'outlined', rounded: 'none', border: true, elevation: 0 },
         'origam-card': { rounded: 'none', border: true, flat: true },
-        'origam-chip': { variant: 'outlined', rounded: 'none', border: true, pill: false },
+        'origam-chip': { rounded: 'none', border: true, pill: false },
         'origam-alert': { rounded: 'none', border: true, elevation: 0 },
         'origam-field': { variant: 'outlined', rounded: 'none', border: true },
         'origam-text-field': { variant: 'outlined', rounded: 'none', border: true },
