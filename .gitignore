@@ -147,5 +147,10 @@ packages/ds/.doc-examples
 # Dossiers d outils / agents locaux
 .impeccable/
 graphify-out/
+docs/
 founder
-.codex
+.idead
+.claude/
+.codex/
+.superpowers/
+

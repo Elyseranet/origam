@@ -2050,8 +2050,8 @@ origam:
   (the claim that it was absent is false). Measure the list, never quote it:
   `git show origin/develop:package.json | node -e
   "console.log(JSON.parse(require('fs').readFileSync(0)).pnpm.auditConfig.ignoreGhsas)"`.
-  Each entry **must** have a section in `docs/security-waivers.md` (ticket, grant
-  date, review date): `grep -n '^### GHSA' docs/security-waivers.md`. An entry
+  Each entry **must** have a section in `SECURITY.md` (ticket, grant
+  date, review date): `grep -n '^### GHSA' SECURITY.md`. An entry
   without one is a policy breach. ⛔ Capture the real `$?` outside a pipe — `pnpm audit | tail`
   returns `tail`'s exit code, not the audit's.
 
@@ -2119,7 +2119,7 @@ origam:
   checked because a document says it is fine.
 
   If a future advisory genuinely has no published fix, it goes through
-  `docs/security-waivers.md` — maintainer approval, written justification,
+  `SECURITY.md` — maintainer approval, written justification,
   dependency chain, review date — never a silent entry in `ignoreGhsas`.
   A waiver also has an **exit**: `image-size` sat under one for a month
   after its fix shipped, because nothing re-checked the premise.
