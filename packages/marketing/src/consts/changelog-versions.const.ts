@@ -22,9 +22,10 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: null,
         type: 'unreleased',
         summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 fix. See the full changelog for detail.',
+        summaryFallback: '2 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'useUnsupportedProp voit désormais une prop morte posée par un thème (#1483)' }
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'rounded par coin : une valeur non reconnue passe verbatim, comme padding* (#1022)' },
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'useUnsupportedProp voit désormais une prop morte posée par un thème (#1483)' }
         ]
     },
     {

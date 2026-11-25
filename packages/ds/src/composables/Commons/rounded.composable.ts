@@ -74,15 +74,8 @@ function isUtilityRounded (value: unknown): value is string {
  * block-start inline-end — top-RIGHT in LTR. They are NOT the physical
  * clockwise order, and the two halves are not interchangeable.
  *
- * ⚠️ This example used to read `roundedTopLeft="0"`, and that form does
- * NOT work — measured: `{rounded:'lg', roundedTopLeft:'0'}` emits the
- * shorthand declaration ALONE. The bare string `"0"` is neither a utility
- * rung, nor a named variant, nor a match for `CUSTOM_BORDER_RADIUS_REGEX`
- * (which requires a unit), so `resolveRoundedCornerValue` returns `null`
- * and the corner is silently skipped. `0` (the NUMBER) and `"0px"` both
- * resolve to `0px`. In a template `roundedTopLeft="0"` is a string, which
- * is exactly the failing form — bind `:rounded-top-left="0"` or write
- * `"0px"`.
+ * Per-corner values that are not a rung pass verbatim (#1022), so
+ * `roundedTopLeft="0"` and `"10px 4px"` work like on `padding*`.
  *
  * ⚠️ The per-corner props are only reachable through the PROPS-OBJECT
  * overload. The `Ref` overload carries a single scalar — the `rounded`
@@ -102,7 +95,7 @@ function isUtilityRounded (value: unknown): value is string {
  * | `'4px 0 4px 0'`           | inline 4-corner radii                        |
  *
  * Free-form strings are parsed by `BORDER_RADIUS_REGEX`. Anything that
- * doesn't match (and isn't a `var()`/`calc()`) is silently dropped.
+ * doesn't match (and isn't a `var()`/`calc()`) is silently dropped (shorthand only).
  * Accepted per-corner value forms are documented on
  * `resolveRoundedCornerValue`.
  ********************************************************/
