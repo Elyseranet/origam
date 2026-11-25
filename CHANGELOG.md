@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — thème de base `origam` : plus de `variant` sur `origam-chip`, prop que Chip ne déclare pas (#1475)
+- Cause : `origamLightTheme` / `origamDarkTheme` posaient `variant: 'outlined'` sur `origam-chip`. Le résolveur de thème (ADR-005) ignore une prop non déclarée et émet un avertissement dev : config morte, et un `console.warn` à chaque chargement chez tout consommateur.
+- Correctif : clé retirée des deux thèmes. Rendu inchangé (la clé n'était jamais appliquée).
+- Test : `theme-components-declared-props-1475.spec.ts` vérifie, sur le descripteur de props compilé, que tout le bloc `components` du thème de base ne nomme que des props déclarées — rouge sur le parent (`origam-chip.variant`), vert après.
+
 ## [2.44.0] - 2026-11-25
 
 ### Fixed — `OrigamField` : les labels ne reprennent plus l'`id` de l'input (#1149)
