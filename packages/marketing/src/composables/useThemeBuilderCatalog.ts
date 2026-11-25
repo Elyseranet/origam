@@ -5,11 +5,10 @@ import { computed } from 'vue'
 import { useT } from '~/composables/useT'
 import {
     THEME_BUILDER_CATEGORY_META,
-    THEME_BUILDER_COLOR_TYPE_HINTS,
     THEME_BUILDER_PROP_GROUPS,
-    THEME_BUILDER_SKIP_PROPS,
-    THEME_BUILDER_SKIP_TYPE_HINTS
+    THEME_BUILDER_SKIP_PROPS
 } from '~/consts/theme-builder-groups.const'
+import { isThemeBuilderColorType, isThemeBuilderSkippableType } from '~/utils/theme-builder-type.util'
 import { THEME_BUILDER_TOKENS } from '~/consts/theme-builder-tokens.const'
 import {
     THEME_BUILDER_BORDER_FOLD_PROPS,
@@ -47,19 +46,9 @@ import { referenceService } from '~/services/reference.service'
  * have been removed; all component data now comes from the DB via the API.
  */
 
-/** A prop type label that references data / callbacks / objects is non-themable. */
-function isSkippableType (label: string): boolean {
-    return THEME_BUILDER_SKIP_TYPE_HINTS.some(hint => label.includes(hint))
-}
-
 /** A prop name that binds data / model / identity is non-themable. */
 function isSkippableProp (name: string): boolean {
     return (THEME_BUILDER_SKIP_PROPS as readonly string[]).includes(name)
-}
-
-/** Whether a prop type label denotes a colour value → swatch input. */
-function isColorType (label: string): boolean {
-    return THEME_BUILDER_COLOR_TYPE_HINTS.some(hint => label.includes(hint))
 }
 
 /**
@@ -172,7 +161,7 @@ function buildControl (
         }
     }
 
-    if (isColorType(typeLabel)) {
+    if (isThemeBuilderColorType(typeLabel)) {
         return {
             prop: row.label,
             props: [row.label],
@@ -218,7 +207,7 @@ function buildControl (
         }
     }
 
-    if (isSkippableType(typeLabel)) return null
+    if (isThemeBuilderSkippableType(typeLabel)) return null
 
     return {
         prop: row.label,

@@ -107,3 +107,20 @@ describe('theme-builder emission — "— none —" = undefined', () => {
         expect(emittedComponent()).toEqual({ 'origam-btn': { closable: false } })
     })
 })
+
+describe('#1055 — components emitted BEFORE cssVars (PROPS-FIRST)', () => {
+    it('JSON object and generated TS both list components first', () => {
+        const tb = useThemeBuilder()
+        tb.setProp('btn', 'rounded', 'lg')
+        tb.state.cssVars.light['--origam-color__primary---default'] = '#ff0000'
+        const keys = Object.keys(tb.themeObjects.value[0])
+        expect(keys).toContain('components')
+        expect(keys).toContain('cssVars')
+        expect(keys.indexOf('components')).toBeLessThan(keys.indexOf('cssVars'))
+        const ts = tb.generatedCode.value
+        expect(ts.indexOf('components: {')).toBeGreaterThan(-1)
+        expect(ts.indexOf('components: {')).toBeLessThan(ts.indexOf('cssVars: {'))
+        const json = tb.generatedJson.value
+        expect(json.indexOf('"components"')).toBeLessThan(json.indexOf('"cssVars"'))
+    })
+})
