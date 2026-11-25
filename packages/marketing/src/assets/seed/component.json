@@ -84381,7 +84381,7 @@
             "excerpt": [
               {
                 "type": "color",
-                "value": "var(--origam-color__surface---default)",
+                "value": "transparent",
                 "tokenPath": "--origam-data-list---background-color",
                 "descriptionKey": "components.data_list.tokens.background_color",
                 "descriptionFallback": "Root list background."
