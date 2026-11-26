@@ -6,7 +6,7 @@
   >
     <header class="home-library__intro">
       <div>
-        <p class="home-library__eyebrow">
+        <p class="home-eyebrow">
           {{ t('home.library.eyebrow', 'A complete catalogue') }}
         </p>
 
@@ -35,7 +35,7 @@
       >
         <origam-card
           :to="categoryLink(category)"
-          rounded="lg"
+          rounded="xl"
           border
           class="home-library__card"
           :data-cy="`library-card-${category.key}`"
@@ -43,7 +43,7 @@
           <span class="home-library__tile">
             <origam-icon
               :icon="category.icon"
-              size="x-large"
+              :size="40"
               color="primary"
               aria-hidden="true"
             />
@@ -89,24 +89,18 @@ defineExpose({})
         margin-block-end: var(--origam-space---8, 2rem);
     }
 
-    &__eyebrow {
-        margin: 0 0 var(--origam-space---2, 0.5rem);
-        font-size: var(--origam-font__size---md, 0.875rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__text---primary);
-    }
-
     &__title {
         margin: 0;
-        font-size: var(--origam-font-size---section, 3rem);
+        font-size: var(--home-fs-h2);
         font-weight: var(--origam-font__weight---bold, 700);
-        line-height: 1.1;
+        line-height: 1.15;
         letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
         color: var(--origam-color__text---primary);
     }
 
     &__text {
         margin: 0;
+        font-size: var(--home-fs-body);
         color: var(--origam-color__text---secondary);
         line-height: 1.6;
     }
@@ -115,7 +109,7 @@ defineExpose({})
     // fixed-column grid cannot (it left-aligns it). --cols = cards per row.
     &__grid {
         --home-library-cols: 7;
-        --home-library-gap: var(--origam-space---4, 1rem);
+        --home-library-gap: var(--origam-space---6, 1.5rem);
 
         display: flex;
         flex-wrap: wrap;
@@ -144,19 +138,17 @@ defineExpose({})
     }
 
     &__tile {
-        --origam-icon---font-size-xl: var(--origam-font__size---4xl);
-
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: var(--origam-space---3, 0.75rem);
-        padding: var(--origam-space---5, 1.25rem) var(--origam-space---2, 0.5rem);
+        padding: var(--origam-space---4, 1rem) var(--origam-space---2, 0.5rem);
         text-align: center;
     }
 
     &__label {
-        font-size: var(--origam-font__size---md, 0.875rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
+        font-size: var(--origam-font__size---lg, 1rem);
+        font-weight: var(--origam-font__weight---bold, 700);
         color: var(--origam-color__text---primary);
     }
 
@@ -166,7 +158,7 @@ defineExpose({})
     }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
     .home-library__grid {
         --home-library-cols: 4;
     }
