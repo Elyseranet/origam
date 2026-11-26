@@ -1,7 +1,7 @@
 <template>
   <section
     id="playground"
-    class="home-playground"
+    class="home-playground home-container home-section"
     aria-labelledby="playground-heading"
   >
     <h2
@@ -87,12 +87,6 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-playground {
-    padding-block: var(--origam-space---12, 3rem);
-    padding-inline: var(--origam-space---6, 1.5rem);
-    max-width: 80rem;
-    margin-inline: auto;
-    width: 100%;
-    box-sizing: border-box;
 
     &__sr-title {
         position: absolute;

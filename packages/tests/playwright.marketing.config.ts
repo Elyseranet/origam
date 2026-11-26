@@ -22,6 +22,9 @@ const MARKETING_GREEN_SPECS = [
     // #1428 — contraste AA des CTA primaires, 8 marques x 2 modes.
     'home-cta-contrast.spec.ts',
 
+    // #1554 (T2) — bord gauche, ecart de section et trait d'eyebrow communs a la home.
+    'home-foundations.spec.ts',
+
     // #1517 — la vitrine des themes ouvre le Theme Builder avec le theme precharge.
     'home-themes-builder-link.spec.ts',
 
