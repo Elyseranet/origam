@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.46.0] - 2026-11-26
+
 ### Fixed — `TShikiHighlighter` accepte un highlighter `shiki/core` (#1136)
 
 - Cause : `codeToHtml` y déclarait `themes?` et `defaultColor?: false | string` optionnels. Les paramètres d'une fonction étant contravariants, `{ themes?: … }` n'est pas assignable au `CodeOptionsMultipleThemes` de shiki (où `themes` est requis) : ni `createHighlighterCore` (`shiki/core`) ni même `createHighlighter` ne satisfaisaient le type, malgré la doc.
