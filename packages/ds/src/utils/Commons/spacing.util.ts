@@ -1,4 +1,4 @@
-import { CUSTOM_BORDER_RADIUS_REGEX, PREDEFINED_ROUNDED } from '../../consts/Commons/rounded.const'
+import { PREDEFINED_ROUNDED } from '../../consts/Commons/rounded.const'
 import { NAMED_RADIUS_TOKEN, SPACING_SCALE_STEPS, UTILITY_RADIUS_FALLBACK } from '../../consts/Commons/spacing.const'
 
 import type { TRounded } from '../../types/Commons/rounded.type'
@@ -73,7 +73,7 @@ export function resolveSpacingValue (value: boolean | number | string | null | u
  * | `8` (number)               | `"8px"`                                  |
  * | `"md"` (utility rung)      | `"var(--origam-radius---md, 8px)"`       |
  * | `"large"` (named variant)  | `"var(--origam-radius---xl, 16px)"`      |
- * | `"8px"` / `"var(…)"` / `"calc(…)"` | verbatim                         |
+ * | anything else (`"8px"`, `"0"`, `"10px 4px"`, `"var(…)"`, `"calc(…)"`) | verbatim |
  * | `"shaped"` / `"shaped-invert"` | `null` — corner-asymmetric, owned by component SCSS |
  * | `true` / `false` / `""` / nullish | `null`                            |
  *
@@ -101,7 +101,5 @@ export function resolveRoundedCornerValue (value: boolean | number | string | nu
         return NAMED_RADIUS_TOKEN[trimmed] ?? null
     }
 
-    if (CUSTOM_BORDER_RADIUS_REGEX.test(trimmed)) return trimmed
-
-    return null
+    return trimmed
 }

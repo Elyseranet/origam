@@ -28,6 +28,15 @@ const dsVersion = JSON.parse(
     readFileSync(fileURLToPath(new URL('../ds/package.json', import.meta.url)), 'utf-8')
 ).version as string
 
+const ORIGAM_SRC_TSCONFIG = {
+    compilerOptions: {
+        paths: {
+            origam: ['../../ds/src/origam.ts'],
+            'origam/*': ['../../ds/src/*/index.ts']
+        }
+    }
+}
+
 export default defineNuxtConfig({
     compatibilityDate: '2026-05-27',
     devtools: { enabled: true },
@@ -52,7 +61,15 @@ export default defineNuxtConfig({
     typescript: {
         strict: true,
         typeCheck: false,
-        shim: false
+        shim: false,
+        // #1193 — type-check `origam` against the DS SOURCES, never `packages/ds/dist`.
+        // dist ships SFCs with their types stripped, so every lambda/prop-derived value
+        // there is an `implicit any` counted in the ratchet: the count then depended on
+        // whether dist was built on the machine. Same remedy as the playground (#1141).
+        // Type-check only: bundler resolution is untouched.
+        tsConfig: ORIGAM_SRC_TSCONFIG,
+        nodeTsConfig: ORIGAM_SRC_TSCONFIG,
+        sharedTsConfig: ORIGAM_SRC_TSCONFIG
     },
 
     // ⛔ The origam module is referenced by SOURCE PATH, not by the bare
@@ -249,6 +266,7 @@ export default defineNuxtConfig({
     },
 
     nitro: {
+        typescript: { tsConfig: ORIGAM_SRC_TSCONFIG },
         // TypeORM loads `pg` through a dynamic require() that Nitro's tracer
         // cannot follow: without this, `pg` is absent from
         // .output/server/node_modules and every DB read fails (#1166).

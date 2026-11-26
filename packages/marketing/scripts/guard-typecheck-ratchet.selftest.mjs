@@ -30,6 +30,15 @@ const selfTestCases = [
         3
     ],
     [
+        'ignores the DS (sources or dist): not marketing-owned (#1193)',
+        [
+            "../ds/dist/src/components/Alert/OrigamAlert.vue(820,22): error TS7006: Parameter 'e' implicitly has an 'any' type.",
+            "../ds/src/components/App/OrigamApp.vue(32,26): error TS1484: x.",
+            "src/pages/index.vue(1,1): error TS2322: y.",
+        ].join('\n'),
+        1
+    ],
+    [
         'does not confuse "error" prose with "error TS\\d+:"',
         'This step reported an error running the build, but TS2322 is mentioned only in passing.',
         0

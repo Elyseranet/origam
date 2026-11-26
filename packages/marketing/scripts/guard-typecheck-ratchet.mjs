@@ -42,14 +42,11 @@
  *   count-only ratchet is the honest version of what can actually be
  *   measured here.
  *
- * PREREQUISITE
- *   `nuxt typecheck` resolves `origam/interfaces` etc. against the DS
- *   package, so `packages/ds` must be BUILT first
- *   (`pnpm -F origam build` — ⛔ this rewrites
- *   `packages/ds/src/assets/css/main.css` as a side effect, a tooling
- *   defect worth fixing separately; `git checkout -- packages/ds/src/assets/css/main.css`
- *   afterwards if running this locally in a worktree that must not touch
- *   `packages/ds/src/`).
+ * NO BUILD PREREQUISITE (#1193)
+ *   `nuxt.config.ts` maps `origam` / `origam/*` to the DS SOURCES for every
+ *   generated tsconfig, and `countTypeErrors` ignores anything under `../ds/`.
+ *   The count is therefore the same with or without `packages/ds/dist`
+ *   (measured on one tree: 138 both ways; 204 vs 138 with only the filter).
  *
  * Run:
  *   node scripts/guard-typecheck-ratchet.mjs
@@ -65,10 +62,20 @@ const scriptDir = dirname(fileURLToPath(import.meta.url))
 const marketingRoot = resolve(scriptDir, '..')
 const floorPath = resolve(scriptDir, 'guard-typecheck-ratchet-floor.json')
 
-/** Pure — counts `error TS` lines in `nuxt typecheck`'s combined output. */
+/**
+ * Pure — counts the `error TS` lines of `nuxt typecheck`'s combined output
+ * that sit in files the marketing project OWNS. Anything under `../ds/`
+ * (DS sources or a built `dist/`, whose SFCs are shipped with their types
+ * stripped) is the DS's debt, not marketing's: counting it made the floor
+ * depend on whether `pnpm -F origam build` had run on the machine (#1193).
+ */
 export function countTypeErrors (output) {
-    const matches = output.match(/error TS\d+:/g)
-    return matches ? matches.length : 0
+    const re = /^(\S.*?)\(\d+,\d+\): error TS\d+:/gm
+    let n = 0
+    for (const m of output.matchAll(re)) {
+        if (!m[1].startsWith('../ds/')) n++
+    }
+    return n
 }
 
 function loadFloor () {
