@@ -14,6 +14,7 @@
     <origam-sheet
       tag="div"
       rounded="xl"
+      bg-color="var(--origam-color__surface---overlay)"
       class="home-playground__block"
     >
       <origam-theme-provider
@@ -34,6 +35,7 @@
         tag="div"
         rounded="lg"
         elevation="sm"
+        bg-color="var(--origam-color__surface---raised)"
         class="home-playground__variants"
         data-cy="playground-preview"
       >
@@ -58,6 +60,16 @@ import { buildHomeDemoSnippet } from '~/utils/home-demo.util'
 
 const { t } = useT()
 
+/*********************************************************
+ * Code window
+ *
+ * @description
+ * The window stays dark in both modes (brand kit A1), via
+ * <origam-theme-provider mode="dark">. shortcut: OrigamCode picks its
+ * syntax colours from `html[data-mode]` only, so the style block forces
+ * `--shiki-dark` inside `.home-playground__window`; drop it once #1532 is fixed.
+ ********************************************************/
+
 const buttons = HOME_DEMO_BUTTONS
 
 const labels = computed(() =>
@@ -65,6 +77,12 @@ const labels = computed(() =>
 )
 
 const snippet = computed(() => buildHomeDemoSnippet(buttons, labels.value))
+
+defineEmits([])
+
+defineSlots<Record<string, never>>()
+
+defineExpose({})
 </script>
 
 <style scoped lang="scss">
@@ -91,7 +109,10 @@ const snippet = computed(() => buildHomeDemoSnippet(buttons, labels.value))
         gap: var(--origam-space---6, 1.5rem);
         align-items: center;
         padding: var(--origam-space---8, 2rem);
-        background-color: var(--origam-color__surface---overlay);
+    }
+
+    &__window :deep(.origam-code__code span) {
+        color: var(--shiki-dark);
     }
 
     &__variants {
@@ -104,7 +125,7 @@ const snippet = computed(() => buildHomeDemoSnippet(buttons, labels.value))
     }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1024px) {
     .home-playground__block {
         grid-template-columns: 1fr;
         padding: var(--origam-space---4, 1rem);

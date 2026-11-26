@@ -45,13 +45,51 @@ test.describe('HomePlayground section', () => {
 
     test('the 3 real OrigamBtn variants are rendered and listed in the code', async ({ page }) => {
         const code = page.locator('[data-cy="playground-code"]')
-        for (const [key, label] of [['primary', 'Primary'], ['secondary', 'Secondary'], ['ghost', 'Ghost']]) {
+        for (const [key, label, variant] of [['primary', 'Primary', 'flat'], ['secondary', 'Secondary', 'outlined'], ['ghost', 'Ghost', 'flat']]) {
             const btn = page.locator(`[data-cy="playground-btn-${key}"]`)
             await expect(btn).toBeVisible()
-            await expect(btn).toHaveClass(/origam-btn/)
+            await expect(btn).toHaveClass(new RegExp(`origam-btn--variant-${variant}`))
             await expect(btn).toContainText(label)
-            await expect(code).toContainText(`>${label}</OrigamBtn>`)
+            await expect(code).toContainText(label)
         }
+        await expect(code).toContainText('variant="flat" bg-color="primary"')
+        await expect(code).toContainText('border-color="var(--origam-color__action--primary---bg)"')
+        await expect(code).toContainText('bg-color="var(--origam-color__surface---raised)"')
+    })
+
+    // #1517 — owner decision: Primary filled violet, Secondary violet outline + ink text,
+    // Ghost light fill + border. Bare `ghost` / `outlined` + `color` paint none of that.
+    test('the buttons paint the kit roles (filled / violet outline + ink text / filled + border)', async ({ page }) => {
+        const paint = await page.evaluate(() => Object.fromEntries(['primary', 'secondary', 'ghost'].map((key) => {
+            const s = getComputedStyle(document.querySelector(`[data-cy="playground-btn-${key}"]`) as Element)
+            return [key, { bg: s.backgroundColor, color: s.color, borderColor: s.borderTopColor, borderWidth: s.borderTopWidth }]
+        })))
+        const transparent = 'rgba(0, 0, 0, 0)'
+
+        expect(paint.primary.bg).not.toBe(transparent)
+        expect(paint.secondary.borderColor).toBe(paint.primary.bg)
+        expect(paint.secondary.color).not.toBe(paint.primary.bg)
+        expect(paint.ghost.bg).not.toBe(transparent)
+        expect(paint.ghost.borderWidth).not.toBe('0px')
+    })
+
+    // #1532 — the window is always dark: its tokens must use shiki's DARK colours, even on a light page.
+    test('code tokens are painted with the dark shiki colours inside the dark window', async ({ page }) => {
+        await expect(page.locator('[data-cy="playground-code"] .origam-code__code span[style*="--shiki-dark"]').first()).toBeAttached()
+        const counts = await page.evaluate(() => {
+            const spans = [...document.querySelectorAll<HTMLElement>('[data-cy="playground-code"] .origam-code__code span[style*="--shiki-dark"]')]
+            const wrong = spans.filter((span) => {
+                const probe = document.createElement('i')
+                probe.style.color = span.style.getPropertyValue('--shiki-dark')
+                document.body.appendChild(probe)
+                const expected = getComputedStyle(probe).color
+                probe.remove()
+                return getComputedStyle(span).color !== expected
+            })
+            return { total: spans.length, wrong: wrong.length }
+        })
+        expect(counts.total).toBeGreaterThan(0)
+        expect(counts.wrong).toBe(0)
     })
 
     test('OrigamCode pane is present (left split)', async ({ page }) => {

@@ -3,7 +3,8 @@ import type { IHomeLibraryCategory } from '../interfaces/home-library.interface'
 /**
  * The 6 home categories, each mapped to a REAL category of the components
  * catalogue (raw DB values, see assets/seed/component.json). "Data" maps to
- * `Data Display`; `Data Visualization` (1 component) is not shown on the home.
+ * `Data Display`. The catalogue's other categories (`Data Visualization`,
+ * `Media`, `Utilities & Providers`…) have no card in the kit's 6-card grid.
  */
 export const HOME_LIBRARY_CATEGORIES: IHomeLibraryCategory[] = [
     { key: 'forms', icon: 'mdi-form-textbox', labelKey: 'home.library.forms', labelFallback: 'Forms', catalogCategory: 'Form & Input' },

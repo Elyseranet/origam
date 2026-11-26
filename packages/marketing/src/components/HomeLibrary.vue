@@ -33,25 +33,23 @@
         :key="category.key"
         tag="li"
       >
-        <nuxt-link
-          :to="{ path: '/components', hash: `#${categoryAnchor(category.catalogCategory)}` }"
-          class="home-library__link"
+        <origam-card
+          :to="categoryLink(category)"
+          rounded="lg"
+          border
+          class="home-library__card"
           :data-cy="`library-card-${category.key}`"
         >
-          <origam-card
-            rounded="lg"
-            border
-            class="home-library__card"
-          >
+          <span class="home-library__tile">
             <origam-icon
               :icon="category.icon"
-              size="28"
+              size="x-large"
               color="primary"
               aria-hidden="true"
             />
             <span class="home-library__label">{{ t(category.labelKey, category.labelFallback) }}</span>
-          </origam-card>
-        </nuxt-link>
+          </span>
+        </origam-card>
       </origam-grid-item>
     </origam-grid>
   </section>
@@ -60,11 +58,21 @@
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
 import { HOME_LIBRARY_CATEGORIES } from '~/consts/home-library.const'
+import type { IHomeLibraryCategory } from '~/interfaces/home-library.interface'
 import { categoryAnchor } from '~/utils/components-catalog.util'
 
 const { t } = useT()
 
 const categories = HOME_LIBRARY_CATEGORIES
+
+/** Each card opens the catalogue scrolled to the REAL category group it stands for. */
+const categoryLink = (category: IHomeLibraryCategory) => ({ path: '/components', hash: `#${categoryAnchor(category.catalogCategory)}` })
+
+defineEmits([])
+
+defineSlots<Record<string, never>>()
+
+defineExpose({})
 </script>
 
 <style scoped lang="scss">
@@ -86,7 +94,7 @@ const categories = HOME_LIBRARY_CATEGORIES
 
     &__eyebrow {
         margin: 0 0 var(--origam-space---2, 0.5rem);
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__text---primary);
     }
@@ -115,31 +123,31 @@ const categories = HOME_LIBRARY_CATEGORIES
         list-style: none;
     }
 
-    &__link {
-        display: block;
-        text-decoration: none;
-        color: inherit;
-        border-radius: var(--origam-radius---lg, 14px);
+    &__card {
+        block-size: 100%;
+        transition-property: transform;
+        transition-duration: var(--origam-motion__duration---fast);
+        transition-timing-function: var(--origam-motion__easing---standard);
+
+        &:hover,
+        &:focus-visible {
+            transform: translateY(-2px);
+        }
     }
 
-    &__card {
+    &__tile {
+        --origam-icon---font-size-xl: var(--origam-font__size---4xl);
+
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: var(--origam-space---3, 0.75rem);
         padding: var(--origam-space---5, 1.25rem) var(--origam-space---2, 0.5rem);
         text-align: center;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    &__link:hover &__card,
-    &__link:focus-visible &__card {
-        transform: translateY(-2px);
-        box-shadow: var(--origam-shadow---md);
     }
 
     &__label {
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__text---primary);
     }
@@ -166,8 +174,8 @@ const categories = HOME_LIBRARY_CATEGORIES
         transition: none;
     }
 
-    .home-library__link:hover .home-library__card,
-    .home-library__link:focus-visible .home-library__card {
+    .home-library__card:hover,
+    .home-library__card:focus-visible {
         transform: none;
     }
 }
