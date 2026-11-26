@@ -166,13 +166,13 @@
   .prop-list {
     margin: 0;
     padding: 0;
-    border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+    border: 1px solid var(--origam-color__border---default);
     border-radius: var(--origam-radius---lg, 8px);
     overflow: hidden;
 
     &__item {
       padding: var(--origam-space---3, 0.75rem) var(--origam-space---4, 1rem);
-      border-block-end: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.04));
+      border-block-end: 1px solid var(--origam-color__border---subtle);
       display: flex;
       flex-direction: column;
       gap: var(--origam-space---1, 0.25rem);
@@ -183,7 +183,7 @@
       }
 
       &:hover {
-        background: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.03));
+        background: var(--origam-color__action--primary---bgSubtle);
 
         .prop-list__copy-icon {
           opacity: 1;
@@ -206,21 +206,21 @@
       gap: var(--origam-space---1, 0.25rem);
       --origam-btn---font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: 600;
-      color: var(--origam-color__text---primary, #0a0a0a);
+      color: var(--origam-color__text---primary);
     }
 
     &__name-mono {
       font-family: var(--origam-font__family---mono, monospace);
       font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: 600;
-      color: var(--origam-color__text---primary, #0a0a0a);
+      color: var(--origam-color__text---primary);
     }
 
     &__copy-icon {
       margin-inline-start: var(--origam-space---2, 0.5rem);
       opacity: 0;
       transition: opacity 100ms;
-      color: var(--origam-color__text---tertiary, #737373);
+      color: var(--origam-color__text---tertiary);
     }
 
     &__required-badge {
@@ -242,14 +242,14 @@
       line-height: 1.3;
 
       &--primitive {
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
       }
     }
 
     &__default {
       font-family: var(--origam-font__family---mono, monospace);
       font-size: var(--origam-font__size---sm, 0.75rem);
-      color: var(--origam-color__text---tertiary, #737373);
+      color: var(--origam-color__text---tertiary);
       white-space: nowrap;
     }
 
@@ -257,7 +257,7 @@
       margin: 0;
       font-size: var(--origam-font__size---md, 0.875rem);
       line-height: 1.6;
-      color: var(--origam-color__text---secondary, #525252);
+      color: var(--origam-color__text---secondary);
       padding-inline-start: 0;
     }
 

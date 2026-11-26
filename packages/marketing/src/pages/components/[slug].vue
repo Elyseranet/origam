@@ -1397,14 +1397,14 @@
       display: block;
       font-size: var(--origam-font-size---section, 2rem);
       font-weight: var(--origam-font__weight---bold, 700);
-      color: var(--origam-color__text---primary, #0a0a0a);
+      color: var(--origam-color__text---primary);
       margin: 0;
     }
 
     &__desc {
       margin: 0;
       font-size: var(--origam-font__size---lg, 1rem);
-      color: var(--origam-color__text---secondary, #525252);
+      color: var(--origam-color__text---secondary);
       display: flex;
       align-items: center;
       gap: var(--origam-space---2, 0.5rem);
@@ -1420,8 +1420,8 @@
   /* ── HERO ──────────────────────────────────────────────────── */
   .component-hero {
     position: relative;
-    background: color-mix(in srgb, var(--origam-color__surface---raised, #ffffff) 62%, transparent);
-    border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+    background: color-mix(in srgb, var(--origam-color__surface---raised) 62%, transparent);
+    border-block-end: 1px solid var(--origam-color__border---default);
     overflow: hidden;
 
     &::before {
@@ -1471,7 +1471,7 @@
       font-weight: 800;
       letter-spacing: -0.045em;
       line-height: 1;
-      color: var(--origam-color__text---ink, #0a0a0a);
+      color: var(--origam-color__text---ink);
       display: block;
     }
 
@@ -1491,7 +1491,7 @@
       max-inline-size: 52ch;
       font-size: var(--origam-font__size---lg, 1rem);
       line-height: 1.65;
-      color: var(--origam-color__text---secondary, #525252);
+      color: var(--origam-color__text---secondary);
     }
 
     &__bottom {
@@ -1510,8 +1510,8 @@
     &__import {
       font-family: var(--origam-font__family---mono, monospace);
       font-size: var(--origam-font__size---sm, 0.75rem);
-      border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-      background: var(--origam-color__surface---sunken, #f5f5f5);
+      border: 1px solid var(--origam-color__border---default);
+      background: var(--origam-color__surface---sunken);
       border-radius: var(--origam-radius---btn, 4px);
       white-space: nowrap;
       --origam-btn---font-size: var(--origam-font__size---sm, 0.75rem);
@@ -1532,8 +1532,8 @@
     &__preview {
       position: relative;
       z-index: 1;
-      border-block-start: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-      background: color-mix(in srgb, var(--origam-color__surface---raised, #fff) 95%, var(--origam-color__surface---default, #f5f5f5));
+      border-block-start: 1px solid var(--origam-color__border---default);
+      background: color-mix(in srgb, var(--origam-color__surface---raised) 95%, var(--origam-color__surface---default));
 
       &-inner {
         padding-block: var(--origam-space---10, 2.5rem);
@@ -1548,7 +1548,7 @@
         font-weight: 700;
         letter-spacing: 0.09em;
         text-transform: uppercase;
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---tertiary);
         display: flex;
         align-items: center;
         gap: var(--origam-space---2, 0.5rem);
@@ -1559,8 +1559,8 @@
           inline-size: 6px;
           block-size: 6px;
           border-radius: 50%;
-          background: var(--origam-color__action--primary---bg, #7c3aed);
-          box-shadow: 0 0 6px var(--origam-color__action--primary---bg, #7c3aed);
+          background: var(--origam-color__action--primary---bg);
+          box-shadow: 0 0 6px var(--origam-color__action--primary---bg);
         }
       }
 
@@ -1571,8 +1571,8 @@
         gap: var(--origam-space---4, 1rem);
         padding: var(--origam-space---12, 3rem) var(--origam-space---8, 2rem);
         border-radius: var(--origam-radius---card, 4px);
-        border: 1px dashed var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-        background: color-mix(in srgb, var(--origam-color__surface---sunken, #f5f5f5) 60%, transparent);
+        border: 1px dashed var(--origam-color__border---default);
+        background: color-mix(in srgb, var(--origam-color__surface---sunken) 60%, transparent);
         flex-wrap: wrap;
         row-gap: var(--origam-space---5, 1.25rem);
 
@@ -1592,7 +1592,7 @@
           font-weight: 600;
           letter-spacing: 0.07em;
           text-transform: uppercase;
-          color: var(--origam-color__text---tertiary, #737373);
+          color: var(--origam-color__text---tertiary);
         }
       }
     }
@@ -1610,7 +1610,7 @@
       align-items: center;
       gap: var(--origam-space---4, 1rem);
       flex-wrap: wrap;
-      border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+      border-block-end: 1px solid var(--origam-color__border---default);
       padding-block-end: var(--origam-space---4, 1rem);
     }
 
@@ -1621,7 +1621,7 @@
       font-weight: 700;
       letter-spacing: 0.09em;
       text-transform: uppercase;
-      color: var(--origam-color__text---tertiary, #737373);
+      color: var(--origam-color__text---tertiary);
 
       @media (max-width: 1024px) {
         margin: 0;
@@ -1646,13 +1646,13 @@
 
       &--active {
         .component-toc__link {
-          color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-          border-inline-start-color: var(--origam-color__action--primary---bg, #7c3aed);
+          color: var(--origam-color__action--primary---fgSubtle);
+          border-inline-start-color: var(--origam-color__action--primary---bg);
           font-weight: 600;
 
           @media (max-width: 1024px) {
             border-inline-start: none;
-            border-block-end-color: var(--origam-color__action--primary---bg, #7c3aed);
+            border-block-end-color: var(--origam-color__action--primary---bg);
           }
         }
       }
@@ -1662,7 +1662,7 @@
       display: block;
       font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: 400;
-      color: var(--origam-color__text---secondary, #525252);
+      color: var(--origam-color__text---secondary);
       padding: var(--origam-space---1, 0.25rem) var(--origam-space---3, 0.75rem);
       border-radius: var(--origam-radius---md, 8px);
       border-inline-start: 2px solid transparent;
@@ -1670,8 +1670,8 @@
       transition: color 100ms, border-color 100ms, background 100ms;
 
       &:hover {
-        color: var(--origam-color__text---primary, #0a0a0a);
-        background: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.08));
+        color: var(--origam-color__text---primary);
+        background: var(--origam-color__action--primary---bgSubtle);
       }
 
       @media (max-width: 1024px) {
@@ -1685,7 +1685,7 @@
   .component-section {
     &__header {
       padding-block-end: var(--origam-space---4, 1rem);
-      border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+      border-block-end: 1px solid var(--origam-color__border---default);
       margin-block-end: var(--origam-space---6, 1.5rem);
     }
 
@@ -1695,14 +1695,14 @@
       font-weight: 700;
       letter-spacing: 0.09em;
       text-transform: uppercase;
-      color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+      color: var(--origam-color__action--primary---fgSubtle);
     }
 
     &__title {
       display: block;
       font-size: var(--origam-font__size---2xl, 1.25rem);
       font-weight: 700;
-      color: var(--origam-color__text---ink, #0a0a0a);
+      color: var(--origam-color__text---ink);
       letter-spacing: -0.02em;
       margin: 0 0 var(--origam-space---2, 0.5rem);
     }
@@ -1710,7 +1710,7 @@
     &__desc {
       margin: var(--origam-space---3, 0.75rem) 0 0;
       font-size: var(--origam-font__size---md, 0.875rem);
-      color: var(--origam-color__text---secondary, #525252);
+      color: var(--origam-color__text---secondary);
       line-height: 1.6;
       max-inline-size: 60ch;
     }
@@ -1731,7 +1731,7 @@
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--origam-color__text---tertiary, #737373);
+      color: var(--origam-color__text---tertiary);
       padding-block: var(--origam-space---3, 0.75rem);
       padding-inline: var(--origam-space---4, 1rem);
       white-space: nowrap;
@@ -1741,7 +1741,7 @@
       vertical-align: top;
 
       &:hover {
-        background: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.04));
+        background: var(--origam-color__action--primary---bgSubtle);
       }
     }
 
@@ -1750,9 +1750,9 @@
       padding-inline: var(--origam-space---4, 1rem);
       font-size: var(--origam-font__size---md, 0.875rem);
       line-height: 1.6;
-      color: var(--origam-color__text---primary, #0a0a0a);
+      color: var(--origam-color__text---primary);
       vertical-align: top;
-      border-block-start: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.04));
+      border-block-start: 1px solid var(--origam-color__border---subtle);
 
       &--name {
         white-space: nowrap;
@@ -1771,7 +1771,7 @@
       }
 
       &--desc {
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
       }
     }
 
@@ -1785,13 +1785,13 @@
   .prop-list {
     margin: 0;
     padding: 0;
-    border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+    border: 1px solid var(--origam-color__border---default);
     border-radius: var(--origam-radius---lg, 8px);
     overflow: hidden;
 
     &__item {
       padding: var(--origam-space---3, 0.75rem) var(--origam-space---4, 1rem);
-      border-block-end: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.04));
+      border-block-end: 1px solid var(--origam-color__border---subtle);
       display: flex;
       flex-direction: column;
       gap: var(--origam-space---1, 0.25rem);
@@ -1802,7 +1802,7 @@
       }
 
       &:hover {
-        background: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.03));
+        background: var(--origam-color__action--primary---bgSubtle);
 
         .prop-list__copy-icon {
           opacity: 1;
@@ -1823,21 +1823,21 @@
       gap: var(--origam-space---1, 0.25rem);
       --origam-btn---font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: 600;
-      color: var(--origam-color__text---primary, #0a0a0a);
+      color: var(--origam-color__text---primary);
     }
 
     &__name-mono {
       font-family: var(--origam-font__family---mono, monospace);
       font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: 600;
-      color: var(--origam-color__text---primary, #0a0a0a);
+      color: var(--origam-color__text---primary);
     }
 
     &__copy-icon {
       margin-inline-start: var(--origam-space---2, 0.5rem);
       opacity: 0;
       transition: opacity 100ms;
-      color: var(--origam-color__text---tertiary, #737373);
+      color: var(--origam-color__text---tertiary);
     }
 
     &__required-badge {
@@ -1859,14 +1859,14 @@
       line-height: 1.3;
 
       &--primitive {
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
       }
     }
 
     &__default {
       font-family: var(--origam-font__family---mono, monospace);
       font-size: var(--origam-font__size---sm, 0.75rem);
-      color: var(--origam-color__text---tertiary, #737373);
+      color: var(--origam-color__text---tertiary);
       white-space: nowrap;
     }
 
@@ -1874,7 +1874,7 @@
       margin: 0;
       font-size: var(--origam-font__size---md, 0.875rem);
       line-height: 1.6;
-      color: var(--origam-color__text---secondary, #525252);
+      color: var(--origam-color__text---secondary);
       padding-inline-start: 0;
     }
 
@@ -1897,8 +1897,8 @@
 
     &__svg-wrap {
       border-radius: var(--origam-radius---card, 4px);
-      border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-      background: var(--origam-color__surface---sunken, #f5f5f5);
+      border: 1px solid var(--origam-color__border---default);
+      background: var(--origam-color__surface---sunken);
       overflow: hidden;
       padding: var(--origam-space---6, 1.5rem);
     }
@@ -1913,7 +1913,7 @@
 
     &__figcaption {
       font-size: var(--origam-font__size---sm, 0.75rem);
-      color: var(--origam-color__text---secondary, #525252);
+      color: var(--origam-color__text---secondary);
       text-align: center;
       line-height: 1.55;
 
@@ -1921,16 +1921,16 @@
         font-size: 0.9em;
         padding: 1px 5px;
         border-radius: var(--origam-radius---sm, 2px);
-        background: var(--origam-color__surface---sunken, #f5f5f5);
-        border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.04));
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        background: var(--origam-color__surface---sunken);
+        border: 1px solid var(--origam-color__border---subtle);
+        color: var(--origam-color__action--primary---fgSubtle);
       }
     }
 
     &__legend {
       margin: 0;
       padding: 0;
-      border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+      border: 1px solid var(--origam-color__border---default);
       border-radius: var(--origam-radius---lg, 8px);
       overflow: hidden;
 
@@ -1942,7 +1942,7 @@
 
       &-item {
         padding: var(--origam-space---4, 1rem) var(--origam-space---4, 1rem) var(--origam-space---3, 0.75rem);
-        border-block-end: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.04));
+        border-block-end: 1px solid var(--origam-color__border---subtle);
         display: flex;
         flex-direction: column;
         gap: var(--origam-space---2, 0.5rem);
@@ -1953,7 +1953,7 @@
         }
 
         &:hover {
-          background: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.03));
+          background: var(--origam-color__action--primary---bgSubtle);
         }
       }
 
@@ -1967,22 +1967,22 @@
         font-family: var(--origam-font__family---mono, monospace);
         font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 600;
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        color: var(--origam-color__action--primary---fgSubtle);
       }
 
       &-desc {
         margin: 0;
         padding-inline-start: calc(22px + var(--origam-space---3, 0.75rem));
         font-size: var(--origam-font__size---md, 0.875rem);
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
         line-height: 1.6;
 
         :deep(code) {
           font-size: 0.85em;
           padding: 1px 5px;
           border-radius: var(--origam-radius---sm, 2px);
-          background: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.08));
-          color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+          background: var(--origam-color__action--primary---bgSubtle);
+          color: var(--origam-color__action--primary---fgSubtle);
         }
       }
     }
@@ -1994,8 +1994,8 @@
       inline-size: 22px;
       block-size: 22px;
       border-radius: 50%;
-      background: var(--origam-color__action--primary---bg, #7c3aed);
-      color: var(--origam-color__action--primary---fg, #fff);
+      background: var(--origam-color__action--primary---bg);
+      color: var(--origam-color__action--primary---fg);
       font-family: var(--origam-font__family---mono, monospace);
       font-size: 0.625rem;
       font-weight: 700;
@@ -2025,7 +2025,7 @@
       font-weight: 700;
       letter-spacing: 0.07em;
       text-transform: uppercase;
-      color: var(--origam-color__text---tertiary, #737373);
+      color: var(--origam-color__text---tertiary);
       margin: 0;
     }
 
@@ -2048,7 +2048,7 @@
     &__note {
       font-size: var(--origam-font__size---md, 0.875rem);
       line-height: 1.65;
-      color: var(--origam-color__text---secondary, #525252);
+      color: var(--origam-color__text---secondary);
     }
 
     &__kbd {
@@ -2068,7 +2068,7 @@
       display: block;
       font-size: var(--origam-font__size---lg, 1rem);
       font-weight: var(--origam-font__weight---semibold, 600);
-      color: var(--origam-color__text---primary, #0a0a0a);
+      color: var(--origam-color__text---primary);
       margin: 0;
     }
 
@@ -2085,9 +2085,9 @@
       gap: var(--origam-space---2, 0.5rem);
       margin-block-end: var(--origam-space---4, 1rem);
       padding: var(--origam-space---3, 0.75rem) var(--origam-space---4, 1rem);
-      border: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.04));
+      border: 1px solid var(--origam-color__border---subtle);
       border-radius: var(--origam-radius---md, 8px);
-      background: var(--origam-color__surface---sunken, #f5f5f5);
+      background: var(--origam-color__surface---sunken);
 
       &-row {
         display: flex;
@@ -2126,7 +2126,7 @@
         font-weight: 700;
         letter-spacing: 0.07em;
         text-transform: uppercase;
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
         white-space: nowrap;
         padding-block-start: 0.15rem;
       }
@@ -2142,7 +2142,7 @@
     &__engine {
       --pg---height: var(--component-playground__engine---height, 44rem);
 
-      border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+      border: 1px solid var(--origam-color__border---default);
       border-radius: var(--origam-radius---card, 4px);
 
       /*
@@ -2167,7 +2167,7 @@
   .component-preview__loading {
     margin: 0;
     font-size: var(--origam-font__size---md, 0.875rem);
-    color: var(--origam-color__text---tertiary, #737373);
+    color: var(--origam-color__text---tertiary);
   }
 
   /* ── PREVIEW FALLBACK ─────────────────────────────────────── */
@@ -2176,7 +2176,7 @@
       margin: 0;
       font-size: var(--origam-font__size---md, 0.875rem);
       font-style: italic;
-      color: var(--origam-color__text---tertiary, #737373);
+      color: var(--origam-color__text---tertiary);
     }
   }
 
@@ -2192,7 +2192,7 @@
       display: block;
       font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: 700;
-      color: var(--origam-color__text---ink, #0a0a0a);
+      color: var(--origam-color__text---ink);
       margin: 0 0 var(--origam-space---3, 0.75rem);
       display: flex;
       align-items: center;
@@ -2204,7 +2204,7 @@
         inline-size: 3px;
         block-size: 14px;
         border-radius: 2px;
-        background: var(--origam-color__action--primary---bg, #7c3aed);
+        background: var(--origam-color__action--primary---bg);
         flex-shrink: 0;
       }
     }
@@ -2239,12 +2239,12 @@
       &:hover {
         .component-family__card {
           transform: translateY(-2px);
-          box-shadow: var(--origam-shadow---card-elevated, 0 4px 12px rgba(0, 0, 0, 0.1));
+          box-shadow: var(--origam-shadow---card-elevated);
         }
       }
 
       &:focus-visible {
-        outline: 2px solid var(--origam-color__action--primary---bg, #7c3aed);
+        outline: 2px solid var(--origam-color__action--primary---bg);
         outline-offset: 2px;
       }
     }
@@ -2275,20 +2275,20 @@
         font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 700;
         font-family: var(--origam-font__family---mono, monospace);
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        color: var(--origam-color__action--primary---fgSubtle);
         margin: 0;
       }
 
       &-arrow {
         flex-shrink: 0;
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---tertiary);
       }
 
       &-desc {
         margin: 0;
         font-size: var(--origam-font__size---sm, 0.75rem);
         line-height: 1.5;
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
         flex: 1;
       }
     }
@@ -2319,12 +2319,12 @@
       &:hover {
         .component-related__card {
           transform: translateY(-2px);
-          box-shadow: var(--origam-shadow---card-elevated, 0 4px 12px rgba(0, 0, 0, 0.1));
+          box-shadow: var(--origam-shadow---card-elevated);
         }
       }
 
       &:focus-visible {
-        outline: 2px solid var(--origam-color__action--primary---bg, #7c3aed);
+        outline: 2px solid var(--origam-color__action--primary---bg);
         outline-offset: 2px;
       }
     }
@@ -2352,7 +2352,7 @@
         font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 700;
         font-family: var(--origam-font__family---mono, monospace);
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
         margin: 0;
       }
 
@@ -2360,7 +2360,7 @@
         margin: 0;
         font-size: var(--origam-font__size---sm, 0.75rem);
         line-height: 1.5;
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
         flex: 1;
       }
     }
@@ -2386,14 +2386,14 @@
 
     &__icon {
       font-size: 2rem;
-      color: var(--origam-color__action--primary---bg, #7c3aed);
+      color: var(--origam-color__action--primary---bg);
     }
 
     &__title {
       display: block;
       font-size: var(--origam-font__size---xl, 1.125rem);
       font-weight: var(--origam-font__weight---bold, 700);
-      color: var(--origam-color__text---primary, #0a0a0a);
+      color: var(--origam-color__text---primary);
       margin: 0;
     }
 
@@ -2401,7 +2401,7 @@
       margin: 0;
       font-size: var(--origam-font__size---md, 0.875rem);
       line-height: 1.65;
-      color: var(--origam-color__text---secondary, #525252);
+      color: var(--origam-color__text---secondary);
     }
   }
 </style>

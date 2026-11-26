@@ -128,7 +128,7 @@ const hasNeighbours = computed(() => prev.value !== null || next.value !== null)
     &__hint {
         line-height: 1.4;
         font-size: var(--origam-font__size---xs, 0.75rem);
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---tertiary);
     }
 
     &__name {

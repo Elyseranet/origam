@@ -279,7 +279,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
         margin: 0 0 var(--origam-space---3, 0.75rem);
         font-size: var(--origam-font__size---sm, 0.75rem);
         font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        color: var(--origam-color__action--primary---fgSubtle);
         text-transform: uppercase;
         letter-spacing: 0.08em;
     }
@@ -292,7 +292,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
         font-weight: var(--origam-font__weight---bold, 700);
         letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
         line-height: 1.05;
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
 
         @media (max-width: 768px) {
             font-size: clamp(1.75rem, 7vw, 3rem);
@@ -357,7 +357,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
         line-height: var(--origam-line-height---hero, 0.95);
         letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
         padding-block-end: 0.1em;
-        color: var(--origam-color__text---ink, #0a0a0a);
+        color: var(--origam-color__text---ink);
 
         @media (max-width: 1080px) {
             font-size: clamp(2.5rem, 9vw, 5.25rem);
@@ -368,7 +368,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
         display: block;
 
         &--accent {
-            color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+            color: var(--origam-color__action--primary---fgSubtle);
         }
     }
 
@@ -377,19 +377,19 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
         max-inline-size: 40rem;
         font-size: var(--origam-font__size---xl, 1.125rem);
         line-height: var(--origam-line-height---relaxed, 1.7);
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
     }
 
     &__search {
         inline-size: 100%;
         max-inline-size: 36rem;
-        --origam-field---background: var(--origam-color__surface---default, #ffffff);
+        --origam-field---background: var(--origam-color__surface---default);
     }
 
     &__count {
         margin: 0;
         font-size: var(--origam-font__size---md, 0.875rem);
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---tertiary);
     }
 }
 
@@ -411,21 +411,21 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 
     &__icon {
         font-size: 3rem;
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---tertiary);
     }
 
     &__title {
         display: block;
         font-size: var(--origam-font__size---xl, 1.125rem);
         font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
         margin: 0;
     }
 
     &__desc {
         margin: 0;
         font-size: var(--origam-font__size---lg, 1rem);
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
     }
 }
 
@@ -442,19 +442,19 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
         gap: var(--origam-space---3, 0.75rem);
         margin-block-end: var(--origam-space---6, 1.5rem);
         padding-block-end: var(--origam-space---3, 0.75rem);
-        border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+        border-block-end: 1px solid var(--origam-color__border---default);
     }
 
     &__title {
         display: block;
         font-size: var(--origam-font__size---xl, 1.125rem);
         font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
         margin: 0;
     }
 
     &__count-chip {
-        --origam-chip---background-color: var(--origam-color__surface---sunken, #f5f5f5);
+        --origam-chip---background-color: var(--origam-color__surface---sunken);
     }
 
     &__grid {
@@ -490,11 +490,11 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 
         &:hover .components-catalog-card {
             transform: translateY(-2px);
-            box-shadow: var(--origam-shadow---md, 0 4px 12px rgba(0, 0, 0, 0.1));
+            box-shadow: var(--origam-shadow---md);
         }
 
         &:focus-visible {
-            outline: 2px solid var(--origam-color__action--primary---bg, #7c3aed);
+            outline: 2px solid var(--origam-color__action--primary---bg);
             outline-offset: 2px;
         }
     }
@@ -523,7 +523,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
         font-size: var(--origam-font__size---lg, 1rem);
         font-weight: var(--origam-font__weight---semibold, 600);
         font-family: var(--origam-font__family---mono, monospace);
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
         margin: 0;
         white-space: nowrap;
         overflow: hidden;
@@ -532,14 +532,14 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 
     &__family-icon {
         flex-shrink: 0;
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---tertiary);
     }
 
     &__desc {
         margin: 0;
         font-size: var(--origam-font__size---md, 0.875rem);
         line-height: 1.55;
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
         flex: 1;
     }
 
@@ -551,12 +551,12 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
     }
 
     &__family-chip {
-        --origam-chip---background-color: var(--origam-color__surface---sunken, #f5f5f5);
+        --origam-chip---background-color: var(--origam-color__surface---sunken);
         font-family: var(--origam-font__family---mono, monospace);
 
         &--more {
-            --origam-chip---background-color: var(--origam-color__action--primary---bgSubtle, #ede9fe);
-            color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+            --origam-chip---background-color: var(--origam-color__action--primary---bgSubtle);
+            color: var(--origam-color__action--primary---fgSubtle);
         }
     }
 }

@@ -549,14 +549,14 @@ useSeoMeta({
         display: block;
         font-size: var(--origam-font-size---section, 2rem);
         font-weight: var(--origam-font__weight---bold, 700);
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
         margin: 0;
     }
 
     &__desc {
         margin: 0;
         font-size: var(--origam-font__size---lg, 1rem);
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
         display: flex;
         align-items: center;
         gap: var(--origam-space---2, 0.5rem);
@@ -571,8 +571,8 @@ useSeoMeta({
 
 .util-hero {
     position: relative;
-    background: color-mix(in srgb, var(--origam-color__surface---raised, #ffffff) 62%, transparent);
-    border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+    background: color-mix(in srgb, var(--origam-color__surface---raised) 62%, transparent);
+    border-block-end: 1px solid var(--origam-color__border---default);
     overflow: hidden;
 
     &::before {
@@ -622,7 +622,7 @@ useSeoMeta({
         font-weight: 800;
         letter-spacing: -0.045em;
         line-height: 1;
-        color: var(--origam-color__text---ink, #0a0a0a);
+        color: var(--origam-color__text---ink);
         display: block;
         font-family: var(--origam-font__family---mono, monospace);
     }
@@ -643,7 +643,7 @@ useSeoMeta({
         max-inline-size: 52ch;
         font-size: var(--origam-font__size---lg, 1rem);
         line-height: 1.65;
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
     }
 
     &__bottom {
@@ -662,8 +662,8 @@ useSeoMeta({
     &__import {
         font-family: var(--origam-font__family---mono, monospace);
         font-size: var(--origam-font__size---sm, 0.75rem);
-        border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-        background: var(--origam-color__surface---sunken, #f5f5f5);
+        border: 1px solid var(--origam-color__border---default);
+        background: var(--origam-color__surface---sunken);
         border-radius: var(--origam-radius---btn, 4px);
         white-space: nowrap;
         --origam-btn---font-size: var(--origam-font__size---sm, 0.75rem);
@@ -690,7 +690,7 @@ useSeoMeta({
         font-weight: 700;
         letter-spacing: 0.09em;
         text-transform: uppercase;
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---tertiary);
     }
 
     &__list {
@@ -703,8 +703,8 @@ useSeoMeta({
         list-style: none;
 
         &--active .util-toc__link {
-            color: var(--origam-color__action--primary---bg, #7c3aed);
-            border-inline-start-color: var(--origam-color__action--primary---bg, #7c3aed);
+            color: var(--origam-color__action--primary---bg);
+            border-inline-start-color: var(--origam-color__action--primary---bg);
             font-weight: var(--origam-font__weight---semibold, 600);
         }
     }
@@ -714,15 +714,15 @@ useSeoMeta({
         padding: var(--origam-space---1\.5, 0.375rem) var(--origam-space---3, 0.75rem);
         font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: var(--origam-font__weight---medium, 500);
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
         text-decoration: none;
         border-radius: var(--origam-radius---sm, 4px);
         border-inline-start: 2px solid transparent;
         transition: color 100ms, border-color 100ms, background-color 100ms;
 
         &:hover {
-            color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-            background: var(--origam-color__surface---sunken, #f5f5f5);
+            color: var(--origam-color__action--primary---fgSubtle);
+            background: var(--origam-color__surface---sunken);
         }
     }
 }
@@ -738,7 +738,7 @@ useSeoMeta({
         font-weight: var(--origam-font__weight---semibold, 600);
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        color: var(--origam-color__action--primary---fgSubtle);
     }
 
     &__title {
@@ -747,14 +747,14 @@ useSeoMeta({
         font-size: clamp(1.25rem, 3vw, 1.5rem);
         font-weight: var(--origam-font__weight---bold, 700);
         letter-spacing: -0.02em;
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
     }
 
     &__desc {
         margin: 0;
         font-size: var(--origam-font__size---lg, 1rem);
         line-height: 1.65;
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
     }
 }
 
@@ -769,13 +769,13 @@ useSeoMeta({
     gap: var(--origam-space---3, 0.75rem);
     padding: var(--origam-space---4, 1rem);
     margin-block-start: var(--origam-space---4, 1rem);
-    background: var(--origam-color__action--primary---bgSubtle, #ede9fe);
+    background: var(--origam-color__action--primary---bgSubtle);
     border-radius: var(--origam-radius---md, 8px);
-    border-inline-start: 3px solid var(--origam-color__action--primary---bg, #7c3aed);
+    border-inline-start: 3px solid var(--origam-color__action--primary---bg);
 
     &__icon {
         flex-shrink: 0;
-        color: var(--origam-color__action--primary---bg, #7c3aed);
+        color: var(--origam-color__action--primary---bg);
         margin-block-start: 2px;
     }
 
@@ -783,7 +783,7 @@ useSeoMeta({
         margin: 0;
         font-size: var(--origam-font__size---md, 0.875rem);
         line-height: 1.6;
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
     }
 }
 
@@ -794,7 +794,7 @@ useSeoMeta({
 
     &__item {
         padding-block: var(--origam-space---4, 1rem);
-        border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+        border-block-end: 1px solid var(--origam-color__border---default);
 
         &:last-child {
             border-block-end: none;
@@ -813,7 +813,7 @@ useSeoMeta({
         margin: 0;
         font-size: var(--origam-font__size---md, 0.875rem);
         line-height: 1.55;
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
         padding-inline-start: var(--origam-space---2, 0.5rem);
     }
 
@@ -830,7 +830,7 @@ useSeoMeta({
         font-family: var(--origam-font__family---mono, monospace);
         font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
     }
 
     &__copy-icon {
@@ -850,7 +850,7 @@ useSeoMeta({
     &__default {
         font-family: var(--origam-font__family---mono, monospace);
         font-size: var(--origam-font__size---sm, 0.75rem);
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---tertiary);
     }
 
     &__return-type-code {
@@ -869,7 +869,7 @@ useSeoMeta({
         display: block;
         font-size: var(--origam-font__size---lg, 1rem);
         font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
         margin: 0 0 var(--origam-space---3, 0.75rem);
     }
 }
@@ -893,13 +893,13 @@ useSeoMeta({
         block-size: 100%;
 
         &:focus-visible {
-            outline: 2px solid var(--origam-color__action--primary---bg, #7c3aed);
+            outline: 2px solid var(--origam-color__action--primary---bg);
             outline-offset: 2px;
         }
 
         &:hover .util-related__card {
             transform: translateY(-2px);
-            box-shadow: var(--origam-shadow---md, 0 4px 12px rgba(0, 0, 0, 0.1));
+            box-shadow: var(--origam-shadow---md);
         }
     }
 
@@ -927,20 +927,20 @@ useSeoMeta({
         font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: var(--origam-font__weight---semibold, 600);
         font-family: var(--origam-font__family---mono, monospace);
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
         margin: 0;
     }
 
     &__card-arrow {
         flex-shrink: 0;
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---tertiary);
     }
 
     &__card-desc {
         margin: 0;
         font-size: var(--origam-font__size---sm, 0.75rem);
         line-height: 1.5;
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
     }
 }
 
