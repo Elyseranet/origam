@@ -8,8 +8,8 @@
   import type { INavLink, INavSection } from '~/interfaces/nav.interface'
 
   import { SKIP_LINK_HREF, SKIP_LINK_TARGET_ID } from '~/consts/a11y.const'
-  import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_DOCS_LINK, NAV_SECTIONS, NAV_THEMING_LINK } from '~/consts/nav.const'
-  import { SEARCH_SHORTCUT, GITHUB_STARS_MIN_DISPLAY, TOPBAR_DOTS } from '~/consts/chrome.const'
+  import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_SECTIONS, NAV_THEMING_LINK } from '~/consts/nav.const'
+  import { SEARCH_SHORTCUT, GITHUB_STARS_MIN_DISPLAY } from '~/consts/chrome.const'
   import { CATALOG_FAMILIES } from '~/consts/catalog-family.const'
   import { GLOBAL_SEARCH_ALL_FAMILY } from '~/consts/global-search.const'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
@@ -99,7 +99,6 @@
   const themeAriaLabel = computed(() => t('a11y.toggle_theme', 'Toggle light and dark mode'))
 
   const primaryNavAriaLabel = computed(() => t('nav.a11y.nav_primary', 'Primary navigation'))
-  const docsLabel = computed(() => t(NAV_DOCS_LINK.i18nKey, NAV_DOCS_LINK.i18nFallback))
   const githubLabel = computed(() => t('nav.github', 'GitHub'))
   const githubAriaLabel = computed(() => t('a11y.github', 'origam on GitHub'))
   const mobileMenuAriaLabel = computed(() => t('nav.a11y.open_menu', 'Open the navigation menu'))
@@ -142,22 +141,6 @@
     >
       {{ t('a11y.skip_to_content', 'Skip to content') }}
     </a>
-
-    <origam-system-bar
-      class="site-topbar"
-      :order="-1"
-      bg-color="primary"
-      aria-hidden="true"
-      data-cy="site-topbar"
-    >
-      <origam-icon
-        v-for="dot in TOPBAR_DOTS"
-        :key="dot"
-        :icon="MDI_ICONS.CIRCLE"
-        :color="dot"
-        :size="8"
-      />
-    </origam-system-bar>
 
     <origam-app-bar
       class="site-appbar"
@@ -325,16 +308,6 @@
             </template>
           </origam-menu>
 
-          <origam-btn
-            class="appbar-cta"
-            bg-color="primary"
-            variant="flat"
-            rounded="lg"
-            :href="navLinkHref(NAV_DOCS_LINK)"
-            :text="docsLabel"
-            data-cy="nav-docs-cta"
-          />
-
           <origam-menu
             class="appbar-menu appbar-menu--mobile"
             location="bottom"
@@ -371,10 +344,6 @@
                 <origam-list-item
                   :title="themingLabel"
                   :href="navLinkHref(NAV_THEMING_LINK)"
-                />
-                <origam-list-item
-                  :title="docsLabel"
-                  :href="navLinkHref(NAV_DOCS_LINK)"
                 />
                 <origam-list-item
                   :title="githubLabel"
@@ -599,12 +568,6 @@
     align-items: center;
   }
 
-  .site-topbar {
-    --origam-system-bar---justify-content: flex-start;
-    --origam-system-bar---padding-inline: var(--site-gutter);
-    gap: var(--origam-space---1, 0.25rem);
-  }
-
   .site-appbar {
     --origam-toolbar---padding-inline: var(--site-gutter);
     --origam-toolbar---background: var(--origam-appbar---bg);
@@ -685,14 +648,6 @@
         --origam-btn---font-size: 18px;
       }
     }
-  }
-
-  .appbar-cta {
-    --origam-btn---height: 38px;
-    --origam-btn---min-height: 38px;
-    --origam-btn---font-size: 13px;
-    --origam-btn---font-weight: 600;
-    --origam-btn---padding-inline: var(--origam-space---4, 1rem);
   }
 
   .appbar-actions .appbar-burger {
@@ -922,8 +877,7 @@
     .primary-nav,
     .appbar-actions .appbar-actions__stars,
     .appbar-actions .appbar-actions__github,
-    .appbar-actions .appbar-actions__btn--lang,
-    .appbar-actions .appbar-cta {
+    .appbar-actions .appbar-actions__btn--lang {
       display: none;
     }
 
@@ -938,10 +892,6 @@
   }
 
   @media (max-width: 39.9375rem) {
-    .site-topbar {
-      display: none;
-    }
-
     .appbar-actions .appbar-search-btn,
     .appbar-actions .appbar-burger,
     .appbar-actions__btn--icon {
