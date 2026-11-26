@@ -22,6 +22,9 @@ const MARKETING_GREEN_SPECS = [
     // #1428 — contraste AA des CTA primaires, 8 marques x 2 modes.
     'home-cta-contrast.spec.ts',
 
+    // #1517 — la vitrine des themes ouvre le Theme Builder avec le theme precharge.
+    'home-themes-builder-link.spec.ts',
+
     // #953 — le catalogue ne peut plus se vider en silence.
     //
     // Ce spec existait depuis longtemps et n'etait execute par AUCUN job :

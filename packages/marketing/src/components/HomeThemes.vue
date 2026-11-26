@@ -87,6 +87,7 @@
                 :data-cy="`themes-tile-surface-${tile.key}`"
                 rounded="lg"
                 tag="article"
+                elevation="md"
                 border
                 border-color="var(--origam-color__border---ghost)"
                 class="home-themes__preview-tile"
@@ -108,10 +109,13 @@
                     <origam-btn
                       color="primary"
                       size="small"
+                      append-icon="mdi-arrow-right"
+                      :href="tile.href"
+                      :aria-label="t('home.themes.preview_open_aria', 'Open the {theme} theme in the builder', { theme: t(tile.labelKey, tile.labelFallback) })"
                       class="home-themes__preview-btn"
                       data-cy="themes-tile-button"
                     >
-                      {{ t('home.themes.preview_button', 'Button') }}
+                      {{ t('home.themes.preview_open', 'Customize') }}
                     </origam-btn>
                   </div>
                 </figure>

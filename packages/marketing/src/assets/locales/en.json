@@ -1053,15 +1053,15 @@
             "preview_dark": "dark.json",
             "preview_brand_a": "brand-a.json",
             "preview_brand_b": "brand-b.json",
-            "preview_button": "Button",
+            "preview_open": "Customize",
+            "preview_open_aria": "Open the {theme} theme in the builder",
             "actions_label": "Try the theme builder",
             "cta_builder": "Try the theme builder"
         },
         "cta": {
-            "title": "Ready to ship faster?",
-            "description": "Spin up your Vue 3 project with origam in 30 seconds.",
-            "cta_start": "Get started",
-            "cta_docs": "Read docs",
+            "title": "Ready to build your interfaces?",
+            "cta_start": "Explore the components",
+            "cta_docs": "Read the documentation",
             "actions_label": "Get started"
         }
     },

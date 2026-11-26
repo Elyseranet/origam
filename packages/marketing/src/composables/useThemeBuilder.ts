@@ -466,6 +466,20 @@ export function useThemeBuilder () {
     const presets: IThemeBuilderPreset[] = THEME_BUILDER_PRESETS
 
     /**
+     * Preload from URL query (`?preset=<key>&mode=light|dark`). Zero-trust input:
+     * `preset` is accepted only if it names a registered preset, `mode` only if
+     * it is light|dark; anything else is ignored and the builder is left untouched.
+     */
+    const seedFromQuery = (preset: unknown, mode: unknown): void => {
+        if (typeof preset !== 'string' || !THEME_BUILDER_PRESETS.some(p => p.key === preset)) return
+        seedPreset(preset)
+        if (mode === 'dark') {
+            state.mode = 'dark'
+            state.activeMode = 'dark'
+        }
+    }
+
+    /**
      * Load the persisted state from localStorage (client-only). Called from the
      * page in `onMounted` so SSR never touches `window`/`localStorage`.
      *
@@ -611,6 +625,7 @@ export function useThemeBuilder () {
         downloadJson,
         importTheme,
         seedPreset,
+        seedFromQuery,
         clearPreset,
         loadStorage,
         startAutoPersist

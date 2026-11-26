@@ -1,52 +1,68 @@
 <template>
-  <section
-    class="home-cta"
-    aria-labelledby="cta-title"
-  >
-    <div class="home-cta__inner">
-      <origam-title
-        id="cta-title"
-        tag="h2"
-        class="home-cta__title"
-      >
-        {{ t('home.cta.title', 'Ready to ship faster?') }}
-      </origam-title>
+  <origam-theme-provider mode="dark">
+    <section
+      class="home-cta"
+      aria-labelledby="cta-title"
+    >
+      <svg
+        class="home-cta__brush"
+        viewBox="0 0 1440 360"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+        focusable="false"
+    >
+        <path
+          class="home-cta__stroke home-cta__stroke--violet"
+          d="M0 250 C 240 150 420 330 700 250 S 1180 90 1440 190 L 1440 360 L 0 360 Z"
+        />
+        <path
+          class="home-cta__stroke home-cta__stroke--sun"
+          d="M0 300 C 280 230 480 360 760 300 S 1200 190 1440 262 L 1440 360 L 0 360 Z"
+        />
+      </svg>
 
-      <p class="home-cta__description">
-        {{ t('home.cta.description', 'Spin up your Vue 3 project with origam in 30 seconds.') }}
-      </p>
-
-      <nav
-        class="home-cta__actions"
-        :aria-label="t('home.cta.actions_label', 'Get started')"
-      >
-        <origam-btn
-          class="home-cta__btn home-cta__btn--start"
-          variant="flat"
-          append-icon="mdi-arrow-right"
-          :href="CTA_START_HREF"
-          data-cy="cta-btn-start"
+      <div class="home-cta__inner">
+        <origam-title
+          id="cta-title"
+          tag="h2"
+          class="home-cta__title"
         >
-          {{ t('home.cta.cta_start', 'Get started') }}
-        </origam-btn>
+          {{ t('home.cta.title', 'Ready to build your interfaces?') }}
+        </origam-title>
 
-        <origam-btn
-          class="home-cta__btn home-cta__btn--docs"
-          variant="text"
-          prepend-icon="mdi-code-tags"
-          :href="CTA_DOCS_HREF"
-          data-cy="cta-btn-docs"
+        <nav
+          class="home-cta__actions"
+          :aria-label="t('home.cta.actions_label', 'Get started')"
         >
-          {{ t('home.cta.cta_docs', 'Read docs') }}
-        </origam-btn>
-      </nav>
-    </div>
-  </section>
+          <origam-btn
+            class="home-cta__btn"
+            variant="flat"
+            :bg-color="CTA_SUN_COLOR"
+            :color="CTA_INK_COLOR"
+            :href="CTA_COMPONENTS_HREF"
+            data-cy="cta-btn-start"
+          >
+            {{ t('home.cta.cta_start', 'Explore the components') }}
+          </origam-btn>
+
+          <origam-btn
+            class="home-cta__btn"
+            variant="outlined"
+            :href="NAV_DOCS_LINK.href"
+            data-cy="cta-btn-docs"
+          >
+            {{ t('home.cta.cta_docs', 'Read the documentation') }}
+          </origam-btn>
+        </nav>
+      </div>
+    </section>
+  </origam-theme-provider>
 </template>
 
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
-import { CTA_START_HREF, CTA_DOCS_HREF } from '~/consts/cta.const'
+import { CTA_COMPONENTS_HREF, CTA_INK_COLOR, CTA_SUN_COLOR } from '~/consts/cta.const'
+import { NAV_DOCS_LINK } from '~/consts/nav.const'
 
 const { t } = useT()
 </script>
@@ -54,47 +70,52 @@ const { t } = useT()
 <style scoped lang="scss">
 .home-cta {
     position: relative;
-    padding-block: var(--origam-space---30, 7.5rem);
-    padding-inline: var(--origam-space---6, 1.5rem);
     overflow: hidden;
+    isolation: isolate;
+    padding-block: var(--origam-space---24, 6rem);
+    padding-inline: var(--origam-space---6, 1.5rem);
+    background-color: color-mix(in srgb, var(--origam-color__action--primary---bg) 24%, var(--origam-color__surface---default));
+    color: var(--origam-color__text---primary);
 
-    &::before {
-        content: '';
+    &__brush {
         position: absolute;
         inset-inline: 0;
-        inset-block-start: 0;
-        block-size: 280px;
-        background-image: var(--origam-gradient---cta-glow-top);
+        inset-block-end: 0;
+        inline-size: 100%;
+        block-size: 70%;
+        z-index: -1;
         pointer-events: none;
-        z-index: 0;
+    }
+
+    &__stroke {
+        &--violet {
+            fill: var(--origam-color__action--primary---bg);
+            opacity: 0.55;
+        }
+
+        &--sun {
+            fill: var(--origam-color__sun---500);
+            opacity: 0.85;
+        }
     }
 
     &__inner {
-        position: relative;
-        z-index: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: var(--origam-space---6, 1.5rem);
-        max-width: 48rem;
+        gap: var(--origam-space---8, 2rem);
+        max-inline-size: 48rem;
         margin-inline: auto;
         text-align: center;
     }
 
     &__title {
         margin: 0;
-        font-size: var(--origam-font-size---cta, 4rem);
-        font-weight: var(--origam-font-weight---extrabold, 800);
-        letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-        line-height: var(--origam-line-height---hero, 0.95);
-        color: var(--origam-color__text---ink, #0a0a0a);
-    }
-
-    &__description {
-        margin: 0;
-        font-size: var(--origam-font-size---lg, 1.125rem);
-        color: var(--origam-color__text---secondary, #525252);
-        max-width: 36rem;
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        font-weight: var(--origam-font__weight---bold, 700);
+        letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
+        line-height: 1.1;
+        color: var(--origam-color__text---primary);
     }
 
     &__actions {
@@ -103,32 +124,6 @@ const { t } = useT()
         align-items: center;
         justify-content: center;
         gap: var(--origam-space---3, 0.75rem);
-        margin-block-start: var(--origam-space---2, 0.5rem);
-    }
-
-    &__btn {
-        --origam-btn---height: 52px;
-        --origam-btn---density: 0px;
-        --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
-        --origam-btn---font-size: 1rem;
-        --origam-btn---font-weight: 400;
-        --origam-btn---border-radius: var(--origam-radius---btn, 10px);
-
-        &--start {
-            background-image: var(--origam-gradient---btn-primary);
-            background-color: var(--origam-color---btn-primary-bg, transparent);
-            box-shadow: var(--origam-shadow---btn-primary);
-            --origam-btn---color: var(--origam-color---btn-primary-text);
-        }
-
-        &--docs {
-            background-image: var(--origam-gradient---btn-secondary);
-            background-color: var(--origam-color---btn-secondary-bg);
-            box-shadow: var(--origam-shadow---btn-secondary);
-            border: 1px solid var(--origam-color---btn-secondary-border);
-            --origam-btn---color: var(--origam-color---btn-secondary-text);
-            --origam-btn---density-padding-x: var(--origam-space---4, 1rem);
-        }
     }
 }
 </style>
