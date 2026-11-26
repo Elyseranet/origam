@@ -240,3 +240,45 @@ describe('OrigamTreeview — disabled nodes', () => {
         wrapper.unmount()
     })
 })
+
+// mandatory (#1161) — la dernière ligne sélectionnée ne se désélectionne pas
+describe('OrigamTreeview — mandatory', () => {
+    it('single : re-cliquer la ligne choisie la garde sélectionnée', async () => {
+        const wrapper = mountTreeview({ selectMode: 'single', mandatory: true })
+        await row(wrapper, 'leaf-1').trigger('click')
+        await row(wrapper, 'leaf-1').trigger('click')
+
+        expect(wrapper.emitted('update:modelValue')).toEqual([['leaf-1']])
+        expect(row(wrapper, 'leaf-1').attributes('aria-selected')).toBe('true')
+        wrapper.unmount()
+    })
+
+    it('single : cliquer une autre ligne déplace toujours la sélection', async () => {
+        const wrapper = mountTreeview({ selectMode: 'single', mandatory: true })
+        await row(wrapper, 'leaf-1').trigger('click')
+        await row(wrapper, 'leaf-2').trigger('click')
+
+        expect(wrapper.emitted('update:modelValue')).toEqual([['leaf-1'], ['leaf-2']])
+        wrapper.unmount()
+    })
+
+    it('multiple : on peut désélectionner tant qu\'il en reste une', async () => {
+        const wrapper = mountTreeview({ selectMode: 'multiple', mandatory: true })
+        await row(wrapper, 'leaf-1').trigger('click')
+        await row(wrapper, 'leaf-2').trigger('click')
+        await row(wrapper, 'leaf-1').trigger('click')
+        await row(wrapper, 'leaf-2').trigger('click')
+
+        expect(wrapper.emitted('update:modelValue')!.at(-1)).toEqual([['leaf-2']])
+        wrapper.unmount()
+    })
+
+    it('sans mandatory (défaut), re-cliquer désélectionne — comportement inchangé', async () => {
+        const wrapper = mountTreeview({ selectMode: 'single' })
+        await row(wrapper, 'leaf-1').trigger('click')
+        await row(wrapper, 'leaf-1').trigger('click')
+
+        expect(wrapper.emitted('update:modelValue')!.at(-1)).toEqual([''])
+        wrapper.unmount()
+    })
+})

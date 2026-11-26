@@ -99,7 +99,7 @@ describe('props declared only in an imported interface reach the runtime descrip
         [OrigamSliderField, 'OrigamSliderField', 112],
         [OrigamVideo, 'OrigamVideo', 86],
         [OrigamTimelineItem, 'OrigamTimelineItem', 16],
-        [OrigamTreeview, 'OrigamTreeview', 15],
+        [OrigamTreeview, 'OrigamTreeview', 16],
         [OrigamClientOnly, 'OrigamClientOnly', 2]
     ])('%#. $1 keeps its full prop count', (component, label, count) => {
         expect(propsOf(component).length, `${label} prop count changed`).toBe(count)

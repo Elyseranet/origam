@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added — `OrigamTreeview` : prop `mandatory` (#1161)
+
+- Cause : en sélection simple, re-cliquer la ligne choisie la désélectionnait et le DS n'offrait aucun mode « au moins un », contrairement aux autres composants de groupe (`OrigamTabs`, `OrigamWindow`…). Nouvelle prop opt-in `mandatory` (défaut `false`, comportement inchangé) : la dernière ligne sélectionnée reste sélectionnée, en `single` comme en `multiple`.
+
 ## [2.46.0] - 2026-11-26
 
 ### Fixed — `TShikiHighlighter` accepte un highlighter `shiki/core` (#1136)
