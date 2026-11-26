@@ -1,11 +1,29 @@
-import type { CSSProperties } from 'vue'
+import type { IHeroVisual } from '~/interfaces/hero.interface'
 
-/*
- * Hero badge (OrigamChip) instance overrides. OrigamChip has NO `variant`
- * prop (verified against chip.interface.ts) — the maquette's transparent
- * outlined pill is built from: color="primary" (violet ink), a `border`,
- * and a transparent surface via the chip's own background-color token.
+/** Paysage aquarelle du kit A1 (clair uniquement), servi en trois largeurs AVIF. */
+export const HERO_WATERCOLOR: IHeroVisual = {
+    src: '/brand/hero-watercolor-1672.avif',
+    srcset: '/brand/hero-watercolor-836.avif 836w, /brand/hero-watercolor-1254.avif 1254w, /brand/hero-watercolor-1672.avif 1672w'
+}
+
+export const HERO_WATERCOLOR_SIZES = '100vw'
+
+/**
+ * Point d'insertion de la version nuit de l'aquarelle (fournie plus tard par
+ * le propriétaire) : remplacer cette entrée par un `src` + `srcset` du même
+ * format que HERO_WATERCOLOR. En attendant, le symbole A1 seul sur fond encre.
  */
-export const HERO_BADGE_VARS: CSSProperties = {
-    '--origam-chip---background-color': 'transparent'
-} as CSSProperties
+export const HERO_NIGHT: IHeroVisual = {
+    src: '/brand/hero-symbol-dark.avif',
+    srcset: '/brand/hero-symbol-dark.avif 403w'
+}
+
+export const HERO_NIGHT_SIZES = '403px'
+
+/**
+ * CTA « soleil » : la rampe `--origam-color__sun---*` arrive avec #1514 et
+ * n'a pas encore de repli. Le texte reste encre dans les deux modes (le soleil
+ * est clair partout), d'où une primitive qui ne s'inverse pas.
+ */
+export const HERO_CTA_BG = 'var(--origam-color__sun---500)'
+export const HERO_CTA_FG = 'var(--origam-color__neutral---950)'
