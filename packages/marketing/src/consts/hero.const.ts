@@ -8,7 +8,7 @@ export const HERO_WATERCOLOR: IHeroVisual = {
 
 export const HERO_WATERCOLOR_SIZES = '100vw'
 
-export const HERO_SYMBOL_SIZES = '403px'
+export const HERO_SYMBOL_SIZES = '34rem'
 
 /** Symbole A1 en clair, posé au-dessus du paysage comme dans la maquette. */
 export const HERO_SYMBOL_DAY: IHeroVisual = {
@@ -26,3 +26,18 @@ export const HERO_CTA_FG = 'var(--origam-color__neutral---950)'
 
 /** Invite de shell décorative devant `npm i origam` : jamais copiée (prop `prompt` d'OrigamCode). */
 export const HERO_INSTALL_PROMPT = '$'
+
+/** Fond sous le bouton GitHub : sans lui, son texte passe sur la montagne sombre en mobile. */
+export const HERO_CTA_OUTLINE_BG = 'color-mix(in srgb, var(--origam-color__surface---default) 80%, transparent)'
+
+/**
+ * CTA du hero : 52 px (cran `x-large`), texte 16 px / 600 sans interlettrage,
+ * 32 px de padding horizontal — cibles de la maquette (#1554, T3), échelle ×1,8.
+ */
+export const HERO_BTN = {
+    size: 'x-large',
+    fontSize: 'lg',
+    fontWeight: 'semibold',
+    letterSpacing: 'normal',
+    paddingInline: '32px'
+} as const

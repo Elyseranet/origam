@@ -30,8 +30,8 @@
           :sizes="HERO_SYMBOL_SIZES"
           alt=""
           width="36%"
-          max-width="24rem"
-          height="56%"
+          max-width="34rem"
+          height="74%"
           position="center"
           eager
           data-cy="hero-symbol"
@@ -39,12 +39,11 @@
       </div>
   
       <origam-container
-        class="home-hero__inner"
-        max-width="none"
+        class="home-hero__inner home-container"
       >
         <header class="home-hero__header">
           <p
-            class="home-hero__eyebrow"
+            class="home-hero__eyebrow home-eyebrow"
             data-cy="hero-eyebrow"
           >
             {{ t('home.hero.eyebrow', 'VUE 3 DESIGN SYSTEM') }}
@@ -73,6 +72,7 @@
         >
           <origam-btn
             class="home-hero__btn"
+            v-bind="HERO_BTN"
             variant="flat"
             :bg-color="HERO_CTA_BG"
             :color="HERO_CTA_FG"
@@ -85,8 +85,12 @@
   
           <origam-btn
             class="home-hero__btn"
-            variant="outlined"
+            v-bind="HERO_BTN"
+            variant="flat"
             color="primary"
+            :bg-color="HERO_CTA_OUTLINE_BG"
+            border="thin"
+            border-color="currentColor"
             prepend-icon="mdi-github"
             :href="githubRepo"
             target="_blank"
@@ -123,7 +127,9 @@ import { computed } from 'vue'
 import { useT } from '~/composables/useT'
 import { CTA_START_HREF } from '~/consts/cta.const'
 import {
+    HERO_BTN,
     HERO_CTA_BG,
+    HERO_CTA_OUTLINE_BG,
     HERO_CTA_FG,
     HERO_INSTALL_PROMPT,
     HERO_SYMBOL_DAY,
@@ -189,66 +195,65 @@ defineExpose({})
     }
 
     &__img--symbol {
-        inset: 22% 12% auto auto;
+        inset: 4% 12% auto auto;
     }
 
+    /* Voile limité à la zone du texte : le paysage et le cerisier restent lisibles sous les boutons. */
     &__visual::after {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-            90deg,
-            color-mix(in srgb, var(--origam-color__surface---default) 88%, transparent),
-            transparent 60%
-        );
+        background: color-mix(in srgb, var(--origam-color__surface---default) 70%, transparent);
+        mask-image: linear-gradient(to bottom, var(--origam-color__neutral---950) 88%, transparent);
     }
 
     &__inner {
-        --origam-container---padding-inline-start: var(--site-gutter);
-        --origam-container---padding-inline-end: var(--site-gutter);
+        --origam-container---max-width: calc(var(--home-container-max) + 2 * var(--site-gutter));
 
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        justify-content: center;
+        justify-content: flex-start;
         gap: var(--origam-space---6, 1.5rem);
-        min-block-size: clamp(24rem, 52vw, 40rem);
-        padding-block: var(--origam-space---12, 3rem);
+        min-block-size: clamp(24rem, 40vw, 36rem);
+        padding-block: var(--origam-space---16, 4rem) var(--origam-space---24, 6rem);
     }
 
     &__header {
         display: flex;
         flex-direction: column;
-        gap: var(--origam-space---3, 0.75rem);
-        max-inline-size: 36rem;
+        gap: var(--origam-space---5, 1.25rem);
+        max-inline-size: 100%;
     }
 
     &__eyebrow {
+        --home-eyebrow-mark-w: 0.9em;
+        --home-eyebrow-mark-h: 0.65em;
+        --home-eyebrow-gap: 0.75em;
+
         margin: 0;
-        font-size: var(--origam-font__size---xs, 0.75rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        letter-spacing: 0.2em;
-        color: var(--origam-color__text---primary);
+        font-size: var(--home-fs-small);
+        letter-spacing: 0.3em;
     }
 
     &__title {
         margin: 0;
-        font-size: clamp(2.25rem, 5vw, 3.5rem);
+        font-size: var(--home-fs-h1-sentence);
         font-weight: var(--origam-font__weight---bold, 700);
-        line-height: 1;
+        line-height: 1.08;
         color: var(--origam-color__text---primary);
     }
 
     &__tagline {
         margin: 0;
-        font-size: clamp(1.25rem, 2.6vw, 1.75rem);
-        line-height: 1.25;
+        font-size: var(--home-fs-h3);
+        line-height: 1.3;
         color: var(--origam-color__text---primary);
     }
 
     &__description {
         margin: 0;
-        font-size: var(--origam-font__size---md, 1rem);
+        font-size: var(--home-fs-body);
         line-height: 1.6;
         color: var(--origam-color__text---primary);
     }
@@ -256,7 +261,8 @@ defineExpose({})
     &__ctas {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--origam-space---3, 0.75rem);
+        gap: var(--origam-space---5, 1.25rem);
+        margin-block-start: var(--origam-space---2, 0.5rem);
     }
 
     &__install {
@@ -265,8 +271,22 @@ defineExpose({})
 
     &__proof {
         margin: 0;
-        font-size: var(--origam-font__size---sm, 0.875rem);
+        font-size: var(--home-fs-small);
         color: var(--origam-color__text---primary);
+    }
+}
+
+@media (min-width: 64rem) {
+    .home-hero__visual::after {
+        background: linear-gradient(
+            90deg,
+            color-mix(in srgb, var(--origam-color__surface---default) 70%, transparent),
+            transparent 45%
+        );
+    }
+
+    .home-hero__header {
+        max-inline-size: 42%;
     }
 }
 </style>
