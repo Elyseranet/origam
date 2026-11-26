@@ -65,7 +65,18 @@ for (const { name, path } of LOCALES) {
             await page.evaluate(() => document.fonts.ready)
 
             const overflow = await settledOverflow(page)
-            expect(overflow, `debordement horizontal de la home ${name} a ${width}px`).toBeLessThanOrEqual(0)
+            // Releve AVANT l'assertion : un echec en CI (Linux) ne laisse sinon
+            // aucune trace de l'element fautif, seulement « Received: 1 ».
+            const widest = await page.evaluate(() => {
+                const clientWidth = document.documentElement.clientWidth
+                return [...document.querySelectorAll('body *')]
+                    .map(e => ({ e, r: e.getBoundingClientRect() }))
+                    .filter(({ r }) => r.width > 0 && r.right > clientWidth)
+                    .sort((a, b) => b.r.right - a.r.right)
+                    .slice(0, 5)
+                    .map(({ e, r }) => `${e.tagName.toLowerCase()}.${String(e.className).slice(0, 40)} right=${r.right.toFixed(2)} width=${r.width.toFixed(2)}`)
+            })
+            expect(overflow, `debordement horizontal de la home ${name} a ${width}px — ${widest.join(' | ')}`).toBeLessThanOrEqual(0)
 
             const offenders = await page.evaluate(() => {
                 const clientWidth = document.documentElement.clientWidth
