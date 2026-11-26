@@ -4,7 +4,7 @@
  */
 export const CTA_START_HREF = '/installation'
 
-/** Primary CTA of the closing band: the component catalogue. */
+/** Secondary CTA of the closing band: the component catalogue. */
 export const CTA_COMPONENTS_HREF = '/components'
 
 /** Sun accent (kit A1) has no DS intent: primitive ramp from #1514. */

@@ -47,7 +47,7 @@
             class="home-hero__eyebrow"
             data-cy="hero-eyebrow"
           >
-            {{ t('home.hero.eyebrow', 'DESIGN SYSTEM') }}
+            {{ t('home.hero.eyebrow', 'VUE 3 DESIGN SYSTEM') }}
           </p>
   
           <origam-title
@@ -55,15 +55,15 @@
             tag="h1"
             class="home-hero__title"
           >
-            {{ t('home.hero.title', 'Origam') }}
+            {{ t('home.hero.title', 'The Vue 3 design system that folds to your brand') }}
           </origam-title>
   
           <p class="home-hero__tagline">
-            {{ t('home.hero.tagline', 'A modern, flexible and accessible design system') }}
+            {{ t('home.hero.tagline', 'Props first, CSS second.') }}
           </p>
   
           <p class="home-hero__description">
-            {{ t('home.hero.description', 'A library of components and tools to build consistent, fast and elegant interfaces.') }}
+            {{ t('home.hero.description', '97 component families, from forms to charts, and a Nuxt module in the same package. A theme is one object: written once, applied to the whole catalogue.') }}
           </p>
         </header>
   
@@ -80,7 +80,7 @@
             :href="CTA_START_HREF"
             data-cy="hero-cta-start"
           >
-            {{ t('home.hero.cta_start', 'Get started') }}
+            {{ t('home.hero.cta_start', 'Install') }}
           </origam-btn>
   
           <origam-btn
@@ -96,17 +96,36 @@
             {{ t('home.hero.cta_github', 'View on GitHub') }}
           </origam-btn>
         </nav>
+
+        <origam-code
+          :code="installCommand"
+          :prompt="HERO_INSTALL_PROMPT"
+          lang="plaintext"
+          compact
+          copyable
+          class="home-hero__install"
+          data-cy="hero-install-command"
+        />
+
+        <p
+          class="home-hero__proof"
+          data-cy="hero-proof"
+        >
+          {{ t('home.hero.proof', 'MIT license · Vue 3.5+ · Nuxt module included') }}
+        </p>
       </origam-container>
     </section>
   </origam-theme-provider>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useT } from '~/composables/useT'
 import { CTA_START_HREF } from '~/consts/cta.const'
 import {
     HERO_CTA_BG,
     HERO_CTA_FG,
+    HERO_INSTALL_PROMPT,
     HERO_SYMBOL_DAY,
     HERO_SYMBOL_SIZES,
     HERO_WATERCOLOR,
@@ -124,6 +143,8 @@ import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
 const { t } = useT()
 
 const githubRepo = MARKETING_DEFAULTS.githubRepo
+
+const installCommand = computed(() => t('home.hero.install', 'npm i origam'))
 
 defineEmits([])
 
@@ -199,7 +220,7 @@ defineExpose({})
         display: flex;
         flex-direction: column;
         gap: var(--origam-space---3, 0.75rem);
-        max-inline-size: 28rem;
+        max-inline-size: 36rem;
     }
 
     &__eyebrow {
@@ -212,7 +233,7 @@ defineExpose({})
 
     &__title {
         margin: 0;
-        font-size: clamp(3rem, 8vw, 5rem);
+        font-size: clamp(2.25rem, 5vw, 3.5rem);
         font-weight: var(--origam-font__weight---bold, 700);
         line-height: 1;
         color: var(--origam-color__text---primary);
@@ -236,6 +257,16 @@ defineExpose({})
         display: flex;
         flex-wrap: wrap;
         gap: var(--origam-space---3, 0.75rem);
+    }
+
+    &__install {
+        max-inline-size: 100%;
+    }
+
+    &__proof {
+        margin: 0;
+        font-size: var(--origam-font__size---sm, 0.875rem);
+        color: var(--origam-color__text---primary);
     }
 }
 </style>

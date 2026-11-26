@@ -35,10 +35,10 @@ import { useT } from '~/composables/useT'
 const { t } = useT()
 
 useSeoMeta({
-    title: () => t('home.meta.title', 'origam · Vue 3 design system'),
-    description: () => t('home.meta.description', 'Build your entire Vue 3 design system in minutes.'),
-    ogTitle: () => t('home.meta.title', 'origam · Vue 3 design system'),
-    ogDescription: () => t('home.meta.description', 'Build your entire Vue 3 design system in minutes.')
+    title: () => t('home.meta.title', 'origam · the Vue 3 design system that folds to your brand'),
+    description: () => t('home.meta.description', '97 Vue 3 component families, from forms to charts. A theme is one object: you set props first, then tokens. MIT licensed.'),
+    ogTitle: () => t('home.meta.title', 'origam · the Vue 3 design system that folds to your brand'),
+    ogDescription: () => t('home.meta.description', '97 Vue 3 component families, from forms to charts. A theme is one object: you set props first, then tokens. MIT licensed.')
 })
 </script>
 

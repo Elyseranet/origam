@@ -23,3 +23,6 @@ export const HERO_SYMBOL_DAY: IHeroVisual = {
  */
 export const HERO_CTA_BG = 'var(--origam-color__sun---500)'
 export const HERO_CTA_FG = 'var(--origam-color__neutral---950)'
+
+/** Invite de shell décorative devant `npm i origam` : jamais copiée (prop `prompt` d'OrigamCode). */
+export const HERO_INSTALL_PROMPT = '$'

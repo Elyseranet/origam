@@ -4,17 +4,6 @@ export interface IStrength {
     descriptionKey: string
 }
 
-export interface IComparison {
-    nameKey: string
-    vueNative: boolean
-    themingPropsFirst: boolean
-    a11yTested: boolean
-    cssFist: boolean
-    treeShakable: boolean
-    chartsIncluded: boolean
-    noteKey?: string
-}
-
 export interface IUseCase {
     icon: string
     titleKey: string

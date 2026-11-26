@@ -1,8 +1,10 @@
 /**
  * HomeHero — maquette A du brand kit (#1517, lot 4A).
  *
- * Contrat : eyebrow, H1 « Origam », accroche, description, deux CTA, et une
- * illustration purement décorative (aquarelle en clair, symbole A1 en sombre).
+ * Contrat (#1543) : eyebrow, H1 « The Vue 3 design system that folds to your
+ * brand », accroche « Props first, CSS second. », description, deux CTA, la
+ * ligne `npm i origam` copiable, la ligne de preuves, et une illustration
+ * purement décorative (aquarelle en clair, symbole A1 en sombre).
  *
  * Pré-requis : dev server marketing sur MARKETING_BASE_URL (défaut :3000).
  * Run :
@@ -24,20 +26,34 @@ test.describe('HomeHero — maquette A', () => {
         await expect(page.locator('#hero')).toHaveAttribute('aria-labelledby', 'hero-title')
         const h1 = page.locator('#hero h1')
         await expect(h1).toHaveCount(1)
-        await expect(h1).toHaveText('Origam')
+        await expect(h1).toHaveText('The Vue 3 design system that folds to your brand')
         await expect(h1).toHaveAttribute('id', 'hero-title')
     })
 
     test('eyebrow, accroche et description sont visibles', async ({ page }) => {
-        await expect(page.locator('[data-cy="hero-eyebrow"]')).toHaveText('DESIGN SYSTEM')
-        await expect(page.locator('#hero .home-hero__tagline')).toBeVisible()
+        await expect(page.locator('[data-cy="hero-eyebrow"]')).toHaveText('VUE 3 DESIGN SYSTEM')
+        await expect(page.locator('#hero .home-hero__tagline')).toHaveText('Props first, CSS second.')
         await expect(page.locator('#hero .home-hero__description')).toBeVisible()
     })
 
-    test('CTA « Get started » mène à /installation', async ({ page }) => {
+    test('CTA « Install » mène à /installation', async ({ page }) => {
         const cta = page.locator('[data-cy="hero-cta-start"]')
         await expect(cta).toBeVisible()
+        await expect(cta).toContainText('Install')
         await expect(cta).toHaveAttribute('href', '/installation')
+    })
+
+    test('la ligne « npm i origam » est un OrigamCode copiable, invite hors du code', async ({ page }) => {
+        const code = page.locator('[data-cy="hero-install-command"]')
+        await expect(code).toBeVisible()
+        await expect(code).toHaveClass(/origam-code/)
+        await expect(code.locator('code')).toHaveText('npm i origam')
+        await expect(code.locator('button')).toHaveCount(1)
+    })
+
+    test('la ligne de preuves cite la licence, Vue et Nuxt, sans compteur d\'adoption', async ({ page }) => {
+        await expect(page.locator('[data-cy="hero-proof"]')).toHaveText('MIT license · Vue 3.5+ · Nuxt module included')
+        await expect(page.locator('#hero')).not.toContainText(/stars|downloads|WCAG/i)
     })
 
     test('CTA GitHub est externe (target=_blank, rel noopener)', async ({ page }) => {

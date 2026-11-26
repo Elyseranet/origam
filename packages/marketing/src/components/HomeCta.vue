@@ -27,8 +27,15 @@
           tag="h2"
           class="home-cta__title"
         >
-          {{ t('home.cta.title', 'Ready to build your interfaces?') }}
+          {{ t('home.cta.title', 'Three steps to begin.') }}
         </origam-title>
+
+        <p
+          class="home-cta__description"
+          data-cy="cta-description"
+        >
+          {{ t('home.cta.description', 'npm i origam, then the plugin and a first component. On Nuxt, one module to add.') }}
+        </p>
 
         <nav
           class="home-cta__actions"
@@ -39,21 +46,38 @@
             variant="flat"
             :bg-color="CTA_SUN_COLOR"
             :color="CTA_INK_COLOR"
-            :href="CTA_COMPONENTS_HREF"
+            :href="CTA_START_HREF"
             data-cy="cta-btn-start"
           >
-            {{ t('home.cta.cta_start', 'Explore the components') }}
+            {{ t('home.cta.cta_start', 'Install') }}
           </origam-btn>
 
           <origam-btn
             class="home-cta__btn"
             variant="outlined"
-            :href="NAV_DOCS_LINK.href"
+            :href="CTA_COMPONENTS_HREF"
             data-cy="cta-btn-docs"
           >
-            {{ t('home.cta.cta_docs', 'Read the documentation') }}
+            {{ t('home.cta.cta_docs', 'Explore the components') }}
           </origam-btn>
         </nav>
+
+        <p
+          class="home-cta__support"
+          data-cy="cta-support"
+        >
+          {{ t('home.cta.support', 'Origam is free, MIT licensed and maintained by one person.') }}
+          <origam-btn
+            class="home-cta__support-link"
+            variant="text"
+            size="small"
+            append-icon="mdi-arrow-right"
+            :href="CONTACT_SUPPORT_ROUTE"
+            data-cy="cta-support-link"
+          >
+            {{ t('home.cta.support_link', 'Support the project') }}
+          </origam-btn>
+        </p>
       </div>
     </section>
   </origam-theme-provider>
@@ -61,8 +85,8 @@
 
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
-import { CTA_COMPONENTS_HREF, CTA_INK_COLOR, CTA_SUN_COLOR } from '~/consts/cta.const'
-import { NAV_DOCS_LINK } from '~/consts/nav.const'
+import { CONTACT_SUPPORT_ROUTE } from '~/consts/contact.const'
+import { CTA_COMPONENTS_HREF, CTA_INK_COLOR, CTA_START_HREF, CTA_SUN_COLOR } from '~/consts/cta.const'
 
 const { t } = useT()
 </script>
@@ -82,7 +106,7 @@ const { t } = useT()
         inset-inline: 0;
         inset-block-end: 0;
         inline-size: 100%;
-        block-size: 70%;
+        block-size: 45%;
         z-index: -1;
         pointer-events: none;
     }
@@ -115,6 +139,19 @@ const { t } = useT()
         font-weight: var(--origam-font__weight---bold, 700);
         letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
         line-height: 1.1;
+        color: var(--origam-color__text---primary);
+    }
+
+    &__description {
+        margin: 0;
+        font-size: var(--origam-font__size---lg, 1.125rem);
+        line-height: 1.6;
+        color: var(--origam-color__text---primary);
+    }
+
+    &__support {
+        margin: 0;
+        font-size: var(--origam-font__size---sm, 0.875rem);
         color: var(--origam-color__text---primary);
     }
 

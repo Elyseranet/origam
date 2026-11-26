@@ -28,7 +28,7 @@
                 </origam-title>
 
                 <p class="stability-hero__lead">
-                    {{ t('stability.hero.lead', 'A high version number and frequent releases do not mean origam breaks often. This page says what the number means, how releases are cut and where changes are written down.') }}
+                    {{ t('stability.hero.lead', 'A high version number and frequent releases do not mean origam breaks often: 143 versions published since July 2025. This page says what the number means and where changes are written down.') }}
                 </p>
             </origam-container>
         </section>

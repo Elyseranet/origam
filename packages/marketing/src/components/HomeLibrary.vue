@@ -7,7 +7,7 @@
     <header class="home-library__intro">
       <div>
         <p class="home-library__eyebrow">
-          {{ t('home.library.eyebrow', 'A complete library') }}
+          {{ t('home.library.eyebrow', 'A complete catalogue') }}
         </p>
 
         <origam-title
@@ -15,12 +15,12 @@
           tag="h2"
           class="home-library__title"
         >
-          {{ t('home.library.title', 'Components for every need') }}
+          {{ t('home.library.title', 'From form to chart.') }}
         </origam-title>
       </div>
 
       <p class="home-library__text">
-        {{ t('home.library.text', 'From the essentials to advanced components, Origam gives you a solid base for building modern, consistent interfaces.') }}
+        {{ t('home.library.text', '97 component families in one package, charts included: no separate library to wire in.') }}
       </p>
     </header>
 
