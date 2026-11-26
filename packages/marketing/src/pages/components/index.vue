@@ -106,9 +106,10 @@
 
         <div
           v-for="group in groupedByCategory"
+          :id="categoryAnchor(group.category)"
           :key="group.category"
           class="components-category"
-          :data-cy="`components-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
+          :data-cy="categoryAnchor(group.category)"
         >
           <header class="components-category__header">
             <origam-title
@@ -220,6 +221,7 @@ import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
 import { useReferenceCatalog, useReferenceCategories } from '~/composables/useApiReference'
 import type { IComponentEntry } from '~/interfaces/components-catalog.interface'
+import { categoryAnchor } from '~/utils/components-catalog.util'
 
 const { t } = useT()
 

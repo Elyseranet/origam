@@ -1017,10 +1017,22 @@
             }
         },
         "playground": {
-            "eyebrow": "CODE EXAMPLE",
             "title": "A few lines, real components.",
             "file": "App.vue",
-            "caption": "The preview renders the code shown on the left."
+            "btn_primary": "Primary",
+            "btn_secondary": "Secondary",
+            "btn_ghost": "Ghost"
+        },
+        "library": {
+            "eyebrow": "A complete library",
+            "title": "Components for every need",
+            "text": "From the essentials to advanced components, Origam gives you a solid base for building modern, consistent interfaces.",
+            "forms": "Forms",
+            "navigation": "Navigation",
+            "data": "Data",
+            "feedback": "Feedback",
+            "overlays": "Overlays",
+            "layout": "Layout"
         },
         "themes": {
             "eyebrow": "THEMING",

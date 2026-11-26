@@ -31,26 +31,27 @@ test.describe('HomePlayground section', () => {
         await expect(section).toBeVisible()
     })
 
-    test('eyebrow text is present', async ({ page }) => {
-        const eyebrow = page.locator('section#playground .home-playground__eyebrow')
-        await expect(eyebrow).toContainText('CODE EXAMPLE')
-    })
-
     test('h2 title is present', async ({ page }) => {
         const title = page.locator('section#playground h2')
         await expect(title).toContainText('A few lines, real components.')
     })
 
-    test('toolbar shows file tab (App.vue) — no SHARE/OPEN buttons', async ({ page }) => {
-        const toolbar = page.locator('section#playground .home-playground__toolbar')
-        await expect(toolbar).toBeVisible()
+    test('code window shows the file name (App.vue) — no SHARE/OPEN buttons', async ({ page }) => {
+        await expect(page.locator('[data-cy="playground-code"]')).toContainText('App.vue')
 
-        const tab = toolbar.locator('.home-playground__tab')
-        await expect(tab).toContainText('App.vue')
-
-        // SHARE / OPEN supprimés en v5-phase1 (split statique OrigamCode + preview)
         await expect(page.locator('[data-cy="playground-btn-share"]')).toHaveCount(0)
         await expect(page.locator('[data-cy="playground-btn-open"]')).toHaveCount(0)
+    })
+
+    test('the 3 real OrigamBtn variants are rendered and listed in the code', async ({ page }) => {
+        const code = page.locator('[data-cy="playground-code"]')
+        for (const [key, label] of [['primary', 'Primary'], ['secondary', 'Secondary'], ['ghost', 'Ghost']]) {
+            const btn = page.locator(`[data-cy="playground-btn-${key}"]`)
+            await expect(btn).toBeVisible()
+            await expect(btn).toHaveClass(/origam-btn/)
+            await expect(btn).toContainText(label)
+            await expect(code).toContainText(`>${label}</OrigamBtn>`)
+        }
     })
 
     test('OrigamCode pane is present (left split)', async ({ page }) => {
@@ -64,12 +65,6 @@ test.describe('HomePlayground section', () => {
     test('preview card pane is present (right split)', async ({ page }) => {
         const previewPane = page.locator('[data-cy="playground-preview"]')
         await expect(previewPane).toBeVisible()
-    })
-
-    test('caption figcaption is present', async ({ page }) => {
-        const caption = page.locator('section#playground .home-playground__caption')
-        await expect(caption).toBeVisible()
-        await expect(caption).not.toBeEmpty()
     })
 
     test('no legacy REPL container (playground-repl) — replaced by static split', async ({ page }) => {
