@@ -69,6 +69,13 @@ COPY packages/playground packages/playground
 COPY packages/tests/TU/tsconfig.json packages/tests/TU/tsconfig.json
 COPY packages/tests/e2e/tsconfig.json packages/tests/e2e/tsconfig.json
 
+# generate-build-stats.mjs (run by `pnpm -F @origam/marketing build`, #1545)
+# COUNTS spec files and reads the a11y story list: it needs the test trees, not
+# only their tsconfigs. If one is missing the script fails and so does the build.
+COPY packages/tests/TU packages/tests/TU
+COPY packages/tests/e2e packages/tests/e2e
+COPY packages/tests/a11y packages/tests/a11y
+
 # --- Tools stage: deps + source + tsx, WITHOUT the heavy lib/embeds/nuxt build.
 #     Consumed by the docker-compose `migrate` service to run the TypeORM
 #     migrations and the ingestion pipeline (db:migrate + docs:seed + docs:sync)

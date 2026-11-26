@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path'
 import { afterAll, describe, expect, it } from 'vitest'
 
 // @ts-expect-error script .mjs sans déclaration de types
-import { measure } from '../../../marketing/scripts/generate-build-stats.mjs'
+import { measure, render } from '../../../marketing/scripts/generate-build-stats.mjs'
 
 const tmp = mkdtempSync(join(tmpdir(), 'build-stats-'))
 afterAll(() => rmSync(tmp, { recursive: true, force: true }))
@@ -54,5 +54,11 @@ describe('generate-build-stats', () => {
     it('échoue si une source a changé de forme', () => {
         const root = fixture('moved', r => writeFileSync(join(r, 'packages/tests/a11y/components.spec.ts'), ''))
         expect(() => measure(root)).toThrow(/SWEPT_STORIES/)
+    })
+
+    it('render produit un module typé portant les valeurs mesurées', () => {
+        const out = render(measure(fixture('render')))
+        expect(out).toContain('export const BUILD_STATS: IBuildStats')
+        expect(out).toContain('"componentFamilies": 2')
     })
 })

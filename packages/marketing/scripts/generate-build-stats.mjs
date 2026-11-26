@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 /**
  * generate-build-stats.mjs — mesure les chiffres du produit dans le dépôt et
- * écrit src/consts/build-stats.const.ts (#1545). Même forme que
- * generate-changelog.mjs : fichier généré, commité, gardé par `--check` en CI.
+ * écrit src/consts/build-stats.const.ts (#1545). Fichier NON commité (gitignore) :
+ * les compteurs bougent à chaque PR, il est donc régénéré avant dev, build et
+ * typecheck (scripts du package). Une mesure qui échoue fait échouer le build.
  *
  * Échec bruyant : une mesure à 0, non entière, ou deux sources qui divergent
  * font sortir le script en code 1. Aucune valeur de repli.
  *
- * USAGE  node scripts/generate-build-stats.mjs [--check]
+ * USAGE  node scripts/generate-build-stats.mjs
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -91,26 +92,14 @@ export function render (stats) {
  * BUILD_STATS — chiffres du produit mesurés dans le dépôt.
  *
  * GÉNÉRÉ par packages/marketing/scripts/generate-build-stats.mjs. NE PAS ÉDITER À LA MAIN.
- * Régénérer : pnpm -F @origam/marketing build-stats:generate
- * Dérive gardée par : pnpm -F @origam/marketing build-stats:generate:check
+ * Non commité : régénéré par les scripts dev / build / typecheck du package marketing.
  */
 export const BUILD_STATS: IBuildStats = ${JSON.stringify(stats, null, 4)}
 `
 }
 
 function main () {
-    const check = process.argv.includes('--check')
-    const out = path.join(defaultRoot, OUT_REL)
-    const next = render(measure())
-    if (check) {
-        if (!fs.existsSync(out) || fs.readFileSync(out, 'utf8') !== next) {
-            console.error('build-stats.const.ts périmé : lancer pnpm -F @origam/marketing build-stats:generate')
-            process.exit(1)
-        }
-        console.log('build-stats.const.ts à jour')
-        return
-    }
-    fs.writeFileSync(out, next)
+    fs.writeFileSync(path.join(defaultRoot, OUT_REL), render(measure()))
     console.log(`écrit ${OUT_REL}`)
 }
 

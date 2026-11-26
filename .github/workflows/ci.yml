@@ -525,10 +525,6 @@ jobs:
       - name: Assert CHANGELOG_VERSIONS matches CHANGELOG.md
         run: pnpm -F @origam/marketing changelog:generate:check
 
-      # Chiffres du produit (#1545) : même principe, source = le dépôt lui-même.
-      - name: Assert BUILD_STATS matches the repository
-        run: pnpm -F @origam/marketing build-stats:generate:check
-
   test-e2e:
     name: E2E tests (Playwright / Chromium)
     runs-on: ubuntu-latest
