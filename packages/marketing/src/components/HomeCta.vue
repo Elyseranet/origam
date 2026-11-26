@@ -48,7 +48,7 @@
           <origam-btn
             class="home-cta__btn"
             variant="outlined"
-            :href="CTA_DOCS_HREF"
+            :href="NAV_DOCS_LINK.href"
             data-cy="cta-btn-docs"
           >
             {{ t('home.cta.cta_docs', 'Read the documentation') }}
@@ -61,7 +61,8 @@
 
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
-import { CTA_COMPONENTS_HREF, CTA_DOCS_HREF, CTA_INK_COLOR, CTA_SUN_COLOR } from '~/consts/cta.const'
+import { CTA_COMPONENTS_HREF, CTA_INK_COLOR, CTA_SUN_COLOR } from '~/consts/cta.const'
+import { NAV_DOCS_LINK } from '~/consts/nav.const'
 
 const { t } = useT()
 </script>

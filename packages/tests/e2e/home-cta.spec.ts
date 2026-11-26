@@ -38,11 +38,11 @@ test.describe('HomeCta — bande de CTA finale', () => {
         await expect(btn).toHaveAttribute('href', '/components')
     })
 
-    test('« Lire la documentation » mene a /installation', async ({ page }) => {
+    test('« Lire la documentation » mene a /docs/ (meme cible que le header)', async ({ page }) => {
         const btn = page.locator('[data-cy="cta-btn-docs"]')
         await expect(btn).toBeVisible()
         await expect(btn).toContainText('Read the documentation')
-        await expect(btn).toHaveAttribute('href', '/installation')
+        await expect(btn).toHaveAttribute('href', '/docs/')
     })
 
     test('les deux CTA se focalisent au clavier', async ({ page }) => {
