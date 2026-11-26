@@ -2,41 +2,79 @@
   <section
     id="hero"
     class="home-hero"
-    aria-labelledby="hero-title-line1 hero-title-line2"
+    aria-labelledby="hero-title"
   >
-    <origam-container class="home-hero__inner">
-      <header class="home-hero__header">
-        <origam-chip
-          class="home-hero__badge"
-          :style="HERO_BADGE_VARS"
-          color="primary"
-          border
-          border-color="var(--origam-color__action--primary---bg)"
-          size="small"
-          append-icon="mdi-arrow-right"
-          pill
-          data-cy="hero-badge"
-        >
-          {{ badge }}
-        </origam-chip>
+    <div
+      class="home-hero__visual"
+      aria-hidden="true"
+    >
+      <origam-img
+        class="home-hero__img home-hero__img--day"
+        :src="HERO_WATERCOLOR.src"
+        :srcset="HERO_WATERCOLOR.srcset"
+        :sizes="HERO_WATERCOLOR_SIZES"
+        alt=""
+        width="100%"
+        height="100%"
+        cover
+        position="center bottom"
+        eager
+        data-cy="hero-watercolor"
+      />
+      <origam-img
+        class="home-hero__img home-hero__img--symbol home-hero__img--symbol-day"
+        :src="HERO_SYMBOL_DAY.src"
+        :srcset="HERO_SYMBOL_DAY.srcset"
+        :sizes="HERO_SYMBOL_SIZES"
+        alt=""
+        width="36%"
+        max-width="24rem"
+        height="56%"
+        position="center"
+        eager
+        data-cy="hero-symbol"
+      />
+      <origam-img
+        class="home-hero__img home-hero__img--symbol home-hero__img--night"
+        :src="HERO_NIGHT.src"
+        :srcset="HERO_NIGHT.srcset"
+        :sizes="HERO_SYMBOL_SIZES"
+        alt=""
+        width="36%"
+        max-width="24rem"
+        height="56%"
+        position="center"
+        eager
+        data-cy="hero-night"
+      />
+    </div>
 
-        <origam-text-mask
+    <origam-container
+      class="home-hero__inner"
+      max-width="none"
+    >
+      <header class="home-hero__header">
+        <p
+          class="home-hero__eyebrow"
+          data-cy="hero-eyebrow"
+        >
+          {{ t('home.hero.eyebrow', 'DESIGN SYSTEM') }}
+        </p>
+
+        <origam-title
+          id="hero-title"
           tag="h1"
           class="home-hero__title"
-          background="var(--origam-gradient---hero-title)"
         >
-          <span
-            id="hero-title-line1"
-            class="home-hero__title-line"
-          >{{ t('home.hero.title_line1', 'The Vue 3 design system') }}</span>
-          <span
-            id="hero-title-line2"
-            class="home-hero__title-line"
-          >{{ t('home.hero.title_line2', 'that just works.') }}</span>
-        </origam-text-mask>
+          {{ t('home.hero.title', 'Origam') }}
+        </origam-title>
 
-        <p class="home-hero__subtitle">
-          {{ t('home.hero.subtitle', '218 components. 26 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX.') }}
+        <p class="home-hero__tagline">
+          {{ t('home.hero.tagline', 'A modern, flexible and accessible design system') }}
+        </p>
+
+        <p class="home-hero__description">
+          {{ t('home.hero.description', 'A library of components and tools to build consistent, fast and elegant interfaces.') }}
         </p>
       </header>
 
@@ -45,188 +83,195 @@
         :aria-label="t('home.hero.ctas_label', 'Hero calls to action')"
       >
         <origam-btn
-          class="home-hero__btn home-hero__btn--primary"
+          class="home-hero__btn"
           variant="flat"
-          href="/components"
+          :bg-color="HERO_CTA_BG"
+          :color="HERO_CTA_FG"
           append-icon="mdi-arrow-right"
-          data-cy="hero-cta-components"
+          :href="CTA_START_HREF"
+          data-cy="hero-cta-start"
         >
-          {{ t('home.hero.cta_components', 'Browse components') }}
+          {{ t('home.hero.cta_start', 'Get started') }}
         </origam-btn>
 
         <origam-btn
-          class="home-hero__btn home-hero__btn--secondary"
-          variant="text"
-          prepend-icon="mdi-star-outline"
+          class="home-hero__btn"
+          variant="outlined"
+          color="primary"
+          prepend-icon="mdi-github"
           :href="githubRepo"
           target="_blank"
           rel="noopener noreferrer"
           data-cy="hero-cta-github"
         >
-          {{ t('home.hero.cta_github', 'Star on GitHub') }}
+          {{ t('home.hero.cta_github', 'View on GitHub') }}
         </origam-btn>
       </nav>
-
-      <origam-code
-        :code="installCommand"
-        prompt="$"
-        lang="bash"
-        compact
-        copyable
-        data-cy="hero-install-command"
-      />
     </origam-container>
   </section>
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
-  import { useT } from '~/composables/useT'
-  import { useVersion } from '~/composables/useVersion'
-  import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
-  import { HERO_BADGE_VARS } from '~/consts/hero.const'
+import { useT } from '~/composables/useT'
+import { CTA_START_HREF } from '~/consts/cta.const'
+import {
+    HERO_CTA_BG,
+    HERO_CTA_FG,
+    HERO_NIGHT,
+    HERO_SYMBOL_DAY,
+    HERO_SYMBOL_SIZES,
+    HERO_WATERCOLOR,
+    HERO_WATERCOLOR_SIZES
+} from '~/consts/hero.const'
+import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
 
-  const { t } = useT()
-  const { version } = useVersion()
+/*********************************************************
+ * Global
+ *
+ * @description
+ * Hero de la maquette A : l'aquarelle (clair) ou le symbole A1 seul (sombre)
+ * est décorative et sort du flux de lecture (aria-hidden, alt vide).
+ ********************************************************/
+const { t } = useT()
 
-  const installCommand = computed(() => t('home.hero.install', 'npm install origam'))
-  const badge = computed(() =>
-    t('home.hero.badge', `v${version.value} — 26 charts shipped, WCAG 2.1 AA pass`, { version: version.value })
-  )
-  const githubRepo = MARKETING_DEFAULTS.githubRepo
+const githubRepo = MARKETING_DEFAULTS.githubRepo
+
+defineEmits([])
+
+defineSlots<Record<string, never>>()
+
+/*********************************************************
+ * Expose
+ *
+ * @description
+ * Rien à piloter depuis l'extérieur.
+ ********************************************************/
+defineExpose({})
 </script>
 
 <style scoped lang="scss">
-  .home-hero {
+.home-hero {
     position: relative;
-    padding-block: var(--origam-space---16, 4rem) var(--origam-space---12, 3rem);
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--origam-color__surface---default);
 
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: var(--origam-gradient---hero-grid);
-      background-size: 64px 64px;
-      background-position: center top;
-      -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 75%);
-      mask-image: linear-gradient(to bottom, #000 0%, transparent 75%);
-      pointer-events: none;
-      z-index: 0;
+    &__visual {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
     }
 
-    &::after {
-      content: '';
-      position: absolute;
-      inset-inline: 0;
-      inset-block-start: 0;
-      block-size: 320px;
-      background-image: var(--origam-gradient---hero-glow);
-      pointer-events: none;
-      z-index: 0;
+    &__img {
+        position: absolute;
+        inset: 0;
+    }
+
+    &__img--symbol {
+        inset: 22% 12% auto auto;
+    }
+
+    &__visual::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            90deg,
+            color-mix(in srgb, var(--origam-color__surface---default) 88%, transparent),
+            transparent 60%
+        );
     }
 
     &__inner {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--origam-space---6, 1.5rem);
-      text-align: center;
+        --origam-container---padding-inline-start: var(--site-gutter);
+        --origam-container---padding-inline-end: var(--site-gutter);
+
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: var(--origam-space---6, 1.5rem);
+        min-block-size: clamp(24rem, 52vw, 40rem);
+        padding-block: var(--origam-space---12, 3rem);
     }
 
     &__header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--origam-space---4, 1rem);
-      max-inline-size: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--origam-space---3, 0.75rem);
+        max-inline-size: 28rem;
     }
 
-    // #1516 — avec Sora réellement servie, l'étiquette FR du badge (une pastille
-    // d'une seule ligne, `white-space: nowrap`) mesure 376px à 375px de large :
-    // plus que la colonne (343px), elle débordait d'1px du viewport et collait le
-    // titre au bord. Sous 30rem elle passe sur deux lignes. Le sélecteur est doublé
-    // pour battre la règle de palier `--size-small` du chip (hauteur fixe).
-    @media (max-width: 29.9375rem) {
-      &__badge#{&}__badge {
-        height: auto;
-        min-height: 24px;
-        white-space: normal;
-        text-align: center;
-        line-height: 1.2;
-
-        :deep(.origam-chip__content) {
-          height: auto;
-          white-space: normal;
-        }
-      }
+    &__eyebrow {
+        margin: 0;
+        font-size: var(--origam-font__size---xs, 0.75rem);
+        font-weight: var(--origam-font__weight---semibold, 600);
+        letter-spacing: 0.2em;
+        color: var(--origam-color__text---primary);
     }
 
     &__title {
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-size: var(--origam-font-size---hero, 5.25rem);
-      font-weight: var(--origam-font-weight---extrabold, 800);
-      line-height: var(--origam-line-height---hero, 0.95);
-      letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-      padding-block-end: 0.12em;
-      color: var(--origam-color__text---ink, #0a0a0a);
+        margin: 0;
+        font-size: clamp(3rem, 8vw, 5rem);
+        font-weight: var(--origam-font__weight---bold, 700);
+        line-height: 1;
+        color: var(--origam-color__text---primary);
     }
 
-    &__title-line {
-      display: block;
-      text-wrap: balance;
+    &__tagline {
+        margin: 0;
+        font-size: clamp(1.25rem, 2.6vw, 1.75rem);
+        line-height: 1.25;
+        color: var(--origam-color__text---primary);
     }
 
-    &__subtitle {
-      margin: 0;
-      max-inline-size: 42.5rem;
-      font-size: var(--origam-font-size---lg, 1.125rem);
-      line-height: var(--origam-line-height---relaxed, 1.7);
-      color: var(--origam-color__text---secondary, #525252);
+    &__description {
+        margin: 0;
+        font-size: var(--origam-font__size---md, 1rem);
+        line-height: 1.6;
+        color: var(--origam-color__text---primary);
     }
 
     &__ctas {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: var(--origam-space---3, 0.75rem);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--origam-space---3, 0.75rem);
     }
+}
+</style>
 
-    &__btn {
-      --origam-btn---height: 57.5px;
-      --origam-btn---density: 0px;
-      --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
-      --origam-btn---font-size: 1rem;
-      --origam-btn---font-weight: 400;
-      --origam-btn---border-radius: var(--origam-radius---btn, 10px);
+<style lang="scss">
+section.home-hero .home-hero__img--symbol {
+    display: none;
+}
 
-      &--primary {
-        background-image: var(--origam-gradient---btn-primary);
-        background-color: var(--origam-color---btn-primary-bg, transparent);
-        box-shadow: var(--origam-shadow---btn-primary);
-        --origam-btn---color: var(--origam-color---btn-primary-text);
-      }
+:root[data-mode="dark"] section.home-hero .home-hero__img--day {
+    display: none;
+}
 
-      &--secondary {
-        background-image: var(--origam-gradient---btn-secondary);
-        background-color: var(--origam-color---btn-secondary-bg);
-        box-shadow: var(--origam-shadow---btn-secondary);
-        border: 1px solid var(--origam-color---btn-secondary-border);
-        --origam-btn---color: var(--origam-color---btn-secondary-text);
-      }
+@media (min-width: 64rem) {
+    :root[data-mode="light"] section.home-hero .home-hero__img--symbol-day,
+    :root[data-mode="dark"] section.home-hero .home-hero__img--night {
+        display: block;
     }
-  }
+}
 
-  @media (max-width: 1080px) {
-    .home-hero {
-      &__title {
-        font-size: clamp(2.5rem, 9vw, 5.25rem);
-      }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-mode]) section.home-hero .home-hero__img--day {
+        display: none;
     }
-  }
+}
+
+@media (min-width: 64rem) and (prefers-color-scheme: light) {
+    :root:not([data-mode]) section.home-hero .home-hero__img--symbol-day {
+        display: block;
+    }
+}
+
+@media (min-width: 64rem) and (prefers-color-scheme: dark) {
+    :root:not([data-mode]) section.home-hero .home-hero__img--night {
+        display: block;
+    }
+}
 </style>

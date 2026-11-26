@@ -989,61 +989,31 @@
             "description": "218 components. 26 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX."
         },
         "hero": {
-            "badge": "v{version} — 26 charts shipped, WCAG 2.1 AA pass",
-            "title_line1": "The Vue 3 design system",
-            "title_line2": "that just works.",
-            "subtitle": "218 components. 26 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX.",
-            "cta_components": "Browse components",
-            "cta_github": "Star on GitHub",
-            "install": "npm install origam",
-            "copy": "Copy",
-            "copied": "Copied",
+            "eyebrow": "DESIGN SYSTEM",
+            "title": "Origam",
+            "tagline": "A modern, flexible and accessible design system",
+            "description": "A library of components and tools to build consistent, fast and elegant interfaces.",
+            "cta_start": "Get started",
+            "cta_github": "View on GitHub",
             "ctas_label": "Hero calls to action"
         },
-        "kpis": {
-            "title": "origam by the numbers",
-            "components_value": "218",
-            "components_label": "Components",
-            "charts_value": "26",
-            "charts_label": "Chart primitives",
-            "a11y_value": "100%",
-            "a11y_label": "WCAG 2.1 AA",
-            "size_value": "<50kb",
-            "size_label": "Tree-shakable",
-            "license_value": "MIT",
-            "license_label": "Open source",
-            "npm_downloads_label": "npm downloads / week",
-            "github_stars_label": "GitHub stars"
-        },
-        "features": {
-            "eyebrow": "WHAT'S INSIDE",
-            "title": "Everything you'd expect. Nothing you wouldn't.",
-            "title_line1": "Everything you'd expect.",
-            "title_line2": "Nothing you wouldn't.",
-            "subtitle": "A complete toolkit for shipping Vue 3 apps — from atomic primitives to complex data viz, every piece tested, themed and a11y-compliant.",
-            "charts": {
-                "title": "26 chart primitives",
-                "description": "Line, area, bar, donut, candlestick, heatmap — Highcharts-tier coverage without the license."
+        "benefits": {
+            "label": "Why Origam",
+            "components": {
+                "title": "Components",
+                "description": "A rich, consistent collection"
             },
-            "a11y": {
-                "title": "WCAG 2.1 AA verified",
-                "description": "Each component ships with axe-core + Playwright a11y tests. Keyboard, screen-readers, motion: covered."
+            "theming": {
+                "title": "Theming",
+                "description": "Easily customize the look and feel"
             },
-            "tokens": {
-                "title": "Design tokens",
-                "description": "Multi-theme via a props-first theme object. createOrigam() resolves it across the whole catalogue, with no per-component wiring — switch between light, dark, or your own brand at runtime with zero remount."
+            "accessibility": {
+                "title": "Accessibility",
+                "description": "Inclusive, compliant interfaces"
             },
-            "typescript": {
-                "title": "TypeScript first",
-                "description": "Strict mode, full type inference, generics on Data Table/List. Your IDE will thank you."
-            },
-            "css": {
-                "title": "CSS-first",
-                "description": "Container queries, :has(), color-mix(), view-transition-name. We use modern CSS so you don't reinvent it."
-            },
-            "composition": {
-                "title": "Composition API",
-                "description": "Built on script setup + Composition API. Headless composables exposed when you need to go low-level."
+            "ecosystem": {
+                "title": "Ecosystem",
+                "description": "Simple integration with Vue.js and Vite"
             }
         },
         "playground": {
@@ -1051,62 +1021,6 @@
             "title": "A few lines, real components.",
             "file": "App.vue",
             "caption": "The preview renders the code shown on the left."
-        },
-        "showcase": {
-            "eyebrow": "SHOWCASE",
-            "title": "218 components. One vibe.",
-            "title_line1": "218 components.",
-            "title_line2": "One vibe.",
-            "view_all": "View all",
-            "data_table": {
-                "title": "Data Table",
-                "caption": "Sortable · filterable · virtualized",
-                "badge": "Data",
-                "col_project": "PROJECT",
-                "col_name": "Name",
-                "col_owner": "Owner",
-                "col_status": "Status",
-                "row_menu": "Row actions",
-                "row1_name": "Aurora release",
-                "row1_owner": "Arnaud",
-                "row1_status": "Shipped",
-                "row2_name": "Tokens v2",
-                "row2_owner": "Léa",
-                "row2_status": "In review",
-                "row3_name": "A11y audit",
-                "row3_owner": "Jade",
-                "row3_status": "Shipped",
-                "row4_name": "Chart engine",
-                "row4_owner": "Marc",
-                "row4_status": "Draft",
-                "row5_name": "New theme",
-                "row5_owner": "Romi",
-                "row5_status": "In review"
-            },
-            "chart_line": {
-                "title": "Chart Line",
-                "caption": "+12.4% this month"
-            },
-            "switch": {
-                "title": "Switch",
-                "caption": "inset · flat · default",
-                "state_off": "Off",
-                "state_on": "On"
-            },
-            "chips": {
-                "title": "Chips",
-                "caption": "6 intents",
-                "primary": "Primary",
-                "neutral": "Neutral",
-                "success": "Success",
-                "warning": "Warning",
-                "danger": "Danger",
-                "info": "Info"
-            },
-            "avatar_group": {
-                "title": "Avatar Group",
-                "caption": "+3 members"
-            }
         },
         "themes": {
             "eyebrow": "THEMING",

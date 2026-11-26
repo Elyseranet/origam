@@ -5,14 +5,9 @@
       data-cy="section-hero"
     />
 
-    <home-kpis
-      id="kpis"
-      data-cy="section-kpis"
-    />
-
-    <home-features
-      id="features"
-      data-cy="section-features"
+    <home-benefits
+      id="benefits"
+      data-cy="section-benefits"
     />
 
     <home-playground
@@ -20,9 +15,9 @@
       data-cy="section-playground"
     />
 
-    <home-showcase
-      id="showcase"
-      data-cy="section-showcase"
+    <home-library
+      id="library"
+      data-cy="section-library"
     />
 
     <home-themes

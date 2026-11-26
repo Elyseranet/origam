@@ -123,36 +123,7 @@ test.describe('Marketing a11y — landmarks and headings, real pages, JS enabled
 
 })
 
-test.describe('Marketing a11y — #530 fixes (Avatar / Switch / Grid — le theme-picker OrigamChip a disparu avec #1515)', () => {
-
-    test('OrigamShowcase avatars (bgColor set, no explicit color) meet AA contrast', async ({ page }) => {
-        await page.goto('/')
-        await settle(page)
-
-        const results = await scanPage(page)
-            .include('#avatar-1')
-            .include('#avatar-2')
-            .include('#avatar-3')
-            .analyze()
-        const contrastViolations = results.violations.filter(v => v.id === 'color-contrast')
-        expect(contrastViolations, JSON.stringify(contrastViolations)).toHaveLength(0)
-    })
-
-    test('showcase OrigamSwitch demo inputs have an accessible name', async ({ page }) => {
-        await page.goto('/')
-        await settle(page)
-
-        const results = await scanPage(page)
-            .include('.home-showcase__switch-row')
-            .analyze()
-        const labelViolations = results.violations.filter(v => v.id === 'label' || v.id === 'label-title-only')
-        expect(labelViolations, JSON.stringify(labelViolations)).toHaveLength(0)
-
-        const switchInputs = page.locator('.home-showcase__switch-row input[type="checkbox"]')
-        await expect(switchInputs).toHaveCount(2)
-        await expect(switchInputs.nth(0)).toHaveAttribute('aria-label', /.+/)
-        await expect(switchInputs.nth(1)).toHaveAttribute('aria-label', /.+/)
-    })
+test.describe('Marketing a11y — #530 fixes (Grid — le theme-picker OrigamChip a disparu avec #1515, le showcase de la home avec #1517)', () => {
 
     test('.home-themes__grid is not a <ul> with non-<li> children', async ({ page }) => {
         await page.goto('/')
