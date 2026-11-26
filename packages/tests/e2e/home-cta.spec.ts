@@ -1,160 +1,92 @@
 /**
- * home-cta.spec.ts — T7 HomeCta section (DS-first rebuild)
+ * home-cta.spec.ts — bande de CTA finale (#1517, maquette A du kit A1)
  *
- * Asserts the rebuilt, DS-first CTA contract:
- *  - bare <section> (no Card wrapper) with the cta-glow gradient background
- *  - H2 via OrigamTitle, aria target on a <span id> (OrigamTitle drops id)
- *  - install snippet rendered by OrigamCode `copyable` (no manual copy btn,
- *    no useCopy) — copy control is the DS button [data-cy="origam-code-copy"]
- *  - "Read docs" OrigamBtn linking to CTA_DOCS_HREF, carrying the shared Hero
- *    glow (cf. `packages/marketing/src/consts/cta.const.ts` — source de vérité
- *    des deux cibles ; elles ont changé le 2026-06-17, voir plus bas)
+ * Contrat :
+ *  - <section> labellee par le H2 #cta-title, sous-arbre force en mode sombre
+ *    (la bande reste encre/violet en clair comme en sombre) ;
+ *  - deux CTA : « Explorer les composants » (/components) et « Lire la
+ *    documentation » (/installation) ;
+ *  - le balayage est un SVG decoratif (aria-hidden, non focusable), aucun
+ *    asset du kit embarque ;
+ *  - le titre est lisible AA sur la bande (mesure, 2 modes du site).
  *
- * Prerequisites: marketing dev server at http://localhost:3000 (or
- * MARKETING_BASE_URL env var). Run with:
- *   pnpm -F @origam/tests playwright test --config=playwright.marketing.config.ts
- *   e2e/home-cta.spec.ts
+ * Le contraste du bouton soleil est mesure par home-cta-contrast.spec.ts.
  */
 
 import { expect, test } from '@playwright/test'
 
 import { applyBrand } from './_support/marketing-theme'
 
-test.describe('HomeCta section — T7 (DS-first)', () => {
+test.describe('HomeCta — bande de CTA finale', () => {
 
     test.beforeEach(async ({ page }) => {
         await page.goto('/', { waitUntil: 'networkidle' })
     })
 
-    // ── 1. Section presence & labelling ───────────────────────────────────
-
-    test('section has aria-labelledby pointing to #cta-title', async ({ page }) => {
+    test('la section est labellee par le H2 #cta-title, unique', async ({ page }) => {
         const section = page.locator('section.home-cta')
         await expect(section).toBeVisible()
         await expect(section).toHaveAttribute('aria-labelledby', 'cta-title')
-
-        // OrigamTitle now carries the `id` on its rendered <h2> root (DS fix),
-        // so the aria-labelledby target IS the heading element itself.
-        const target = page.locator('h2#cta-title')
-        await expect(target).toBeVisible()
+        await expect(page.locator('section.home-cta h2')).toHaveCount(1)
+        await expect(page.locator('h2#cta-title')).toContainText('Ready to build your interfaces?')
     })
 
-    // ── 2. H2 title ────────────────────────────────────────────────────────
-
-    test('h2 renders "Ready to ship faster?" from i18n', async ({ page }) => {
-        const title = page.locator('section.home-cta h2')
-        await expect(title).toBeVisible()
-        await expect(title).toContainText('Ready to ship faster?')
-    })
-
-    test('section contains a single <h2> element', async ({ page }) => {
-        const headings = page.locator('section.home-cta h2')
-        await expect(headings).toHaveCount(1)
-    })
-
-    // ── 3. Description ─────────────────────────────────────────────────────
-
-    test('description <p> is visible and non-empty', async ({ page }) => {
-        const desc = page.locator('section.home-cta p.home-cta__description')
-        await expect(desc).toBeVisible()
-        await expect(desc).toContainText('origam in 30 seconds')
-    })
-
-    // ── 4. Read docs CTA (OrigamBtn) ───────────────────────────────────────
-
-    // ⛔ Cibles recalées sur `packages/marketing/src/consts/cta.const.ts`.
-    //
-    // Le produit a délibérément retargeté les deux CTA le 2026-06-17
-    // (`ddb07005b`, « nav 404-availability gating ») : `/docs` → `/components`
-    // et `/docs/getting-started` → `/installation`, c'est-à-dire vers deux
-    // vraies pages Nuxt au lieu de deux chemins du site statique VitePress. La
-    // spec n'a jamais suivi : elle est rouge depuis trois mois, et rien ne l'a
-    // dit — elle n'est exécutée par aucun job de CI (#824, #835).
-    //
-    // La cible d'un CTA est une décision produit : on continue de l'épingler,
-    // mais sur la valeur réellement servie, pas sur celle d'avant le retarget.
-    test('Read docs button renders and links to /components', async ({ page }) => {
-        const btn = page.locator('[data-cy="cta-btn-docs"]')
+    test('« Explorer les composants » mene a /components', async ({ page }) => {
+        const btn = page.locator('[data-cy="cta-btn-start"]')
         await expect(btn).toBeVisible()
-        await expect(btn).toContainText('Read docs')
+        await expect(btn).toContainText('Explore the components')
         await expect(btn).toHaveAttribute('href', '/components')
     })
 
-    test('Read docs button is keyboard-focusable', async ({ page }) => {
+    test('« Lire la documentation » mene a /installation', async ({ page }) => {
         const btn = page.locator('[data-cy="cta-btn-docs"]')
-        await btn.focus()
-        await expect(btn).toBeFocused()
-    })
-
-    // ── 5. Get started CTA (OrigamBtn) ────────────────────────────────────
-
-    test('Get started button renders and links to /installation', async ({ page }) => {
-        const btn = page.locator('[data-cy="cta-btn-start"]')
         await expect(btn).toBeVisible()
-        await expect(btn).toContainText('Get started')
+        await expect(btn).toContainText('Read the documentation')
         await expect(btn).toHaveAttribute('href', '/installation')
     })
 
-    test('Get started button is keyboard-focusable', async ({ page }) => {
-        const btn = page.locator('[data-cy="cta-btn-start"]')
-        await btn.focus()
-        await expect(btn).toBeFocused()
+    test('les deux CTA se focalisent au clavier', async ({ page }) => {
+        for (const cy of ['cta-btn-start', 'cta-btn-docs']) {
+            const btn = page.locator(`[data-cy="${ cy }"]`)
+            await btn.focus()
+            await expect(btn).toBeFocused()
+        }
     })
 
-    // NOTE: install snippet (OrigamCode + copy button) a été supprimé de la section
-    // CTA lors du rework v5-phase1. La section ne contient plus qu'un <nav> avec
-    // deux OrigamBtn ("Get started" + "Read docs"). Les clés i18n home.cta.install /
-    // home.cta.copy / home.cta.copied ont été supprimées intentionnellement.
-
-    // ── 6. origam computed-style assertions (≥3) ────────────────────────────
-
-    test('origam — la section CTA a un <nav> contenant exactement 2 boutons', async ({ page }) => {
-        const nav = page.locator('section.home-cta nav.home-cta__actions')
-        await expect(nav).toBeVisible()
-        const btns = await nav.locator('a, button').count()
-        expect(btns).toBe(2)
+    test('le balayage est un SVG decoratif, hors arbre d\'accessibilite et du clavier', async ({ page }) => {
+        const svg = page.locator('section.home-cta svg.home-cta__brush')
+        await expect(svg).toHaveAttribute('aria-hidden', 'true')
+        await expect(svg).toHaveAttribute('focusable', 'false')
+        await expect(page.locator('section.home-cta img')).toHaveCount(0)
     })
 
-    // ⛔ Les tests « origam — … » DEMANDENT le thème origam (identité ex-« sobre », thème supprimé), ils ne l'héritent
-    // plus du défaut du site. Ils s'appuyaient sur le fait que `sobre` était le
-    // thème par défaut ; ce défaut a bougé deux fois (`sobre` → `origam` le
-    // 2026-06-27, puis `origam` → `geek` le 2026-09-17) et ces tests sont
-    // devenus rouges à chaque fois sans que leur objet ait changé. Voir
-    // `_support/marketing-theme.ts`.
-    test('origam — le H2 CTA est à la taille display cta (64px)', async ({ page }) => {
-        await applyBrand(page, 'origam')
+    for (const mode of ['light', 'dark'] as const) {
+        test(`le titre est lisible AA (>= 4.5:1) sur la bande — site en ${ mode }`, async ({ page }) => {
+            await applyBrand(page, 'origam', mode)
 
-        const title = page.locator('section.home-cta h2.home-cta__title')
-        const styles = await title.evaluate(el => {
-            const s = getComputedStyle(el)
-            return { size: s.fontSize, color: s.color }
+            const ratio = await page.locator('h2#cta-title').evaluate((el) => {
+                const parse = (c: string) => (c.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number)
+                const lum = ([r, g, b]: number[]) => {
+                    const f = (v: number) => { const s = v / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4 }
+                    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
+                }
+                const section = el.closest('section') as HTMLElement
+                const fg = lum(parse(getComputedStyle(el).color))
+                const bg = lum(parse(getComputedStyle(section).backgroundColor))
+                const [hi, lo] = fg > bg ? [fg, bg] : [bg, fg]
+                return (hi + 0.05) / (lo + 0.05)
+            })
+            expect(ratio).toBeGreaterThanOrEqual(4.5)
         })
-        // --origam-font-size---cta = 4rem = 64px
-        expect(styles.size).toBe('64px')
-        // origam text---primary = #1B1127 = rgb(27, 17, 39) (#1514)
-        expect(styles.color).toBe('rgb(27, 17, 39)')
+    }
+
+    test('la bande reste sombre meme quand le site est en clair', async ({ page }) => {
+        await applyBrand(page, 'origam', 'light')
+        await expect(page.locator('[data-mode="dark"] > section.home-cta')).toHaveCount(1)
     })
 
-    test('origam — le H2 CTA est peint avec la couleur texte-ink', async ({ page }) => {
-        await applyBrand(page, 'origam')
-
-        const title = page.locator('section.home-cta h2.home-cta__title')
-        const color = await title.evaluate(el => getComputedStyle(el).color)
-        // origam text---ink = #1B1127 = rgb(27, 17, 39) (#1514)
-        expect(color).toBe('rgb(27, 17, 39)')
-    })
-
-    // ── 7. No raw i18n key leakage ─────────────────────────────────────────
-
-    test('no raw i18n key appears in the section text', async ({ page }) => {
-        const section = page.locator('section.home-cta')
-        const text = await section.textContent()
+    test('aucune cle i18n brute dans la section', async ({ page }) => {
+        const text = await page.locator('section.home-cta').textContent()
         expect(text).not.toContain('home.cta.')
-    })
-
-    // ── 8. No legacy manual-copy artefacts ─────────────────────────────────
-
-    test('no leftover manual copy button (replaced by OrigamCode)', async ({ page }) => {
-        await expect(page.locator('[data-cy="cta-copy-btn"]')).toHaveCount(0)
     })
 })

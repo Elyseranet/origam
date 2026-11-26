@@ -1053,16 +1053,16 @@
             "preview_dark": "dark.json",
             "preview_brand_a": "brand-a.json",
             "preview_brand_b": "brand-b.json",
-            "preview_button": "Bouton",
+            "preview_open": "Personnaliser",
+            "preview_open_aria": "Ouvrir le thème {theme} dans le builder",
             "actions_label": "Essayer le générateur de thème",
             "cta_builder": "Essayer le générateur de thème"
         },
         "cta": {
-            "title": "Prêt à livrer plus vite ?",
-            "description": "Démarrez votre projet Vue 3 avec origam en 30 secondes.",
-            "cta_start": "Commencer",
-            "cta_docs": "Lire la doc",
-            "actions_label": "Commencer"
+            "title": "Prêt à construire vos interfaces ?",
+            "cta_start": "Explorer les composants",
+            "cta_docs": "Lire la documentation",
+            "actions_label": "Pour commencer"
         }
     },
     "installation": {
