@@ -2,7 +2,8 @@
  * #1136 — type-level test, checked by `pnpm -F origam type-check`.
  *
  * @description
- * Not shipped (`__tests__` is excluded from the build) and never run: it
+ * Convention: a `*.type-test.ts` serves the DS vue-tsc check only and is
+ * excluded from the build (`build.config.ts`). Never run: it
  * only has to COMPILE. Both real shiki highlighters must satisfy
  * `TShikiHighlighter`; the `@ts-expect-error` is the negative control that
  * proves the type still rejects something.
@@ -11,7 +12,7 @@ import { createHighlighter } from 'shiki'
 import { createHighlighterCore } from 'shiki/core'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 
-import type { TShikiHighlighter } from '../code.type'
+import type { TShikiHighlighter } from './code.type'
 
 export async function fullBundle (): Promise<TShikiHighlighter> {
     return await createHighlighter({ themes: ['github-light'], langs: ['ts'] })
