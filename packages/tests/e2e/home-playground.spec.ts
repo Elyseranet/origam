@@ -36,8 +36,10 @@ test.describe('HomePlayground section', () => {
         await expect(title).toContainText('A few lines, real components.')
     })
 
-    test('code window shows the file name (App.vue) — no SHARE/OPEN buttons', async ({ page }) => {
-        await expect(page.locator('[data-cy="playground-code"]')).toContainText('App.vue')
+    test('code window has the mockup chrome (3 dots + Vue logo) — no SHARE/OPEN buttons', async ({ page }) => {
+        const header = page.locator('[data-cy="playground-code"] .origam-code__header')
+        await expect(header.locator('.home-playground__dots .origam-icon')).toHaveCount(3)
+        await expect(header.locator('.home-playground__logo')).toBeVisible()
 
         await expect(page.locator('[data-cy="playground-btn-share"]')).toHaveCount(0)
         await expect(page.locator('[data-cy="playground-btn-open"]')).toHaveCount(0)
@@ -52,11 +54,11 @@ test.describe('HomePlayground section', () => {
         }
     })
 
-    // #1517 — owner decision: like the mockup, the code shows the Primary button alone, on one line.
+    // #1517 — owner decision: like the mockup, the code shows the Primary button alone, on three lines.
     test('the code shows the rendered Primary button only', async ({ page }) => {
         const code = page.locator('[data-cy="playground-code"] pre')
         await expect.poll(async () => (await code.innerText()).trim())
-            .toBe('<template>\n  <OrigamBtn variant="flat" bg-color="primary">Primary</OrigamBtn>\n</template>')
+            .toBe('<OrigamBtn variant="flat" bg-color="primary">\n  Primary\n</OrigamBtn>')
         await expect(page.locator('[data-cy="playground-btn-primary"]')).toHaveClass(/origam--bg-primary/)
     })
 

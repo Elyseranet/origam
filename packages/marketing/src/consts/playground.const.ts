@@ -21,6 +21,13 @@ export const HOME_DEMO_CODE_BUTTON: IHomeDemoButton = {
     props: { variant: 'flat', 'bg-color': 'primary' }
 }
 
+/**
+ * Rendered size of the three buttons (x-large = 52 px, scale x1.8). Kept out of `props`
+ * on purpose: `size="x-large"` would stretch the 3-line snippet past the code column
+ * (measured 648 px of code in a 481 px pane); the window shows the semantic props.
+ */
+export const HOME_DEMO_BUTTON_SIZE = 'x-large'
+
 export const HOME_DEMO_BUTTONS: IHomeDemoButton[] = [
     HOME_DEMO_CODE_BUTTON,
     {
@@ -41,3 +48,6 @@ export const HOME_DEMO_BUTTONS: IHomeDemoButton[] = [
         }
     }
 ]
+
+/** Window chrome dots, left to right (mockup: red, yellow, green). */
+export const HOME_DEMO_DOTS = ['danger', 'warning', 'success'] as const
