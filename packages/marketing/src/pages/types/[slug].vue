@@ -591,7 +591,7 @@ useSeoMeta({
     }
 
     &__category-chip {
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
     }
 
     &__desc {
@@ -632,7 +632,7 @@ useSeoMeta({
     &__heading {
         margin: 0 0 var(--origam-space---3, 0.75rem);
         padding-inline-start: var(--origam-space---3, 0.75rem);
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         font-weight: 700;
         letter-spacing: 0.09em;
         text-transform: uppercase;
@@ -662,7 +662,7 @@ useSeoMeta({
 
     &__link {
         display: block;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 400;
         color: var(--origam-color__text---secondary, #525252);
         padding: var(--origam-space---1, 0.25rem) var(--origam-space---3, 0.75rem);
@@ -704,7 +704,7 @@ useSeoMeta({
 
     &__eyebrow {
         margin: 0 0 var(--origam-space---1, 0.25rem);
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         font-weight: 700;
         letter-spacing: 0.09em;
         text-transform: uppercase;
@@ -713,7 +713,7 @@ useSeoMeta({
 
     &__title {
         display: block;
-        font-size: var(--origam-font-size---xl, 1.25rem);
+        font-size: var(--origam-font__size---2xl, 1.25rem);
         font-weight: 700;
         color: var(--origam-color__text---ink, #0a0a0a);
         letter-spacing: -0.02em;
@@ -722,7 +722,7 @@ useSeoMeta({
 
     &__desc {
         margin: var(--origam-space---3, 0.75rem) 0 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         color: var(--origam-color__text---secondary, #525252);
         line-height: 1.6;
         max-inline-size: 60ch;
@@ -763,7 +763,7 @@ useSeoMeta({
 
     &__desc {
         margin: 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         color: var(--origam-color__text---secondary, #525252);
     }
 }
@@ -803,12 +803,12 @@ useSeoMeta({
         display: inline-flex;
         align-items: center;
         gap: var(--origam-space---2, 0.5rem);
-        --origam-btn---font-size: var(--origam-font-size---sm, 0.875rem);
+        --origam-btn---font-size: var(--origam-font__size---md, 0.875rem);
     }
 
     &__value-mono {
         font-family: var(--origam-font__family---mono, monospace);
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 600;
         color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
     }
@@ -820,7 +820,7 @@ useSeoMeta({
 
     &__dd {
         margin: 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         line-height: 1.6;
         color: var(--origam-color__text---secondary, #525252);
         padding-block-start: var(--origam-space---1, 0.25rem);

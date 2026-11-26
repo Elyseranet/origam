@@ -1483,7 +1483,7 @@
     }
 
     &__status-chip {
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
     }
 
     &__desc {
@@ -1509,16 +1509,16 @@
 
     &__import {
       font-family: var(--origam-font__family---mono, monospace);
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
       background: var(--origam-color__surface---sunken, #f5f5f5);
       border-radius: var(--origam-radius---btn, 4px);
       white-space: nowrap;
-      --origam-btn---font-size: var(--origam-font-size---xs, 0.75rem);
+      --origam-btn---font-size: var(--origam-font__size---sm, 0.75rem);
 
       &-text {
         font-family: var(--origam-font__family---mono, monospace);
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         overflow: hidden;
         text-overflow: ellipsis;
         max-inline-size: 40ch;
@@ -1544,7 +1544,7 @@
 
       &-label {
         margin: 0;
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         font-weight: 700;
         letter-spacing: 0.09em;
         text-transform: uppercase;
@@ -1617,7 +1617,7 @@
     &__heading {
       margin: 0 0 var(--origam-space---3, 0.75rem);
       padding-inline-start: var(--origam-space---3, 0.75rem);
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       font-weight: 700;
       letter-spacing: 0.09em;
       text-transform: uppercase;
@@ -1660,7 +1660,7 @@
 
     &__link {
       display: block;
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: 400;
       color: var(--origam-color__text---secondary, #525252);
       padding: var(--origam-space---1, 0.25rem) var(--origam-space---3, 0.75rem);
@@ -1691,7 +1691,7 @@
 
     &__eyebrow {
       margin: 0 0 var(--origam-space---1, 0.25rem);
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       font-weight: 700;
       letter-spacing: 0.09em;
       text-transform: uppercase;
@@ -1700,7 +1700,7 @@
 
     &__title {
       display: block;
-      font-size: var(--origam-font-size---xl, 1.25rem);
+      font-size: var(--origam-font__size---2xl, 1.25rem);
       font-weight: 700;
       color: var(--origam-color__text---ink, #0a0a0a);
       letter-spacing: -0.02em;
@@ -1709,7 +1709,7 @@
 
     &__desc {
       margin: var(--origam-space---3, 0.75rem) 0 0;
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       color: var(--origam-color__text---secondary, #525252);
       line-height: 1.6;
       max-inline-size: 60ch;
@@ -1727,7 +1727,7 @@
   .component-table {
     &__th {
       text-align: left;
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -1748,7 +1748,7 @@
     &__td {
       padding-block: var(--origam-space---3, 0.75rem);
       padding-inline: var(--origam-space---4, 1rem);
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       line-height: 1.6;
       color: var(--origam-color__text---primary, #0a0a0a);
       vertical-align: top;
@@ -1821,14 +1821,14 @@
     &__name-btn {
       padding: 0;
       gap: var(--origam-space---1, 0.25rem);
-      --origam-btn---font-size: var(--origam-font-size---sm, 0.875rem);
+      --origam-btn---font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: 600;
       color: var(--origam-color__text---primary, #0a0a0a);
     }
 
     &__name-mono {
       font-family: var(--origam-font__family---mono, monospace);
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: 600;
       color: var(--origam-color__text---primary, #0a0a0a);
     }
@@ -1865,14 +1865,14 @@
 
     &__default {
       font-family: var(--origam-font__family---mono, monospace);
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       color: var(--origam-color__text---tertiary, #737373);
       white-space: nowrap;
     }
 
     &__dd {
       margin: 0;
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       line-height: 1.6;
       color: var(--origam-color__text---secondary, #525252);
       padding-inline-start: 0;
@@ -1912,7 +1912,7 @@
     }
 
     &__figcaption {
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       color: var(--origam-color__text---secondary, #525252);
       text-align: center;
       line-height: 1.55;
@@ -1965,7 +1965,7 @@
 
       &-class {
         font-family: var(--origam-font__family---mono, monospace);
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 600;
         color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
       }
@@ -1973,7 +1973,7 @@
       &-desc {
         margin: 0;
         padding-inline-start: calc(22px + var(--origam-space---3, 0.75rem));
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         color: var(--origam-color__text---secondary, #525252);
         line-height: 1.6;
 
@@ -2021,7 +2021,7 @@
 
     &__sub-title {
       display: block;
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       font-weight: 700;
       letter-spacing: 0.07em;
       text-transform: uppercase;
@@ -2046,13 +2046,13 @@
     }
 
     &__note {
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       line-height: 1.65;
       color: var(--origam-color__text---secondary, #525252);
     }
 
     &__kbd {
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
     }
   }
 
@@ -2122,7 +2122,7 @@
         texte lisible. Hors perimetre ici.
       */
       &-label {
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         font-weight: 700;
         letter-spacing: 0.07em;
         text-transform: uppercase;
@@ -2166,7 +2166,7 @@
 
   .component-preview__loading {
     margin: 0;
-    font-size: var(--origam-font-size---sm, 0.875rem);
+    font-size: var(--origam-font__size---md, 0.875rem);
     color: var(--origam-color__text---tertiary, #737373);
   }
 
@@ -2174,7 +2174,7 @@
   .component-preview {
     &__fallback {
       margin: 0;
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       font-style: italic;
       color: var(--origam-color__text---tertiary, #737373);
     }
@@ -2190,7 +2190,7 @@
 
     &__item-title {
       display: block;
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: 700;
       color: var(--origam-color__text---ink, #0a0a0a);
       margin: 0 0 var(--origam-space---3, 0.75rem);
@@ -2272,7 +2272,7 @@
 
       &-name {
         display: block;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 700;
         font-family: var(--origam-font__family---mono, monospace);
         color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
@@ -2286,7 +2286,7 @@
 
       &-desc {
         margin: 0;
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         line-height: 1.5;
         color: var(--origam-color__text---secondary, #525252);
         flex: 1;
@@ -2349,7 +2349,7 @@
 
       &-name {
         display: block;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 700;
         font-family: var(--origam-font__family---mono, monospace);
         color: var(--origam-color__text---primary, #0a0a0a);
@@ -2358,7 +2358,7 @@
 
       &-desc {
         margin: 0;
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         line-height: 1.5;
         color: var(--origam-color__text---secondary, #525252);
         flex: 1;
@@ -2391,7 +2391,7 @@
 
     &__title {
       display: block;
-      font-size: var(--origam-font-size---lg, 1.125rem);
+      font-size: var(--origam-font__size---xl, 1.125rem);
       font-weight: var(--origam-font__weight---bold, 700);
       color: var(--origam-color__text---primary, #0a0a0a);
       margin: 0;
@@ -2399,7 +2399,7 @@
 
     &__desc {
       margin: 0;
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       line-height: 1.65;
       color: var(--origam-color__text---secondary, #525252);
     }

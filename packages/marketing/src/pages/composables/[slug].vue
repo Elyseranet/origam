@@ -707,7 +707,7 @@
     }
 
     &__status-chip {
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
     }
 
     &__desc {
@@ -733,17 +733,17 @@
 
     &__import {
       font-family: var(--origam-font__family---mono, monospace);
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
       background: var(--origam-color__surface---sunken, #f5f5f5);
       border-radius: var(--origam-radius---btn, 4px);
       white-space: nowrap;
-      --origam-btn---font-size: var(--origam-font-size---xs, 0.75rem);
+      --origam-btn---font-size: var(--origam-font__size---sm, 0.75rem);
     }
 
     &__import-text {
       font-family: var(--origam-font__family---mono, monospace);
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       overflow: hidden;
       text-overflow: ellipsis;
       max-inline-size: 40ch;
@@ -758,7 +758,7 @@
     &__heading {
       margin: 0 0 var(--origam-space---3, 0.75rem);
       padding-inline-start: var(--origam-space---3, 0.75rem);
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       font-weight: 700;
       letter-spacing: 0.09em;
       text-transform: uppercase;
@@ -784,7 +784,7 @@
     &__link {
       display: block;
       padding: var(--origam-space---1\.5, 0.375rem) var(--origam-space---3, 0.75rem);
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: var(--origam-font__weight---medium, 500);
       color: var(--origam-color__text---secondary, #525252);
       text-decoration: none;
@@ -815,7 +815,7 @@
 
     &__eyebrow {
       margin: 0 0 var(--origam-space---2, 0.5rem);
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       font-weight: var(--origam-font__weight---semibold, 600);
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -862,7 +862,7 @@
 
     &__text {
       margin: 0;
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       line-height: 1.6;
       color: var(--origam-color__text---primary, #0a0a0a);
     }
@@ -877,7 +877,7 @@
 
     &__label {
       margin: 0;
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       font-weight: var(--origam-font__weight---semibold, 600);
       letter-spacing: 0.05em;
       text-transform: uppercase;
@@ -903,7 +903,7 @@
 
     &__title {
       display: block;
-      font-size: var(--origam-font-size---lg, 1.125rem);
+      font-size: var(--origam-font__size---xl, 1.125rem);
       font-weight: var(--origam-font__weight---semibold, 600);
       color: var(--origam-color__text---primary, #0a0a0a);
       margin: 0;
@@ -939,7 +939,7 @@
 
     &__dd {
       margin: 0;
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       line-height: 1.55;
       color: var(--origam-color__text---secondary, #525252);
       padding-inline-start: var(--origam-space---2, 0.5rem);
@@ -956,7 +956,7 @@
 
     &__name-mono {
       font-family: var(--origam-font__family---mono, monospace);
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: var(--origam-font__weight---semibold, 600);
       color: var(--origam-color__text---primary, #0a0a0a);
     }
@@ -977,7 +977,7 @@
 
     &__default {
       font-family: var(--origam-font__family---mono, monospace);
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       color: var(--origam-color__text---tertiary, #737373);
     }
 
@@ -1052,7 +1052,7 @@
     &__card-name {
       display: block;
       flex: 1;
-      font-size: var(--origam-font-size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: var(--origam-font__weight---semibold, 600);
       font-family: var(--origam-font__family---mono, monospace);
       color: var(--origam-color__text---primary, #0a0a0a);
@@ -1066,7 +1066,7 @@
 
     &__card-desc {
       margin: 0;
-      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       line-height: 1.5;
       color: var(--origam-color__text---secondary, #525252);
     }

@@ -277,7 +277,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 .components-section {
     &__eyebrow {
         margin: 0 0 var(--origam-space---3, 0.75rem);
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
         text-transform: uppercase;
@@ -375,7 +375,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
     &__subtitle {
         margin: 0;
         max-inline-size: 40rem;
-        font-size: var(--origam-font-size---lg, 1.125rem);
+        font-size: var(--origam-font__size---xl, 1.125rem);
         line-height: var(--origam-line-height---relaxed, 1.7);
         color: var(--origam-color__text---secondary, #525252);
     }
@@ -388,7 +388,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 
     &__count {
         margin: 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         color: var(--origam-color__text---tertiary, #737373);
     }
 }
@@ -416,7 +416,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 
     &__title {
         display: block;
-        font-size: var(--origam-font-size---lg, 1.125rem);
+        font-size: var(--origam-font__size---xl, 1.125rem);
         font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__text---primary, #0a0a0a);
         margin: 0;
@@ -447,7 +447,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 
     &__title {
         display: block;
-        font-size: var(--origam-font-size---lg, 1.125rem);
+        font-size: var(--origam-font__size---xl, 1.125rem);
         font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__text---primary, #0a0a0a);
         margin: 0;
@@ -537,7 +537,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 
     &__desc {
         margin: 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         line-height: 1.55;
         color: var(--origam-color__text---secondary, #525252);
         flex: 1;

@@ -687,17 +687,17 @@ useSeoMeta({
 
     &__signature-btn {
         font-family: var(--origam-font__family---mono, monospace);
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
         background: var(--origam-color__surface---sunken, #f5f5f5);
         border-radius: var(--origam-radius---btn, 4px);
         white-space: nowrap;
-        --origam-btn---font-size: var(--origam-font-size---xs, 0.75rem);
+        --origam-btn---font-size: var(--origam-font__size---sm, 0.75rem);
     }
 
     &__signature-text {
         font-family: var(--origam-font__family---mono, monospace);
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         overflow: hidden;
         text-overflow: ellipsis;
         max-inline-size: 40ch;
@@ -726,7 +726,7 @@ useSeoMeta({
     &__heading {
         margin: 0 0 var(--origam-space---3, 0.75rem);
         padding-inline-start: var(--origam-space---3, 0.75rem);
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         font-weight: 700;
         letter-spacing: 0.09em;
         text-transform: uppercase;
@@ -756,7 +756,7 @@ useSeoMeta({
 
     &__link {
         display: block;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 400;
         color: var(--origam-color__text---secondary, #525252);
         padding: var(--origam-space---1, 0.25rem) var(--origam-space---3, 0.75rem);
@@ -797,7 +797,7 @@ useSeoMeta({
 
     &__eyebrow {
         margin: 0 0 var(--origam-space---1, 0.25rem);
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         font-weight: 700;
         letter-spacing: 0.09em;
         text-transform: uppercase;
@@ -806,7 +806,7 @@ useSeoMeta({
 
     &__title {
         display: block;
-        font-size: var(--origam-font-size---xl, 1.25rem);
+        font-size: var(--origam-font__size---2xl, 1.25rem);
         font-weight: 700;
         color: var(--origam-color__text---ink, #0a0a0a);
         letter-spacing: -0.02em;
@@ -815,7 +815,7 @@ useSeoMeta({
 
     &__desc {
         margin: var(--origam-space---3, 0.75rem) 0 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         color: var(--origam-color__text---secondary, #525252);
         line-height: 1.6;
         max-inline-size: 60ch;
@@ -867,14 +867,14 @@ useSeoMeta({
     &__name-btn {
         padding: 0;
         gap: var(--origam-space---1, 0.25rem);
-        --origam-btn---font-size: var(--origam-font-size---sm, 0.875rem);
+        --origam-btn---font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 600;
         color: var(--origam-color__text---primary, #0a0a0a);
     }
 
     &__name-mono {
         font-family: var(--origam-font__family---mono, monospace);
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 600;
         color: var(--origam-color__text---primary, #0a0a0a);
     }
@@ -912,14 +912,14 @@ useSeoMeta({
 
     &__default {
         font-family: var(--origam-font__family---mono, monospace);
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         color: var(--origam-color__text---tertiary, #737373);
         white-space: nowrap;
     }
 
     &__dd {
         margin: 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         line-height: 1.6;
         color: var(--origam-color__text---secondary, #525252);
         padding-inline-start: 0;
@@ -936,7 +936,7 @@ useSeoMeta({
     border-inline-start: 3px solid var(--origam-color__action--primary---bg, #7c3aed);
     background: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.04));
     border-radius: 0 var(--origam-radius---sm, 4px) var(--origam-radius---sm, 4px) 0;
-    font-size: var(--origam-font-size---sm, 0.875rem);
+    font-size: var(--origam-font__size---md, 0.875rem);
     line-height: 1.65;
     color: var(--origam-color__text---secondary, #525252);
     max-inline-size: 56rem;
@@ -953,7 +953,7 @@ useSeoMeta({
         display: flex;
         align-items: center;
         gap: var(--origam-space---2, 0.5rem);
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 700;
         color: var(--origam-color__text---ink, #0a0a0a);
         margin: 0 0 var(--origam-space---3, 0.75rem);
@@ -1031,7 +1031,7 @@ useSeoMeta({
 
     &__card-name {
         display: block;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 700;
         font-family: var(--origam-font__family---mono, monospace);
         color: var(--origam-color__text---primary, #0a0a0a);
@@ -1040,7 +1040,7 @@ useSeoMeta({
 
     &__card-desc {
         margin: 0;
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         line-height: 1.5;
         color: var(--origam-color__text---secondary, #525252);
         flex: 1;
@@ -1067,7 +1067,7 @@ useSeoMeta({
 
     &__title {
         display: block;
-        font-size: var(--origam-font-size---lg, 1.125rem);
+        font-size: var(--origam-font__size---xl, 1.125rem);
         font-weight: var(--origam-font__weight---bold, 700);
         color: var(--origam-color__text---primary, #0a0a0a);
         margin: 0;
@@ -1075,7 +1075,7 @@ useSeoMeta({
 
     &__desc {
         margin: 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         line-height: 1.65;
         color: var(--origam-color__text---secondary, #525252);
     }
