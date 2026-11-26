@@ -399,33 +399,35 @@
 
 <style scoped lang="scss">
   .theming {
+    --theming-header-height: 3.5rem;
+
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - var(--origam-app-bar---height, 4rem));
+    min-height: calc(100vh - var(--theming-header-height));
 
     &__dev-banner {
       flex: none;
-      margin: var(--origam-space---4, 1rem);
+      margin: var(--origam-space---4);
       margin-block-end: 0;
     }
 
     &__topbar {
       display: flex;
       align-items: center;
-      gap: var(--origam-spacing-4, 1rem);
+      gap: var(--origam-space---4);
       flex: 0 0 auto;
-      margin-block-start: var(--origam-spacing-4, 1rem);
-      padding: var(--origam-spacing-4, 1rem) var(--origam-spacing-5, 1.25rem);
+      margin-block-start: var(--origam-space---4);
+      padding: var(--origam-space---4) var(--origam-space---5);
       min-height: 4rem;
-      background-color: var(--origam-color-surface-default);
-      border-block-end: 1px solid var(--origam-color-border-default);
+      background-color: var(--origam-color__surface---default);
+      border-block-end: 1px solid var(--origam-color__border---default);
       overflow-x: auto;
       --origam-field---font-size: 0.75rem;
       --origam-field---padding-top: 0px;
       --origam-field---padding-bottom: 0px;
       --origam-field---padding-start: 8px;
       --origam-field---padding-end: 8px;
-      --origam-field---border-radius: 4px;
+      --origam-field---border-radius: var(--origam-radius---sm);
       --origam-input---font-size: 0.75rem;
       --origam-input__control---height-sm: 28px;
       --origam-select---min-width: 0;
@@ -449,7 +451,7 @@
     &__brand {
       display: flex;
       align-items: center;
-      gap: var(--origam-spacing-2, 0.5rem);
+      gap: var(--origam-space---2);
       flex: 0 0 auto;
     }
 
@@ -459,17 +461,17 @@
       justify-content: center;
       inline-size: 1.375rem;
       block-size: 1.375rem;
-      border-radius: var(--origam-radius-sm, 0.25rem);
-      background-color: var(--origam-color__action--primary---bg, #7c3aed);
-      color: var(--origam-color__action--primary---fg, #ffffff);
+      border-radius: var(--origam-radius---sm);
+      background-color: var(--origam-color__action--primary---bg);
+      color: var(--origam-color__action--primary---fg);
       font-size: 0.625rem;
-      font-weight: var(--origam-font-weight-bold, 800);
+      font-weight: var(--origam-font__weight---bold);
     }
 
     &__brand-title {
       margin: 0;
-      font-size: var(--origam-font-size-sm, 0.8125rem);
-      font-weight: var(--origam-font-weight-bold, 700);
+      font-size: var(--origam-font__size---sm);
+      font-weight: var(--origam-font__weight---bold);
       white-space: nowrap;
     }
 
@@ -477,7 +479,7 @@
       flex: 0 0 auto;
       inline-size: 1px;
       block-size: 1.375rem;
-      background-color: var(--origam-color-border-default);
+      background-color: var(--origam-color__border---default);
     }
 
     &__field {
@@ -503,15 +505,15 @@
     &__mods {
       display: flex;
       align-items: center;
-      gap: var(--origam-spacing-1, 0.25rem);
+      gap: var(--origam-space---1);
       flex: 0 0 auto;
       margin: 0;
-      font-size: var(--origam-font-size-xs, 0.75rem);
-      color: var(--origam-color-text-subtle);
+      font-size: var(--origam-font__size---xs);
+      color: var(--origam-color__text---secondary);
       white-space: nowrap;
 
       strong {
-        color: var(--origam-color-text-default);
+        color: var(--origam-color__text---primary);
         font-variant-numeric: tabular-nums;
       }
     }
@@ -520,21 +522,21 @@
       inline-size: 6px;
       block-size: 6px;
       border-radius: 50%;
-      background-color: var(--origam-color__action--primary---bg, #7c3aed);
+      background-color: var(--origam-color__action--primary---bg);
     }
 
     &__actions {
       display: flex;
       align-items: center;
-      gap: var(--origam-spacing-1, 0.25rem);
+      gap: var(--origam-space---1);
       flex: 0 0 auto;
     }
 
     &__import-dialog {
       display: flex;
       flex-direction: column;
-      gap: var(--origam-spacing-3, 0.75rem);
-      padding: var(--origam-spacing-4, 1rem);
+      gap: var(--origam-space---3);
+      padding: var(--origam-space---4);
     }
 
     &__import-text {
@@ -570,17 +572,17 @@
       min-width: 0;
       min-height: 0;
       overflow: visible;
-      padding: var(--origam-spacing-4, 1rem);
-      background-color: var(--origam-color-surface-sunken, var(--origam-color-surface-subtle));
-      border-inline: 1px solid var(--origam-color-border-default);
+      padding: var(--origam-space---4);
+      background-color: var(--origam-color__surface---sunken);
+      border-inline: 1px solid var(--origam-color__border---default);
       position: sticky;
-      top: var(--origam-app-bar---height, 4rem);
-      max-height: calc(100vh - var(--origam-app-bar---height, 4rem));
+      top: var(--theming-header-height);
+      max-height: calc(100vh - var(--theming-header-height));
       overflow-y: auto;
 
       @media (max-width: 48rem) {
         border-inline: none;
-        border-block: 1px solid var(--origam-color-border-default);
+        border-block: 1px solid var(--origam-color__border---default);
         position: static;
         max-height: none;
         overflow-y: visible;
@@ -591,29 +593,29 @@
       flex: 0 0 auto;
       display: flex;
       flex-direction: column;
-      gap: var(--origam-spacing-2, 0.5rem);
-      padding: var(--origam-spacing-4, 1rem);
-      background-color: var(--origam-color-surface-default);
-      border-block-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+      gap: var(--origam-space---2);
+      padding: var(--origam-space---4);
+      background-color: var(--origam-color__surface---default);
+      border-block-start: 1px solid var(--origam-color__border---subtle);
       overflow: visible;
     }
 
     &__output-head {
       display: flex;
       align-items: baseline;
-      gap: var(--origam-spacing-3, 0.75rem);
+      gap: var(--origam-space---3);
       flex: 0 0 auto;
     }
 
     &__output-title {
       margin: 0;
-      font-size: var(--origam-font-size-sm, 0.8125rem);
+      font-size: var(--origam-font__size---sm);
     }
 
     &__output-hint {
       margin: 0;
-      font-size: var(--origam-font-size-xs, 0.75rem);
-      color: var(--origam-color-text-subtle);
+      font-size: var(--origam-font__size---xs);
+      color: var(--origam-color__text---secondary);
     }
 
     &__output-code {

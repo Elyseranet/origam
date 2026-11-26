@@ -1006,7 +1006,7 @@ useSeoMeta({
 
     &__title {
         margin: 0;
-        font-size: var(--origam-font-size---cta, 4rem) !important;
+        --origam-title---font-size: var(--origam-font-size---cta, 4rem);
         font-weight: var(--origam-font-weight---extrabold, 800);
         letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
         line-height: var(--origam-line-height---hero, 0.95);
@@ -1437,7 +1437,7 @@ useSeoMeta({
     }
 
     .wireframe-cta__title {
-        font-size: clamp(2rem, 8vw, 4rem) !important;
+        --origam-title---font-size: clamp(2rem, 8vw, 4rem);
     }
 
     .wireframe-gallery__grid {

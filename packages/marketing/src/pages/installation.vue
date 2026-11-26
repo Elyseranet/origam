@@ -822,7 +822,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
     &__note {
         margin-block-start: var(--origam-space---5, 1.25rem);
         font-size: var(--origam-font-size---sm, 0.875rem);
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---secondary, #525252);
         font-style: italic;
         max-inline-size: 48rem;
     }
@@ -859,7 +859,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 
     &__title {
         margin: 0;
-        font-size: var(--origam-font-size---cta, 4rem) !important;
+        --origam-title---font-size: var(--origam-font-size---cta, 4rem);
         font-weight: var(--origam-font-weight---extrabold, 800);
         letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
         line-height: var(--origam-line-height---hero, 0.95);
@@ -925,7 +925,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 
     .installation-cta {
         &__title {
-            font-size: clamp(2rem, 8vw, 4rem) !important;
+            --origam-title---font-size: clamp(2rem, 8vw, 4rem);
         }
     }
 
