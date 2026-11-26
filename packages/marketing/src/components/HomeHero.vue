@@ -1,131 +1,121 @@
 <template>
-  <section
-    id="hero"
-    class="home-hero"
-    aria-labelledby="hero-title"
-  >
-    <div
-      class="home-hero__visual"
-      aria-hidden="true"
+  <origam-theme-provider mode="light">
+    <section
+      id="hero"
+      class="home-hero"
+      data-cy="section-hero"
+      aria-labelledby="hero-title"
     >
-      <origam-img
-        class="home-hero__img home-hero__img--day"
-        :src="HERO_WATERCOLOR.src"
-        :srcset="HERO_WATERCOLOR.srcset"
-        :sizes="HERO_WATERCOLOR_SIZES"
-        alt=""
-        width="100%"
-        height="100%"
-        cover
-        position="center bottom"
-        eager
-        data-cy="hero-watercolor"
-      />
-      <origam-img
-        class="home-hero__img home-hero__img--symbol home-hero__img--symbol-day"
-        :src="HERO_SYMBOL_DAY.src"
-        :srcset="HERO_SYMBOL_DAY.srcset"
-        :sizes="HERO_SYMBOL_SIZES"
-        alt=""
-        width="36%"
-        max-width="24rem"
-        height="56%"
-        position="center"
-        eager
-        data-cy="hero-symbol"
-      />
-      <origam-img
-        class="home-hero__img home-hero__img--symbol home-hero__img--night"
-        :src="HERO_NIGHT.src"
-        :srcset="HERO_NIGHT.srcset"
-        :sizes="HERO_SYMBOL_SIZES"
-        alt=""
-        width="36%"
-        max-width="24rem"
-        height="56%"
-        position="center"
-        eager
-        data-cy="hero-night"
-      />
-    </div>
+      <div
+        class="home-hero__visual"
+        aria-hidden="true"
+      >
+        <origam-img
+          class="home-hero__img"
+          :src="HERO_WATERCOLOR.src"
+          :srcset="HERO_WATERCOLOR.srcset"
+          :sizes="HERO_WATERCOLOR_SIZES"
+          alt=""
+          width="100%"
+          height="100%"
+          cover
+          position="center bottom"
+          eager
+          data-cy="hero-watercolor"
+        />
+        <origam-img
+          class="home-hero__img home-hero__img--symbol"
+          :src="HERO_SYMBOL_DAY.src"
+          :srcset="HERO_SYMBOL_DAY.srcset"
+          :sizes="HERO_SYMBOL_SIZES"
+          alt=""
+          width="36%"
+          max-width="24rem"
+          height="56%"
+          position="center"
+          eager
+          data-cy="hero-symbol"
+        />
+      </div>
+  
+      <origam-container
+        class="home-hero__inner"
+        max-width="none"
+      >
+        <header class="home-hero__header">
+          <p
+            class="home-hero__eyebrow"
+            data-cy="hero-eyebrow"
+          >
+            {{ t('home.hero.eyebrow', 'VUE 3 DESIGN SYSTEM') }}
+          </p>
+  
+          <origam-title
+            id="hero-title"
+            tag="h1"
+            class="home-hero__title"
+          >
+            {{ t('home.hero.title', 'The Vue 3 design system that folds to your brand') }}
+          </origam-title>
+  
+          <p class="home-hero__tagline">
+            {{ t('home.hero.tagline', 'Props first, CSS second.') }}
+          </p>
+  
+          <p class="home-hero__description">
+            {{ t('home.hero.description', '97 component families, from forms to charts, and a Nuxt module in the same package. A theme is one object: written once, applied to the whole catalogue.') }}
+          </p>
+        </header>
+  
+        <nav
+          class="home-hero__ctas"
+          :aria-label="t('home.hero.ctas_label', 'Hero calls to action')"
+        >
+          <origam-btn
+            class="home-hero__btn"
+            variant="flat"
+            :bg-color="HERO_CTA_BG"
+            :color="HERO_CTA_FG"
+            append-icon="mdi-arrow-right"
+            :href="CTA_START_HREF"
+            data-cy="hero-cta-start"
+          >
+            {{ t('home.hero.cta_start', 'Install') }}
+          </origam-btn>
+  
+          <origam-btn
+            class="home-hero__btn"
+            variant="outlined"
+            color="primary"
+            prepend-icon="mdi-github"
+            :href="githubRepo"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cy="hero-cta-github"
+          >
+            {{ t('home.hero.cta_github', 'View on GitHub') }}
+          </origam-btn>
+        </nav>
 
-    <origam-container
-      class="home-hero__inner"
-      max-width="none"
-    >
-      <header class="home-hero__header">
+        <origam-code
+          :code="installCommand"
+          :prompt="HERO_INSTALL_PROMPT"
+          lang="bash"
+          compact
+          copyable
+          class="home-hero__install"
+          data-cy="hero-install-command"
+        />
+
         <p
-          class="home-hero__eyebrow"
-          data-cy="hero-eyebrow"
+          class="home-hero__proof"
+          data-cy="hero-proof"
         >
-          {{ t('home.hero.eyebrow', 'VUE 3 DESIGN SYSTEM') }}
+          {{ t('home.hero.proof', 'MIT license · Vue 3.5+ · Nuxt module included') }}
         </p>
-
-        <origam-title
-          id="hero-title"
-          tag="h1"
-          class="home-hero__title"
-        >
-          {{ t('home.hero.title', 'The Vue 3 design system that folds to your brand') }}
-        </origam-title>
-
-        <p class="home-hero__tagline">
-          {{ t('home.hero.tagline', 'Props first, CSS second.') }}
-        </p>
-
-        <p class="home-hero__description">
-          {{ t('home.hero.description', '97 component families, from forms to charts, and a Nuxt module in the same package. A theme is one object: written once, applied to the whole catalogue.') }}
-        </p>
-      </header>
-
-      <nav
-        class="home-hero__ctas"
-        :aria-label="t('home.hero.ctas_label', 'Hero calls to action')"
-      >
-        <origam-btn
-          class="home-hero__btn"
-          variant="flat"
-          :bg-color="HERO_CTA_BG"
-          :color="HERO_CTA_FG"
-          append-icon="mdi-arrow-right"
-          :href="CTA_START_HREF"
-          data-cy="hero-cta-start"
-        >
-          {{ t('home.hero.cta_start', 'Install') }}
-        </origam-btn>
-
-        <origam-btn
-          class="home-hero__btn"
-          variant="outlined"
-          color="primary"
-          prepend-icon="mdi-github"
-          :href="githubRepo"
-          target="_blank"
-          rel="noopener noreferrer"
-          data-cy="hero-cta-github"
-        >
-          {{ t('home.hero.cta_github', 'View on GitHub') }}
-        </origam-btn>
-      </nav>
-
-      <origam-code
-        :code="installCommand"
-        :prompt="HERO_INSTALL_PROMPT"
-        lang="bash"
-        compact
-        copyable
-        class="home-hero__install"
-        data-cy="hero-install-command"
-      />
-
-      <p
-        class="home-hero__proof"
-        data-cy="hero-proof"
-      >
-        {{ t('home.hero.proof', 'MIT license · Vue 3.5+ · Nuxt module included') }}
-      </p>
-    </origam-container>
-  </section>
+      </origam-container>
+    </section>
+  </origam-theme-provider>
 </template>
 
 <script setup lang="ts">
@@ -136,7 +126,6 @@ import {
     HERO_CTA_BG,
     HERO_CTA_FG,
     HERO_INSTALL_PROMPT,
-    HERO_NIGHT,
     HERO_SYMBOL_DAY,
     HERO_SYMBOL_SIZES,
     HERO_WATERCOLOR,
@@ -148,8 +137,8 @@ import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
  * Global
  *
  * @description
- * Hero de la maquette A : l'aquarelle (clair) ou le symbole A1 seul (sombre)
- * est décorative et sort du flux de lecture (aria-hidden, alt vide).
+ * Hero de la maquette A, rendu en mode clair quel que soit le mode du site
+ * (le texte encre doit rester lisible sur l'aquarelle) : l'aquarelle et le symbole A1 sont décoratifs et sort du flux de lecture (aria-hidden, alt vide).
  ********************************************************/
 const { t } = useT()
 
@@ -176,6 +165,16 @@ defineExpose({})
     isolation: isolate;
     overflow: hidden;
     background: var(--origam-color__surface---default);
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset-inline: 0;
+        inset-block-end: 0;
+        block-size: var(--origam-space---24, 6rem);
+        pointer-events: none;
+        background: linear-gradient(to bottom, transparent, var(--home-hero-fade, var(--origam-color__surface---default)));
+    }
 
     &__visual {
         position: absolute;
@@ -277,31 +276,8 @@ section.home-hero .home-hero__img--symbol {
     display: none;
 }
 
-:root[data-mode="dark"] section.home-hero .home-hero__img--day {
-    display: none;
-}
-
 @media (min-width: 64rem) {
-    :root[data-mode="light"] section.home-hero .home-hero__img--symbol-day,
-    :root[data-mode="dark"] section.home-hero .home-hero__img--night {
-        display: block;
-    }
-}
-
-@media (prefers-color-scheme: dark) {
-    :root:not([data-mode]) section.home-hero .home-hero__img--day {
-        display: none;
-    }
-}
-
-@media (min-width: 64rem) and (prefers-color-scheme: light) {
-    :root:not([data-mode]) section.home-hero .home-hero__img--symbol-day {
-        display: block;
-    }
-}
-
-@media (min-width: 64rem) and (prefers-color-scheme: dark) {
-    :root:not([data-mode]) section.home-hero .home-hero__img--night {
+    section.home-hero .home-hero__img--symbol {
         display: block;
     }
 }
