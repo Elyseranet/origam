@@ -848,11 +848,11 @@
           bar covers it — measured in Chromium before this rule:
           `#roadmap-status-title` landed at `top: 0` under a 56 px bar, i.e.
           the reader jumps to a section whose title is invisible. The token
-          carries the bar height (64 px), the extra rung is breathing room.
+          carries the bar height (56 px), the extra rung is breathing room.
         */
         &__title {
             scroll-margin-block-start: calc(
-                var(--origam-app-bar---height, 64px) + var(--origam-space---6, 1.5rem)
+                var(--marketing-header-height) + var(--origam-space---6, 1.5rem)
             );
         }
     }
@@ -998,10 +998,9 @@
 
         /*
           `success---fg` is the ON-SATURATED foreground (white on a green
-          fill); under the `geek` identity it resolves to `#000000`, which is
-          why this rule reads `fgSubtle` — the intent's own hue, meant for a
-          neutral surface, `#166534`. /why-origam's `use_cases` column still
-          uses `---fg` here and paints a black rule instead of a green one.
+          fill), which can be near-black in some identities, hence why this rule
+          reads `fgSubtle` — the intent's own hue, meant for a
+          neutral surface.
         */
         &__col {
             padding-inline-start: var(--origam-space---5, 1.25rem);
@@ -1067,7 +1066,7 @@
 
         &__wave-title {
             margin: 0 0 var(--origam-space---4, 1rem);
-            font-size: var(--origam-font-size---sm, 0.875rem) !important;
+            --origam-title---font-size: var(--origam-font-size---sm, 0.875rem);
             font-weight: var(--origam-font__weight---semibold, 600);
             text-transform: uppercase;
             letter-spacing: var(--origam-letter-spacing---wide, 0.08em);
@@ -1199,7 +1198,7 @@
             margin: 0;
             flex: 1 1 auto;
             min-inline-size: 0;
-            font-size: var(--origam-font-size---lg, 1.125rem) !important;
+            --origam-title---font-size: var(--origam-font-size---lg, 1.125rem);
             font-weight: var(--origam-font__weight---bold, 700);
             color: var(--origam-color__text---primary, #0a0a0a);
         }
@@ -1307,7 +1306,7 @@
         &__group-title {
             display: block;
             margin: 0;
-            font-size: var(--origam-font__size---lg, 1rem) !important;
+            --origam-title---font-size: var(--origam-font__size---lg, 1rem);
             font-weight: var(--origam-font__weight---semibold, 600);
             color: var(--origam-color__text---primary, #0a0a0a);
         }
@@ -1388,7 +1387,7 @@
 
         &__title {
             margin: 0;
-            font-size: var(--origam-font-size---cta, 4rem) !important;
+            --origam-title---font-size: var(--origam-font-size---cta, 4rem);
             font-weight: var(--origam-font-weight---extrabold, 800);
             letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
             line-height: var(--origam-line-height---hero, 0.95);
@@ -1465,7 +1464,7 @@
 
         .roadmap-cta {
             &__title {
-                font-size: clamp(2rem, 8vw, 4rem) !important;
+                --origam-title---font-size: clamp(2rem, 8vw, 4rem);
             }
         }
 

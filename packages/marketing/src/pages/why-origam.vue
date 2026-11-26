@@ -760,7 +760,7 @@ const comparisonItems = computed(() =>
 
         &__cell-title {
             margin: 0;
-            font-size: var(--origam-font__size---lg, 1rem) !important;
+            --origam-title---font-size: var(--origam-font__size---lg, 1rem);
             font-weight: var(--origam-font__weight---semibold, 600);
             line-height: var(--origam-line-height---tight, 1.25);
             color: var(--origam-color__text---primary);
@@ -928,7 +928,7 @@ const comparisonItems = computed(() =>
 
         &__row-title {
             margin: 0 0 var(--origam-space---1, 0.25rem);
-            font-size: var(--origam-font__size---lg, 1rem) !important;
+            --origam-title---font-size: var(--origam-font__size---lg, 1rem);
             font-weight: var(--origam-font__weight---semibold, 600);
             color: var(--origam-color__text---primary);
         }
@@ -955,7 +955,7 @@ const comparisonItems = computed(() =>
             padding-inline-start: var(--origam-space---5, 1.25rem);
             border-inline-start: 2px solid var(--origam-color__border---subtle);
 
-            /* Le filet NOIR signale en production sous `geek` — voir #951. */
+            /* `fgSubtle`, jamais `fg` : `fg` est l'encre posée SUR un aplat (#951). */
             &[data-tone='yes'] {
                 border-inline-start-color: var(--origam-color__feedback--success---fgSubtle);
             }
@@ -989,7 +989,7 @@ const comparisonItems = computed(() =>
 
         &__item-title {
             margin: 0 0 var(--origam-space---1, 0.25rem);
-            font-size: var(--origam-font-size---sm, 0.875rem) !important;
+            --origam-title---font-size: var(--origam-font-size---sm, 0.875rem);
             font-weight: var(--origam-font__weight---semibold, 600);
             color: var(--origam-color__text---primary);
         }
@@ -1040,7 +1040,7 @@ const comparisonItems = computed(() =>
         &__title {
             margin: 0;
             font-family: var(--origam-font-family---heading);
-            font-size: clamp(2rem, 5.5vw, var(--origam-font-size---cta, 4rem)) !important;
+            --origam-title---font-size: clamp(2rem, 5.5vw, var(--origam-font-size---cta, 4rem));
             font-weight: var(--origam-font-weight---extrabold, 800);
             letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
             line-height: var(--origam-line-height---hero, 0.95);
@@ -1111,7 +1111,7 @@ const comparisonItems = computed(() =>
 
         .why-cta {
             &__title {
-                font-size: clamp(2rem, 8vw, 4rem) !important;
+                --origam-title---font-size: clamp(2rem, 8vw, 4rem);
             }
         }
 
