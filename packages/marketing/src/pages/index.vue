@@ -1,9 +1,6 @@
 <template>
   <article class="home">
-    <home-hero
-      id="hero"
-      data-cy="section-hero"
-    />
+    <home-hero />
 
     <home-benefits
       id="benefits"
@@ -49,5 +46,6 @@ useSeoMeta({
 .home {
     display: flex;
     flex-direction: column;
+    --home-hero-fade: var(--origam-color__surface---default);
 }
 </style>
