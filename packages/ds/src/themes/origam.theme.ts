@@ -37,7 +37,9 @@ import type { IOrigamTheme } from '../interfaces/Commons/theme.interface'
  * Shadows: kit "card" = `md`, kit "floating" = `lg`; xs / sm / xl are a ramp
  * on the ink. Radii by value: md = 10, xl = 16, 2xl = 24, lg stays 12.
  * @description
- * Buttons are pills (kit `.button { border-radius: 999px }`) through the
+ * Buttons are rounded rectangles, 12px (`radius---lg`, #1555: the brand kit
+ * MOCKUP shows rounded rectangles; its CSS `border-radius: 999px` contradicted
+ * the image, and #1514 had followed the CSS — the image now wins) through the
  * TOKENS `--origam-btn---border-radius` and `--origam-btn-group---border-radius`
  * (BtnGroup / BtnToggle follow), declared in light.css / dark.css
  * only (this theme carries no component-tier var, and the root block never
@@ -45,7 +47,8 @@ import type { IOrigamTheme } from '../interfaces/Commons/theme.interface'
  * Deliberate PROPS-FIRST exception, decided by the owner: a theme prop is
  * emitted as an INLINE style, which beats the scoped `var()` of every
  * component that nests an OrigamBtn (measured: OrigamInlineEdit's action
- * button went from 4px to 9999px). The mechanism defect is #1523.
+ * button went from 4px to 9999px under the former pill). The mechanism
+ * defect is #1523.
  ********************************************************/
 
 export const origamLightTheme: IOrigamTheme = {

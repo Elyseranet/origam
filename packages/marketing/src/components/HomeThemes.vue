@@ -1,6 +1,6 @@
 <template>
   <section
-    class="home-themes"
+    class="home-themes home-container home-section"
     aria-labelledby="themes-title"
   >
     <origam-grid
@@ -148,10 +148,6 @@ const { t } = useT()
 
 <style scoped lang="scss">
 .home-themes {
-    width: 100%;
-    padding-block: var(--origam-space---24, 6rem);
-    padding-inline: var(--origam-space---14, 3.5rem);
-    box-sizing: border-box;
 
     &__text-col {
         display: flex;

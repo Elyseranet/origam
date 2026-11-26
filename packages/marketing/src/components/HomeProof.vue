@@ -1,9 +1,12 @@
 <template>
   <section
-    class="home-proof"
+    class="home-proof home-section"
     aria-labelledby="proof-title"
   >
-    <origam-container class="home-proof__inner">
+    <origam-container
+      class="home-proof__inner home-container"
+      max-width="none"
+    >
       <header class="home-proof__header">
         <origam-title
           id="proof-title"
@@ -75,8 +78,6 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-proof {
-    padding-block: var(--origam-space---12, 3rem);
-    border-block-end: 1px solid var(--origam-color__border---subtle);
 
     &__header {
         display: flex;
@@ -87,14 +88,14 @@ defineExpose({})
 
     &__title {
         margin: 0;
-        font-size: clamp(1.5rem, 3vw, 2rem);
+        font-size: var(--home-fs-h2);
         font-weight: var(--origam-font__weight---bold, 700);
         color: var(--origam-color__text---primary);
     }
 
     &__intro {
         margin: 0;
-        font-size: var(--origam-font__size---md, 1rem);
+        font-size: var(--home-fs-body);
         color: var(--origam-color__text---secondary);
     }
 
@@ -113,7 +114,7 @@ defineExpose({})
     }
 
     &__value {
-        font-size: clamp(2rem, 4vw, 2.75rem);
+        font-size: var(--home-fs-h1-sentence);
         font-weight: var(--origam-font__weight---bold, 700);
         line-height: 1;
         color: var(--origam-color__text---primary);
@@ -121,13 +122,13 @@ defineExpose({})
     }
 
     &__label {
-        font-size: var(--origam-font__size---md, 1rem);
+        font-size: var(--home-fs-body);
         font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__text---primary);
     }
 
     &__definition {
-        font-size: var(--origam-font__size---sm, 0.875rem);
+        font-size: var(--home-fs-small);
         line-height: 1.5;
         color: var(--origam-color__text---secondary);
     }

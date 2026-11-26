@@ -1,0 +1,63 @@
+/*
+ * home.css — foundations partagées de la home (#1554, T2).
+ *
+ * Les sections Home* consomment ces variables et ces classes ; elles ne
+ * redéclarent ni largeur, ni gouttière, ni écart de section, ni taille de titre.
+ * Échelle ×1,8 (cran DS `x-large`). Écart de section : l'image de la maquette
+ * (≈ 48 px entre deux contenus), pas les 96 px du kit JSON.
+ */
+:root {
+  /* Largeur du contenu ; la gouttière reste `--site-gutter` (layouts/default.vue). */
+  --home-container-max: 1280px;
+  /* Padding vertical d'UNE section : deux sections voisines laissent 2 × 24 = 48 px. */
+  --home-section-gap: var(--origam-space---6, 1.5rem);
+
+  /* Échelle typographique. H2 / H1 ≈ 0,38 (maquette) ; texte courant 18 px. */
+  --home-fs-h1: clamp(2.25rem, 0.5rem + 6.1vw, 6rem);
+  --home-fs-h1-sentence: clamp(2rem, 1.2rem + 3.2vw, 3.5rem); /* H1 en phrase (3 lignes) */
+  --home-fs-h2: clamp(1.75rem, 1.25rem + 1.2vw, 2.25rem);
+  --home-fs-h3: clamp(1.25rem, 1rem + 0.7vw, 1.5rem);
+  --home-fs-body: clamp(1rem, 0.9rem + 0.35vw, 1.125rem);
+  --home-fs-small: clamp(0.875rem, 0.8rem + 0.2vw, 1rem);
+  --home-fs-eyebrow: clamp(1rem, 0.8rem + 0.5vw, 1.25rem);
+
+  /* Trait de pinceau jaune des eyebrows. */
+  --home-eyebrow-mark-w: 1.2em;
+  --home-eyebrow-mark-h: 0.8em;
+  --home-eyebrow-gap: 0.6em;
+}
+
+/* Un seul bord gauche pour toutes les sections : 1280 px de contenu + gouttière. */
+.home-container {
+  --origam-container---padding-inline-start: var(--site-gutter);
+  --origam-container---padding-inline-end: var(--site-gutter);
+
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: calc(var(--home-container-max) + 2 * var(--site-gutter));
+  margin-inline: auto;
+  padding-inline: var(--site-gutter);
+}
+
+.home-section {
+  padding-block: var(--home-section-gap);
+}
+
+/* À poser sur un origam-text / origam-title : le trait est décoratif (CSS seul). */
+.home-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--home-eyebrow-gap);
+  font-size: var(--home-fs-eyebrow);
+  font-weight: var(--origam-font__weight---semibold, 600);
+  color: var(--origam-color__text---primary);
+}
+
+.home-eyebrow::before {
+  content: '';
+  flex: none;
+  inline-size: var(--home-eyebrow-mark-w);
+  block-size: var(--home-eyebrow-mark-h);
+  background-color: var(--origam-color__sun---500);
+  transform: skewX(-28deg);
+}
