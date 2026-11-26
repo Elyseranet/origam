@@ -198,7 +198,7 @@ test.describe('marketing — aucun tiers contacté automatiquement (#761)', () =
 
         // #1515 — Fraunces n'est plus chargée d'office : seul le site entier en `editorial`
         // l'utilisait ; un sous-arbre ne la charge que si un élément la peint.
-        expect(familles).toContain('Inter')
+        expect(familles).toContain('Sora')
         expect(externalHosts(seen, baseURL!)).toEqual([])
     })
 })

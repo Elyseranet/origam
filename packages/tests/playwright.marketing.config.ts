@@ -129,6 +129,7 @@ const MARKETING_GREEN_SPECS = [
     // `waitForTimeout` : c'est ce qui rendrait le fichier instable en CI, où
     // la machine est plus lente que la nôtre.
     'marketing-primary-nav.spec.ts',
+    'marketing-site-chrome.spec.ts',
 
     // #1032 — la palette ⌘K couvre les 8 familles et se filtre par famille ;
     // le rail de navigation n'existe plus.

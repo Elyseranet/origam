@@ -49,6 +49,13 @@ export const NAV_THEMING_LINK: INavLink = {
     href: '/theming'
 }
 
+export const NAV_DOCS_LINK: INavLink = {
+    i18nKey: 'nav.documentation',
+    i18nFallback: 'Documentation',
+    href: '/docs/',
+    external: true
+}
+
 export const DISCORD_LINK = 'https://discord.gg/origam'
 export const TWITTER_LINK = 'https://twitter.com/origam'
 

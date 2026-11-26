@@ -13,6 +13,7 @@ import { editorialThemes } from './src/themes/editorial.theme'
 import { materialThemes } from './src/themes/material.theme'
 import { ecomThemes } from './src/themes/ecom.theme'
 import { appleThemes } from './src/themes/apple.theme'
+import { BRAND_HEAD_LINKS } from './src/consts/brand.const'
 import { origamThemes } from './src/themes/origam.theme'
 // The DS's own UN-NAMED baseline (name-less → ROOT-scoped, always merged in by
 // `activeDefaultsFor` regardless of the active brand — see its doc comment).
@@ -243,8 +244,7 @@ export default defineNuxtConfig({
                 lang: MARKETING_DEFAULTS.defaultLocale
             },
             link: [
-                { rel: 'icon', type: 'image/svg+xml', href: MARKETING_DEFAULTS.logoPath },
-                { rel: 'icon', type: 'image/x-icon', href: MARKETING_DEFAULTS.faviconPath }
+                ...BRAND_HEAD_LINKS
 
                 // ⛔ #761 — plus aucune police distante ici. Les trois familles
                 // (Fraunces, Inter, JetBrains Mono) sont servies par ce site

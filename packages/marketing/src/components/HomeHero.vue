@@ -140,6 +140,27 @@
       flex-direction: column;
       align-items: center;
       gap: var(--origam-space---4, 1rem);
+      max-inline-size: 100%;
+    }
+
+    // #1516 — avec Sora réellement servie, l'étiquette FR du badge (une pastille
+    // d'une seule ligne, `white-space: nowrap`) mesure 376px à 375px de large :
+    // plus que la colonne (343px), elle débordait d'1px du viewport et collait le
+    // titre au bord. Sous 30rem elle passe sur deux lignes. Le sélecteur est doublé
+    // pour battre la règle de palier `--size-small` du chip (hauteur fixe).
+    @media (max-width: 29.9375rem) {
+      &__badge#{&}__badge {
+        height: auto;
+        min-height: 24px;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+
+        :deep(.origam-chip__content) {
+          height: auto;
+          white-space: normal;
+        }
+      }
     }
 
     &__title {

@@ -136,7 +136,7 @@
                 </origam-title>
 
                 <p class="privacy-block__body">
-                    {{ t('privacy.third_party.body', 'Nothing on the pages of this site is fetched from another company\'s server. The typefaces — Fraunces, Inter and JetBrains Mono — are served by this site itself, from its own /fonts folder. They used to be requested from Google Fonts, which revealed your IP address and browser to Google on every page; that request no longer exists. The nineteen public pages were each loaded with the network log open, and none of them contacted any host other than this one.') }}
+                    {{ t('privacy.third_party.body', 'Nothing on the pages of this site is fetched from another company\'s server. The typefaces — Sora, Inter, Fraunces and JetBrains Mono — are served by this site itself, from its own /fonts folder. They used to be requested from Google Fonts, which revealed your IP address and browser to Google on every page; that request no longer exists. The nineteen public pages were each loaded with the network log open, and none of them contacted any host other than this one.') }}
                 </p>
 
                 <p class="privacy-block__body">

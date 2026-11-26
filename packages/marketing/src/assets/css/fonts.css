@@ -4,7 +4,9 @@
  *
  * Provenance : transcription de la feuille servie par fonts.googleapis.com pour
  * la requête qui était déclarée dans nuxt.config.ts (Fraunces + Inter +
- * JetBrains Mono, display=swap), relevée avec un User-Agent Chrome 140.
+ * JetBrains Mono, display=swap). Sora (#1516) : même procédé, requête
+ * `Sora:wght@300..700` — police variable, un fichier par sous-ensemble, qui
+ * couvre les graisses 300, 400, 500, 600 et 700 du kit de marque ; feuille relevée avec un User-Agent Chrome 140.
  *
  * La SEULE chose modifiée est `src: url()`, qui pointe désormais sur
  * /fonts/*.woff2 servi par ce site. font-family, font-style, font-weight,
@@ -13,8 +15,8 @@
  * avant, que les sous-ensembles dont la page a besoin.
  *
  * Les .woff2 sont les fichiers servis par fonts.gstatic.com, octet pour octet.
- * Les trois familles sont sous SIL Open Font License 1.1, sans Reserved Font
- * Name : voir public/fonts/OFL-*.txt.
+ * Les quatre familles sont sous SIL Open Font License 1.1, sans Reserved Font
+ * Name : voir public/fonts/OFL-*.txt (Sora : Copyright 2019 The Sora Project Authors).
  *
  * Régénérer : relever la feuille Google avec un UA de navigateur récent, puis
  * remplacer chaque URL gstatic par le fichier local correspondant.
@@ -693,5 +695,24 @@
   font-weight: 700;
   font-display: swap;
   src: url(/fonts/jetbrains-mono-latin-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* latin-ext */
+@font-face {
+  font-family: 'Sora';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url(/fonts/sora-latin-ext-normal.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Sora';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url(/fonts/sora-latin-normal.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
