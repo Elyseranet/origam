@@ -79,6 +79,7 @@ A recursive nested file/folder hierarchy component with expand/collapse, keyboar
 | `modelValue` | `string[] \| string` | — | Selected node id(s) |
 | `expandedValue` | `string[]` | — | Initially expanded node ids |
 | `selectMode` | `TTreeviewSelectMode` | `'none'` | Selection mode: `'none'`, `'single'`, `'multiple'` |
+| `mandatory` | `boolean` | `false` | Garde toujours une ligne sélectionnée : re-cliquer la dernière ne la désélectionne pas |
 | `selectableNodes` | `TTreeviewSelectableNodes` | `'leaf'` | Which nodes are selectable: `'leaf'` (files only) or `'all'` |
 | `showLines` | `boolean` | `true` | Show vertical guide lines between nesting levels |
 | `expandOnClick` | `boolean` | `false` | Clicking anywhere on the row toggles expansion |

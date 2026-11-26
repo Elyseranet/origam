@@ -127,6 +127,7 @@
 				:init-state="() => useStoryInitState<ITreeviewProps>({
 					selectMode: 'none',
 					selectableNodes: 'leaf',
+					mandatory: false,
 					showLines: true,
 					expandOnClick: false,
 					color: undefined,
@@ -155,6 +156,7 @@
 				<StoryGroup title="Functional">
 					<HstSelect   v-model="state.selectMode"      title="Select Mode"      :options="SELECT_MODE_OPTIONS"/>
 					<HstSelect   v-model="state.selectableNodes" title="Selectable Nodes" :options="SELECTABLE_NODES_OPTIONS"/>
+					<HstCheckbox v-model="state.mandatory"       title="Mandatory"/>
 					<HstCheckbox v-model="state.showLines"       title="Show Lines"/>
 					<HstCheckbox v-model="state.expandOnClick"   title="Expand on Click"/>
 				</StoryGroup>

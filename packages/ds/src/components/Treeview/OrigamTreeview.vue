@@ -57,6 +57,7 @@
 	const props = withDefaults(defineProps<ITreeviewProps>(), {
 		selectMode: 'none',
 		selectableNodes: 'leaf',
+		mandatory: false,
 		showLines: true,
 		expandOnClick: false,
 		density: DENSITY.DEFAULT,
@@ -169,6 +170,8 @@
 		if (mode === TREEVIEW_SELECT_MODE.NONE) return
 
 		const next = new Set(selectedSet.value)
+
+		if (props.mandatory && next.size === 1 && next.has(id)) return
 
 		if (mode === TREEVIEW_SELECT_MODE.SINGLE) {
 			if (next.has(id)) {

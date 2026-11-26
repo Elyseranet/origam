@@ -38,6 +38,7 @@ export interface ITreeviewProps extends ICommonsComponentProps, IColorProps, IBg
     expandedValue?: string[]
     selectMode?: TTreeviewSelectMode
     selectableNodes?: TTreeviewSelectableNodes
+    mandatory?: boolean
     showLines?: boolean
     expandOnClick?: boolean
     /**
