@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.47.0] - 2026-11-26
+
 ### Changed — BREAKING (dérogation assumée, minor) : le thème par défaut prend l'identité du brand kit A1 (#1514)
 
 Le rendu par défaut de **toute** app change, que l'on passe par `createOrigam()` (thème runtime `origam.theme.ts`) ou par `origam/styles` seul (`primitive.css`, `light.css`, `dark.css` et leurs jumeaux SCSS) : les deux sources restent alignées (#615).
