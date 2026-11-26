@@ -540,14 +540,14 @@ useSeoMeta({
         display: block;
         font-size: var(--origam-font-size---section, 2rem);
         font-weight: var(--origam-font__weight---bold, 700);
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
         margin: 0;
     }
 
     &__desc {
         margin: 0;
         font-size: var(--origam-font__size---lg, 1rem);
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
         display: flex;
         align-items: center;
         gap: var(--origam-space---2, 0.5rem);
@@ -562,8 +562,8 @@ useSeoMeta({
 
 .interface-hero {
     position: relative;
-    background: color-mix(in srgb, var(--origam-color__surface---raised, #ffffff) 62%, transparent);
-    border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+    background: color-mix(in srgb, var(--origam-color__surface---raised) 62%, transparent);
+    border-block-end: 1px solid var(--origam-color__border---default);
     overflow: hidden;
 
     &::before {
@@ -613,7 +613,7 @@ useSeoMeta({
         font-weight: 800;
         letter-spacing: -0.045em;
         line-height: 1;
-        color: var(--origam-color__text---ink, #0a0a0a);
+        color: var(--origam-color__text---ink);
         display: block;
         font-family: var(--origam-font__family---mono, monospace);
     }
@@ -626,7 +626,7 @@ useSeoMeta({
     }
 
     &__category-chip {
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
     }
 
     &__desc {
@@ -634,7 +634,7 @@ useSeoMeta({
         max-inline-size: 52ch;
         font-size: var(--origam-font__size---lg, 1rem);
         line-height: 1.65;
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
     }
 
     &__bottom {
@@ -667,11 +667,11 @@ useSeoMeta({
     &__heading {
         margin: 0 0 var(--origam-space---3, 0.75rem);
         padding-inline-start: var(--origam-space---3, 0.75rem);
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         font-weight: 700;
         letter-spacing: 0.09em;
         text-transform: uppercase;
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---tertiary);
 
         @media (max-width: 1024px) {
             padding-inline-start: 0;
@@ -697,9 +697,9 @@ useSeoMeta({
 
     &__link {
         display: block;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: 400;
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---secondary);
         padding: var(--origam-space---1, 0.25rem) var(--origam-space---3, 0.75rem);
         border-radius: var(--origam-radius---md, 8px);
         border-inline-start: 2px solid transparent;
@@ -707,8 +707,8 @@ useSeoMeta({
         transition: color 100ms, border-color 100ms, background 100ms;
 
         &:hover {
-            color: var(--origam-color__text---primary, #0a0a0a);
-            background: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.08));
+            color: var(--origam-color__text---primary);
+            background: var(--origam-color__action--primary---bgSubtle);
         }
 
         @media (max-width: 1024px) {
@@ -719,13 +719,13 @@ useSeoMeta({
     }
 
     &__item--active &__link {
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-        border-inline-start-color: var(--origam-color__action--primary---bg, #7c3aed);
+        color: var(--origam-color__action--primary---fgSubtle);
+        border-inline-start-color: var(--origam-color__action--primary---bg);
         font-weight: 600;
 
         @media (max-width: 1024px) {
             border-inline-start-color: transparent;
-            border-block-end-color: var(--origam-color__action--primary---bg, #7c3aed);
+            border-block-end-color: var(--origam-color__action--primary---bg);
         }
     }
 }
@@ -733,32 +733,32 @@ useSeoMeta({
 .interface-section {
     &__header {
         padding-block-end: var(--origam-space---4, 1rem);
-        border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+        border-block-end: 1px solid var(--origam-color__border---default);
         margin-block-end: var(--origam-space---6, 1.5rem);
     }
 
     &__eyebrow {
         margin: 0 0 var(--origam-space---1, 0.25rem);
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---sm, 0.75rem);
         font-weight: 700;
         letter-spacing: 0.09em;
         text-transform: uppercase;
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        color: var(--origam-color__action--primary---fgSubtle);
     }
 
     &__title {
         display: block;
-        font-size: var(--origam-font-size---xl, 1.25rem);
+        font-size: var(--origam-font__size---2xl, 1.25rem);
         font-weight: 700;
-        color: var(--origam-color__text---ink, #0a0a0a);
+        color: var(--origam-color__text---ink);
         letter-spacing: -0.02em;
         margin: 0 0 var(--origam-space---2, 0.5rem);
     }
 
     &__desc {
         margin: var(--origam-space---3, 0.75rem) 0 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        color: var(--origam-color__text---secondary, #525252);
+        font-size: var(--origam-font__size---md, 0.875rem);
+        color: var(--origam-color__text---secondary);
         line-height: 1.6;
         max-inline-size: 60ch;
     }
@@ -790,7 +790,7 @@ useSeoMeta({
         border-radius: var(--origam-radius---md, 8px);
 
         &:focus-visible {
-            outline: 2px solid var(--origam-color__action--primary---bg, #7c3aed);
+            outline: 2px solid var(--origam-color__action--primary---bg);
             outline-offset: 2px;
         }
     }
@@ -808,34 +808,34 @@ useSeoMeta({
     &__table {
         inline-size: 100%;
         border-collapse: collapse;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---md, 0.875rem);
 
         thead th {
             text-align: start;
             padding: var(--origam-space---2, 0.5rem) var(--origam-space---3, 0.75rem);
-            font-size: var(--origam-font-size---xs, 0.75rem);
+            font-size: var(--origam-font__size---sm, 0.75rem);
             font-weight: 700;
             letter-spacing: 0.04em;
             text-transform: uppercase;
-            color: var(--origam-color__text---tertiary, #737373);
-            border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+            color: var(--origam-color__text---tertiary);
+            border-block-end: 1px solid var(--origam-color__border---default);
             white-space: nowrap;
         }
 
         tbody td {
             padding: var(--origam-space---3, 0.75rem);
-            border-block-end: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.04));
+            border-block-end: 1px solid var(--origam-color__border---subtle);
             vertical-align: top;
-            color: var(--origam-color__text---secondary, #525252);
+            color: var(--origam-color__text---secondary);
             line-height: 1.55;
         }
     }
 
     &__code {
         font-family: var(--origam-font__family---mono, monospace);
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-        background: var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.08));
+        font-size: var(--origam-font__size---md, 0.875rem);
+        color: var(--origam-color__action--primary---fgSubtle);
+        background: var(--origam-color__action--primary---bgSubtle);
         padding: 0.1em 0.4em;
         border-radius: var(--origam-radius---sm, 4px);
         white-space: nowrap;
@@ -843,7 +843,7 @@ useSeoMeta({
 
     &__cell-name &__code {
         font-weight: 600;
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
     }
 
     &__cell-optional {
@@ -851,7 +851,7 @@ useSeoMeta({
     }
 
     &__dash {
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---tertiary);
     }
 }
 
@@ -876,11 +876,11 @@ useSeoMeta({
 
         &:hover .interface-used-by__card {
             transform: translateY(-2px);
-            box-shadow: var(--origam-shadow---md, 0 4px 12px rgba(0, 0, 0, 0.1));
+            box-shadow: var(--origam-shadow---md);
         }
 
         &:focus-visible {
-            outline: 2px solid var(--origam-color__action--primary---bg, #7c3aed);
+            outline: 2px solid var(--origam-color__action--primary---bg);
             outline-offset: 2px;
         }
     }
@@ -909,13 +909,13 @@ useSeoMeta({
         font-size: var(--origam-font__size---lg, 1rem);
         font-weight: 600;
         font-family: var(--origam-font__family---mono, monospace);
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
         margin: 0;
     }
 
     &__card-arrow {
         flex-shrink: 0;
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---tertiary);
     }
 
     &__card-kind {
@@ -934,7 +934,7 @@ useSeoMeta({
         display: block;
         font-size: var(--origam-font__size---lg, 1rem);
         font-weight: 600;
-        color: var(--origam-color__text---primary, #0a0a0a);
+        color: var(--origam-color__text---primary);
         margin: 0 0 var(--origam-space---3, 0.75rem);
     }
 }
