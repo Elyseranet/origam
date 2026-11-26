@@ -718,7 +718,7 @@
   --origam-snackbar-item__title---font-weight: var(--origam-font__weight---semibold);
   --origam-snackbar-item__message---font-weight: var(--origam-font__weight---regular);
   --origam-snackbar-item__message---color: currentColor;
-  --origam-snackbar-item__message---opacity: 0.85;
+  --origam-snackbar-item__message---opacity: 1; /* #1514 — 0.85 faisait tomber le texte feedback sous AA sur le papier */
   --origam-snackbar-item__action---color: var(--origam-color__action--primary---fg);
   --origam-snackbar-item__action--hover---background-color: rgba(0, 0, 0, 0.04);
   --origam-snackbar-item__dismiss--hover---background-color: rgba(0, 0, 0, 0.04);

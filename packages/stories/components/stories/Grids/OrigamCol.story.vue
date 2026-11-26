@@ -369,7 +369,7 @@
 		border: 1px solid var(--origam-color__border---default, #e5e5e5);
 		border-radius: 4px;
 		text-align: center;
-		color: var(--origam-color__text---onColor, #000);
+		color: var(--origam-color__text---primary, #000);
 	}
 </style>
 

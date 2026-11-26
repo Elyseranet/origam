@@ -27,7 +27,6 @@
     "packages/ds/src/components/Snackbar/OrigamSnackbarGroup.vue::--origam-snackbar-item__action---color",
     "packages/ds/src/components/Snackbar/OrigamSnackbarGroup.vue::--origam-snackbar-item__message---color",
     "packages/ds/src/components/Snackbar/OrigamSnackbarGroup.vue::--origam-snackbar-item__message---font-weight",
-    "packages/ds/src/components/Snackbar/OrigamSnackbarGroup.vue::--origam-snackbar-item__message---opacity",
     "packages/ds/src/components/Snackbar/OrigamSnackbarGroup.vue::--origam-snackbar-item__prepend---color",
     "packages/ds/src/components/Snackbar/OrigamSnackbarGroup.vue::--origam-snackbar-item__title---font-weight",
     "packages/ds/src/components/Snackbar/OrigamSnackbarGroup.vue::style-root-block",
