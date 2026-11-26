@@ -20073,7 +20073,7 @@
               },
               {
                 "type": "dimension",
-                "value": "var(--origam-radius---sm)",
+                "value": "var(--origam-radius---full)",
                 "tokenPath": "--origam-btn---border-radius",
                 "descriptionKey": "components.btn.tokens.border_radius",
                 "descriptionFallback": "Default border radius. Overridden to {radius.full} for icon-only buttons."
@@ -22058,7 +22058,7 @@
             "excerpt": [
               {
                 "type": "dimension",
-                "value": "var(--origam-radius---sm)",
+                "value": "var(--origam-radius---full)",
                 "tokenPath": "--origam-btn-group---border-radius",
                 "descriptionKey": "components.btn_group.tokens.border_radius",
                 "descriptionFallback": "Default border radius for the group container."
@@ -23267,7 +23267,7 @@
             "excerpt": [
               {
                 "type": "dimension",
-                "value": "var(--origam-radius---sm)",
+                "value": "var(--origam-radius---full)",
                 "tokenPath": "--origam-btn-group---border-radius",
                 "descriptionKey": "components.btn_toggle.tokens.border_radius",
                 "descriptionFallback": "Default border radius for the toggle container."
