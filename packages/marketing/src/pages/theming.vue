@@ -261,6 +261,7 @@
   import ThemeBuilderControls from '~/components/ThemeBuilderControls.vue'
 
   const { t } = useT()
+  const route = useRoute()
 
   const {
     entries,
@@ -287,6 +288,7 @@
     downloadJson,
     importTheme,
     seedPreset,
+    seedFromQuery,
     clearPreset,
     loadStorage,
     startAutoPersist
@@ -294,6 +296,7 @@
 
   onMounted(() => {
     loadStorage()
+    seedFromQuery(route.query.preset, route.query.mode)
     startAutoPersist()
   })
 

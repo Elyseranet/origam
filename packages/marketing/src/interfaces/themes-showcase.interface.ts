@@ -19,4 +19,6 @@ export interface IThemePreviewTile {
     theme: TTheme
     /** Color mode applied via <OrigamThemeProvider mode>. */
     mode: TMode
+    /** Theme Builder deep link preloading this theme (`/theming?preset=...`). */
+    href: string
 }
