@@ -115,7 +115,7 @@ The component exposes its visual surface via these CSS variables:
 |---------------------------------------|----------------|--------------------------------|
 | `--origam-btn-group---height`         | `36px`         | base min-height before density |
 | `--origam-btn-group---density`        | `0`            | density delta (±8px)           |
-| `--origam-btn-group---border-radius`  | `4px`          | outer corner rounding          |
+| `--origam-btn-group---border-radius`  | `var(--origam-radius---lg)` (12px) | outer corner rounding |
 | `--origam-btn-group---border-width`   | `0`            | outer frame thickness          |
 | `--origam-btn-group---border-style`   | `solid`        | outer frame style              |
 | `--origam-btn-group---border-color`   | `currentColor` | outer frame color              |

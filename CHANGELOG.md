@@ -18,6 +18,15 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed — BREAKING visuel (dérogation assumée) : boutons en rectangles arrondis de 12 px au lieu de pilules (#1555)
+
+Le rendu par défaut de **toute** app change : `OrigamBtn`, `OrigamBtnGroup` et `OrigamBtnToggle` passent de la pilule (9999 px, #1514) à un rectangle aux coins arrondis de **12 px**. La maquette du brand kit montre des rectangles arrondis ; son CSS (`border-radius: 999px`) contredisait l'image, et #1514 avait suivi le CSS. On suit désormais l'image.
+
+- Tokens `--origam-btn---border-radius` et `--origam-btn-group---border-radius` = `var(--origam-radius---lg)` (était `var(--origam-radius---full)`), dans `light.css` / `dark.css` et leurs jumeaux SCSS ; `main.css` régénéré. Même canal que #1514 : par token, pas par prop `rounded` du thème (la dérogation PROPS-FIRST reste actée, défaut du mécanisme suivi dans #1523).
+- Mesuré en navigateur (Histoire statique, Chromium) : Btn seul, BtnGroup et BtnToggle à 12 px sur les quatre coins (9999 px avant) ; les segments d'un groupe restent carrés et le groupe les clippe (`overflow: hidden`), donc aucun coin ne déborde. Les Btn imbriqués qui fixent leur propre rayon ne bougent pas : action d'`OrigamInlineEdit`, `OrigamPagination` et copie d'`OrigamCode` restent à 4 px.
+- Inchangés : `--origam-btn---border-radius-icon` (bouton icône rond) et la prop `rounded`, qui l'emporte toujours sur le défaut.
+- Pour retrouver la pilule : `rounded="full"` sur l'instance, ou redéclarer `--origam-btn---border-radius` / `--origam-btn-group---border-radius` à `var(--origam-radius---full)`.
+
 ## [2.47.0] - 2026-11-26
 
 ### Changed — BREAKING (dérogation assumée, minor) : le thème par défaut prend l'identité du brand kit A1 (#1514)
