@@ -6,7 +6,6 @@ export const MARKETING_DEFAULTS = {
     npmPkg: 'origam',
     npmVersion: '2.5.1',
     siteUrl: 'https://origam.dev',
-    faviconPath: '/favicon.ico',
     // Donation link — a PayPal hosted Donate button. NUXT_PUBLIC_DONATE_URL
     // still overrides it per deployment; the footer entry renders only when
     // the resolved value is non-empty, so blanking the variable removes the

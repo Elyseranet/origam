@@ -14,8 +14,18 @@ export const BRAND_LOGO_DARK: IBrandLogoSource = {
     srcset: '/brand/origam-horizontal-dark-1x.avif 1x, /brand/origam-horizontal-dark-2x.avif 2x'
 }
 
-export const BRAND_FAVICON_SIZES = [16, 32, 48, 192, 512] as const
-
-export const BRAND_APPLE_TOUCH_ICON = '/favicons/favicon-180.png'
-
-export const BRAND_MANIFEST_PATH = '/site.webmanifest'
+/**
+ * `<link>` de l'identité du site (favicons du kit, apple-touch, manifest).
+ * Écrits en littéraux `as const` : `app.head.link` est une union discriminée sur
+ * `rel`, qu'un tableau construit par `.map()` élargit en `string`.
+ */
+export const BRAND_HEAD_LINKS = [
+    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+    { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicons/favicon-16.png' },
+    { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicons/favicon-32.png' },
+    { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicons/favicon-48.png' },
+    { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/favicons/favicon-192.png' },
+    { rel: 'icon', type: 'image/png', sizes: '512x512', href: '/favicons/favicon-512.png' },
+    { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicons/favicon-180.png' },
+    { rel: 'manifest', href: '/site.webmanifest' }
+] as const
