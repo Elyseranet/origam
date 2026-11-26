@@ -18,13 +18,13 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
+        version: '2.48.0',
+        date: '2026-11-26',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2480.summary',
         summaryFallback: '1 change. See the full changelog for detail.',
         highlights: [
-            { type: 'changed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'BREAKING visuel (dérogation assumée) : boutons en rectangles arrondis de 12 px au lieu de pilules (#1555)' }
+            { type: 'changed', textKey: 'changelog.versions.v2480.h1', textFallback: 'BREAKING visuel (dérogation assumée) : boutons en rectangles arrondis de 12 px au lieu de pilules (#1555)' }
         ]
     },
     {

@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.48.0] - 2026-11-26
+
 ### Changed — BREAKING visuel (dérogation assumée) : boutons en rectangles arrondis de 12 px au lieu de pilules (#1555)
 
 Le rendu par défaut de **toute** app change : `OrigamBtn`, `OrigamBtnGroup` et `OrigamBtnToggle` passent de la pilule (9999 px, #1514) à un rectangle aux coins arrondis de **12 px**. La maquette du brand kit montre des rectangles arrondis ; son CSS (`border-radius: 999px`) contredisait l'image, et #1514 avait suivi le CSS. On suit désormais l'image.
