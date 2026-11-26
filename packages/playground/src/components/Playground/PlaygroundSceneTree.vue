@@ -28,6 +28,7 @@
                     :aria-label="titleLabel"
                     :select-mode="selectMode"
                     :selectable-nodes="selectableNodes"
+                    mandatory
                     :density="density"
                     data-cy="playground-scene-tree-list"
                     @select="handleSelect"
