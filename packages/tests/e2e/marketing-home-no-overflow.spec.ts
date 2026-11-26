@@ -22,13 +22,30 @@ const STABLE_SAMPLES = 6
 const SAMPLE_INTERVAL_MS = 250
 
 async function settledOverflow (page: Page): Promise<number> {
+    // #1516 — en dev, le SCSS des SFC est injecte APRES `load`, par salves (186
+    // balises <style> au premier rendu, 441 une fois layout et home charges,
+    // mesure a froid). Tant qu'il manque, le footer et le tableau de la home
+    // debordent de 10 a 79px a 375px ; sur un runner lent, la fenetre de
+    // stabilite ci-dessous peut se refermer AVANT la salve et retenir cette
+    // valeur transitoire. On attend donc le signal que le CSS du layout est la
+    // (la regle scopee `.site-footer { display: flex }`), et on exige aussi que
+    // le nombre de balises <style> soit stable.
+    await page.waitForFunction(() => {
+        const footer = document.querySelector('.site-footer')
+        return footer !== null && getComputedStyle(footer).display === 'flex'
+    }, undefined, { timeout: 30_000 })
+
     let last = Number.NaN
+    let lastStyles = Number.NaN
     let stable = 0
     for (let i = 0; i < 40 && stable < STABLE_SAMPLES; i++) {
-        const now = await page.evaluate(() =>
-            (document.scrollingElement as Element).scrollWidth - document.documentElement.clientWidth)
-        stable = now === last ? stable + 1 : 0
+        const [now, styles] = await page.evaluate(() => [
+            (document.scrollingElement as Element).scrollWidth - document.documentElement.clientWidth,
+            document.querySelectorAll('style').length
+        ])
+        stable = now === last && styles === lastStyles ? stable + 1 : 0
         last = now
+        lastStyles = styles
         await page.waitForTimeout(SAMPLE_INTERVAL_MS)
     }
     return last
