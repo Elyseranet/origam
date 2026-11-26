@@ -98,31 +98,33 @@ export default defineNuxtConfig({
     ],
 
     origam: {
-        // ⛔ `geek` est l'apparence voulue du site — décision mainteneur,
-        // 2026-09-17 — et elle se déclare ICI, pas dans `app.head.htmlAttrs`.
+        // ⛔ Le site n'a PLUS de sélecteur de thème de marque : il rend toujours
+        // `origam` (décision propriétaire, 2026-11-26, #1515). Seul le mode
+        // clair / sombre reste au choix du visiteur.
         //
-        // La différence n'est pas cosmétique. Ce champ est lu par
-        // `resolveServerTheme()` (`packages/ds/src/nuxt/plugin.server.ts`), qui
-        // résout `cookie ?? defaultTheme` : il ne s'applique donc QUE lorsque le
-        // visiteur n'a rien choisi. Un attribut dans `app.head.htmlAttrs` est au
-        // contraire réappliqué par unhead APRÈS l'hydratation, par-dessus le
-        // choix du visiteur — c'est ce qui cassait le sélecteur de thème du site
-        // entier depuis le 2026-06-12 (`958a1b6fa`), sur les deux axes.
+        // Les 8 marques restent ENREGISTRÉES (`themes` ci-dessous) : le Theme
+        // Builder (`/theming`), `HomeThemes` et `WhyOrigamThemeDemo` les rendent
+        // dans des sous-arbres `<OrigamThemeProvider theme="…">`, pas sur `<html>`.
         //
-        // Les deux propriétés tiennent donc ensemble, et sont épinglées par
-        // `packages/tests/e2e/marketing-theme-honored.spec.ts` :
-        //   - sans préférence stockée, le site rend `geek` ;
-        //   - avec `cartoon` choisi, il rend `cartoon`, rechargement compris.
-        defaultTheme: 'geek',
+        // `cookieName` : le DS lit `cookie ?? defaultTheme` côté serveur
+        // (`resolveServerTheme()`, `packages/ds/src/nuxt/plugin.server.ts`) et
+        // l'ancien cookie `origam-theme` d'un visiteur (`cartoon`, …) y serait
+        // encore honoré. On renomme donc le cookie de marque : personne ne l'écrit
+        // plus, et l'ancien n'est plus lu. Le cookie de MODE garde son nom
+        // (`modeCookieName`), la persistance clair / sombre est intacte.
+        //
+        // `defaultTheme` se déclare ICI et jamais dans `app.head.htmlAttrs` :
+        // unhead réécrit `<html>` après l'hydratation (cf. le bloc `head` plus bas).
+        // Épinglé par `packages/tests/e2e/marketing-theme-honored.spec.ts`.
+        cookieName: 'origam-site-theme',
+        defaultTheme: 'origam',
         // #1103 — `auto` : sans cookie, le serveur n'épingle aucun mode et inline
         // les deux (le sombre sous `@media (prefers-color-scheme: dark)`), donc
         // un visiteur en système sombre ne voit plus de flash clair -> sombre.
         defaultMode: 'auto',
         // Brand themes authored as clean IOrigamTheme objects (semantic vars,
         // light + dark). Component default props are inherited from the origam
-        // base theme (origam identity, name-less → applies to every brand). The
-        // legacy per-brand CSS sheets still carry bespoke marketing selectors
-        // (.home-* hacks) — to be removed in the themes-showcase cleanup.
+        // base theme (origam identity, name-less → applies to every brand).
         //
         // ⛔ #360 (v3.0.0 harvest) — `createOrigam()` used to prefix EVERY
         // install (this one included) with this exact un-named baseline. It no
@@ -181,13 +183,6 @@ export default defineNuxtConfig({
         '~/assets/css/fonts.css',
         'origam/tokens/css/dark',
         '~/assets/css/themes/_shared.css',
-        '~/assets/css/themes/geek.css',
-        '~/assets/css/themes/glass.css',
-        '~/assets/css/themes/cartoon.css',
-        '~/assets/css/themes/editorial.css',
-        '~/assets/css/themes/material.css',
-        '~/assets/css/themes/ecom.css',
-        '~/assets/css/themes/apple.css',
         '~/assets/css/base.css'
     ],
 
@@ -225,10 +220,9 @@ export default defineNuxtConfig({
             // (`958a1b6fa`), quand le site n'avait que deux thèmes de
             // démonstration, et cassaient le theming du site entier depuis.
             //
-            // ⚠️ `geek` RESTE l'apparence du site : elle est déclarée plus haut,
-            // en `origam.defaultTheme`, là où le DS la lit. La différence est que
-            // `defaultTheme` ne s'applique QU'EN L'ABSENCE de choix du visiteur,
-            // là où un attribut de `head` écrase ce choix à chaque rendu.
+            // ⚠️ L'apparence du site (`origam`) est déclarée plus haut, en
+            // `origam.defaultTheme`, là où le DS la lit : un attribut de `head`
+            // écrase le choix du visiteur (ici le MODE) à chaque rendu.
             //
             // Ce bloc est rendu par unhead, qui réécrit `<html>` APRÈS
             // l'hydratation. Le serveur émettait le bon thème (le DS le pose
@@ -240,9 +234,9 @@ export default defineNuxtConfig({
             //   +1359 ms  data-theme="geek"     trackCtx → _renderDOMHead (unhead)
             //
             // Le dernier write gagne. Portée mesurée, 7 cas sur 7 : toutes les
-            // pages, et les DEUX axes — `cartoon`/`dark` choisis par cookie
-            // ressortaient en `geek`/`light`. Le sélecteur de thème du site ne
-            // survivait à aucun rechargement.
+            // pages, et le MODE — `dark` choisi par cookie
+            // ressortait en `light`. Le bouton clair / sombre ne survivait à
+            // aucun rechargement.
             //
             // Gardé par `packages/tests/e2e/marketing-theme-honored.spec.ts`.
             htmlAttrs: {

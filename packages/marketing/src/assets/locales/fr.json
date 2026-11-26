@@ -2,11 +2,9 @@
     "a11y": {
         "skip_to_content": "Aller au contenu",
         "toggle_theme": "Basculer entre thème clair et sombre",
-        "toggle_brand_theme": "Changer de thème",
         "search": "Rechercher dans la documentation",
         "star_count": "Étoiles GitHub",
         "language": "Changer de langue",
-        "themes_chips_list": "Thèmes disponibles",
         "showcase_grid": "Vitrine des composants",
         "showcase_chip_list": "Intentions des chips",
         "playground_toolbar": "Barre d'outils de l'éditeur",
@@ -261,10 +259,7 @@
         "search_page_theming": "Générateur de thèmes visuel — personnaliser les design tokens",
         "search_page_why_origam": "Décisions de conception et philosophie",
         "search_page_stability": "Numéros de version, cadence des releases et politique de dépréciation",
-        "star_count": "4.2k",
-        "theme": "Thème",
-        "theme_active": "Thème : {label}",
-        "theme_select_label": "Choisir le thème"
+        "star_count": "4.2k"
     },
     "components": {
         "meta": {
@@ -1117,7 +1112,6 @@
             "title_line1": "Un design system.",
             "title_line2": "Toutes les marques.",
             "subtitle": "Design tokens tenus à la main, props-first — multi-thème nativement. Basculez entre clair, sombre ou votre marque à l'exécution, sans remontage.",
-            "chip_origam": "Origam",
             "chip_glass": "Glass",
             "chip_geek": "Geek",
             "chip_cartoon": "Cartoon",
@@ -1338,7 +1332,7 @@
             "title": "Cookies",
             "intro": "La navigation sur ce site ne pose de cookies que pour deux choses, toutes deux des préférences que vous avez choisies vous-même :",
             "locale": "origam_locale — la langue d’affichage, pour que le site ne revienne pas à l’anglais à votre prochaine visite.",
-            "theme": "origam-theme et origam-mode — le thème et l’apparence claire ou sombre que vous avez sélectionnés.",
+            "theme": "origam-mode — l’apparence claire ou sombre que vous avez sélectionnée.",
             "admin": "Un cookie de session distinct existe pour l’espace d’administration privé. Il est créé en s’y connectant, jamais en naviguant sur le site public."
         },
         "storage": {

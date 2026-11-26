@@ -65,6 +65,12 @@
        Défaut ORIGAM (ex-sobre) = encre solide (dégradé dégénéré) pour que le titre du
        hero et les valeurs KPI restent VISIBLES sur le thème par défaut.
        Les thèmes de marque (material/glass/geek/…) les surchargent. */
+    /* Halos / grille du hero et glow du CTA : aucun par défaut (identité origam).
+       Lus SANS repli par les pages du site ; avant #1515 seules les feuilles de
+       marque (retirées) les déclaraient. */
+    --origam-gradient---hero-glow: none;
+    --origam-gradient---hero-grid: none;
+    --origam-gradient---cta-glow-top: none;
     --origam-gradient---hero-title: linear-gradient(var(--origam-color__text---ink, #0a0a0a), var(--origam-color__text---ink, #0a0a0a));
     --origam-gradient---kpi-value: linear-gradient(var(--origam-color__text---ink, #0a0a0a), var(--origam-color__text---ink, #0a0a0a));
 

@@ -3,7 +3,7 @@ import type { Page } from '@playwright/test'
 
 /**
  * #1428 — le texte des CTA primaires de l'accueil reste lisible (WCAG AA,
- * 4,5:1) sur la surface RÉELLEMENT peinte, pour les 8 marques x 2 modes.
+ * 4,5:1) sur la surface RÉELLEMENT peinte, pour le thème du site (origam) x 2 modes.
  *
  * Mesure : le texte est rendu transparent, le bouton est capturé, et le ratio
  * est calculé entre la couleur de texte résolue et chaque pixel sous la boîte
@@ -11,7 +11,8 @@ import type { Page } from '@playwright/test'
  * `background-color` serait aveugle à un dégradé (glass : texte blanc sur
  * `#a78bfa`, 2,72:1).
  */
-const THEMES = ['origam', 'geek', 'glass', 'cartoon', 'apple', 'editorial', 'material', 'ecom']
+// #1515 — le site rend toujours `origam` (le cookie de marque est ignoré).
+const THEMES = ['origam']
 const MODES = ['light', 'dark']
 const CTAS = ['hero-cta-components', 'cta-btn-start']
 const AA = 4.5

@@ -27,8 +27,14 @@ interface IPaint {
     classSignature: string
 }
 
-const DARK_BG = { geek: 'rgb(10, 6, 18)', editorial: 'rgb(10, 10, 10)' }
-const LIGHT_BG = { geek: 'rgb(246, 240, 255)', editorial: 'rgb(251, 247, 238)' }
+/**
+ * #1515 — le site rend toujours `origam`, dont les couleurs bougent (#1514). Les
+ * références ne sont donc plus des littéraux : ce sont les rendus du MODE ÉPINGLÉ
+ * par cookie (`origam-mode`), contre lesquels on compare le rendu non épinglé.
+ */
+async function reference (browser: Browser, baseURL: string, mode: TScheme): Promise<IPaint> {
+    return (await paint(browser, baseURL, { js: false, scheme: mode === 'dark' ? 'light' : 'dark', cookies: { 'origam-mode': mode } })).paint
+}
 
 /** Lit le paint courant : tout se fait dans UN evaluate (pas d'état Vue entre deux). */
 function readPaint (): IPaint {
@@ -66,12 +72,15 @@ async function paint (browser: Browser, baseURL: string, opts: {
 test.describe('SSR — les deux modes, sans flash (#1103)', () => {
     test('système sombre, sans cookie : sombre dès le paint serveur (JS off) et après hydratation (JS on)', async ({ browser }) => {
         const baseURL = test.info().project.use.baseURL!
+        const darkRef = await reference(browser, baseURL, 'dark')
+        const lightRef = await reference(browser, baseURL, 'light')
         const off = await paint(browser, baseURL, { js: false, scheme: 'dark' })
         const on = await paint(browser, baseURL, { js: true, scheme: 'dark' })
 
+        expect(darkRef.bg, 'les deux modes épinglés doivent se distinguer, sinon la spec ne prouve rien').not.toBe(lightRef.bg)
         expect(off.paint.dataMode, 'le serveur n\'épingle aucun mode').toBeNull()
-        expect(off.paint.bg, 'fond du body au paint serveur').toBe(DARK_BG.geek)
-        expect(off.paint.surface).toBe('#0a0612')
+        expect(off.paint.bg, 'fond du body au paint serveur').toBe(darkRef.bg)
+        expect(off.paint.surface).toBe(darkRef.surface)
         expect(on.paint.bg, 'fond du body après hydratation').toBe(off.paint.bg)
         expect(on.paint.surface).toBe(off.paint.surface)
         expect(on.paint.dataMode, 'le client épingle le mode système').toBe('dark')
@@ -80,11 +89,12 @@ test.describe('SSR — les deux modes, sans flash (#1103)', () => {
 
     test('système clair, sans cookie : clair partout', async ({ browser }) => {
         const baseURL = test.info().project.use.baseURL!
+        const lightRef = await reference(browser, baseURL, 'light')
         const off = await paint(browser, baseURL, { js: false, scheme: 'light' })
         const on = await paint(browser, baseURL, { js: true, scheme: 'light' })
 
-        expect(off.paint.bg).toBe(LIGHT_BG.geek)
-        expect(on.paint.bg).toBe(LIGHT_BG.geek)
+        expect(off.paint.bg).toBe(lightRef.bg)
+        expect(on.paint.bg).toBe(lightRef.bg)
         expect(on.hydrationWarnings).toEqual([])
     })
 
@@ -93,9 +103,11 @@ test.describe('SSR — les deux modes, sans flash (#1103)', () => {
         const off = await paint(browser, baseURL, { js: false, scheme: 'dark', cookies: { 'origam-mode': 'light' } })
         const on = await paint(browser, baseURL, { js: true, scheme: 'dark', cookies: { 'origam-mode': 'light' } })
 
+        const lightRef = await reference(browser, baseURL, 'light')
+
         expect(off.paint.dataMode).toBe('light')
-        expect(off.paint.bg).toBe(LIGHT_BG.geek)
-        expect(on.paint.bg).toBe(LIGHT_BG.geek)
+        expect(off.paint.bg).toBe(lightRef.bg)
+        expect(on.paint.bg).toBe(lightRef.bg)
     })
 
     test('mode ÉPINGLÉ sombre + système clair : le cookie l\'emporte', async ({ browser }) => {
@@ -103,22 +115,26 @@ test.describe('SSR — les deux modes, sans flash (#1103)', () => {
         const off = await paint(browser, baseURL, { js: false, scheme: 'light', cookies: { 'origam-mode': 'dark' } })
         const on = await paint(browser, baseURL, { js: true, scheme: 'light', cookies: { 'origam-mode': 'dark' } })
 
+        const darkRef = await reference(browser, baseURL, 'dark')
+
         expect(off.paint.dataMode).toBe('dark')
-        expect(off.paint.bg).toBe(DARK_BG.geek)
-        expect(on.paint.bg).toBe(DARK_BG.geek)
+        expect(off.paint.bg).toBe(darkRef.bg)
+        expect(on.paint.bg).toBe(darkRef.bg)
     })
 
-    test('editorial (props clair/sombre différentes), système sombre : tokens sombres au serveur, props sombres après hydratation', async ({ browser }) => {
+    test('système sombre : tokens sombres au serveur, props sombres après hydratation, cookie de marque ancien ignoré', async ({ browser }) => {
         const baseURL = test.info().project.use.baseURL!
+        // #1515 — un ancien cookie de marque ne change rien : mêmes rendus que sans lui.
         const cookies = { 'origam-theme': 'editorial' }
+        const darkRef = await reference(browser, baseURL, 'dark')
         const serverUnpinned = await paint(browser, baseURL, { js: false, scheme: 'dark', cookies })
         const serverLight = await paint(browser, baseURL, { js: false, scheme: 'light', cookies })
         const hydratedUnpinned = await paint(browser, baseURL, { js: true, scheme: 'dark', cookies })
         const hydratedPinnedDark = await paint(browser, baseURL, { js: true, scheme: 'dark', cookies: { ...cookies, 'origam-mode': 'dark' } })
 
         // tokens : sombres dès le serveur
-        expect(serverUnpinned.paint.bg).toBe(DARK_BG.editorial)
-        expect(hydratedUnpinned.paint.bg).toBe(DARK_BG.editorial)
+        expect(serverUnpinned.paint.bg).toBe(darkRef.bg)
+        expect(hydratedUnpinned.paint.bg).toBe(darkRef.bg)
         // props : amorcées en clair côté serveur (même rendu que le serveur en système clair)…
         expect(serverUnpinned.paint.classSignature).toBe(serverLight.paint.classSignature)
         // …puis passées au mode système après hydratation (= rendu d'un mode sombre épinglé)

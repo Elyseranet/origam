@@ -312,6 +312,12 @@ export const glassLightTheme: IOrigamTheme = {
     // composant sont listés en commentaire "DS GAP" (non appliqués) plutôt que
     // simulés avec un nom de var qui ne serait lu par rien — voir la PR.
     cssVars: {
+        // #1515 — fond de page glass, repris de l'ancienne feuille `glass.css`
+        // (retirée avec le sélecteur de thème du site). Lu par le stage de
+        // `WhyOrigamThemeDemo`, un SOUS-ARBRE : ces vars n'atteignaient le stage
+        // que par héritage depuis `<html data-theme="glass">`, qui n'existe plus.
+        '--origam-glass---page-bg-color': '#e9ecff',
+        '--origam-page---background-image': 'radial-gradient(40% 50% at 12% 14%, rgba(167, 139, 250, 0.65), transparent 70%), radial-gradient(38% 46% at 90% 6%, rgba(94, 234, 212, 0.60), transparent 70%), radial-gradient(44% 52% at 78% 82%, rgba(244, 114, 182, 0.52), transparent 72%), radial-gradient(40% 48% at 18% 94%, rgba(125, 211, 252, 0.56), transparent 70%)',
         // Fix #285 (root cause) — `<origam-app>` (the page shell, rendered as
         // a full-page-height `<div class="origam-app">` directly inside
         // `<body>`) defaults to an OPAQUE `background-color`
@@ -678,6 +684,9 @@ export const glassDarkTheme: IOrigamTheme = {
         }
     },
     cssVars: {
+        // #1515 — fond de page glass sombre (voir le bloc clair).
+        '--origam-glass---page-bg-color': '#07060f',
+        '--origam-page---background-image': 'radial-gradient(40% 50% at 12% 14%, rgba(167, 139, 250, 0.75), transparent 70%), radial-gradient(38% 46% at 90% 6%, rgba(45, 212, 191, 0.65), transparent 70%), radial-gradient(44% 52% at 78% 82%, rgba(236, 72, 153, 0.62), transparent 72%), radial-gradient(40% 48% at 18% 94%, rgba(56, 189, 248, 0.58), transparent 70%), radial-gradient(50% 60% at 50% 50%, rgba(124, 58, 237, 0.30), transparent 80%)',
         // Fix #285 (root cause, dark) — see the light theme's `cssVars`
         // block above for the full explanation: `<origam-app>`'s opaque
         // default background-color occludes `<body>`'s page gradient for

@@ -13,7 +13,6 @@
   import { CATALOG_FAMILIES } from '~/consts/catalog-family.const'
   import { GLOBAL_SEARCH_ALL_FAMILY } from '~/consts/global-search.const'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
-  import { THEME_CHIPS } from '~/consts/themes-showcase.const'
   import { useLocaleHref } from '~/composables/useLocaleHref'
   import { useT } from '~/composables/useT'
   import { useVersion } from '~/composables/useVersion'
@@ -32,7 +31,7 @@
   const donateLabel = computed(() => t('footer.donate', 'Support origam'))
   const donateAriaLabel = computed(() => t('a11y.donate', 'Support origam with a donation'))
 
-  const { theme, setTheme, resolvedMode, toggleMode } = useTheme()
+  const { resolvedMode, toggleMode } = useTheme()
   const { stars } = useGithubStars()
   const showGithubStars = computed(() => stars.value !== null && stars.value >= GITHUB_STARS_MIN_DISPLAY)
 
@@ -98,14 +97,6 @@
   const searchAriaLabel = computed(() => t('a11y.search', 'Search the documentation'))
   const starCountAriaLabel = computed(() => t('a11y.star_count', 'GitHub stars'))
   const themeAriaLabel = computed(() => t('a11y.toggle_theme', 'Toggle light and dark mode'))
-  const themeMenuAriaLabel = computed(() => t('a11y.toggle_brand_theme', 'Switch brand theme'))
-  const themeSelectLabel = computed(() => t('chrome.theme_select_label', 'Select brand theme'))
-
-  const activeThipLabel = computed(() => {
-    const active = THEME_CHIPS.find(c => c.key === theme.value)
-    return active ? t(active.labelKey, active.labelFallback) : t('chrome.theme', 'Theme')
-  })
-  const themeMenuLabel = computed(() => t('chrome.theme_active', 'Theme: {label}', { label: activeThipLabel.value }))
 
   const primaryNavAriaLabel = computed(() => t('nav.a11y.nav_primary', 'Primary navigation'))
   const themingLabel = computed(() => t(NAV_THEMING_LINK.i18nKey, NAV_THEMING_LINK.i18nFallback))
@@ -305,47 +296,6 @@
                   :active="loc.code === locale"
                   data-cy="locale-option"
                   @click="changeLocale(loc.code)"
-                />
-              </origam-list>
-            </template>
-          </origam-menu>
-
-          <origam-menu
-            class="appbar-menu appbar-menu--theme"
-            location="bottom"
-          >
-            <template #activator="{ props }">
-              <origam-btn
-                class="appbar-actions__btn"
-                variant="outlined"
-                data-cy="theme-switcher-trigger"
-                :aria-label="themeMenuAriaLabel"
-                :text="themeMenuLabel"
-                :append-icon="MDI_ICONS.CHEVRON_DOWN"
-                v-bind="props"
-              >
-                <template #prepend>
-                  <span
-                    class="theme-switcher__swatch"
-                    :data-theme-swatch="theme"
-                    aria-hidden="true"
-                  />
-                </template>
-              </origam-btn>
-            </template>
-
-            <template #default>
-              <origam-list
-                nav
-                :aria-label="themeSelectLabel"
-              >
-                <origam-list-item
-                  v-for="chip in THEME_CHIPS"
-                  :key="chip.key"
-                  :title="t(chip.labelKey, chip.labelFallback)"
-                  :active="chip.key === theme"
-                  :data-cy="`theme-menu-${chip.key}`"
-                  @click="setTheme(chip.key)"
                 />
               </origam-list>
             </template>
@@ -713,16 +663,6 @@
     }
   }
 
-  .theme-switcher {
-    &__swatch {
-      display: inline-block;
-      inline-size: 16px;
-      block-size: 16px;
-      border-radius: var(--origam-radius---sm, 4px);
-      background: linear-gradient(135deg, var(--origam-color__action--primary---bg, #7c3aed), var(--origam-color__text---ink, #0a0a0a));
-    }
-  }
-
   .site-footer {
     display: flex;
     flex-direction: column;
@@ -990,15 +930,6 @@
   .appbar-menu .origam-list-item--active .origam-list-item__title {
     color: var(--origam-color__action--primary---fgSubtle);
     font-weight: 600;
-  }
-
-  /* `geek` ne garde que ce qui lui est PROPRE : la taille vient de la regle
-     generale ci-dessus (son ancien `font-size: 0.8125rem` valait deja 13px,
-     c'est-a-dire la meme valeur — il etait la source cachee de la seule
-     identite alignee). */
-  [data-theme="geek"] .appbar-menu .origam-list-item__title {
-    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-    letter-spacing: -0.01em;
   }
 
   /*

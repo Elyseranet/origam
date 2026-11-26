@@ -46,7 +46,8 @@ import { requireMarketingDb } from './_support/require-marketing-db'
 // #835 — voir marketing-theme-builder.spec.ts pour le contexte complet.
 requireMarketingDb()
 
-const THEMES = ['origam', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
+// #1515 — le site rend toujours `origam` : plus de menu de marque.
+const THEMES = ['origam']
 const MODES = ['light', 'dark'] as const
 
 // .origam-btn transitions box-shadow/background/transform over 0.28s (see
@@ -64,11 +65,6 @@ interface IChromeSnapshot {
 }
 
 async function switchTheme (page: import('@playwright/test').Page, theme: string, mode: typeof MODES[number]) {
-    await page.locator('[aria-label="Switch brand theme"]').first().click()
-    await page.waitForTimeout(150)
-    await page.locator(`[data-cy="theme-menu-${theme}"]`).first().click()
-    await page.waitForTimeout(TRANSITION_SETTLE_MS)
-
     const currentMode = await page.evaluate(() => document.documentElement.getAttribute('data-mode'))
     if (currentMode !== mode) {
         await page.locator('[aria-label="Toggle light and dark mode"]').first().click()

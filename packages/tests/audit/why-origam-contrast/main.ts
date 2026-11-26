@@ -8,24 +8,10 @@ import '../../../ds/src/assets/css/main.css'
  * Marketing's GLOBAL CSS cascade — `packages/marketing/nuxt.config.ts`'s own
  * `css: […]` array, same order. Every marketing page (the future /why-origam
  * included) loads ALL of these unconditionally, regardless of which theme is
- * active — they are plain `[data-theme="X"]`-selector stylesheets, entirely
- * separate from the `IOrigamTheme.vars`/`cssVars` this harness also installs
- * via `createOrigam()` below. The two mechanisms coexist and both declare
- * some of the SAME `--origam-*` custom properties (confirmed for `glass`:
- * `--origam-page---background-image`, the 4-blob gradient, exists ONLY here —
- * `glass.theme.ts`'s `cssVars` never sets it, it only mentions it in a
- * comment). Omitting these files would silently measure a `glass` that
- * cannot show its own signature background, which is not what a visitor of
- * a real marketing page sees.
+ * active. The per-brand `[data-theme="X"]` sheets are gone (#1515): a brand now
+ * comes from its `IOrigamTheme` object only, installed via `createOrigam()` below.
  ********************************************************/
 import '../../../marketing/src/assets/css/themes/_shared.css'
-import '../../../marketing/src/assets/css/themes/geek.css'
-import '../../../marketing/src/assets/css/themes/glass.css'
-import '../../../marketing/src/assets/css/themes/cartoon.css'
-import '../../../marketing/src/assets/css/themes/editorial.css'
-import '../../../marketing/src/assets/css/themes/material.css'
-import '../../../marketing/src/assets/css/themes/ecom.css'
-import '../../../marketing/src/assets/css/themes/apple.css'
 import '../../../marketing/src/assets/css/base.css'
 
 import { appleThemes } from '../../../marketing/src/themes/apple.theme'

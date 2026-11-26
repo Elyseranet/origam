@@ -58,7 +58,9 @@ async function getBodyBg (page: Page): Promise<string> {
 
 // ── constants ──────────────────────────────────────────────────────────────
 
-const BRANDS = ['origam', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple'] as const
+// #1515 — le site rend toujours `origam` (le cookie de marque est ignoré) ; les 8 marques
+// restent enregistrées pour les sous-arbres, couverts par marketing-theme-live-switch.spec.ts.
+const BRANDS = ['origam'] as const
 const MODES  = ['light', 'dark'] as const
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -93,14 +95,6 @@ test.describe('A · Vérif finale install model', () => {
         test('origam/light = rgb(247, 245, 239)', async ({ page }) => {
             await page.goto('/'); await applyTheme(page, 'origam', 'light')
             expect(await getBodyBg(page)).toBe('rgb(247, 245, 239)')
-        })
-        test('apple/dark = rgb(0, 0, 0)', async ({ page }) => {
-            await page.goto('/'); await applyTheme(page, 'apple', 'dark')
-            expect(await getBodyBg(page)).toBe('rgb(0, 0, 0)')
-        })
-        test('geek/dark = rgb(10, 6, 18)', async ({ page }) => {
-            await page.goto('/'); await applyTheme(page, 'geek', 'dark')
-            expect(await getBodyBg(page)).toBe('rgb(10, 6, 18)')
         })
         test('cada brand dark a une bg rgb valide (tokens injectés)', async ({ page }) => {
             await page.goto('/')
@@ -180,54 +174,15 @@ test.describe('A · Vérif finale install model', () => {
         // être réécrite contre le nouveau générateur — pas restaurée telle quelle.
     })
 
-    // ── A5. ThemeSwitcher — exactement 8 options ─────────────────────────
+    // ── A5. #1515 — plus de sélecteur de marque dans l'appbar ─────────────
 
-    test.describe('A5 · ThemeSwitcher — 8 brands installedThemes', () => {
-        test('8 options [role=option] dans le menu', async ({ page }) => {
-            await page.goto('/')
-            await page.waitForLoadState('networkidle')
+    test('A5 · l\'appbar n\'a plus de menu de marque, le bouton clair / sombre reste', async ({ page }) => {
+        await page.goto('/')
+        await page.waitForLoadState('networkidle')
 
-            // #835 — `.theme-switcher__label` n'existe plus : `layouts/default.vue`
-            // rend le libellé via la prop `text` d'OrigamBtn (pas de span dédié), et
-            // porte un `aria-label` stable (`a11y.toggle_brand_theme`, fallback "Switch
-            // brand theme") — on cible le bouton par son nom accessible plutôt que par
-            // une classe qui n'a jamais appartenu qu'à un span disparu.
-            const activatorBtn = page.getByRole('button', { name: 'Switch brand theme' })
-            await activatorBtn.click()
-            await page.waitForTimeout(600)
-
-            // OrigamMenu téléporte le contenu dans le body via un <div role="menu" ...>.
-            // #835 — les OrigamListItem ne portent PLUS role="option" : c'est un
-            // changement d'accessibilité délibéré (voir OrigamList.vue `isSelectable`),
-            // une liste `nav` qui ne passe ni `selected` ni `select-strategy` n'est plus
-            // annoncée comme un listbox de sélection — c'est la « bad ARIA » que la W3C
-            // déconseille pour un menu de navigation. Chaque item garde en revanche son
-            // `data-cy="theme-menu-{key}"` (`layouts/default.vue`), stable et déjà la
-            // convention de ce dépôt — on cible ça plutôt qu'un rôle ARIA qui a changé
-            // de sens depuis.
-            const options = page.locator('[data-cy^="theme-menu-"]')
-            await options.first().waitFor({ state: 'visible', timeout: 3000 }).catch(() => {})
-            const count = await options.count()
-
-            expect(count, `ThemeSwitcher: ${count} options, attendu 8`).toBe(8)
-        })
-
-        test("la marque de base s'appelle 'Origam' — plus aucune option 'Sobre' (#245)", async ({ page }) => {
-            await page.goto('/')
-            await page.waitForLoadState('networkidle')
-            const activatorBtn = page.getByRole('button', { name: 'Switch brand theme' })
-            await activatorBtn.click()
-            await page.waitForTimeout(600)
-
-            // #835 — même motif que le test précédent : `data-cy` remplace `role="option"`.
-            const options = page.locator('[data-cy^="theme-menu-"]')
-            await options.first().waitFor({ state: 'visible', timeout: 3000 }).catch(() => {})
-            const labels = await options.allTextContents()
-            expect(labels.some(label => label.trim() === 'Origam')).toBe(true)
-            for (const label of labels) {
-                expect(label.toLowerCase()).not.toContain('sobre')
-            }
-        })
+        await expect(page.getByRole('button', { name: 'Switch brand theme' })).toHaveCount(0)
+        await expect(page.locator('[data-cy^="theme-menu-"]')).toHaveCount(0)
+        await expect(page.getByRole('button', { name: 'Toggle light and dark mode' })).toHaveCount(1)
     })
 
 })

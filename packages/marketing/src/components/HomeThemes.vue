@@ -31,29 +31,6 @@
           {{ t('home.themes.subtitle', 'Hand-maintained, props-first design tokens — multi-theme out of the box. Switch between light, dark or your custom brand at runtime, with zero remount.') }}
         </p>
 
-        <div
-          class="home-themes__chips"
-          role="group"
-          :aria-label="t('a11y.themes_chips_list', 'Available themes')"
-        >
-          <div
-            v-for="chip in THEME_CHIPS"
-            :key="chip.key"
-            class="home-themes__chip-item"
-          >
-            <origam-chip
-              type="button"
-              class="home-themes__chip"
-              :aria-pressed="chip.key === theme"
-              :data-active="chip.key === theme"
-              :data-cy="`themes-chip-${chip.key}`"
-              @click="setTheme(chip.key)"
-            >
-              {{ t(chip.labelKey, chip.labelFallback) }}
-            </origam-chip>
-          </div>
-        </div>
-
         <p
           class="home-themes__tooling"
           :aria-label="t('a11y.themes_tooling', 'Tooling compatibility')"
@@ -148,17 +125,14 @@
 </template>
 
 <script setup lang="ts">
-import { useTheme } from 'origam/composables'
 import { useT } from '~/composables/useT'
 import {
     THEMES_TOOLING_TEXT,
-    THEME_CHIPS,
     THEME_PREVIEW_TILES,
     HOME_THEMES_BUILDER_HREF
 } from '~/consts/themes-showcase.const'
 
 const { t } = useT()
-const { theme, setTheme } = useTheme()
 </script>
 
 <style scoped lang="scss">
@@ -201,66 +175,6 @@ const { theme, setTheme } = useTheme()
         font-size: var(--origam-font__size---lg, 1rem);
         line-height: 1.6;
         color: var(--origam-color__text---secondary, #525252);
-    }
-
-    &__chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--origam-space---4, 1rem);
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        padding-inline-end: var(--origam-space---2, 0.5rem);
-        padding-block-end: var(--origam-space---2, 0.5rem);
-    }
-
-    &__chip-item {
-        list-style: none;
-    }
-
-    &__chip {
-        display: inline-flex;
-        align-items: center;
-        padding-block: var(--origam-space---1, 0.25rem);
-        padding-inline: var(--origam-space---3, 0.75rem);
-        border-radius: 999px;
-        border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.12));
-        background-color: var(--origam-color__surface---default, #ffffff);
-        color: var(--origam-color__text---secondary, #525252);
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        font-family: inherit;
-        font-weight: 500;
-        line-height: 1.4;
-        cursor: pointer;
-        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-
-        &:hover {
-            background-color: var(--origam-color__surface---raised, rgba(0, 0, 0, 0.04));
-            border-color: var(--origam-color__border---strong, rgba(0, 0, 0, 0.24));
-            color: var(--origam-color__text---primary, #0a0a0a);
-        }
-
-        &:focus-visible {
-            outline: 2px solid var(--origam-color__action--primary---bg, #7c3aed);
-            outline-offset: 2px;
-        }
-
-        &[data-active="true"],
-        &[aria-pressed="true"] {
-            background-color: var(--origam-color__action--primary---bg, #7c3aed);
-            border-color: var(--origam-color__action--primary---bg, #7c3aed);
-            /*
-             * OrigamChip binds its resting-state `color` prop as an
-             * INLINE style (useBothColor resolves it to
-             * --origam-color__action--primary---fgSubtle) — inline
-             * styles always outrank any selector regardless of
-             * specificity. Without `!important` this rule never
-             * actually repaints the selected chip's text, leaving a
-             * near-illegible subtle-violet-on-violet pairing on every
-             * theme that doesn't declare its own override. See #28.
-             */
-            color: var(--origam-color__action--primary---fg, #ffffff) !important;
-        }
     }
 
     &__tooling {

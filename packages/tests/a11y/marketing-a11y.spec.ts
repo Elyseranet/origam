@@ -123,23 +123,7 @@ test.describe('Marketing a11y — landmarks and headings, real pages, JS enabled
 
 })
 
-test.describe('Marketing a11y — #530 fixes (Chip / Avatar / Switch / Grid)', () => {
-
-    test('theme-picker OrigamChip renders a real <button>, not a <span type="button">', async ({ page }) => {
-        await page.goto('/')
-        await settle(page)
-
-        const chip = page.locator('[data-cy="themes-chip-origam"]')
-        await expect(chip).toHaveCount(1)
-        await expect(chip).toHaveJSProperty('tagName', 'BUTTON')
-        await expect(chip).toHaveAttribute('type', 'button')
-
-        const results = await scanPage(page)
-            .include('[data-cy="themes-chip-origam"]')
-            .analyze()
-        const chipViolations = results.violations.filter(v => v.id === 'aria-allowed-attr')
-        expect(chipViolations, JSON.stringify(chipViolations)).toHaveLength(0)
-    })
+test.describe('Marketing a11y — #530 fixes (Avatar / Switch / Grid — le theme-picker OrigamChip a disparu avec #1515)', () => {
 
     test('OrigamShowcase avatars (bgColor set, no explicit color) meet AA contrast', async ({ page }) => {
         await page.goto('/')

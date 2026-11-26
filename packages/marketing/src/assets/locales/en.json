@@ -2,11 +2,9 @@
     "a11y": {
         "skip_to_content": "Skip to content",
         "toggle_theme": "Toggle light and dark mode",
-        "toggle_brand_theme": "Switch brand theme",
         "search": "Search the documentation",
         "star_count": "GitHub stars",
         "language": "Change language",
-        "themes_chips_list": "Available themes",
         "showcase_grid": "Component showcase",
         "showcase_chip_list": "Chip intents",
         "playground_toolbar": "Editor toolbar",
@@ -261,10 +259,7 @@
         "search_page_theming": "Visual theme builder — customise design tokens",
         "search_page_why_origam": "Design decisions and philosophy",
         "search_page_stability": "Version numbers, release cadence and deprecation policy",
-        "star_count": "4.2k",
-        "theme": "Theme",
-        "theme_active": "Theme: {label}",
-        "theme_select_label": "Select brand theme"
+        "star_count": "4.2k"
     },
     "components": {
         "meta": {
@@ -1117,7 +1112,6 @@
             "title_line1": "One design system.",
             "title_line2": "Every brand.",
             "subtitle": "Hand-maintained, props-first design tokens — multi-theme out of the box. Switch between light, dark or your custom brand at runtime, with zero remount.",
-            "chip_origam": "Origam",
             "chip_glass": "Glass",
             "chip_geek": "Geek",
             "chip_cartoon": "Cartoon",
@@ -1338,7 +1332,7 @@
             "title": "Cookies",
             "intro": "Browsing this site sets cookies for two things only, both of them preferences you chose yourself:",
             "locale": "origam_locale — the display language, so the site does not revert to English on your next visit.",
-            "theme": "origam-theme and origam-mode — the theme and the light or dark appearance you selected.",
+            "theme": "origam-mode — the light or dark appearance you selected.",
             "admin": "A separate session cookie exists for the private administration area. It is created by logging in there and never by browsing the public site."
         },
         "storage": {

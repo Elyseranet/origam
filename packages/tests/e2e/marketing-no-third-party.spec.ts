@@ -176,17 +176,13 @@ test.describe('marketing — aucun tiers contacté automatiquement (#761)', () =
         })
     }
 
-    test('le thème editorial charge Fraunces, et toujours sans hôte externe', async ({ page, context, baseURL }) => {
+    test('l\'identité editorial (sous-arbre de /why-origam) ne contacte aucun hôte externe', async ({ page, baseURL }) => {
         const seen: string[] = []
 
         page.on('request', (r) => seen.push(r.url()))
 
-        await context.addCookies([
-            { name: 'origam-theme', value: 'editorial', url: baseURL! },
-            { name: 'origam-mode', value: 'light', url: baseURL! }
-        ])
-
-        await page.goto('/fr', { waitUntil: 'load' })
+        await page.goto('/why-origam', { waitUntil: 'load' })
+        await page.locator('[data-cy="why-demo-identity-editorial"]').click()
         await page.evaluate(() => document.fonts.ready)
         await page.waitForTimeout(SETTLE_MS)
 
@@ -200,7 +196,8 @@ test.describe('marketing — aucun tiers contacté automatiquement (#761)', () =
             return [...new Set(out)].sort()
         })
 
-        expect(familles, 'editorial doit charger Fraunces en plus du socle').toContain('Fraunces')
+        // #1515 — Fraunces n'est plus chargée d'office : seul le site entier en `editorial`
+        // l'utilisait ; un sous-arbre ne la charge que si un élément la peint.
         expect(familles).toContain('Inter')
         expect(externalHosts(seen, baseURL!)).toEqual([])
     })
