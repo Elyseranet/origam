@@ -1030,6 +1030,8 @@
             "forms": "Formulaires",
             "navigation": "Navigation",
             "data": "Données",
+            "charts": "Graphiques",
+            "charts_hint": "29 types, de la ligne à la heatmap",
             "feedback": "Feedback",
             "overlays": "Surcouches",
             "layout": "Mise en page"

@@ -4,6 +4,9 @@ export interface IHomeLibraryCategory {
     icon: string
     labelKey: string
     labelFallback: string
+    /** Optional caption under the label. */
+    hintKey?: string
+    hintFallback?: string
     /** Raw DB category of the components catalogue (`/components`) this card opens. */
     catalogCategory: string
 }

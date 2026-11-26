@@ -1030,6 +1030,8 @@
             "forms": "Forms",
             "navigation": "Navigation",
             "data": "Data",
+            "charts": "Charts",
+            "charts_hint": "29 types, from line to heatmap",
             "feedback": "Feedback",
             "overlays": "Overlays",
             "layout": "Layout"

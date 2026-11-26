@@ -48,6 +48,10 @@
               aria-hidden="true"
             />
             <span class="home-library__label">{{ t(category.labelKey, category.labelFallback) }}</span>
+            <span
+              v-if="category.hintKey"
+              class="home-library__hint"
+            >{{ t(category.hintKey, category.hintFallback) }}</span>
           </span>
         </origam-card>
       </origam-grid-item>
@@ -114,13 +118,24 @@ defineExpose({})
         line-height: 1.6;
     }
 
+    // 7 cards: a flex-wrap row centres the orphan row at every width, which a
+    // fixed-column grid cannot (it left-aligns it). --cols = cards per row.
     &__grid {
-        display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: var(--origam-space---4, 1rem);
+        --home-library-cols: 7;
+        --home-library-gap: var(--origam-space---4, 1rem);
+
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--home-library-gap);
         margin: 0;
         padding: 0;
         list-style: none;
+    }
+
+    &__grid > li {
+        flex: 0 0 calc((100% - (var(--home-library-cols) - 1) * var(--home-library-gap)) / var(--home-library-cols));
+        min-inline-size: 0;
     }
 
     &__card {
@@ -151,11 +166,16 @@ defineExpose({})
         font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__text---primary);
     }
+
+    &__hint {
+        font-size: var(--origam-font__size---sm, 0.75rem);
+        color: var(--origam-color__text---secondary);
+    }
 }
 
 @media (max-width: 1024px) {
     .home-library__grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        --home-library-cols: 4;
     }
 }
 
@@ -165,7 +185,7 @@ defineExpose({})
     }
 
     .home-library__grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        --home-library-cols: 2;
     }
 }
 
