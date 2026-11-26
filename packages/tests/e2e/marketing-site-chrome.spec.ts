@@ -13,15 +13,16 @@ const BASE_URL = process.env.MARKETING_BASE_URL ?? 'http://localhost:3000'
 test.describe('chrome du site — desktop (#1516)', () => {
   test.use({ viewport: { width: 1280, height: 800 } })
 
-  test('la barre décorative est aria-hidden, la nav existante et le CTA Documentation sont là', async ({ page }) => {
+  test('pas de barre système ni de bouton Documentation, la nav existante est là', async ({ page }) => {
     await page.goto(`${BASE_URL}/installation`, { waitUntil: 'load' })
 
-    await expect(page.locator('[data-cy="site-topbar"]')).toHaveAttribute('aria-hidden', 'true')
+    await expect(page.locator('[data-cy="site-topbar"], .origam-system-bar')).toHaveCount(0)
+    expect((await page.locator('.site-appbar').boundingBox())!.y).toBe(0)
     for (const section of ['introduction', 'getting-started', 'features']) {
       await expect(page.locator(`[data-cy="nav-section-${section}"]`)).toBeVisible()
     }
     await expect(page.locator('[data-cy="nav-theming"]')).toBeVisible()
-    await expect(page.locator('[data-cy="nav-docs-cta"]')).toHaveAttribute('href', '/docs/')
+    await expect(page.locator('[data-cy="nav-docs-cta"]')).toHaveCount(0)
     await expect(page.locator('[data-cy="nav-mobile-trigger"]')).toBeHidden()
   })
 
@@ -76,12 +77,13 @@ test.describe('chrome du site — desktop (#1516)', () => {
 test.describe('chrome du site — mobile (#1516)', () => {
   test.use({ viewport: { width: 390, height: 800 } })
 
-  test('barre décorative masquée, nav hors tabulation, menu burger complet', async ({ page }) => {
+  test('pas de barre système, nav hors tabulation, menu burger sans Documentation', async ({ page }) => {
     await page.goto(`${BASE_URL}/installation`, { waitUntil: 'load' })
 
-    await expect(page.locator('[data-cy="site-topbar"]')).toBeHidden()
+    await expect(page.locator('[data-cy="site-topbar"], .origam-system-bar')).toHaveCount(0)
+    expect((await page.locator('.site-appbar').boundingBox())!.y).toBe(0)
     await expect(page.locator('.primary-nav')).toBeHidden()
-    await expect(page.locator('[data-cy="nav-docs-cta"]')).toBeHidden()
+    await expect(page.locator('[data-cy="nav-docs-cta"]')).toHaveCount(0)
 
     const trigger = page.locator('[data-cy="nav-mobile-trigger"]')
     await expect(trigger).toBeVisible()
@@ -96,9 +98,10 @@ test.describe('chrome du site — mobile (#1516)', () => {
       return content.isVisible()
     }, { timeout: 20_000 }).toBe(true)
 
-    for (const label of ['Why origam?', 'Installation', 'Components', 'Theming', 'Documentation', 'GitHub']) {
+    for (const label of ['Why origam?', 'Installation', 'Components', 'Theming', 'GitHub']) {
       await expect(content.getByText(label, { exact: true }).first()).toBeVisible()
     }
+    await expect(content.getByText('Documentation', { exact: true })).toHaveCount(0)
 
     const box = (await content.boundingBox())!
 
