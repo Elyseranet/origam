@@ -34,10 +34,10 @@ function fixture (name: string, tweak: (root: string) => void = () => {}) {
 
 describe('generate-build-stats', () => {
     it('mesure chaque chiffre selon sa définition', () => {
-        expect(measure(fixture('ok'))).toEqual({
+        expect(measure(fixture('ok'), new Date('2026-11-26T23:30:00Z'))).toEqual({
             componentFamilies: 2, chartTypes: 2, a11ySweptStories: 1, unitTestFiles: 1,
             e2eTestFiles: 1, composables: 1, directives: 1, architectureGuards: 1,
-            license: 'MIT', version: '1.2.3'
+            license: 'MIT', version: '1.2.3', measuredOn: '2026-11-26'
         })
     })
 

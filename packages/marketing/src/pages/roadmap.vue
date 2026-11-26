@@ -112,7 +112,7 @@
                             data-cy="roadmap-status-measured"
                         >
                             <template #default>
-                                {{ t('roadmap.status.measured_on', 'Measured against the repository on 25 September 2026') }}
+                                {{ measuredOnLabel }}
                             </template>
                         </origam-chip>
 
@@ -216,7 +216,7 @@
                     data-cy="roadmap-overview-measured"
                 >
                     <template #default>
-                        {{ t('roadmap.overview.measured_on', 'Counted from the repository source tree on 25 September 2026') }}
+                        {{ overviewMeasuredOnLabel }}
                     </template>
                 </origam-chip>
 
@@ -615,6 +615,8 @@
     import { computed } from 'vue'
     import { useT } from '~/composables/useT'
     import { useVersion } from '~/composables/useVersion'
+    import { BUILD_STATS } from '~/consts/build-stats.const'
+    import { formatMeasuredOn } from '~/utils/build-stats.util'
     import { useReferenceCatalog, useReferenceCategories } from '~/composables/useApiReference'
     import {
         ROADMAP_HERO_BADGE_VARS,
@@ -639,7 +641,7 @@
      * registry, build-time fallback) — the same one the home hero reads, so a
      * release only requires bumping the package, never editing a badge string.
      ********************************************************/
-    const { t } = useT()
+    const { t, locale } = useT()
     const { version } = useVersion()
 
     useSeoMeta({
@@ -673,7 +675,7 @@
      * all. `roadmap.status.npm_published` is the one consuming it today.
      ********************************************************/
     const heroBadge = computed(() =>
-        t('roadmap.hero.badge', `v${ version.value } — Wave 4 shipped`, { version: version.value })
+        t('roadmap.hero.badge', `v${ version.value } — published on npm`, { version: version.value })
     )
 
     const statusTitleLine1 = computed(() =>
@@ -684,7 +686,30 @@
         t('roadmap.status.title_line2', 'stands.', { version: version.value })
     )
 
-    const statusParams = computed(() => ({ version: version.value }))
+    const statusParams = computed(() => ({
+        version: version.value,
+        unit: BUILD_STATS.unitTestFiles,
+        e2e: BUILD_STATS.e2eTestFiles,
+        guards: BUILD_STATS.architectureGuards
+    }))
+
+    /*********************************************************
+     * Measurement date
+     *
+     * @description
+     * #1545 — the two pills used to carry a date typed into the locale
+     * (« 25 September 2026 »), which aged with every PR. The date is now the
+     * one BUILD_STATS was measured on, rendered in the active language.
+     ********************************************************/
+    const measuredOn = computed(() => formatMeasuredOn(BUILD_STATS.measuredOn, locale.value))
+
+    const measuredOnLabel = computed(() =>
+        t('roadmap.status.measured_on', `Measured on ${ measuredOn.value }`, { date: measuredOn.value })
+    )
+
+    const overviewMeasuredOnLabel = computed(() =>
+        t('roadmap.overview.measured_on', `Measured on ${ measuredOn.value }`, { date: measuredOn.value })
+    )
 
     /*********************************************************
      * Status — two columns instead of nineteen identical rows

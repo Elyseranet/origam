@@ -37,6 +37,12 @@
 import { expect, test } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
+// @ts-expect-error script .mjs sans déclaration de types
+import { measure } from '../../marketing/scripts/generate-build-stats.mjs'
+
+/** Chiffres que le build mesure dans le dépôt (#1545) : la page doit afficher ceux-là. */
+const STATS = measure()
+
 const BASE = '/roadmap'
 
 /*
@@ -132,12 +138,14 @@ test.describe('roadmap — DS-first', () => {
      * `roadmap.spec.ts` est inscrit dans `MARKETING_GREEN_SPECS`, la CI était
      * rouge sur ce seul cas. Recompté sur `packages/marketing/src/consts/
      * roadmap.const.ts` : 14 entrées, 11 `done: true` et 3 `done: false`.
+     * #1545 : 12 entrées (9 + 3) — `e2e_specs` fusionné dans `unit_tests`,
+     * `ci_pipeline` retiré (« 20 jobs » non mesuré).
      * Le nombre reste un littéral parce qu'il n'y a pas de source
      * indépendante à interroger — lire le compte rendu par la page le
      * rendrait tautologique, les titres de colonnes étant dérivés du même
      * tableau.
      */
-    test('le panneau de statut partitionne les 14 items en deux colonnes', async ({ page }) => {
+    test('le panneau de statut partitionne les 12 items en deux colonnes', async ({ page }) => {
         const panel = page.locator('[data-cy="roadmap-status-panel"]')
         await expect(panel).toBeVisible()
         await expect(panel).toHaveClass(/origam-sheet/)
@@ -150,7 +158,7 @@ test.describe('roadmap — DS-first', () => {
 
         expect(liveCount).toBeGreaterThan(0)
         expect(pendingCount).toBeGreaterThan(0)
-        expect(liveCount + pendingCount).toBe(14)
+        expect(liveCount + pendingCount).toBe(12)
     })
 
     test('la date de mesure est rendue en pastille, pas noyée dans la prose', async ({ page }) => {
@@ -161,6 +169,27 @@ test.describe('roadmap — DS-first', () => {
         await expect(statusPill).toHaveClass(/origam-chip/)
         await expect(overviewPill).toBeVisible()
         await expect(overviewPill).toHaveClass(/origam-chip/)
+    })
+
+    test('#1545 — les chiffres du statut et la date viennent de la mesure du build', async ({ page }) => {
+        const status = page.locator('[data-cy="roadmap-status"]')
+        await expect(status).toContainText(`${ STATS.unitTestFiles } unit test files and ${ STATS.e2eTestFiles } e2e test files`)
+        await expect(status).toContainText(`${ STATS.architectureGuards } architecture guards`)
+        const expectedDate = new Intl.DateTimeFormat('en', { dateStyle: 'long', timeZone: 'UTC' })
+            .format(new Date(`${ STATS.measuredOn }T00:00:00Z`))
+        await expect(page.locator('[data-cy="roadmap-status-measured"]')).toHaveText(`Measured on ${ expectedDate }`)
+        await expect(page.locator('[data-cy="roadmap-overview-measured"]')).toHaveText(`Measured on ${ expectedDate }`)
+        // La phase « Bundle-size monitoring » cite légitimement une mesure datée du
+        // 25 septembre : l'absence de chiffre figé se vérifie sur le statut seul.
+        await expect(status).not.toContainText(/25 September 2026|7,192|564 spec|20 jobs/)
+    })
+
+    test('#1545 — les phases sont ordonnées, sans trimestre', async ({ page }) => {
+        const phases = page.locator('[data-cy^="roadmap-phase-"]')
+        await expect(page.locator('[data-cy="page-roadmap"]')).not.toContainText(/Q[1-4] 20\d\d|> 6 MONTHS/)
+        await expect(phases.filter({ hasText: 'Phase 1' }).first()).toContainText('Coming up')
+        await expect(phases.filter({ hasText: 'Phase 2' }).first()).toContainText('After that')
+        await expect(phases.filter({ hasText: 'Phase 3' }).first()).toContainText('Later')
     })
 
     test('la section statut contient des OrigamIcon', async ({ page }) => {
@@ -174,12 +203,10 @@ test.describe('roadmap — DS-first', () => {
     test('le bloc overview affiche 6 stats livrées (OrigamCard)', async ({ page }) => {
         const cards = page.locator('[data-cy="roadmap-overview"] .roadmap-overview__card')
         await expect(cards).toHaveCount(6)
-        // Valeur exacte comptee dans l'arbre source du DS (96 dossiers sous
-        // packages/ds/src/components/), et non un plancher arrondi. Elle est
-        // pilotee par ROADMAP_OVERVIEW_STATS[0] dans
-        // packages/marketing/src/consts/roadmap.const.ts : les deux bougent
-        // ensemble ou ce test rougit.
-        await expect(page.locator('.roadmap-overview__value').first()).toHaveText('96')
+        // #1545 — la valeur vient de BUILD_STATS (dossiers de premier niveau de
+        // packages/ds/src/components/), mesurée au build : le test compare à la
+        // même mesure, refaite ici sur le dépôt.
+        await expect(page.locator('.roadmap-overview__value').first()).toHaveText(String(STATS.componentFamilies))
     })
 
     /*
