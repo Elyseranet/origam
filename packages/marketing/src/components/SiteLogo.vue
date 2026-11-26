@@ -6,7 +6,6 @@
     <origam-img
       class="site-logo__img site-logo__img--light"
       :src="BRAND_LOGO_LIGHT.src"
-      :srcset="BRAND_LOGO_LIGHT.srcset"
       :alt="alt"
       :width="BRAND_LOGO_WIDTH"
       :height="BRAND_LOGO_HEIGHT"
@@ -15,7 +14,6 @@
     <origam-img
       class="site-logo__img site-logo__img--dark"
       :src="BRAND_LOGO_DARK.src"
-      :srcset="BRAND_LOGO_DARK.srcset"
       :alt="alt"
       :width="BRAND_LOGO_WIDTH"
       :height="BRAND_LOGO_HEIGHT"
@@ -54,8 +52,8 @@ defineExpose({})
   .site-logo {
     display: inline-flex;
     flex: none;
-    inline-size: 85px;
-    block-size: 32px;
+    inline-size: 108px;
+    block-size: 40px;
   }
 
   .site-logo__img {

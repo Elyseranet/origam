@@ -145,7 +145,7 @@
 
     <origam-app-bar
       class="site-appbar"
-      :height="56"
+      :height="72"
     >
       <template #prepend>
         <nuxt-link
@@ -479,8 +479,6 @@
         </nav>
       </origam-grid>
 
-      <origam-divider class="site-footer__rule"/>
-
       <!--
         Items flagged `external` in NAV_SECTIONS (Stories, Docs) are separate
         static sites, not app routes: they keep a plain anchor and are never
@@ -593,8 +591,8 @@
       --origam-btn---font-weight: 500;
       --origam-btn---color: var(--origam-color__text---secondary, #525252);
       --origam-btn---padding-inline: var(--origam-space---3, 0.75rem);
-      --origam-btn---height: 34px;
-      --origam-btn---min-height: 34px;
+      --origam-btn---height: 38px;
+      --origam-btn---min-height: 38px;
       --origam-btn---background-color: transparent;
       --origam-btn---overlay-opacity-hover: 0.06;
       position: relative;
@@ -718,8 +716,8 @@
   .site-footer {
     display: flex;
     flex-direction: column;
-    gap: var(--origam-space---6, 1.5rem);
-    padding: var(--origam-space---10, 4rem) var(--site-gutter) var(--origam-space---6, 1.5rem);
+    gap: var(--origam-space---4, 1rem);
+    padding: var(--origam-space---8, 2rem) var(--site-gutter) var(--origam-space---5, 1.25rem);
     background-color: var(--origam-color__surface---sunken, #f5f5f5);
     border-block-start: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
     color: var(--origam-color__text---secondary, #525252);
@@ -737,13 +735,13 @@
     &__brand {
       display: flex;
       flex-direction: column;
-      gap: var(--origam-space---3, 0.75rem);
+      gap: var(--origam-space---2, 0.5rem);
       max-inline-size: 22rem;
     }
 
     &__tagline {
       margin: 0;
-      font-size: var(--origam-font-size---md, 1rem);
+      font-size: var(--origam-font-size---sm, 0.875rem);
       line-height: 1.5;
       color: var(--origam-color__text---secondary, #525252);
     }
@@ -751,7 +749,7 @@
     &__column {
       display: flex;
       flex-direction: column;
-      gap: var(--origam-space---2, 0.5rem);
+      gap: var(--origam-space---1, 0.25rem);
     }
 
     &__column-title {
@@ -768,10 +766,13 @@
       padding: 0;
       display: flex;
       flex-direction: column;
-      gap: var(--origam-space---2, 0.5rem);
+      gap: var(--origam-space---1, 0.25rem);
+      font-size: var(--origam-font-size---sm, 0.875rem);
+      line-height: 1.4;
     }
 
     &__link {
+      line-height: 1.4;
       font-size: var(--origam-font-size---sm, 0.875rem);
       color: var(--origam-color__text---secondary, #525252);
       text-decoration: none;
@@ -785,15 +786,15 @@
 
     &__sitemap {
       display: grid;
-      grid-auto-flow: column;
-      grid-template-rows: auto auto;
-      gap: var(--origam-space---2, 0.5rem) var(--origam-space---8, 2rem);
-      align-content: start;
+      grid-template-columns: max-content 1fr;
+      align-items: baseline;
+      gap: var(--origam-space---1, 0.25rem) var(--origam-space---6, 1.5rem);
     }
 
     &__sitemap-title {
       margin: 0;
       font-size: var(--origam-font-size---xs, 0.75rem);
+      line-height: 1.4;
       font-weight: 600;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -805,8 +806,10 @@
       margin: 0;
       padding: 0;
       display: flex;
-      flex-direction: column;
-      gap: var(--origam-space---2, 0.5rem);
+      flex-flow: row wrap;
+      gap: var(--origam-space---1, 0.25rem) var(--origam-space---4, 1rem);
+      font-size: var(--origam-font-size---sm, 0.875rem);
+      line-height: 1.4;
     }
 
     &__rule {
@@ -825,6 +828,7 @@
     &__line {
       margin: 0;
       font-size: var(--origam-font-size---sm, 0.875rem);
+      line-height: 1.4;
     }
   }
 
@@ -920,12 +924,17 @@
   */
   @media (max-width: 40rem) {
     .site-footer__sitemap {
-      grid-auto-flow: row;
-      grid-template-rows: none;
+      grid-template-columns: 1fr;
     }
 
     .site-footer__top {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(3, auto);
+      justify-content: space-between;
+      gap: var(--origam-space---4, 1rem);
+    }
+
+    .site-footer__brand {
+      grid-column: 1 / -1;
     }
   }
 
@@ -962,7 +971,7 @@
     ne garde plus que ce qui lui est propre (famille et interlettrage).
   */
   :root {
-    --appbar-nav---font-size: 13px;
+    --appbar-nav---font-size: 15px;
     --site-gutter: 20px;
   }
 

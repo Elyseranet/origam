@@ -1,17 +1,20 @@
 import type { IBrandLogoSource } from '../interfaces/brand.interface'
 
-/** Logo horizontal du kit de marque A1 : 85x32 CSS px, servi en 1x et 2x. */
-export const BRAND_LOGO_WIDTH = 85
-export const BRAND_LOGO_HEIGHT = 32
+/**
+ * Logo horizontal du kit de marque A1, affiché à 40 px de haut (#1554 T10).
+ * Le seul fichier assez grand est le 172x64 : il est servi à toutes les densités
+ * (réduit en 1x, net ; agrandi de 1,26 en 2x, limite tant que #1520 n'a pas
+ * livré un vrai vecteur). Le 86x32 agrandi à 40 px serait flou.
+ */
+export const BRAND_LOGO_WIDTH = 108
+export const BRAND_LOGO_HEIGHT = 40
 
 export const BRAND_LOGO_LIGHT: IBrandLogoSource = {
-    src: '/brand/origam-horizontal-light-1x.avif',
-    srcset: '/brand/origam-horizontal-light-1x.avif 1x, /brand/origam-horizontal-light-2x.avif 2x'
+    src: '/brand/origam-horizontal-light-2x.avif'
 }
 
 export const BRAND_LOGO_DARK: IBrandLogoSource = {
-    src: '/brand/origam-horizontal-dark-1x.avif',
-    srcset: '/brand/origam-horizontal-dark-1x.avif 1x, /brand/origam-horizontal-dark-2x.avif 2x'
+    src: '/brand/origam-horizontal-dark-2x.avif'
 }
 
 /**
