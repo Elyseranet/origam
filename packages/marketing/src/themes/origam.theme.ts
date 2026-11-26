@@ -36,6 +36,19 @@ import { ORIGAM_COMPONENT_RESET_DARK, ORIGAM_COMPONENT_RESET_LIGHT } from '../co
 export const origamLightTheme: IOrigamTheme = {
     ...baseLight,
     name: 'origam',
+    // #1516 — Sora est la famille du site (kit de marque A1), auto-hébergée
+    // (assets/css/fonts.css) ; Inter reste en repli. Posé ici, sur le bloc
+    // sans mode, pour valoir en clair ET en sombre.
+    vars: {
+        ...baseLight.vars,
+        typo: {
+            ...baseLight.vars?.typo,
+            family: {
+                ...baseLight.vars?.typo?.family,
+                sans: "Sora, Inter, 'Helvetica Neue', Arial, sans-serif"
+            }
+        }
+    },
     cssVars: {
         ...ORIGAM_COMPONENT_RESET_LIGHT,
         // #1488 — bordure neutre comme les 7 autres marques : sans ça le toggle (color=primary) hérite de currentColor (violet), Split reste neutre.

@@ -1,5 +1,8 @@
 export const SEARCH_SHORTCUT = '⌘K'
 
+/** Pastilles décoratives de la barre supérieure (maquette A1) : une intention du DS chacune. */
+export const TOPBAR_DOTS = ['danger', 'warning', 'success'] as const
+
 /** Minimum GitHub star count before the appbar star button is worth showing —
  *  a low/zero count reads as low traction, so hide it until it's meaningful. */
 export const GITHUB_STARS_MIN_DISPLAY = 1000

@@ -42,7 +42,7 @@ for (const { name, mode } of THEMES) {
     test('real appbar buttons keep their button surface (unaffected)', async ({ page }) => {
       await setTheme(page, name, mode)
       await page.goto(`${BASE_URL}/`, { waitUntil: 'load' })
-      const themeBtn = page.locator('.appbar-actions__btn').first()
+      const themeBtn = page.locator('[data-cy="nav-mode-toggle"]')
       await themeBtn.waitFor({ state: 'visible' })
 
       const computed = await themeBtn.evaluate(el => getComputedStyle(el).borderWidth)

@@ -33,6 +33,7 @@ export const MARKETING_SPEC_PATTERNS = [
     '**/marketing-theming-toggle-vs-split-parity.spec.ts',
     '**/marketing-theme-live-switch.spec.ts',
     '**/marketing-primary-nav.spec.ts',
+    '**/marketing-site-chrome.spec.ts',
     '**/theming-feedback-tokens.spec.ts',
     '**/home-*.spec.ts',
     '**/why-origam.spec.ts',

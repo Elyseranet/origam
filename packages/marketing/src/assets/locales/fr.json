@@ -12,7 +12,8 @@
         "themes_preview_tiles": "Aperçus des thèmes",
         "roadmap_effort": "Effort",
         "donate": "Soutenir origam par un don",
-        "donate_qr": "Code QR menant à la page de dons"
+        "donate_qr": "Code QR menant à la page de dons",
+        "github": "origam sur GitHub"
     },
     "admin": {
         "appbar": {
@@ -1311,8 +1312,11 @@
         "a11y": {
             "open_section": "Ouvrir le menu {section}",
             "nav_primary": "Navigation principale",
-            "sitemap": "Plan du site"
-        }
+            "sitemap": "Plan du site",
+            "open_menu": "Ouvrir le menu de navigation",
+            "mobile_menu": "Menu de navigation"
+        },
+        "documentation": "Documentation"
     },
     "privacy": {
         "meta": {
@@ -1345,7 +1349,7 @@
         },
         "third_party": {
             "title": "Aucun tiers",
-            "body": "Rien, sur les pages de ce site, n’est chargé depuis le serveur d’une autre entreprise. Les polices de caractères — Fraunces, Inter et JetBrains Mono — sont servies par ce site lui-même, depuis son propre dossier /fonts. Elles étaient auparavant demandées à Google Fonts, ce qui révélait votre adresse IP et votre navigateur à Google sur chaque page ; cette requête n’existe plus. Les dix-neuf pages publiques ont été chargées une à une avec le journal réseau ouvert, et aucune n’a contacté d’autre hôte que celui-ci.",
+            "body": "Rien, sur les pages de ce site, n’est chargé depuis le serveur d’une autre entreprise. Les polices de caractères — Sora, Inter, Fraunces et JetBrains Mono — sont servies par ce site lui-même, depuis son propre dossier /fonts. Elles étaient auparavant demandées à Google Fonts, ce qui révélait votre adresse IP et votre navigateur à Google sur chaque page ; cette requête n’existe plus. Les dix-neuf pages publiques ont été chargées une à une avec le journal réseau ouvert, et aucune n’a contacté d’autre hôte que celui-ci.",
             "embeds": "Une exception, mesurée et nommée : les stories de composants publiées sous /stories sont une compilation séparée, produite par un outil tiers ; ouvrir cette page charge sa police d’interface depuis Google Fonts et ses icônes depuis api.iconify.design. On y accède en suivant un lien, jamais en naviguant sur le site. La documentation de référence sous /docs est elle aussi une compilation séparée ; elle n’a pas été mesurée, rien n’en est donc affirmé ici.",
             "links": "Les autres adresses externes de ce site — le dépôt GitHub, la page de don, Discord — sont de simples liens. Rien ne leur est demandé tant que vous ne cliquez pas."
         },
