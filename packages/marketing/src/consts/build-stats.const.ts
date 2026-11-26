@@ -11,7 +11,7 @@ export const BUILD_STATS: IBuildStats = {
     "componentFamilies": 97,
     "chartTypes": 29,
     "a11ySweptStories": 220,
-    "unitTestFiles": 677,
+    "unitTestFiles": 678,
     "e2eTestFiles": 322,
     "composables": 146,
     "directives": 6,
