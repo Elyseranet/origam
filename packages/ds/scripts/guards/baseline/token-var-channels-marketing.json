@@ -100,7 +100,6 @@
     "packages/marketing/src/layouts/admin.vue::--origam-font-size---sm",
     "packages/marketing/src/layouts/default.vue::--origam-color__border---ghost",
     "packages/marketing/src/layouts/default.vue::--origam-color__surface---variant",
-    "packages/marketing/src/layouts/default.vue::--origam-font-size---md",
     "packages/marketing/src/layouts/default.vue::--origam-font-size---sm",
     "packages/marketing/src/layouts/default.vue::--origam-font-size---xs",
     "packages/marketing/src/pages/admin/[kind]/[slug].vue::--origam-color__status--danger---bgSubtle",
