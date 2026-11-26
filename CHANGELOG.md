@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `TShikiHighlighter` accepte un highlighter `shiki/core` (#1136)
+
+- Cause : `codeToHtml` y déclarait `themes?` et `defaultColor?: false | string` optionnels. Les paramètres d'une fonction étant contravariants, `{ themes?: … }` n'est pas assignable au `CodeOptionsMultipleThemes` de shiki (où `themes` est requis) : ni `createHighlighterCore` (`shiki/core`) ni même `createHighlighter` ne satisfaisaient le type, malgré la doc.
+- Correctif : `themes` et `defaultColor: false` deviennent requis — `useCode()` les passe toujours. Un highlighter `shiki/core` s'utilise sans cast. Test de type : `packages/ds/src/types/Code/code.type-test.ts` (vérifié par `pnpm -F origam type-check`).
+
 ### Fixed — `rounded` par coin : une valeur non reconnue passe verbatim, comme `padding*` (#1022)
 
 - Cause : `resolveRoundedCornerValue` filtrait par `CUSTOM_BORDER_RADIUS_REGEX` puis jetait en silence ce qu'elle ne reconnaissait pas (`"0"` sans unité, rayon elliptique `"10px 4px"`), là où `resolveSpacingValue` renvoie la chaîne telle quelle. Désormais tout ce qui n'est pas un échelon, un nom de variante ou un nombre est émis verbatim ; `shaped` / `shaped-invert` restent `null`. Le navigateur écarte lui-même une valeur invalide.

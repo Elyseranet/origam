@@ -22,7 +22,8 @@ export default defineBuildConfig({
                 '!**/*.spec.ts',
                 '!**/*.d.ts',
                 '!**/__tests__/**',
-                '!**/*.cy.ts'
+                '!**/*.cy.ts',
+                '!**/*.type-test.ts'
             ],
             loaders: ['js'],
             ext: 'cjs'
@@ -37,7 +38,8 @@ export default defineBuildConfig({
                 '!**/*.spec.ts',
                 '!**/*.d.ts',
                 '!**/__tests__/**',
-                '!**/*.cy.ts'
+                '!**/*.cy.ts',
+                '!**/*.type-test.ts'
             ],
             loaders: ['js'],
             ext: 'js'

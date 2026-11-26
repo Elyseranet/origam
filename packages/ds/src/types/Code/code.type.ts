@@ -31,12 +31,17 @@ export type TCodeTheme = `${CODE_THEME}`
  * requirement for every consumer, including those who never install it.
  * Declaring the one method we use keeps the dynamic-import fallback
  * path type-safe with zero dependency on the package being present.
+ *
+ * `themes` and `defaultColor` are REQUIRED on purpose (#1136): `useCode()`
+ * always passes both, and an optional `themes?` is not assignable to shiki's
+ * `CodeOptionsMultipleThemes` (parameters are contravariant), which rejected
+ * every real highlighter — `createHighlighter` and `createHighlighterCore`.
  */
 export type TShikiHighlighter = {
     codeToHtml: (code: string, opts: {
         lang: string
-        themes?: { light: string, dark: string }
-        defaultColor?: false | string
+        themes: { light: string, dark: string }
+        defaultColor: false
     }) => string
 }
 
