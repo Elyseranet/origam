@@ -14,7 +14,7 @@
         tag="div"
         class="home-themes__text-col"
       >
-        <p class="home-themes__eyebrow">
+        <p class="home-themes__eyebrow home-eyebrow">
           {{ t('home.themes.eyebrow', 'THEMING') }}
         </p>
 
@@ -59,6 +59,7 @@
           <origam-btn
             class="home-themes__btn"
             variant="text"
+            size="x-large"
             append-icon="mdi-arrow-right"
             :href="HOME_THEMES_BUILDER_HREF"
             data-cy="themes-cta-builder"
@@ -92,7 +93,7 @@
             >
               <origam-sheet
                 :data-cy="`themes-tile-surface-${tile.key}`"
-                rounded="lg"
+                rounded="xl"
                 tag="article"
                 elevation="md"
                 border
@@ -158,28 +159,23 @@ const { t } = useT()
 
     &__eyebrow {
         margin: 0;
-        font-size: var(--origam-font-size---xs, 0.75rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
     }
 
     &__title {
         margin: 0;
         display: flex;
         flex-direction: column;
-        font-size: var(--origam-font-size---section, 3rem);
+        font-size: var(--home-fs-h2);
         font-weight: var(--origam-font__weight---bold, 700);
         letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-        line-height: 1.05;
+        line-height: 1.15;
         color: var(--origam-color__text---primary, #0a0a0a);
     }
 
     &__subtitle {
         margin: 0;
         max-inline-size: 34rem;
-        font-size: var(--origam-font__size---lg, 1rem);
+        font-size: var(--home-fs-body);
         line-height: 1.6;
         color: var(--origam-color__text---secondary, #525252);
     }
@@ -187,7 +183,7 @@ const { t } = useT()
     &__note {
         margin: 0;
         max-inline-size: 34rem;
-        font-size: var(--origam-font__size---sm, 0.875rem);
+        font-size: var(--home-fs-small);
         line-height: 1.6;
         color: var(--origam-color__text---secondary);
     }
@@ -198,7 +194,7 @@ const { t } = useT()
         flex-wrap: wrap;
         align-items: center;
         gap: var(--origam-space---2, 0.5rem);
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--home-fs-small);
         font-family: var(--origam-font__family---mono, 'JetBrains Mono', monospace);
         color: var(--origam-color__text---tertiary, #737373);
     }
@@ -240,7 +236,7 @@ const { t } = useT()
     }
 
     &__preview-label {
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--home-fs-small);
         font-weight: var(--origam-font__weight---semibold, 600);
         letter-spacing: 0.04em;
         color: var(--origam-color__text---secondary, #525252);
@@ -275,13 +271,4 @@ const { t } = useT()
     }
 }
 
-@media (max-width: 40rem) {
-    .home-themes {
-        padding-inline: var(--origam-space---6, 1.5rem);
-
-        &__title {
-            font-size: clamp(1.75rem, 8vw, 3rem);
-        }
-    }
-}
 </style>
