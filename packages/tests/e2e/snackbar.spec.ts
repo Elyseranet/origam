@@ -170,7 +170,8 @@ test.describe('OrigamSnackbar', () => {
             await expect(wrapper).toBeVisible(VIS)
             const bg = await wrapper.evaluate(el => getComputedStyle(el).backgroundColor)
             // Primary token resolves to rgb(124, 58, 237)
-            expect(bg).toBe('rgb(124, 58, 237)')
+            // #1514 — primaire du brand kit A1 (était rgb(124, 58, 237)).
+            expect(bg).toBe('rgb(106, 86, 246)')
         })
     })
 

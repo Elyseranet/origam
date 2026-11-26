@@ -18,6 +18,22 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed — BREAKING (dérogation assumée, minor) : le thème par défaut prend l'identité du brand kit A1 (#1514)
+
+Le rendu par défaut de **toute** app change, que l'on passe par `createOrigam()` (thème runtime `origam.theme.ts`) ou par `origam/styles` seul (`primitive.css`, `light.css`, `dark.css` et leurs jumeaux SCSS) : les deux sources restent alignées (#615).
+
+- **Couleurs, mode clair** : page papier `#f7f5ef` (était `#ffffff`), `raised` `#fffaf7`, `overlay` / `sunken` lavande `#f5edff` / `#e9e0ff`, texte encre `#1b1127` (était `#0a0a0a`). Action primaire violet `#6a56f6` (était `#7c3aed`), survol `#614edd`. Le violet posé en **texte** (liens `ghost`, `fgSubtle`, tonal) est `#614edd` et non `#6a56f6` : `#6a56f6` mesure 4,51:1 sur papier et 3,88:1 sur lavande ; `#614edd` est la teinte la plus proche qui tient AA sur toutes les surfaces claires (min 4,55:1).
+- **Couleurs, mode sombre** : page encre `#1b1127` (était `#0a0a0a`). `raised` / `overlay` / `disabled` / `sunken` et les trois bordures sont dérivés de l'encre par mélange sRGB à pas fixes (formule en commentaire dans le thème). Violet en texte `#9284f8` (min 4,58:1 sur les surfaces sombres).
+- **`text.tertiary` clair** s'aligne sur `secondary` (`#525252`) : l'ancien `#737373` mesure 4,35:1 sur papier (même choix que #1044 en sombre).
+- **`feedback.success` / `feedback.warning` `fgSubtle` clair** descendent d'un cran (`#166534`, `#92400e`) : le cran 700 mesurait 3,96:1 sur la lavande `#e9e0ff`. En sombre, la feuille aligne `feedback.danger.fgSubtle` sur le thème (`#f87171`) : `red-400` mesurait 4,10:1 sur `overlay`.
+- **`OrigamSnackbarItem`** : l'opacité du message (`--origam-snackbar-item__message---opacity`) passe de 0,85 à 1. Sur le papier, le texte feedback atténué tombait sous AA (info 4,24:1 mesuré par axe).
+- **`OrigamBracketMatch`** : les matchs terminés (`--status-completed`) ne sont plus atténués (`opacity: 0.95` retiré). L'atténuation faisait tomber le nom du vainqueur à 4,41:1 ; il mesure 4,78:1 en clair et 5,56:1 en sombre (même raisonnement que #513).
+- **Primitives** : la rampe `--origam-color__primary---*` est recalculée autour de `#6a56f6` (600) ; nouvelle rampe `--origam-color__sun---*` (500 = `#ffc529`), branchée sur **aucun** composant — l'intention `accent` est #1522.
+- **Rayons** : `--origam-radius---md` passe de 8 à 10 px (`lg` 12, `xl` 16, `2xl` 24 inchangés). **`OrigamBtn`, `OrigamBtnGroup` et `OrigamBtnToggle` sont en pilule par défaut**, via les tokens `--origam-btn---border-radius` et `--origam-btn-group---border-radius` = `var(--origam-radius---full)` (feuilles `light.css` / `dark.css`). Dérogation assumée à PROPS-FIRST : une prop `rounded` dans le bloc `components` du thème est émise en style inline et confisque le rayon des Btn imbriqués (mesuré : le bouton d'action d'`OrigamInlineEdit` passait de 4 à 9999 px). Le défaut du mécanisme est suivi dans #1523. Les composants qui fixent leur propre rayon de bouton (Pagination, Code, BottomNav, InlineEdit…) le gardent.
+- **Ombres** : `md` = ombre « carte » du kit (`0 8px 24px rgba(27,17,39,.10)`), `lg` = « flottante » (`0 16px 40px rgba(27,17,39,.16)`) ; `xs` / `sm` / `xl` en rampe sur l'encre. Les ombres de marque (`btn-primary`, `glow-primary`) suivent le nouveau violet.
+- **Typographie** : `--origam-font__family---sans` = `'Sora', Inter, ui-sans-serif, system-ui, sans-serif`. Le DS n'embarque toujours aucun `@font-face` : Sora n'est rendue que si l'app la charge, sinon le repli s'applique.
+- Hors périmètre : la sémantique des intentions Btn (`secondary` reste gris plein), les gris neutres, l'intention `accent`.
+
 ## [2.46.1] - 2026-11-26
 
 ### Fixed — le reflet `wave` du squelette de `OrigamDataTable` reste dans la barre (#1090)

@@ -117,7 +117,7 @@ describe('origam baseline — explicit opt-in only (#360)', () => {
         const light = document.getElementById('origam-theme')
         expect(light).not.toBeNull()
         expect(light!.textContent).toContain(':root {')
-        expect(light!.textContent).toContain('--origam-color__surface---default: #ffffff;')
+        expect(light!.textContent).toContain('--origam-color__surface---default: #f7f5ef;')
 
         // origamDark has no name but mode 'dark' → [data-mode="dark"], id `origam-theme-dark`.
         const dark = document.getElementById('origam-theme-dark')

@@ -513,10 +513,6 @@
 			}
 		}
 
-		&--status-completed {
-			opacity: 0.95;
-		}
-
 		// #511 — `origam-bracket-match--final` was posed on `is-final` matches
 		// (OrigamBracketRound.vue wires it for the last match of the last
 		// round) with NO matching rule: a final rendered pixel-identical to

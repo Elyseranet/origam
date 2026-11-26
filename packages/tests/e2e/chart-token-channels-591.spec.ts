@@ -125,7 +125,7 @@ const CASES: ICase[] = [
         story: STORY('treemap'),
         andThen: (page) => assertSheetDeclares(page),
         probes: [
-            { variant: 'Design', selector: '.origam-chart__treemap-tile', property: 'stroke', expected: 'rgb(255, 255, 255)' },
+            { variant: 'Design', selector: '.origam-chart__treemap-tile', property: 'stroke', expected: 'rgb(247, 245, 239)' },
             { variant: 'Design', selector: '.origam-chart__treemap-tile', property: 'stroke-width', expected: '2px' },
             { variant: 'Design', selector: '.origam-chart__treemap-label', property: 'fill', expected: 'rgb(255, 255, 255)' },
             { variant: 'Design', selector: '.origam-chart__treemap-label', property: 'font-size', expected: '11px' },
@@ -136,7 +136,7 @@ const CASES: ICase[] = [
         name: 'Sunburst — arcs, etiquettes, ligne de rappel',
         story: STORY('sunburst'),
         probes: [
-            { variant: 'Design', selector: '.origam-chart__sunburst-arc', property: 'stroke', expected: 'rgb(255, 255, 255)' },
+            { variant: 'Design', selector: '.origam-chart__sunburst-arc', property: 'stroke', expected: 'rgb(247, 245, 239)' },
             { variant: 'Design', selector: '.origam-chart__sunburst-arc', property: 'stroke-width', expected: '1.5px' },
             { variant: 'Design', selector: '.origam-chart__sunburst-label', property: 'fill', expected: 'rgb(255, 255, 255)' },
             { variant: 'Design', selector: '.origam-chart__sunburst-label', property: 'font-size', expected: '10px' },
@@ -147,7 +147,7 @@ const CASES: ICase[] = [
         name: 'Heatmap — cellules et deux familles d etiquette',
         story: STORY('heatmap'),
         probes: [
-            { variant: 'Design', selector: '.origam-chart__heatmap-cell', property: 'stroke', expected: 'rgb(255, 255, 255)' },
+            { variant: 'Design', selector: '.origam-chart__heatmap-cell', property: 'stroke', expected: 'rgb(247, 245, 239)' },
             { variant: 'Design', selector: '.origam-chart__heatmap-cell', property: 'stroke-width', expected: '0.5px' },
             { variant: 'Design', selector: '.origam-chart__heatmap-axis-label', property: 'fill', expected: 'rgb(82, 82, 82)' },
             { variant: 'Design', selector: '.origam-chart__heatmap-axis-label', property: 'font-size', expected: '10px' }
@@ -158,7 +158,7 @@ const CASES: ICase[] = [
         story: STORY('gauge'),
         probes: [
             { variant: 'Design', selector: '.origam-chart__gauge-track', property: 'fill', expected: 'rgba(0, 0, 0, 0.04)' },
-            { variant: 'Design', selector: '.origam-chart__gauge-label', property: 'fill', expected: 'rgb(10, 10, 10)' },
+            { variant: 'Design', selector: '.origam-chart__gauge-label', property: 'fill', expected: 'rgb(27, 17, 39)' },
             { variant: 'Design', selector: '.origam-chart__gauge-label', property: 'font-size', expected: '24px' },
             { variant: 'Design', selector: '.origam-chart__gauge-label', property: 'font-weight', expected: '700' }
         ]
@@ -167,7 +167,7 @@ const CASES: ICase[] = [
         name: 'Pyramid — tranches et etiquette interieure',
         story: STORY('pyramid'),
         probes: [
-            { variant: 'Design', selector: '.origam-chart__pyramid-slice', property: 'stroke', expected: 'rgb(255, 255, 255)' },
+            { variant: 'Design', selector: '.origam-chart__pyramid-slice', property: 'stroke', expected: 'rgb(247, 245, 239)' },
             { variant: 'Design', selector: '.origam-chart__pyramid-slice', property: 'stroke-width', expected: '2px' },
             { variant: 'Design', selector: '.origam-chart__pyramid-label--inside', property: 'fill', expected: 'rgb(255, 255, 255)' },
             { variant: 'Design', selector: '.origam-chart__pyramid-label--inside', property: 'font-weight', expected: '500' }

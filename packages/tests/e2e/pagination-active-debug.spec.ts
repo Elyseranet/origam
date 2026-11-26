@@ -175,7 +175,8 @@ test('DEBUG pagination — colored mode active is a darker shade of the primary 
     // (OrigamPagination.vue: `variant: baseBg ? VARIANT.FLAT : undefined`),
     // which is NOT subject to the text-variant's forced transparency, so
     // `--origam-btn---background-color` paints `.origam-btn` directly here.
-    expect(sample?.inactiveBg).toBe('rgb(124, 58, 237)')
+    // #1514 — primaire du brand kit A1 (était rgb(124, 58, 237)).
+    expect(sample?.inactiveBg).toBe('rgb(106, 86, 246)')
 
     // The active item is NOT the same flat fill — OrigamPagination's
     // "unified color logic" (cb10d654) intentionally derives every
@@ -189,9 +190,9 @@ test('DEBUG pagination — colored mode active is a darker shade of the primary 
     const [r, g, b] = channels!
     // 70 % of rgb(124, 58, 237) — i.e. mixed with 30 % black — with a small
     // tolerance for cross-engine rounding of the color-mix() output.
-    expect(r).toBeCloseTo(124 * 0.7, 0)
-    expect(g).toBeCloseTo(58 * 0.7, 0)
-    expect(b).toBeCloseTo(237 * 0.7, 0)
+    expect(r).toBeCloseTo(106 * 0.7, 0)
+    expect(g).toBeCloseTo(86 * 0.7, 0)
+    expect(b).toBeCloseTo(246 * 0.7, 0)
     // And still visibly different from the resting/inactive fill.
     expect(sample?.bg).not.toBe(sample?.inactiveBg)
 })

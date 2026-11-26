@@ -125,8 +125,6 @@ const norm = (v: string | number) => String(v).toLowerCase().replace(/\s+/g, ' '
  * ⛔ Cette liste doit rétrécir. Un nom qui s'y ajoute est une régression.
  */
 const DIVERGENCES_CONNUES = new Set([
-    '--origam-color__surface---raised',
-    '--origam-color__surface---sunken',
     '--origam-color__border---default',
     '--origam-color__border---subtle',
     '--origam-color__border---strong',
@@ -184,7 +182,8 @@ describe('#615 — le thème runtime racine et les feuilles de tokens', () => {
         expect(norm(dark)).toBe(norm(resolveIn(DARK, DARK['--origam-color__text---primary'])))
 
         // Et la valeur elle-même, pour que le ticket reste lisible dans dix ans.
-        expect(norm(light)).toBe('#0a0a0a')
+        // #1514 — encre du brand kit A1 (etait #0a0a0a).
+        expect(norm(light)).toBe('#1b1127')
         expect(norm(dark)).toBe('#fafafa')
     })
 

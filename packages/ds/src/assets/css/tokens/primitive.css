@@ -25,16 +25,36 @@
   --origam-color__neutral---800: #262626;
   --origam-color__neutral---900: #171717;
   --origam-color__neutral---950: #0a0a0a;
-  --origam-color__primary---50: #f5f3ff;
-  --origam-color__primary---100: #ede9fe;
-  --origam-color__primary---200: #ddd6fe;
-  --origam-color__primary---300: #c4b5fd;
-  --origam-color__primary---400: #a78bfa;
-  --origam-color__primary---500: #8b5cf6;
-  --origam-color__primary---600: #7c3aed;
-  --origam-color__primary---700: #6d28d9;
-  --origam-color__primary---800: #5b21b6;
-  --origam-color__primary---900: #4c1d95;
+  /* #1514 — violet du brand kit A1 : 600 = #6a56f6 (fond d'action, blanc
+     dessus 4.91:1). 50..500 = mélange vers le blanc, 700..900 vers l'encre
+     #1b1127. 700 (#614edd) = la teinte la plus proche de 600 qui tient AA
+     en TEXTE sur toutes les surfaces claires (min 4.55:1, lavande #e9e0ff) ;
+     400 (#9284f8) = son pendant en sombre (min 4.58:1 sur les surfaces
+     dérivées de l'encre). */
+  --origam-color__primary---50: #f3f1fe;
+  --origam-color__primary---100: #e7e4fe;
+  --origam-color__primary---200: #cfc9fc;
+  --origam-color__primary---300: #b5abfb;
+  --origam-color__primary---400: #9284f8;
+  --origam-color__primary---500: #7d6cf7;
+  --origam-color__primary---600: #6a56f6;
+  --origam-color__primary---700: #614edd;
+  --origam-color__primary---800: #4e3eae;
+  --origam-color__primary---900: #2f225b;
+  /* #1514 — rampe « soleil » du brand kit A1 (500 = #ffc529). Branchée sur
+     AUCUN composant : l'intention `accent` est le ticket #1522. Paliers =
+     mélange vers le blanc (50..400) ou vers l'encre #1b1127 (600..900).
+     Le texte posé sur ce jaune doit être l'encre (blanc = 1.58:1). */
+  --origam-color__sun---50: #fffaee;
+  --origam-color__sun---100: #fff6dd;
+  --origam-color__sun---200: #ffecbb;
+  --origam-color__sun---300: #ffe190;
+  --origam-color__sun---400: #ffd35c;
+  --origam-color__sun---500: #ffc529;
+  --origam-color__sun---600: #ddaa29;
+  --origam-color__sun---700: #bb8f28;
+  --origam-color__sun---800: #987428;
+  --origam-color__sun---900: #765928;
   --origam-color__green---50: #f0fdf4;
   --origam-color__green---100: #dcfce7;
   --origam-color__green---200: #bbf7d0;
@@ -90,7 +110,7 @@
   --origam-space---14: 56px;
   --origam-space---16: 64px;
   --origam-space---20: 80px;
-  --origam-font__family---sans: Inter, 'Helvetica Neue', Arial, sans-serif;
+  --origam-font__family---sans: 'Sora', Inter, ui-sans-serif, system-ui, sans-serif;
   --origam-font__family---mono: 'JetBrains Mono', 'Fira Code', monospace;
   --origam-font__family---serif: Georgia, 'Times New Roman', serif;
   --origam-font__family---display: var(--origam-font__family---sans);
@@ -123,17 +143,17 @@
   --origam-radius---none: 0px;
   --origam-radius---xs: 2px;
   --origam-radius---sm: 4px;
-  --origam-radius---md: 8px;
+  --origam-radius---md: 10px;
   --origam-radius---lg: 12px;
   --origam-radius---xl: 16px;
   --origam-radius---2xl: 24px;
   --origam-radius---full: 9999px;
   --origam-shadow---none: 0px 0px 0px 0px rgba(0,0,0,0);
-  --origam-shadow---xs: 0px 1px 2px 0px rgba(0,0,0,0.05);
-  --origam-shadow---sm: 0px 1px 3px 0px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1);
-  --origam-shadow---md: 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08);
-  --origam-shadow---lg: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);
-  --origam-shadow---xl: 0px 11px 15px -7px rgba(0,0,0,0.2), 0px 24px 38px 3px rgba(0,0,0,0.14), 0px 9px 46px 8px rgba(0,0,0,0.12);
+  --origam-shadow---xs: 0px 1px 2px 0px rgba(27,17,39,0.06);
+  --origam-shadow---sm: 0px 4px 12px 0px rgba(27,17,39,0.08);
+  --origam-shadow---md: 0px 8px 24px 0px rgba(27,17,39,0.10);
+  --origam-shadow---lg: 0px 16px 40px 0px rgba(27,17,39,0.16);
+  --origam-shadow---xl: 0px 24px 56px 0px rgba(27,17,39,0.22);
   --origam-motion__duration---instant: 0ms;
   --origam-motion__duration---fast: 100ms;
   --origam-motion__duration---normal: 150ms;

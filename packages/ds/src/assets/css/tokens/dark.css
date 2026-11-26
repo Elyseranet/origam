@@ -174,11 +174,11 @@
  */
 [data-theme="dark"],
 [data-mode="dark"]:not([data-theme="light"]) {
-  --origam-color__surface---default: var(--origam-color__neutral---950);
-  --origam-color__surface---raised: var(--origam-color__neutral---900);
-  --origam-color__surface---overlay: var(--origam-color__neutral---800);
-  --origam-color__surface---sunken: var(--origam-color__neutral---950);
-  --origam-color__surface---disabled: var(--origam-color__neutral---800);
+  --origam-color__surface---default: #1b1127;
+  --origam-color__surface---raised: #241b30;
+  --origam-color__surface---overlay: #2d2438;
+  --origam-color__surface---sunken: #140d1d;
+  --origam-color__surface---disabled: #3f374a;
   --origam-color__surface---inverse: var(--origam-color__neutral---0);
   --origam-color__text---primary: var(--origam-color__neutral---50);
   --origam-color__text---secondary: var(--origam-color__neutral---400);
@@ -190,9 +190,9 @@
   --origam-color__text---disabled: var(--origam-color__neutral---600);
   --origam-color__text---inverse: var(--origam-color__neutral---950); /* #615 — voir light.css : le bloc runtime de `origamDarkTheme` pose #0a0a0a */
   --origam-color__text---onColor: var(--origam-color__neutral---0);
-  --origam-color__border---default: var(--origam-color__neutral---700);
-  --origam-color__border---subtle: var(--origam-color__neutral---800);
-  --origam-color__border---strong: var(--origam-color__neutral---400);
+  --origam-color__border---default: #494152;
+  --origam-color__border---subtle: #362e41;
+  --origam-color__border---strong: #9b96a0;
   --origam-color__border---focus: var(--origam-color__primary---400);
   --origam-color__action--primary---bg: var(--origam-color__primary---600);
   --origam-color__accent---base: var(--origam-color__action--primary---bg);
@@ -200,7 +200,7 @@
   --origam-color__action--primary---bgSubtle: var(--origam-color__primary---900);
   --origam-color__action--primary---bgDisabled: var(--origam-color__neutral---800);
   --origam-color__action--primary---fg: var(--origam-color__neutral---0);
-  --origam-color__action--primary---fgSubtle: var(--origam-color__primary---300);
+  --origam-color__action--primary---fgSubtle: var(--origam-color__primary---400);
   --origam-color__action--primary---fgDisabled: var(--origam-color__neutral---600);
   --origam-color__action--secondary---bg: var(--origam-color__neutral---800);
   --origam-color__action--secondary---bgHover: var(--origam-color__neutral---700);
@@ -226,7 +226,7 @@
   --origam-color__feedback--danger---bg: var(--origam-color__red---600);
   --origam-color__feedback--danger---bgSubtle: var(--origam-color__neutral---900);
   --origam-color__feedback--danger---fg: var(--origam-color__neutral---0);
-  --origam-color__feedback--danger---fgSubtle: var(--origam-color__red---400);
+  --origam-color__feedback--danger---fgSubtle: #f87171;
   --origam-color__feedback--danger---border: var(--origam-color__red---400);
   --origam-color__feedback--info---bg: #2563eb;
   --origam-color__feedback--info---bgSubtle: var(--origam-color__neutral---900);
@@ -296,7 +296,7 @@
   --origam-btn---background-color-hover: var(--origam-color__action--secondary---bgHover);
   --origam-btn---background-color-disabled: var(--origam-color__action--primary---bgDisabled);
   --origam-btn---color-disabled: var(--origam-color__action--primary---fgDisabled);
-  --origam-btn---border-radius: var(--origam-radius---sm);
+  --origam-btn---border-radius: var(--origam-radius---full); /* #1514 — pilule (brand kit A1), par token et non par prop : voir origam.theme.ts et #1523 */
   --origam-btn---border-radius-icon: var(--origam-radius---full);
   --origam-btn---border-radius-rounded: var(--origam-radius---2xl);
   --origam-btn---border-width: var(--origam-border__width---0);
@@ -364,7 +364,7 @@
   --origam-btn-group---border-width: var(--origam-border__width---0);
   --origam-btn-group---border-style: solid;
   --origam-btn-group---border-color: var(--origam-color__border---subtle);
-  --origam-btn-group---border-radius: var(--origam-radius---sm);
+  --origam-btn-group---border-radius: var(--origam-radius---full); /* #1514 — pilule, comme --origam-btn---border-radius */
   --origam-card---display: block;
   --origam-card---overflow: hidden;
   --origam-card---overflow-wrap: break-word;
@@ -824,7 +824,7 @@
   --origam-snackbar-item__title---font-weight: var(--origam-font__weight---semibold);
   --origam-snackbar-item__message---font-weight: var(--origam-font__weight---regular);
   --origam-snackbar-item__message---color: currentColor;
-  --origam-snackbar-item__message---opacity: 0.85;
+  --origam-snackbar-item__message---opacity: 1; /* #1514 — 0.85 faisait tomber le texte feedback sous AA sur le papier */
   --origam-snackbar-item__action---color: var(--origam-color__action--primary---fg);
   --origam-snackbar-item__action--hover---background-color: rgba(0, 0, 0, 0.04);
   --origam-snackbar-item__dismiss--hover---background-color: rgba(0, 0, 0, 0.04);
@@ -3233,11 +3233,11 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]):not([data-mode]) {
-    --origam-color__surface---default: var(--origam-color__neutral---950);
-    --origam-color__surface---raised: var(--origam-color__neutral---900);
-    --origam-color__surface---overlay: var(--origam-color__neutral---800);
-    --origam-color__surface---sunken: var(--origam-color__neutral---950);
-    --origam-color__surface---disabled: var(--origam-color__neutral---800);
+    --origam-color__surface---default: #1b1127;
+    --origam-color__surface---raised: #241b30;
+    --origam-color__surface---overlay: #2d2438;
+    --origam-color__surface---sunken: #140d1d;
+    --origam-color__surface---disabled: #3f374a;
     --origam-color__surface---inverse: var(--origam-color__neutral---0);
     --origam-color__text---primary: var(--origam-color__neutral---50);
     --origam-color__text---secondary: var(--origam-color__neutral---400);
@@ -3247,9 +3247,9 @@
     --origam-color__text---disabled: var(--origam-color__neutral---600);
     --origam-color__text---inverse: var(--origam-color__neutral---950); /* #615 — voir light.css : le bloc runtime de `origamDarkTheme` pose #0a0a0a */
     --origam-color__text---onColor: var(--origam-color__neutral---0);
-    --origam-color__border---default: var(--origam-color__neutral---700);
-    --origam-color__border---subtle: var(--origam-color__neutral---800);
-    --origam-color__border---strong: var(--origam-color__neutral---400);
+    --origam-color__border---default: #494152;
+    --origam-color__border---subtle: #362e41;
+    --origam-color__border---strong: #9b96a0;
     --origam-color__border---focus: var(--origam-color__primary---400);
     --origam-color__action--primary---bg: var(--origam-color__primary---600);
     --origam-color__accent---base: var(--origam-color__action--primary---bg);
@@ -3257,7 +3257,7 @@
     --origam-color__action--primary---bgSubtle: var(--origam-color__primary---900);
     --origam-color__action--primary---bgDisabled: var(--origam-color__neutral---800);
     --origam-color__action--primary---fg: var(--origam-color__neutral---0);
-    --origam-color__action--primary---fgSubtle: var(--origam-color__primary---300);
+    --origam-color__action--primary---fgSubtle: var(--origam-color__primary---400);
     --origam-color__action--primary---fgDisabled: var(--origam-color__neutral---600);
     --origam-color__action--secondary---bg: var(--origam-color__neutral---800);
     --origam-color__action--secondary---bgHover: var(--origam-color__neutral---700);
@@ -3283,7 +3283,7 @@
     --origam-color__feedback--danger---bg: var(--origam-color__red---600);
     --origam-color__feedback--danger---bgSubtle: var(--origam-color__neutral---900);
     --origam-color__feedback--danger---fg: var(--origam-color__neutral---0);
-    --origam-color__feedback--danger---fgSubtle: var(--origam-color__red---400);
+    --origam-color__feedback--danger---fgSubtle: #f87171;
     --origam-color__feedback--danger---border: var(--origam-color__red---400);
     --origam-color__feedback--info---bg: #2563eb;
     --origam-color__feedback--info---bgSubtle: var(--origam-color__neutral---900);
@@ -3353,7 +3353,7 @@
     --origam-btn---background-color-hover: var(--origam-color__action--secondary---bgHover);
     --origam-btn---background-color-disabled: var(--origam-color__action--primary---bgDisabled);
     --origam-btn---color-disabled: var(--origam-color__action--primary---fgDisabled);
-    --origam-btn---border-radius: var(--origam-radius---sm);
+    --origam-btn---border-radius: var(--origam-radius---full); /* #1514 — pilule (brand kit A1), par token et non par prop : voir origam.theme.ts et #1523 */
     --origam-btn---border-radius-icon: var(--origam-radius---full);
     --origam-btn---border-radius-rounded: var(--origam-radius---2xl);
     --origam-btn---border-width: var(--origam-border__width---0);
@@ -3421,7 +3421,7 @@
     --origam-btn-group---border-width: var(--origam-border__width---0);
     --origam-btn-group---border-style: solid;
     --origam-btn-group---border-color: var(--origam-color__border---subtle);
-    --origam-btn-group---border-radius: var(--origam-radius---sm);
+    --origam-btn-group---border-radius: var(--origam-radius---full); /* #1514 — pilule, comme --origam-btn---border-radius */
     --origam-card---display: block;
     --origam-card---overflow: hidden;
     --origam-card---overflow-wrap: break-word;
@@ -3881,7 +3881,7 @@
     --origam-snackbar-item__title---font-weight: var(--origam-font__weight---semibold);
     --origam-snackbar-item__message---font-weight: var(--origam-font__weight---regular);
     --origam-snackbar-item__message---color: currentColor;
-    --origam-snackbar-item__message---opacity: 0.85;
+    --origam-snackbar-item__message---opacity: 1; /* #1514 — 0.85 faisait tomber le texte feedback sous AA sur le papier */
     --origam-snackbar-item__action---color: var(--origam-color__action--primary---fg);
     --origam-snackbar-item__action--hover---background-color: rgba(0, 0, 0, 0.04);
     --origam-snackbar-item__dismiss--hover---background-color: rgba(0, 0, 0, 0.04);

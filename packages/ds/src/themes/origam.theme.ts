@@ -1,6 +1,6 @@
 import type { IOrigamTheme } from '../interfaces/Commons/theme.interface'
 
-// origam's DEFAULT identity ("sobre") authored as clean IOrigamTheme objects —
+// origam's DEFAULT identity authored as clean IOrigamTheme objects —
 // vars (semantic + scale tokens) + per-component default props, NO CSS dump.
 // Component variables reference the semantic tier, so these few vars cascade to
 // every component.
@@ -9,37 +9,76 @@ import type { IOrigamTheme } from '../interfaces/Commons/theme.interface'
 // Component default props live on the mode-less light object so they apply in
 // BOTH modes (no duplication); dark only retunes colour + brand shadows.
 
+/*********************************************************
+ * #1514 — identity of the A1 brand kit
+ *
+ * @description
+ * Violet #6a56f6 (actions), papier #f7f5ef (light page), encre #1b1127
+ * (light text / dark page), lavender surfaces #f5edff / #e9e0ff, Sora.
+ * Every value here is mirrored in light.css / dark.css (#615 parity spec).
+ * @description
+ * The kit's sun #ffc529 lives ONLY as the primitive ramp
+ * `--origam-color__sun---*` (primitive.css), wired to no component: the
+ * `accent` intent is #1522.
+ * @description
+ * Violet used as TEXT is never #6a56f6 itself (4.51:1 on papier, 3.88:1 on
+ * lavender, 3.70:1 on encre). Light uses #614edd (min 4.55:1 over papier,
+ * #fffaf7, both lavenders and bgSubtle); dark uses #9284f8 (min 4.58:1 over
+ * encre and its derived surfaces).
+ * @description
+ * `feedback.success` / `feedback.warning` `fgSubtle` move one rung darker
+ * (green-800 #166534, amber-800 #92400e): the 700 rung measured 3.96:1 on
+ * the lavender #e9e0ff (5.63 / 5.59 now).
+ * @description
+ * `text.tertiary` aligns on `secondary` (#1044 precedent): #737373 is
+ * 4.35:1 on papier. `typo.family.sans` names Sora, but the DS ships no
+ * @font-face: Sora renders only if the app loads it.
+ * @description
+ * Shadows: kit "card" = `md`, kit "floating" = `lg`; xs / sm / xl are a ramp
+ * on the ink. Radii by value: md = 10, xl = 16, 2xl = 24, lg stays 12.
+ * @description
+ * Buttons are pills (kit `.button { border-radius: 999px }`) through the
+ * TOKENS `--origam-btn---border-radius` and `--origam-btn-group---border-radius`
+ * (BtnGroup / BtnToggle follow), declared in light.css / dark.css
+ * only (this theme carries no component-tier var, and the root block never
+ * overrides it), NOT through `components['origam-btn'].rounded`.
+ * Deliberate PROPS-FIRST exception, decided by the owner: a theme prop is
+ * emitted as an INLINE style, which beats the scoped `var()` of every
+ * component that nests an OrigamBtn (measured: OrigamInlineEdit's action
+ * button went from 4px to 9999px). The mechanism defect is #1523.
+ ********************************************************/
+
 export const origamLightTheme: IOrigamTheme = {
     label: 'Origam',
-    description: 'Calm, neutral surfaces with a single violet accent — the default origam identity.',
+    description: 'Paper and ink surfaces with a violet action colour — the default origam identity (A1 brand kit).',
 
     vars: {
         color: {
             surface: {
-                default: '#ffffff',
-                raised: '#fafafa',
-                sunken: '#f5f5f5',
-                overlay: '#f5f5f5',
+                default: '#f7f5ef',
+                raised: '#fffaf7',
+                sunken: '#e9e0ff',
+                overlay: '#f5edff',
                 disabled: '#e6e6e6'
             },
             text: {
-                primary: '#0a0a0a',
+                primary: '#1b1127',
                 secondary: '#525252',
-                tertiary: '#737373',
+                tertiary: '#525252',
                 disabled: '#a3a3a3',
                 inverse: '#ffffff',
                 onColor: '#ffffff',
-                ink: '#0a0a0a'
+                ink: '#1b1127'
             },
             action: {
                 primary: {
-                    bg: '#7c3aed',
-                    bgHover: '#6d28d9',
+                    bg: '#6a56f6',
+                    bgHover: '#614edd',
                     bgDisabled: '#e6e6e6',
-                    bgSubtle: 'rgba(124, 58, 237, 0.10)',
+                    bgSubtle: 'rgba(106, 86, 246, 0.10)',
                     fg: '#ffffff',
                     fgDisabled: '#a3a3a3',
-                    fgSubtle: '#6d28d9'
+                    fgSubtle: '#614edd'
                 },
                 secondary: {
                     bg: '#f5f5f5',
@@ -52,7 +91,7 @@ export const origamLightTheme: IOrigamTheme = {
                     bg: 'rgba(0, 0, 0, 0)',
                     bgHover: 'rgba(0, 0, 0, 0.06)',
                     bgDisabled: 'rgba(0, 0, 0, 0)',
-                    fg: '#7c3aed',
+                    fg: '#614edd',
                     fgDisabled: '#a3a3a3'
                 }
             },
@@ -62,20 +101,20 @@ export const origamLightTheme: IOrigamTheme = {
                 'subtle-alpha': 'rgba(0, 0, 0, 0.08)',
                 strong: 'rgba(0, 0, 0, 0.16)',
                 ghost: 'rgba(0, 0, 0, 0.08)',
-                focus: '#7c3aed'
+                focus: '#6a56f6'
             },
             feedback: {
                 danger: { bg: '#dc2626', bgSubtle: 'rgba(220, 38, 38, 0.08)', fg: '#ffffff', fgSubtle: '#b91c1c', border: '#dc2626' },
                 info: { bg: '#2563eb', bgSubtle: 'rgba(37, 99, 235, 0.08)', fg: '#ffffff', fgSubtle: '#1d4ed8', border: '#2563eb' },
-                success: { bg: '#15803d', bgSubtle: 'rgba(22, 163, 74, 0.08)', fg: '#ffffff', fgSubtle: '#15803d', border: '#15803d' },
-                warning: { bg: '#b45309', bgSubtle: 'rgba(217, 119, 6, 0.08)', fg: '#ffffff', fgSubtle: '#b45309', border: '#b45309' }
+                success: { bg: '#15803d', bgSubtle: 'rgba(22, 163, 74, 0.08)', fg: '#ffffff', fgSubtle: '#166534', border: '#15803d' },
+                warning: { bg: '#b45309', bgSubtle: 'rgba(217, 119, 6, 0.08)', fg: '#ffffff', fgSubtle: '#92400e', border: '#b45309' }
             }
         },
         rounded: {
             none: '0px',
             xs: '2px',
             sm: '4px',
-            md: '8px',
+            md: '10px',
             lg: '12px',
             xl: '16px',
             '2xl': '24px',
@@ -87,7 +126,7 @@ export const origamLightTheme: IOrigamTheme = {
         },
         typo: {
             family: {
-                sans: "Inter, 'Helvetica Neue', Arial, sans-serif",
+                sans: "'Sora', Inter, ui-sans-serif, system-ui, sans-serif",
                 serif: "Georgia, 'Times New Roman', serif",
                 mono: "'JetBrains Mono', 'Fira Code', monospace"
             },
@@ -114,15 +153,15 @@ export const origamLightTheme: IOrigamTheme = {
         },
         shadow: {
             none: '0px 0px 0px 0px rgba(0,0,0,0)',
-            xs: '0px 1px 2px 0px rgba(0,0,0,0.05)',
-            sm: '0px 1px 3px 0px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1)',
-            md: '0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08)',
-            lg: '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)',
-            xl: '0px 11px 15px -7px rgba(0,0,0,0.2), 0px 24px 38px 3px rgba(0,0,0,0.14), 0px 9px 46px 8px rgba(0,0,0,0.12)',
-            'btn-primary': 'rgba(255, 255, 255, 0.20) 0px 1px 0px 0px inset, rgba(124, 58, 237, 0.50) 0px 8px 24px -8px',
+            xs: '0px 1px 2px 0px rgba(27,17,39,0.06)',
+            sm: '0px 4px 12px 0px rgba(27,17,39,0.08)',
+            md: '0px 8px 24px 0px rgba(27,17,39,0.10)',
+            lg: '0px 16px 40px 0px rgba(27,17,39,0.16)',
+            xl: '0px 24px 56px 0px rgba(27,17,39,0.22)',
+            'btn-primary': 'rgba(255, 255, 255, 0.20) 0px 1px 0px 0px inset, rgba(106, 86, 246, 0.50) 0px 8px 24px -8px',
             'btn-secondary': 'none',
-            'card-elevated': '0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -16px rgba(0, 0, 0, 0.18)',
-            'glow-primary': 'inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 24px -8px rgba(124, 58, 237, 0.5)'
+            'card-elevated': '0 1px 3px rgba(27, 17, 39, 0.04), 0 8px 24px -16px rgba(27, 17, 39, 0.18)',
+            'glow-primary': 'inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 24px -8px rgba(106, 86, 246, 0.5)'
         },
         spacing: {
             '0': '0px',
@@ -255,16 +294,29 @@ export const origamLightTheme: IOrigamTheme = {
 export const origamDarkTheme: IOrigamTheme = {
     mode: 'dark',
     label: 'Origam',
-    description: 'Calm, neutral surfaces with a single violet accent — the default origam identity.',
+    description: 'Paper and ink surfaces with a violet action colour — the default origam identity (A1 brand kit).',
 
     vars: {
         color: {
+            /*********************************************************
+             * #1514 — surfaces derived from the ink #1b1127
+             *
+             * @description
+             * The kit gives only the ink. Fixed-step sRGB mixes, per channel
+             * `round(ink * (1 - t) + target * t)`:
+             *   raised   = ink → white  4 %   #241b30
+             *   overlay  = ink → white  8 %   #2d2438
+             *   disabled = ink → white 16 %   #3f374a
+             *   sunken   = ink → black 25 %   #140d1d
+             * and the borders: subtle 12 % #362e41, default 20 % #494152,
+             * strong 56 % #9b96a0 (all ink → white).
+             ********************************************************/
             surface: {
-                default: '#0a0a0a',
-                raised: '#0e0e0e',
-                sunken: '#171717',
-                overlay: '#0e0e0e',
-                disabled: '#262626'
+                default: '#1b1127',
+                raised: '#241b30',
+                sunken: '#140d1d',
+                overlay: '#2d2438',
+                disabled: '#3f374a'
             },
             text: {
                 primary: '#fafafa',
@@ -286,13 +338,13 @@ export const origamDarkTheme: IOrigamTheme = {
             },
             action: {
                 primary: {
-                    bg: '#7c3aed',
-                    bgHover: '#6d28d9',
+                    bg: '#6a56f6',
+                    bgHover: '#614edd',
                     bgDisabled: '#262626',
-                    bgSubtle: 'rgba(124, 58, 237, 0.14)',
+                    bgSubtle: 'rgba(106, 86, 246, 0.14)',
                     fg: '#ffffff',
                     fgDisabled: '#525252',
-                    fgSubtle: '#c4b5fd'
+                    fgSubtle: '#9284f8'
                 },
                 secondary: {
                     bg: '#262626',
@@ -305,17 +357,17 @@ export const origamDarkTheme: IOrigamTheme = {
                     bg: 'rgba(0, 0, 0, 0)',
                     bgHover: 'rgba(255, 255, 255, 0.06)',
                     bgDisabled: 'rgba(0, 0, 0, 0)',
-                    fg: '#c4b5fd',
+                    fg: '#9284f8',
                     fgDisabled: '#525252'
                 }
             },
             border: {
-                default: 'rgba(255, 255, 255, 0.08)',
-                subtle: 'rgba(255, 255, 255, 0.04)',
+                default: '#494152',
+                subtle: '#362e41',
                 'subtle-alpha': 'rgba(255, 255, 255, 0.08)',
-                strong: 'rgba(255, 255, 255, 0.16)',
+                strong: '#9b96a0',
                 ghost: 'rgba(255, 255, 255, 0.08)',
-                focus: '#a78bfa'
+                focus: '#9284f8'
             },
             feedback: {
                 danger: { bg: '#dc2626', bgSubtle: 'rgba(220, 38, 38, 0.12)', fg: '#ffffff', fgSubtle: '#f87171', border: '#f87171' },
@@ -325,10 +377,10 @@ export const origamDarkTheme: IOrigamTheme = {
             }
         },
         shadow: {
-            'btn-primary': 'rgba(255, 255, 255, 0.08) 0px 1px 0px 0px inset, rgba(139, 92, 246, 0.50) 0px 8px 24px -8px',
+            'btn-primary': 'rgba(255, 255, 255, 0.08) 0px 1px 0px 0px inset, rgba(106, 86, 246, 0.50) 0px 8px 24px -8px',
             'btn-secondary': 'none',
             'card-elevated': 'inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 24px -16px rgba(0, 0, 0, 0.6)',
-            'glow-primary': 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 24px -8px rgba(139, 92, 246, 0.5)'
+            'glow-primary': 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 24px -8px rgba(106, 86, 246, 0.5)'
         }
     },
 

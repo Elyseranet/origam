@@ -136,8 +136,8 @@ test.describe('HomeFeatures section', () => {
         expect(styles.w).toBe('44px')
         expect(styles.h).toBe('44px')
         expect(styles.radius).toBe('10px')
-        // border colour = origam action--primary---bg = #7C3AED = rgb(124, 58, 237)
-        expect(styles.borderColor).toBe('rgb(124, 58, 237)')
+        // border colour = origam action--primary---bg = #6A56F6 = rgb(106, 86, 246) (#1514)
+        expect(styles.borderColor).toBe('rgb(106, 86, 246)')
     })
 
     // ── 4. Exactly 6 feature cards ─────────────────────────────────────────
