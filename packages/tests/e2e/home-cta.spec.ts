@@ -80,7 +80,7 @@ test.describe('HomeCta — bande de CTA finale', () => {
                     const f = (v: number) => { const s = v / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4 }
                     return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
                 }
-                const section = el.closest('section') as HTMLElement
+                const section = el.closest('.home-cta__inner') as HTMLElement
                 const fg = lum(parse(getComputedStyle(el).color))
                 const bg = lum(parse(getComputedStyle(section).backgroundColor))
                 const [hi, lo] = fg > bg ? [fg, bg] : [bg, fg]
@@ -89,6 +89,26 @@ test.describe('HomeCta — bande de CTA finale', () => {
             expect(ratio).toBeGreaterThanOrEqual(4.5)
         })
     }
+
+    test('desktop : titre a gauche, boutons a droite, 28-30 px / 600, boutons x-large', async ({ page }) => {
+        await page.setViewportSize({ width: 1440, height: 900 })
+        const title = await page.locator('h2#cta-title').boundingBox()
+        const btn = await page.locator('[data-cy="cta-btn-start"]').boundingBox()
+        expect(title!.x).toBeLessThan(btn!.x)
+        expect(btn!.height).toBeGreaterThanOrEqual(52)
+        await expect(page.locator('h2#cta-title')).toHaveCSS('font-weight', '600')
+        const fs = await page.locator('h2#cta-title').evaluate(el => parseFloat(getComputedStyle(el).fontSize))
+        expect(fs).toBeGreaterThanOrEqual(28)
+        expect(fs).toBeLessThanOrEqual(30)
+        const band = await page.locator('.home-cta__band').boundingBox()
+        expect(band!.height).toBeLessThanOrEqual(230)
+    })
+
+    test('le pinceau : eventail jaune sur le tiers droit seulement', async ({ page }) => {
+        const svg = await page.locator('svg.home-cta__brush').boundingBox()
+        const fan = await page.locator('.home-cta__fan').boundingBox()
+        expect(fan!.x - svg!.x).toBeGreaterThan(svg!.width * 0.6)
+    })
 
     test('la bande reste sombre meme quand le site est en clair', async ({ page }) => {
         await applyBrand(page, 'origam', 'light')
