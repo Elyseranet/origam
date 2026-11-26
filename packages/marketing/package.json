@@ -29,6 +29,8 @@
     "docs:backfill-keys:check": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --backfill-keys --check",
     "changelog:generate": "node scripts/generate-changelog.mjs",
     "changelog:generate:check": "node scripts/generate-changelog.mjs --check",
+    "build-stats:generate": "node scripts/generate-build-stats.mjs",
+    "build-stats:generate:check": "node scripts/generate-build-stats.mjs --check",
     "theme:reset:generate": "node scripts/generate-origam-reset.mjs",
     "i18n:check": "node scripts/i18n-check.mjs",
     "db:migrate": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:run -d src/server/db/data-source.cli.ts",
