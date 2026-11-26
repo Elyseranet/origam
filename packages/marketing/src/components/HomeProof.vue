@@ -23,7 +23,7 @@
 
       <origam-grid
         tag="ul"
-        columns="repeat(auto-fit, minmax(min(100%, 16rem), 1fr))"
+        columns="repeat(auto-fit, minmax(min(100%, 22rem), 1fr))"
         gap="md"
         class="home-proof__list"
       >
