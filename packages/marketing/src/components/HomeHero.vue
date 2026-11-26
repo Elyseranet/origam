@@ -22,14 +22,28 @@
         data-cy="hero-watercolor"
       />
       <origam-img
-        class="home-hero__img home-hero__img--night"
+        class="home-hero__img home-hero__img--symbol home-hero__img--symbol-day"
+        :src="HERO_SYMBOL_DAY.src"
+        :srcset="HERO_SYMBOL_DAY.srcset"
+        :sizes="HERO_SYMBOL_SIZES"
+        alt=""
+        width="36%"
+        max-width="24rem"
+        height="56%"
+        position="center"
+        eager
+        data-cy="hero-symbol"
+      />
+      <origam-img
+        class="home-hero__img home-hero__img--symbol home-hero__img--night"
         :src="HERO_NIGHT.src"
         :srcset="HERO_NIGHT.srcset"
-        :sizes="HERO_NIGHT_SIZES"
+        :sizes="HERO_SYMBOL_SIZES"
         alt=""
-        width="100%"
-        height="100%"
-        position="right center"
+        width="36%"
+        max-width="24rem"
+        height="56%"
+        position="center"
         eager
         data-cy="hero-night"
       />
@@ -37,7 +51,7 @@
 
     <origam-container
       class="home-hero__inner"
-      max-width="80rem"
+      max-width="none"
     >
       <header class="home-hero__header">
         <p
@@ -104,7 +118,8 @@ import {
     HERO_CTA_BG,
     HERO_CTA_FG,
     HERO_NIGHT,
-    HERO_NIGHT_SIZES,
+    HERO_SYMBOL_DAY,
+    HERO_SYMBOL_SIZES,
     HERO_WATERCOLOR,
     HERO_WATERCOLOR_SIZES
 } from '~/consts/hero.const'
@@ -153,9 +168,8 @@ defineExpose({})
         inset: 0;
     }
 
-    &__img--night {
-        inset-inline-start: auto;
-        inline-size: min(55%, 36rem);
+    &__img--symbol {
+        inset: 22% 12% auto auto;
     }
 
     &__visual::after {
@@ -170,6 +184,9 @@ defineExpose({})
     }
 
     &__inner {
+        --origam-container---padding-inline-start: var(--site-gutter);
+        --origam-container---padding-inline-end: var(--site-gutter);
+
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -225,7 +242,7 @@ defineExpose({})
 </style>
 
 <style lang="scss">
-section.home-hero .home-hero__img--night {
+section.home-hero .home-hero__img--symbol {
     display: none;
 }
 
@@ -234,6 +251,7 @@ section.home-hero .home-hero__img--night {
 }
 
 @media (min-width: 64rem) {
+    :root[data-mode="light"] section.home-hero .home-hero__img--symbol-day,
     :root[data-mode="dark"] section.home-hero .home-hero__img--night {
         display: block;
     }
@@ -245,7 +263,13 @@ section.home-hero .home-hero__img--night {
     }
 }
 
-@media (prefers-color-scheme: dark) and (min-width: 64rem) {
+@media (min-width: 64rem) and (prefers-color-scheme: light) {
+    :root:not([data-mode]) section.home-hero .home-hero__img--symbol-day {
+        display: block;
+    }
+}
+
+@media (min-width: 64rem) and (prefers-color-scheme: dark) {
     :root:not([data-mode]) section.home-hero .home-hero__img--night {
         display: block;
     }

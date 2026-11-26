@@ -57,20 +57,32 @@ test.describe('HomeHero — maquette A', () => {
     test('illustrations : décoratives (alt vide) et hors du flux de lecture', async ({ page }) => {
         const visual = page.locator('#hero .home-hero__visual')
         await expect(visual).toHaveAttribute('aria-hidden', 'true')
-        for (const cy of ['hero-watercolor', 'hero-night']) {
+        for (const cy of ['hero-watercolor', 'hero-symbol', 'hero-night']) {
             await expect(page.locator(`#hero [data-cy="${cy}"] img`)).toHaveAttribute('alt', '')
         }
     })
 
-    test('clair : aquarelle AVIF avec srcset ; le symbole nuit est masqué', async ({ browser }) => {
-        const ctx = await browser.newContext({ colorScheme: 'light' })
+    test('clair : aquarelle AVIF avec srcset et symbole A1 en couleurs ; le symbole nuit est masqué', async ({ browser }) => {
+        const ctx = await browser.newContext({ colorScheme: 'light', viewport: { width: 1440, height: 900 } })
         const page = await ctx.newPage()
         await page.goto('/')
         const day = page.locator('#hero [data-cy="hero-watercolor"]')
         await expect(day).toBeVisible()
         expect(await day.locator('img').getAttribute('srcset')).toMatch(/hero-watercolor-836\.avif 836w.*1672w/)
+        await expect(page.locator('#hero [data-cy="hero-symbol"]')).toBeVisible()
         await expect(page.locator('#hero [data-cy="hero-night"]')).toBeHidden()
         await ctx.close()
+    })
+
+    test('le texte du hero s\'aligne sur le logo du header (gouttière du site)', async ({ page }) => {
+        await page.setViewportSize({ width: 1440, height: 900 })
+        await page.goto('/')
+        const gutter = await page.evaluate(() => {
+            const logo = document.querySelector('[data-cy="site-logo"]') as HTMLElement
+            const text = document.querySelector('#hero .home-hero__header') as HTMLElement
+            return { logo: Math.round(logo.getBoundingClientRect().left), text: Math.round(text.getBoundingClientRect().left) }
+        })
+        expect(Math.abs(gutter.text - gutter.logo)).toBeLessThanOrEqual(2)
     })
 
     test('sombre : pas de paysage, symbole A1 seul', async ({ browser }) => {
@@ -78,6 +90,7 @@ test.describe('HomeHero — maquette A', () => {
         const page = await ctx.newPage()
         await page.goto('/')
         await expect(page.locator('#hero [data-cy="hero-watercolor"]')).toBeHidden()
+        await expect(page.locator('#hero [data-cy="hero-symbol"]')).toBeHidden()
         await expect(page.locator('#hero [data-cy="hero-night"]')).toBeVisible()
         await ctx.close()
     })

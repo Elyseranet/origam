@@ -4,10 +4,17 @@
     :aria-label="t('home.benefits.label', 'Why Origam')"
   >
     <origam-container class="home-benefits__inner">
-      <ul class="home-benefits__grid">
-        <li
+      <origam-row
+        tag="ul"
+        class="home-benefits__grid"
+      >
+        <origam-col
           v-for="benefit in BENEFITS"
           :key="benefit.titleKey"
+          tag="li"
+          cols="12"
+          sm="6"
+          md="3"
           class="home-benefits__item"
           data-cy="benefit-item"
         >
@@ -28,8 +35,8 @@
           <p class="home-benefits__description">
             {{ t(benefit.descriptionKey, benefit.descriptionKey) }}
           </p>
-        </li>
-      </ul>
+        </origam-col>
+      </origam-row>
     </origam-container>
   </section>
 </template>
@@ -67,17 +74,6 @@ defineExpose({})
         list-style: none;
         margin: 0;
         padding: 0;
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: var(--origam-space---8, 2rem);
-
-        @media (max-width: 63.9375rem) {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        @media (max-width: 39.9375rem) {
-            grid-template-columns: minmax(0, 1fr);
-        }
     }
 
     &__item {

@@ -18,7 +18,13 @@ export const HERO_NIGHT: IHeroVisual = {
     srcset: '/brand/hero-symbol-dark.avif 403w'
 }
 
-export const HERO_NIGHT_SIZES = '403px'
+export const HERO_SYMBOL_SIZES = '403px'
+
+/** Symbole A1 en clair, posé au-dessus du paysage comme dans la maquette. */
+export const HERO_SYMBOL_DAY: IHeroVisual = {
+    src: '/brand/hero-symbol-light.avif',
+    srcset: '/brand/hero-symbol-light.avif 403w'
+}
 
 /**
  * CTA « soleil » : la rampe `--origam-color__sun---*` arrive avec #1514 et

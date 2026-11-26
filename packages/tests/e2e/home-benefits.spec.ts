@@ -8,9 +8,10 @@ import { expect, test } from '@playwright/test'
 const columnsAt = async (page: import('@playwright/test').Page, width: number) => {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
-    const grid = page.locator('#benefits .home-benefits__grid')
-    await expect(grid).toBeVisible()
-    return grid.evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length)
+    await expect(page.locator('#benefits .home-benefits__grid')).toBeVisible()
+    return page.locator('#benefits li[data-cy="benefit-item"]').evaluateAll(
+        els => new Set(els.map(el => Math.round(el.getBoundingClientRect().left))).size
+    )
 }
 
 test.describe('HomeBenefits — maquette A', () => {
