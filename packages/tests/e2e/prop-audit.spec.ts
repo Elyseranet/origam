@@ -35,7 +35,8 @@ const openVariant = async (page: Page, path: string, variant: string) => {
 }
 
 const RUNGS = ['x-small', 'small', 'default', 'medium', 'large', 'x-large'] as const
-const RUNG_PX = { 'x-small': 2, small: 4, default: 8, medium: 12, large: 16, 'x-large': 24 }
+// #1514 — radius.md passe de 8 à 10 px (brand kit A1).
+const RUNG_PX = { 'x-small': 2, small: 4, default: 10, medium: 12, large: 16, 'x-large': 24 }
 
 /** Utility rounded classes emitted by useRounded when rounded=xs|sm|md|lg|xl|none|full.
  *  These must also be stripped in borderRadiusAt so the cascade doesn't let
@@ -115,7 +116,7 @@ const borderRadiusAt = async (
 const BTN_STORY = '/stories/story/components-stories-btn-origambtn-story-vue'
 
 test.describe('OrigamBtn — rounded rungs', () => {
-    test('OK: x-small(2)→small(4)→default(8)→medium(12)→large(16)→x-large(24)', async ({ page }) => {
+    test('OK: x-small(2)→small(4)→default(10)→medium(12)→large(16)→x-large(24)', async ({ page }) => {
         // "Prop — rounded" no longer exists — folded into "Design"'s Shape
         // group (Rounded HstSelect). The test drives border-radius via raw
         // classList mutation afterwards (borderRadiusAt), so any Variant
@@ -139,7 +140,7 @@ test.describe('OrigamBtn — rounded rungs', () => {
 const SHEET_STORY = '/stories/story/components-stories-sheet-origamsheet-story-vue'
 
 test.describe('OrigamSheet — rounded rungs', () => {
-    test('OK: x-small(2)→small(4)→default(8)→medium(12)→large(16)→x-large(24)', async ({ page }) => {
+    test('OK: x-small(2)→small(4)→default(10)→medium(12)→large(16)→x-large(24)', async ({ page }) => {
         await openVariant(page, SHEET_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const sheet = sandbox.locator('.origam-sheet').first()

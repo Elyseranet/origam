@@ -131,8 +131,8 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
         })
         // --origam-font-size---cta = 4rem = 64px
         expect(styles.size).toBe('64px')
-        // origam text---primary = #0A0A0A = rgb(10, 10, 10)
-        expect(styles.color).toBe('rgb(10, 10, 10)')
+        // origam text---primary = #1B1127 = rgb(27, 17, 39) (#1514)
+        expect(styles.color).toBe('rgb(27, 17, 39)')
     })
 
     test('origam — le H2 CTA est peint avec la couleur texte-ink', async ({ page }) => {
@@ -140,8 +140,8 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
 
         const title = page.locator('section.home-cta h2.home-cta__title')
         const color = await title.evaluate(el => getComputedStyle(el).color)
-        // origam text---ink = #0A0A0A = rgb(10, 10, 10)
-        expect(color).toBe('rgb(10, 10, 10)')
+        // origam text---ink = #1B1127 = rgb(27, 17, 39) (#1514)
+        expect(color).toBe('rgb(27, 17, 39)')
     })
 
     // ── 7. No raw i18n key leakage ─────────────────────────────────────────

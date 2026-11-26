@@ -98,15 +98,16 @@ describe('origam theme — vars carries the semantic + scale surface (a real the
     it('light vars resolve the exact semantic colour names + values', () => {
         const vars = resolveThemeVars(origamLightTheme)
         // Surface / text / border (3-segment semantic paths).
-        expect(vars['--origam-color__surface---default']).toBe('#ffffff')
-        expect(vars['--origam-color__surface---raised']).toBe('#fafafa')
-        expect(vars['--origam-color__text---primary']).toBe('#0a0a0a')
+        // #1514 — identite du brand kit A1.
+        expect(vars['--origam-color__surface---default']).toBe('#f7f5ef')
+        expect(vars['--origam-color__surface---raised']).toBe('#fffaf7')
+        expect(vars['--origam-color__text---primary']).toBe('#1b1127')
         expect(vars['--origam-color__text---secondary']).toBe('#525252')
         expect(vars['--origam-color__text---onColor']).toBe('#ffffff')
-        expect(vars['--origam-color__border---focus']).toBe('#7c3aed')
+        expect(vars['--origam-color__border---focus']).toBe('#6a56f6')
         // Action (4-segment, camelCase state property preserved).
-        expect(vars['--origam-color__action--primary---bg']).toBe('#7c3aed')
-        expect(vars['--origam-color__action--primary---bgHover']).toBe('#6d28d9')
+        expect(vars['--origam-color__action--primary---bg']).toBe('#6a56f6')
+        expect(vars['--origam-color__action--primary---bgHover']).toBe('#614edd')
         expect(vars['--origam-color__action--primary---bgDisabled']).toBe('#e6e6e6')
         expect(vars['--origam-color__action--secondary---bgHover']).toBe('#e6e6e6')
         expect(vars['--origam-color__action--ghost---bg']).toBe('rgba(0, 0, 0, 0)')
@@ -120,11 +121,11 @@ describe('origam theme — vars carries the semantic + scale surface (a real the
 
     it('carries the scale tiers (radius / space / font / shadow / border / motion)', () => {
         const vars = resolveThemeVars(origamLightTheme)
-        expect(vars['--origam-radius---md']).toBe('8px')
+        expect(vars['--origam-radius---md']).toBe('10px')
         expect(vars['--origam-radius---full']).toBe('9999px')
         expect(vars['--origam-space---4']).toBe('16px')
         expect(vars['--origam-font__size---md']).toBe('0.875rem')
-        expect(vars['--origam-font__family---sans']).toBe("Inter, 'Helvetica Neue', Arial, sans-serif")
+        expect(vars['--origam-font__family---sans']).toBe("'Sora', Inter, ui-sans-serif, system-ui, sans-serif")
         expect(vars['--origam-font__weight---medium']).toBe(500)
         expect(vars['--origam-border__width---thin']).toBe('1px')
         expect(vars['--origam-motion__duration---fast']).toBe('100ms')

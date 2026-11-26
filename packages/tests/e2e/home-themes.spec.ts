@@ -188,8 +188,9 @@ test.describe('HomeThemes section', () => {
 
         // 2. Le couple clair/sombre se distingue par la surface, sur les
         //    valeurs de token attendues.
-        expect(signatures[0].surfaceBg).toBe('rgb(255, 255, 255)')
-        expect(signatures[1].surfaceBg).toBe('rgb(10, 10, 10)')
+        // #1514 — papier / encre du brand kit A1.
+        expect(signatures[0].surfaceBg).toBe('rgb(247, 245, 239)')
+        expect(signatures[1].surfaceBg).toBe('rgb(27, 17, 39)')
 
         // 3. Les quatre tuiles ne rendent pas toutes la même chose.
         const distinct = new Set(signatures.map(s => JSON.stringify([s.surfaceBg, s.buttonBg, s.buttonBorderWidth])))

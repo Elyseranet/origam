@@ -12,11 +12,11 @@ export const THEME_BUILDER_TOKENS: Record<string, IThemeBuilderToken[]> = {
         { cssVar: "--origam-btn---background-color", label: "background color", defaultValue: "#e6e6e6", kind: "color" },
         { cssVar: "--origam-btn---background-color-disabled", label: "background color disabled", defaultValue: "#e6e6e6", kind: "color" },
         { cssVar: "--origam-btn---background-color-hover", label: "background color hover", defaultValue: "#d4d4d4", kind: "color" },
-        { cssVar: "--origam-btn---background-color-tonal", label: "background color tonal", defaultValue: "#f5f5f5", kind: "color" },
+        { cssVar: "--origam-btn---background-color-tonal", label: "background color tonal", defaultValue: "#f5edff", kind: "color" },
         { cssVar: "--origam-btn---border-color", label: "border color", defaultValue: "currentColor", kind: "text" },
         { cssVar: "--origam-btn---color", label: "color", defaultValue: "#262626", kind: "color" },
         { cssVar: "--origam-btn---color-disabled", label: "color disabled", defaultValue: "#a3a3a3", kind: "color" },
-        { cssVar: "--origam-btn---border-radius", label: "border radius", defaultValue: "4px", kind: "text" },
+        { cssVar: "--origam-btn---border-radius", label: "border radius", defaultValue: "9999px", kind: "text" },
         { cssVar: "--origam-btn---border-radius-icon", label: "border radius icon", defaultValue: "9999px", kind: "text" },
         { cssVar: "--origam-btn---border-radius-rounded", label: "border radius rounded", defaultValue: "24px", kind: "text" },
         { cssVar: "--origam-btn---border-style", label: "border style", defaultValue: "solid", kind: "text" },
@@ -35,14 +35,14 @@ export const THEME_BUILDER_TOKENS: Record<string, IThemeBuilderToken[]> = {
         { cssVar: "--origam-btn---min-width", label: "min width", defaultValue: "64px", kind: "text" }
     ],
     "card": [
-        { cssVar: "--origam-card---background", label: "background", defaultValue: "#ffffff", kind: "color" },
+        { cssVar: "--origam-card---background", label: "background", defaultValue: "#fffaf7", kind: "color" },
         { cssVar: "--origam-card---border-color", label: "border color", defaultValue: "#d4d4d4", kind: "color" },
         { cssVar: "--origam-card---color", label: "color", defaultValue: "#171717", kind: "color" },
         { cssVar: "--origam-card---border-bottom-width", label: "border bottom width", defaultValue: "0px", kind: "text" },
         { cssVar: "--origam-card---border-end-end-radius", label: "border end end radius", defaultValue: "0px", kind: "text" },
         { cssVar: "--origam-card---border-end-start-radius", label: "border end start radius", defaultValue: "0px", kind: "text" },
         { cssVar: "--origam-card---border-left-width", label: "border left width", defaultValue: "0px", kind: "text" },
-        { cssVar: "--origam-card---border-radius-rounded", label: "border radius rounded", defaultValue: "8px", kind: "text" },
+        { cssVar: "--origam-card---border-radius-rounded", label: "border radius rounded", defaultValue: "10px", kind: "text" },
         { cssVar: "--origam-card---border-right-width", label: "border right width", defaultValue: "0px", kind: "text" },
         { cssVar: "--origam-card---border-start-end-radius", label: "border start end radius", defaultValue: "0px", kind: "text" },
         { cssVar: "--origam-card---border-start-start-radius", label: "border start start radius", defaultValue: "0px", kind: "text" },
@@ -61,7 +61,7 @@ export const THEME_BUILDER_TOKENS: Record<string, IThemeBuilderToken[]> = {
         { cssVar: "--origam-card---padding-inline-end", label: "padding inline end", defaultValue: "0px", kind: "text" }
     ],
     "chip": [
-        { cssVar: "--origam-chip---background-color", label: "background color", defaultValue: "#f5f5f5", kind: "color" },
+        { cssVar: "--origam-chip---background-color", label: "background color", defaultValue: "#f5edff", kind: "color" },
         { cssVar: "--origam-chip---border-color", label: "border color", defaultValue: "currentColor", kind: "text" },
         { cssVar: "--origam-chip---color", label: "color", defaultValue: "#171717", kind: "color" },
         { cssVar: "--origam-chip---border-radius", label: "border radius", defaultValue: "9999px", kind: "text" },
@@ -87,7 +87,7 @@ export const THEME_BUILDER_TOKENS: Record<string, IThemeBuilderToken[]> = {
         { cssVar: "--origam-chip---font-size-xs", label: "font size xs", defaultValue: "0.625rem", kind: "text" }
     ],
     "avatar": [
-        { cssVar: "--origam-avatar---background-color", label: "background color", defaultValue: "#f5f5f5", kind: "color" },
+        { cssVar: "--origam-avatar---background-color", label: "background color", defaultValue: "#f5edff", kind: "color" },
         { cssVar: "--origam-avatar---border-color", label: "border color", defaultValue: "currentColor", kind: "text" },
         { cssVar: "--origam-avatar---color", label: "color", defaultValue: "#525252", kind: "color" },
         { cssVar: "--origam-avatar---border-radius", label: "border radius", defaultValue: "9999px", kind: "text" },
@@ -105,7 +105,7 @@ export const THEME_BUILDER_TOKENS: Record<string, IThemeBuilderToken[]> = {
         { cssVar: "--origam-avatar---padding-inline-end", label: "padding inline end", defaultValue: "0px", kind: "text" },
         { cssVar: "--origam-avatar---padding-inline-start", label: "padding inline start", defaultValue: "0px", kind: "text" },
         { cssVar: "--origam-avatar---box-shadow", label: "box shadow", defaultValue: "0px 0px 0px 0px rgba(0,0,0,0)", kind: "text" },
-        { cssVar: "--origam-avatar---box-shadow-elevated", label: "box shadow elevated", defaultValue: "0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08)", kind: "text" },
+        { cssVar: "--origam-avatar---box-shadow-elevated", label: "box shadow elevated", defaultValue: "0px 8px 24px 0px rgba(27,17,39,0.10)", kind: "text" },
         { cssVar: "--origam-avatar---density", label: "density", defaultValue: "0px", kind: "text" },
         { cssVar: "--origam-avatar---font-size", label: "font size", defaultValue: "1.5rem", kind: "text" },
         { cssVar: "--origam-avatar---font-weight", label: "font weight", defaultValue: "400", kind: "text" },
@@ -132,7 +132,7 @@ export const THEME_BUILDER_TOKENS: Record<string, IThemeBuilderToken[]> = {
         { cssVar: "--origam-alert---padding-block-start", label: "padding block start", defaultValue: "16px", kind: "text" },
         { cssVar: "--origam-alert---padding-inline-end", label: "padding inline end", defaultValue: "16px", kind: "text" },
         { cssVar: "--origam-alert---padding-inline-start", label: "padding inline start", defaultValue: "16px", kind: "text" },
-        { cssVar: "--origam-alert---box-shadow-elevated", label: "box shadow elevated", defaultValue: "0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08)", kind: "text" },
+        { cssVar: "--origam-alert---box-shadow-elevated", label: "box shadow elevated", defaultValue: "0px 8px 24px 0px rgba(27,17,39,0.10)", kind: "text" },
         { cssVar: "--origam-alert---density", label: "density", defaultValue: "0px", kind: "text" },
         { cssVar: "--origam-alert---position", label: "position", defaultValue: "static", kind: "text" }
     ],
@@ -217,7 +217,7 @@ export const THEME_BUILDER_TOKENS: Record<string, IThemeBuilderToken[]> = {
         { cssVar: "--origam-icon---color-danger", label: "color danger", defaultValue: "#ef4444", kind: "color" },
         { cssVar: "--origam-icon---color-disabled", label: "color disabled", defaultValue: "#a3a3a3", kind: "color" },
         { cssVar: "--origam-icon---color-info", label: "color info", defaultValue: "#2196f3", kind: "color" },
-        { cssVar: "--origam-icon---color-primary", label: "color primary", defaultValue: "#7c3aed", kind: "color" },
+        { cssVar: "--origam-icon---color-primary", label: "color primary", defaultValue: "#6a56f6", kind: "color" },
         { cssVar: "--origam-icon---color-success", label: "color success", defaultValue: "#4caf50", kind: "color" },
         { cssVar: "--origam-icon---color-warning", label: "color warning", defaultValue: "#fb8c00", kind: "color" },
         { cssVar: "--origam-icon---font-size-2xl", label: "font size 2xl", defaultValue: "1.25rem", kind: "text" },
@@ -232,7 +232,7 @@ export const THEME_BUILDER_TOKENS: Record<string, IThemeBuilderToken[]> = {
         { cssVar: "--origam-icon---transition-timing-function", label: "transition timing function", defaultValue: "cubic-bezier(0.4, 0, 0.2, 1)", kind: "text" }
     ],
     "badge": [
-        { cssVar: "--origam-badge__badge---background-color", label: "background color", defaultValue: "#7c3aed", kind: "color" },
+        { cssVar: "--origam-badge__badge---background-color", label: "background color", defaultValue: "#6a56f6", kind: "color" },
         { cssVar: "--origam-badge__badge---border-color", label: "border color", defaultValue: "currentColor", kind: "text" },
         { cssVar: "--origam-badge__badge---color", label: "color", defaultValue: "#ffffff", kind: "color" },
         { cssVar: "--origam-badge__badge---border-bottom-width", label: "border bottom width", defaultValue: "0px", kind: "text" },
@@ -253,7 +253,7 @@ export const THEME_BUILDER_TOKENS: Record<string, IThemeBuilderToken[]> = {
         { cssVar: "--origam-badge__badge---padding-inline-end", label: "padding inline end", defaultValue: "4px", kind: "text" },
         { cssVar: "--origam-badge__badge---padding-inline-start", label: "padding inline start", defaultValue: "4px", kind: "text" },
         { cssVar: "--origam-badge__badge---box-shadow", label: "box shadow", defaultValue: "0px 0px 0px 0px rgba(0,0,0,0)", kind: "text" },
-        { cssVar: "--origam-badge__badge---box-shadow-elevated", label: "box shadow elevated", defaultValue: "0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08)", kind: "text" },
+        { cssVar: "--origam-badge__badge---box-shadow-elevated", label: "box shadow elevated", defaultValue: "0px 8px 24px 0px rgba(27,17,39,0.10)", kind: "text" },
         { cssVar: "--origam-badge__badge---font-size", label: "font size", defaultValue: "0.75rem", kind: "text" },
         { cssVar: "--origam-badge__badge---font-weight", label: "font weight", defaultValue: "500", kind: "text" }
     ],

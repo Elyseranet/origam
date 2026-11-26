@@ -86,13 +86,13 @@ test.describe('A · Vérif finale install model', () => {
     // ── A2. body background = token surface-default ───────────────────────
 
     test.describe('A2 · body bg token-driven', () => {
-        test('origam/dark = rgb(10, 10, 10)', async ({ page }) => {
+        test('origam/dark = rgb(27, 17, 39)', async ({ page }) => {
             await page.goto('/'); await applyTheme(page, 'origam', 'dark')
-            expect(await getBodyBg(page)).toBe('rgb(10, 10, 10)')
+            expect(await getBodyBg(page)).toBe('rgb(27, 17, 39)')
         })
-        test('origam/light = rgb(255, 255, 255)', async ({ page }) => {
+        test('origam/light = rgb(247, 245, 239)', async ({ page }) => {
             await page.goto('/'); await applyTheme(page, 'origam', 'light')
-            expect(await getBodyBg(page)).toBe('rgb(255, 255, 255)')
+            expect(await getBodyBg(page)).toBe('rgb(247, 245, 239)')
         })
         test('apple/dark = rgb(0, 0, 0)', async ({ page }) => {
             await page.goto('/'); await applyTheme(page, 'apple', 'dark')

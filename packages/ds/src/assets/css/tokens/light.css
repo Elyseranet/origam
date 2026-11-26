@@ -64,29 +64,23 @@
 :root,
 [data-theme="light"],
 [data-mode="light"] {
-  --origam-color__surface---default: var(--origam-color__neutral---0);
-  --origam-color__surface---raised: var(--origam-color__neutral---0);
-  --origam-color__surface---overlay: var(--origam-color__neutral---100);
-  --origam-color__surface---sunken: var(--origam-color__neutral---50);
+  --origam-color__surface---default: #f7f5ef;
+  --origam-color__surface---raised: #fffaf7;
+  --origam-color__surface---overlay: #f5edff;
+  --origam-color__surface---sunken: #e9e0ff;
   --origam-color__surface---disabled: var(--origam-color__neutral---200);
   --origam-color__surface---inverse: var(--origam-color__neutral---900);
-  /* #615 — `950`, PAS `900`. Cette feuille NE gagne PAS la cascade au niveau
-     document : `createOrigam()` appelle `applyThemes()`, qui serialise
-     `origamLightTheme` (src/themes/origam.theme.ts) en un bloc `:root { … }`
-     injecte dans <head> APRES cette feuille. A specificite egale (0,1,0) c'est
-     l'ordre source qui tranche, donc le bloc runtime gagne — et il pose
-     `#0a0a0a`, soit neutral-950. Tant que cette ligne disait `900`, le meme
-     theme « light » peignait DEUX couleurs : `#0a0a0a` a la racine et
-     `#171717` dans un sous-arbre `<OrigamThemeProvider theme="light">` (ou
-     `[data-theme="light"]` matche alors que `:root` ne matche plus). Les deux
-     valeurs mesurees en Chromium ; le contraste sur `surface.default` passe de
-     17.93:1 a 19.80:1. Si cette ligne doit revenir a `900`, c'est
-     `origam.theme.ts` qu'il faut changer AVEC, sinon la divergence revient. */
-  --origam-color__text---primary: var(--origam-color__neutral---950);
+  /* #615 — cette ligne et `origamLightTheme.vars.color.text.primary`
+     (src/themes/origam.theme.ts) doivent porter la MEME valeur : le bloc
+     runtime injecte par `createOrigam()` gagne a la racine (meme specificite,
+     ordre source), et cette feuille gagne dans un sous-arbre
+     `[data-theme="light"]`. Deux valeurs = deux couleurs pour un meme theme.
+     #1514 — encre du brand kit A1 (#1b1127), 16.66:1 sur papier. */
+  --origam-color__text---primary: #1b1127;
   --origam-color__text---secondary: var(--origam-color__neutral---600);
-  /* #1044 — un niveau sous `secondary`, mesuré 4.74:1 sur `surface---default`
-     (#ffffff), AA. Voir dark.css pour la contrainte qui a fixé ce rung. */
-  --origam-color__text---tertiary: var(--origam-color__neutral---500);
+  /* #1514 — aligné sur `secondary` (précédent #1044 en sombre) : l'ancien
+     `neutral---500` mesure 4.35:1 sur le papier #f7f5ef, sous AA. */
+  --origam-color__text---tertiary: var(--origam-color__neutral---600);
   --origam-color__text---disabled: var(--origam-color__neutral---400);
   --origam-color__text---inverse: var(--origam-color__neutral---0);
   --origam-color__text---onColor: var(--origam-color__neutral---0);
@@ -111,17 +105,17 @@
   --origam-color__action--ghost---bg: rgba(0, 0, 0, 0);
   --origam-color__action--ghost---bgHover: var(--origam-color__neutral---100);
   --origam-color__action--ghost---bgDisabled: rgba(0, 0, 0, 0);
-  --origam-color__action--ghost---fg: var(--origam-color__primary---600);
+  --origam-color__action--ghost---fg: var(--origam-color__primary---700);
   --origam-color__action--ghost---fgDisabled: var(--origam-color__neutral---400);
   --origam-color__feedback--success---bg: var(--origam-color__green---700);
   --origam-color__feedback--success---bgSubtle: var(--origam-color__green---50);
   --origam-color__feedback--success---fg: var(--origam-color__neutral---0);
-  --origam-color__feedback--success---fgSubtle: var(--origam-color__green---700);
+  --origam-color__feedback--success---fgSubtle: var(--origam-color__green---800);
   --origam-color__feedback--success---border: var(--origam-color__green---700);
   --origam-color__feedback--warning---bg: var(--origam-color__amber---700);
   --origam-color__feedback--warning---bgSubtle: var(--origam-color__amber---50);
   --origam-color__feedback--warning---fg: var(--origam-color__neutral---0);
-  --origam-color__feedback--warning---fgSubtle: var(--origam-color__amber---700);
+  --origam-color__feedback--warning---fgSubtle: var(--origam-color__amber---800);
   --origam-color__feedback--warning---border: var(--origam-color__amber---700);
   --origam-color__feedback--danger---bg: var(--origam-color__red---600);
   --origam-color__feedback--danger---bgSubtle: var(--origam-color__red---50);
@@ -196,7 +190,7 @@
   --origam-btn---background-color-hover: var(--origam-color__action--secondary---bgHover);
   --origam-btn---background-color-disabled: var(--origam-color__action--primary---bgDisabled);
   --origam-btn---color-disabled: var(--origam-color__action--primary---fgDisabled);
-  --origam-btn---border-radius: var(--origam-radius---sm);
+  --origam-btn---border-radius: var(--origam-radius---full); /* #1514 — pilule (brand kit A1), par token et non par prop : voir origam.theme.ts et #1523 */
   --origam-btn---border-radius-icon: var(--origam-radius---full);
   --origam-btn---border-radius-rounded: var(--origam-radius---2xl);
   --origam-btn---border-width: var(--origam-border__width---0);
@@ -264,7 +258,7 @@
   --origam-btn-group---border-width: var(--origam-border__width---0);
   --origam-btn-group---border-style: solid;
   --origam-btn-group---border-color: var(--origam-color__border---subtle);
-  --origam-btn-group---border-radius: var(--origam-radius---sm);
+  --origam-btn-group---border-radius: var(--origam-radius---full); /* #1514 — pilule, comme --origam-btn---border-radius */
   --origam-card---display: block;
   --origam-card---overflow: hidden;
   --origam-card---overflow-wrap: break-word;

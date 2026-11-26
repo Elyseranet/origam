@@ -147,9 +147,10 @@ test.describe('OrigamSwitch', () => {
             // rgb(230, 230, 230). Verified in a real Chromium, not computed.
             // We assert it is NOT transparent and NOT the primary color.
             expect(trackBg).not.toBe('rgba(0, 0, 0, 0)')
-            expect(trackBg).not.toBe('rgb(124, 58, 237)')  // primary.bg
+            expect(trackBg).not.toBe('rgb(106, 86, 246)')  // primary.bg
             // Actual resolved grey — update if the token changes
-            expect(trackBg).toBe('color(srgb 0.423529 0.423529 0.423529)')
+            // #1514 — 60 % encre #1b1127 + 40 % papier #f7f5ef.
+            expect(trackBg).toBe('color(srgb 0.45098 0.424314 0.466667)')
         })
 
         test('label text is rendered', async ({ page }) => {

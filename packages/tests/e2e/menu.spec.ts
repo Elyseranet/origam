@@ -160,12 +160,12 @@ test.describe('OrigamMenu', () => {
             expect(bg).not.toBe('rgba(0, 0, 0, 0)')
         })
 
-        test('corps porte le border-radius par défaut (8px)', async ({ page }) => {
+        test('corps porte le border-radius par défaut (10px, radius.md — #1514)', async ({ page }) => {
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             const borderRadius = await content.evaluate(el => getComputedStyle(el).borderRadius)
-            expect(borderRadius).toBe('8px')
+            expect(borderRadius).toBe('10px')
         })
 
         test('corps porte une box-shadow (elevation token)', async ({ page }) => {

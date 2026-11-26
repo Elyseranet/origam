@@ -10,7 +10,7 @@ export const roundedList: Array<IOptions<TRounded | boolean | string>> = [
     // ── Named variants (token-driven, theme-aware) ──────────────
     { label: 'x-small (radius.xs / 2px)', value: ROUNDED.X_SMALL },
     { label: 'small (radius.sm / 4px)', value: ROUNDED.SMALL },
-    { label: 'default (radius.md / 8px)', value: ROUNDED.DEFAULT },
+    { label: 'default (radius.md / 10px)', value: ROUNDED.DEFAULT },
     { label: 'medium (radius.lg / 12px)', value: ROUNDED.MEDIUM },
     { label: 'large (radius.xl / 16px)', value: ROUNDED.LARGE },
     { label: 'x-large (radius.2xl / 24px)', value: ROUNDED.X_LARGE },

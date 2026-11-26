@@ -277,7 +277,8 @@ test.describe('OrigamMediaVolumeControl — surface de thème (#429)', () => {
          * blanc-sur-saturé de `.origam--color-*`. Cf. #514 — les deux sont des
          * rôles opposés, et c'est la déclaration inline qui gagne.
          */
-        expect(painted.primary.btn).toBe('rgb(109, 40, 217)')
+        // #1514 — fgSubtle primaire = #614edd (était #6d28d9).
+        expect(painted.primary.btn).toBe('rgb(97, 78, 221)')
     })
 
     test('le tooltip s\'ouvre au survol et rend un slider vertical accessible', async ({ page }) => {

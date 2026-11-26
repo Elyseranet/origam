@@ -332,6 +332,9 @@ for (const cfg of CONFIGS) {
  * Verdict archive sur `ghost`, la contradiction qui a coute trois campagnes de
  * mesure : le 3.69 du titre de #789 est reproductible, mais c'est la mesure
  * NAIVE. La valeur composee — la seule juste — est 5.70, conforme AA.
+ *
+ * #1514 — chiffres remesures apres le passage au brand kit A1 (ghost #614edd
+ * sur papier #f7f5ef) : 5.29 compose, 3.64 naif. Le piege reste le meme.
  */
 test('#789 — `ghost` en clair : 5.70 compose, 3.69 sans compositing (l\'artefact)', async ({ browser }) => {
     const cfg = CONFIGS.find(c => c.id === 'T-light') as IProbeConfig
@@ -342,7 +345,7 @@ test('#789 — `ghost` en clair : 5.70 compose, 3.69 sans compositing (l\'artefa
     await ctx.close()
 
     const ghost = res.swatches.find(s => s.key === 'ghost|bg') as IMeasure
-    expect(ghost.bg, 'le fond de `ghost` doit se composer sur la surface de page').toBe('rgb(255, 255, 255)')
-    expect(ghost.ratio, '`ghost` compose est conforme AA').toBeCloseTo(5.70, 1)
-    expect(ghost.naive, 'le 3.69 de #789 est la mesure naive, reproductible').toBeCloseTo(3.69, 1)
+    expect(ghost.bg, 'le fond de `ghost` doit se composer sur la surface de page').toBe('rgb(247, 245, 239)')
+    expect(ghost.ratio, '`ghost` compose est conforme AA').toBeCloseTo(5.29, 1)
+    expect(ghost.naive, 'la mesure naive (fond pris pour du noir) reste reproductible').toBeCloseTo(3.64, 1)
 })

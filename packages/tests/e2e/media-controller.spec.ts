@@ -226,7 +226,8 @@ test.describe('OrigamMediaController — tokens déclarés (#429)', () => {
          *   accent      = --origam-color__action--primary---bg = primary.600
          *   sep / total = --origam-color__text---secondary      = neutral.600
          */
-        expect(declared['--origam-media-controller---accent-color']).toBe('#7c3aed')
+        // #1514 — primary.600 est désormais le violet du brand kit A1 (était #7c3aed).
+        expect(declared['--origam-media-controller---accent-color']).toBe('#6a56f6')
         expect(declared['--origam-media-controller__time---color']).toBe('currentColor')
         expect(declared['--origam-media-controller__time-sep---color']).toBe('#525252')
         expect(declared['--origam-media-controller__time-total---color']).toBe('#525252')
@@ -251,7 +252,8 @@ test.describe('OrigamMediaController — tokens déclarés (#429)', () => {
 
         // Les trois nombres mesurés AVANT la déclaration des tokens, sur le
         // même build. Ce sont eux qui prouvent que zéro pixel n'a bougé.
-        expect(painted.current, 'temps courant — hérite du contrôleur').toBe('rgb(10, 10, 10)')
+        // #1514 — encre du brand kit A1 (était rgb(10, 10, 10)).
+        expect(painted.current, 'temps courant — hérite du contrôleur').toBe('rgb(27, 17, 39)')
         expect(painted.sep, 'séparateur — text.secondary').toBe('rgb(82, 82, 82)')
         expect(painted.total, 'durée totale — text.secondary').toBe('rgb(82, 82, 82)')
 
