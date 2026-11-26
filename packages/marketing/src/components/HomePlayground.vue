@@ -55,7 +55,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useT } from '~/composables/useT'
-import { HOME_DEMO_BUTTONS } from '~/consts/playground.const'
+import { HOME_DEMO_BUTTONS, HOME_DEMO_CODE_BUTTON } from '~/consts/playground.const'
 import { buildHomeDemoSnippet } from '~/utils/home-demo.util'
 
 const { t } = useT()
@@ -76,7 +76,7 @@ const labels = computed(() =>
     Object.fromEntries(buttons.map(({ key, labelKey, labelFallback }) => [key, t(labelKey, labelFallback)]))
 )
 
-const snippet = computed(() => buildHomeDemoSnippet(buttons, labels.value))
+const snippet = computed(() => buildHomeDemoSnippet(HOME_DEMO_CODE_BUTTON, labels.value[HOME_DEMO_CODE_BUTTON.key]))
 
 defineEmits([])
 

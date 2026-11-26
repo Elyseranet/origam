@@ -1,10 +1,11 @@
 import type { IHomeDemoButton } from '../interfaces/home-demo.interface'
 
 /**
- * HomePlayground — static showcase. The buttons below drive BOTH the rendered
- * OrigamBtn and the displayed code (utils/home-demo.util.ts), so the preview
- * is exactly what the code shows. The component name and prop names are code,
- * so they are intentionally not translated; only the labels are.
+ * HomePlayground — static showcase. The buttons below are rendered as real
+ * OrigamBtn; the first one (Primary) also drives the displayed code
+ * (utils/home-demo.util.ts), so the code shows exactly what it renders.
+ * The component name and prop names are code, so they are intentionally not
+ * translated; only the labels are.
  *
  * Owner decision (#1517): Secondary = violet outline + ink text, Ghost = white
  * fill + lavender border. The `ghost` / `outlined` variants do not paint that
@@ -38,5 +39,5 @@ export const HOME_DEMO_BUTTONS: IHomeDemoButton[] = [
     }
 ]
 
-/** Longest one-line `<OrigamBtn …>` the demo snippet keeps inline before breaking one attribute per line. */
-export const HOME_DEMO_SNIPPET_MAX_LINE = 72
+/** The one button the code window shows (owner decision, #1517: like the mockup, the Primary alone). */
+export const HOME_DEMO_CODE_BUTTON: IHomeDemoButton = HOME_DEMO_BUTTONS[0]

@@ -43,18 +43,21 @@ test.describe('HomePlayground section', () => {
         await expect(page.locator('[data-cy="playground-btn-open"]')).toHaveCount(0)
     })
 
-    test('the 3 real OrigamBtn variants are rendered and listed in the code', async ({ page }) => {
-        const code = page.locator('[data-cy="playground-code"]')
+    test('the 3 real OrigamBtn variants are rendered', async ({ page }) => {
         for (const [key, label, variant] of [['primary', 'Primary', 'flat'], ['secondary', 'Secondary', 'outlined'], ['ghost', 'Ghost', 'flat']]) {
             const btn = page.locator(`[data-cy="playground-btn-${key}"]`)
             await expect(btn).toBeVisible()
             await expect(btn).toHaveClass(new RegExp(`origam-btn--variant-${variant}`))
             await expect(btn).toContainText(label)
-            await expect(code).toContainText(label)
         }
-        await expect(code).toContainText('variant="flat" bg-color="primary"')
-        await expect(code).toContainText('border-color="var(--origam-color__action--primary---bg)"')
-        await expect(code).toContainText('bg-color="var(--origam-color__surface---raised)"')
+    })
+
+    // #1517 — owner decision: like the mockup, the code shows the Primary button alone, on one line.
+    test('the code shows the rendered Primary button only', async ({ page }) => {
+        const code = page.locator('[data-cy="playground-code"] pre')
+        await expect.poll(async () => (await code.innerText()).trim())
+            .toBe('<template>\n  <OrigamBtn variant="flat" bg-color="primary">Primary</OrigamBtn>\n</template>')
+        await expect(page.locator('[data-cy="playground-btn-primary"]')).toHaveClass(/origam--bg-primary/)
     })
 
     // #1517 — owner decision: Primary filled violet, Secondary violet outline + ink text,
