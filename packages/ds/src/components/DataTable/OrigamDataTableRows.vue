@@ -464,9 +464,13 @@
 	// height a real one-line row has, and its `::after` is narrowed to the
 	// bar the column would hold. Several rules compete for the `::after`
 	// box, so they all live under the same selector and the same `inset`.
+	// The wave highlight (`::before`) shares that exact box (#1090): a
+	// `translateX` would carry it out of the bar into the cell, so inside
+	// the bar it sweeps by `background-position` instead.
 	.origam-data-table-rows__skeleton-cell {
 		block-size: calc(2 * var(--origam-table__cell---padding-block, 12px) + 1.5em);
 
+		&::before,
 		&::after {
 			inset-block: auto;
 			inset-block-start: 50%;
@@ -478,12 +482,14 @@
 			border-radius: var(--origam-skeleton---border-radius-pill);
 		}
 
+		&--end::before,
 		&--end::after {
 			inset-inline-start: auto;
 			inset-inline-end: var(--origam-table__cell---padding-inline, 16px);
 			inline-size: 40%;
 		}
 
+		&--control::before,
 		&--control::after {
 			block-size: var(--origam-skeleton---circular-size);
 			inline-size: var(--origam-skeleton---circular-size);
@@ -491,12 +497,32 @@
 		}
 	}
 
+	tr:nth-child(2n) > .origam-data-table-rows__skeleton-cell--text::before,
 	tr:nth-child(2n) > .origam-data-table-rows__skeleton-cell--text::after {
 		inline-size: 52%;
 	}
 
+	tr:nth-child(3n) > .origam-data-table-rows__skeleton-cell--text::before,
 	tr:nth-child(3n) > .origam-data-table-rows__skeleton-cell--text::after {
 		inline-size: 84%;
 	}
-</style>
 
+	@keyframes origam-data-table-skeleton-cell-wave {
+		from { background-position-x: 100%; }
+		to { background-position-x: -100%; }
+	}
+
+	// Gated: under reduced motion the shared `animation: none` stays in force
+	// and the highlight is not painted at all.
+	.origam-data-table-rows__skeleton-cell.origam--skeleton-wave::before {
+		transform: none;
+		background: none;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.origam-data-table-rows__skeleton-cell.origam--skeleton-wave::before {
+			background: linear-gradient(105deg, transparent 35%, var(--origam-skeleton---highlight-color) 50%, transparent 65%) 100% 0 / 200% 100% no-repeat;
+			animation-name: origam-data-table-skeleton-cell-wave;
+		}
+	}
+</style>

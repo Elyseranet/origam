@@ -549,6 +549,16 @@
 			/>
 		</Variant>
 
+		<Variant title="Prop — loading skeleton wave">
+			<origam-data-table
+					data-cy="data-table-loading-skeleton-wave"
+					:headers="skeletonHeaders"
+					:items="[]"
+					:loading="{ type: 'skeleton', animation: 'wave' }"
+					hide-default-footer
+			/>
+		</Variant>
+
 				<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({

@@ -40,6 +40,8 @@ const GREEN_SPECS = [
     'code-group.spec.ts',
     'controls-loading-no-skeleton.spec.ts',
     'chip.spec.ts',
+    // #1090 — reflet wave borne a la barre ; RED sur le parent puis vert.
+    'data-table-skeleton-wave.spec.ts',
     // #957 — verifiee verte et stable avant inscription : 6/6 puis 30/30 sous
     // `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
     'chip-affix-gutter.spec.ts',
