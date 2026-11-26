@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.46.1] - 2026-11-26
+
 ### Fixed — le reflet `wave` du squelette de `OrigamDataTable` reste dans la barre (#1090)
 
 - Cause : la cellule `<td>` est l'hôte du squelette ; son `::after` (la barre) était réduit à la largeur de la colonne, pas le `::before` (le reflet, `inset: 0` + `translateX`), qui couvrait toute la cellule.
