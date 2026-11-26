@@ -187953,7 +187953,7 @@
             },
             {
               "name": "--origam-snackbar-item__message---opacity",
-              "defaultValue": "0.85",
+              "defaultValue": "1",
               "descriptionKey": "components.snackbar_item.css_vars.message_opacity",
               "descriptionFallback": "Opacity of the message text, giving the title visual priority."
             }
