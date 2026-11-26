@@ -399,11 +399,9 @@
 
 <style scoped lang="scss">
   .theming {
-    --theming-header-height: 3.5rem;
-
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - var(--theming-header-height));
+    min-height: calc(100vh - var(--marketing-header-height));
 
     &__dev-banner {
       flex: none;
@@ -576,8 +574,8 @@
       background-color: var(--origam-color__surface---sunken);
       border-inline: 1px solid var(--origam-color__border---default);
       position: sticky;
-      top: var(--theming-header-height);
-      max-height: calc(100vh - var(--theming-header-height));
+      top: var(--marketing-header-height);
+      max-height: calc(100vh - var(--marketing-header-height));
       overflow-y: auto;
 
       @media (max-width: 48rem) {

@@ -848,11 +848,11 @@
           bar covers it — measured in Chromium before this rule:
           `#roadmap-status-title` landed at `top: 0` under a 56 px bar, i.e.
           the reader jumps to a section whose title is invisible. The token
-          carries the bar height (64 px), the extra rung is breathing room.
+          carries the bar height (56 px), the extra rung is breathing room.
         */
         &__title {
             scroll-margin-block-start: calc(
-                var(--origam-app-bar---height, 64px) + var(--origam-space---6, 1.5rem)
+                var(--marketing-header-height) + var(--origam-space---6, 1.5rem)
             );
         }
     }
