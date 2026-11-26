@@ -143,6 +143,7 @@
 		font-family:    var(--origam-title---font-family);
 		font-size:      var(--origam-title---font-size, var(--origam-title---font-size-md));
 		font-weight:    var(--origam-title---font-weight);
+		font-style:     var(--origam-title---font-style, inherit);
 		letter-spacing: var(--origam-title---letter-spacing);
 		text-transform: var(--origam-title---text-transform, inherit);
 		line-height:    var(--origam-title---line-height);

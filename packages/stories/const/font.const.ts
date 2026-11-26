@@ -50,6 +50,13 @@ export const letterSpacingList: Array<IOptions<TLetterSpacing>> = [
     { label: 'widest (0.0893em)', value: 'widest' }
 ]
 
+export const fontStyleList: Array<IOptions<string>> = [
+    { label: '(none)', value: undefined },
+    { label: 'normal', value: 'normal' },
+    { label: 'italic', value: 'italic' },
+    { label: 'oblique', value: 'oblique' }
+]
+
 export const textTransformList: Array<IOptions<TTextTransform>> = [
     { label: '(none)', value: undefined },
     { label: 'none', value: 'none' },

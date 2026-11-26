@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `fontStyle` peint sur `OrigamTitle` et `OrigamTextMask` (#1119)
+
+- Cause : les deux composants étendaient `ITypographyProps` en entier et `useTypography` émettait `--origam-{title|text-mask}---font-style`, mais leur SCSS ne lisait pas cette variable — prop typée, rien de peint. `OrigamBlockquote` la lisait déjà.
+- Correctif : `font-style: var(--origam-…---font-style, inherit)` sur les deux racines ; contrôle `Font Style` dans les stories des trois composants, lignes de doc, e2e `typography-font-style.spec.ts`. Tokens `--origam-{title|text-mask}---font-style: initial` déclarés (feuilles CSS/SCSS + `TTokenName`). `typography-paint-scan` couvre désormais `fontStyle` / `textTransform` (outil de mesure, pas encore un garde — #1119 reste ouvert pour ça).
+
 ## [2.46.0] - 2026-11-26
 
 ### Fixed — `TShikiHighlighter` accepte un highlighter `shiki/core` (#1136)
