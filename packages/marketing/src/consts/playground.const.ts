@@ -13,13 +13,16 @@ import type { IHomeDemoButton } from '../interfaces/home-demo.interface'
  * a grey veil), and Btn has no surface intent, hence the `var()` values.
  * Keys are kebab-case because they are printed verbatim in the snippet.
  */
+/** The Primary, also the one button the code window shows (owner decision, #1517: like the mockup). */
+export const HOME_DEMO_CODE_BUTTON: IHomeDemoButton = {
+    key: 'primary',
+    labelKey: 'home.playground.btn_primary',
+    labelFallback: 'Primary',
+    props: { variant: 'flat', 'bg-color': 'primary' }
+}
+
 export const HOME_DEMO_BUTTONS: IHomeDemoButton[] = [
-    {
-        key: 'primary',
-        labelKey: 'home.playground.btn_primary',
-        labelFallback: 'Primary',
-        props: { variant: 'flat', 'bg-color': 'primary' }
-    },
+    HOME_DEMO_CODE_BUTTON,
     {
         key: 'secondary',
         labelKey: 'home.playground.btn_secondary',
@@ -38,6 +41,3 @@ export const HOME_DEMO_BUTTONS: IHomeDemoButton[] = [
         }
     }
 ]
-
-/** The one button the code window shows (owner decision, #1517: like the mockup, the Primary alone). */
-export const HOME_DEMO_CODE_BUTTON: IHomeDemoButton = HOME_DEMO_BUTTONS[0]

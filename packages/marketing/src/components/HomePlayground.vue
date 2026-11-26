@@ -76,7 +76,7 @@ const labels = computed(() =>
     Object.fromEntries(buttons.map(({ key, labelKey, labelFallback }) => [key, t(labelKey, labelFallback)]))
 )
 
-const snippet = computed(() => buildHomeDemoSnippet(HOME_DEMO_CODE_BUTTON, labels.value[HOME_DEMO_CODE_BUTTON.key]))
+const snippet = computed(() => buildHomeDemoSnippet(HOME_DEMO_CODE_BUTTON, t(HOME_DEMO_CODE_BUTTON.labelKey, HOME_DEMO_CODE_BUTTON.labelFallback)))
 
 defineEmits([])
 
