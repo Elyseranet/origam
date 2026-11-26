@@ -18,3 +18,6 @@ public/docs
 wireframe/
 
 graphify-out/
+
+# Chiffres du produit mesurés au build (#1545), générés par scripts/generate-build-stats.mjs
+src/consts/build-stats.const.ts

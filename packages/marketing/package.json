@@ -8,12 +8,12 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "nuxt dev",
-    "build": "nuxt build",
+    "dev": "node scripts/generate-build-stats.mjs && nuxt dev",
+    "build": "node scripts/generate-build-stats.mjs && nuxt build",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "typecheck": "nuxt typecheck",
+    "typecheck": "node scripts/generate-build-stats.mjs && nuxt typecheck",
     "docs:generate": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --files",
     "docs:generate:check": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --files --check",
     "docs:dump": "tsx --tsconfig ./tsconfig.typeorm.json scripts/dump-db-fixture.mjs",
@@ -29,6 +29,7 @@
     "docs:backfill-keys:check": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --backfill-keys --check",
     "changelog:generate": "node scripts/generate-changelog.mjs",
     "changelog:generate:check": "node scripts/generate-changelog.mjs --check",
+    "build-stats:generate": "node scripts/generate-build-stats.mjs",
     "theme:reset:generate": "node scripts/generate-origam-reset.mjs",
     "i18n:check": "node scripts/i18n-check.mjs",
     "db:migrate": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:run -d src/server/db/data-source.cli.ts",
