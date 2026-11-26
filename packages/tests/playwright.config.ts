@@ -443,7 +443,9 @@ const GREEN_SPECS = [
     // `E2E_STATIC=1`, chromium, port isolé, load average < 10.
     'token-channels-c2-594-595.spec.ts',
     // #1149 — labels du champ sans l'id de l'input ; verte (E2E_STATIC=1, chromium, port isole) ; rouge sur le parent.
-    'field-label-id.spec.ts'
+    'field-label-id.spec.ts',
+    // #1424 — ids uniques dans le sandbox Histoire (harnais : idPrefix par app) ; verte (E2E_STATIC=1, chromium, port isole) ; rouge sans histoire.setup.ts corrige.
+    'story-sandbox-ids.spec.ts'
 ]
 
 /**

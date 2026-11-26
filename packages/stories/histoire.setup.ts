@@ -128,7 +128,14 @@ if (typeof document !== 'undefined') {
     }
 }
 
+// #1424 — Histoire mounts every story in TWO Vue apps of the same document (a
+// hidden `htw-sandbox-hidden` one to read the controls, and the visible one). `useId()`
+// is scoped per app, so both produced `origam-app-v-0` / `…-wrapper`. Each app needs its
+// own `idPrefix` (documented in `getUid`).
+let sandboxAppCount = 0
+
 export const setupVue3 = defineSetupVue3(({ app, addWrapper }) => {
+    app.config.idPrefix = `s${sandboxAppCount++}`
     // ⛔ #360 (v3.0.0 harvest) — `createOrigam()` no longer installs a theme by
     // default. Stories rely on `origamTheme`'s per-component `components` prop
     // defaults (ADR-005 — e.g. `origam-avatar`'s `rounded: 'full'`), so it must
