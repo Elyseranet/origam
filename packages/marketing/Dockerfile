@@ -39,11 +39,6 @@ COPY packages/marketing/package.json packages/marketing/package.json
 # marketing hosts @origam/playground: prop-group classification (#1141), the
 # engine and its committed catalogue (#1145).
 COPY packages/playground/package.json packages/playground/package.json
-# `pnpm.patchedDependencies` (root package.json, #1065) reads this directory
-# during install. Without it the image failed at `pnpm install
-# --frozen-lockfile` — ENOENT `patches/@nuxt__devtools@3.4.2.patch`,
-# measured while verifying #1145.
-COPY patches ./patches
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
