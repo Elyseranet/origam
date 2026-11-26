@@ -11,6 +11,7 @@
       {{ t('home.playground.title', 'A few lines, real components.') }}
     </h2>
 
+    <!-- shortcut: rounded="2xl" n'émet aucune classe (DS #1567), à remplacer quand #1567 sera corrigé -->
     <origam-sheet
       tag="div"
       rounded="var(--origam-radius---2xl)"
@@ -52,6 +53,7 @@
         </origam-code>
       </origam-theme-provider>
 
+      <!-- shortcut: rounded="2xl" n'émet aucune classe (DS #1567), à remplacer quand #1567 sera corrigé -->
       <origam-sheet
         tag="div"
         rounded="var(--origam-radius---2xl)"

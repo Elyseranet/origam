@@ -1019,7 +1019,6 @@
         },
         "playground": {
             "title": "Quelques lignes, de vrais composants.",
-            "file": "App.vue",
             "btn_primary": "Primaire",
             "btn_secondary": "Secondaire",
             "btn_ghost": "Fantôme"
