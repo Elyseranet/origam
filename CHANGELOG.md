@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — le reflet `wave` du squelette de `OrigamDataTable` reste dans la barre (#1090)
+
+- Cause : la cellule `<td>` est l'hôte du squelette ; son `::after` (la barre) était réduit à la largeur de la colonne, pas le `::before` (le reflet, `inset: 0` + `translateX`), qui couvrait toute la cellule.
+- Correctif (CSS seul, `OrigamDataTableRows.vue`) : le `::before` partage la boîte exacte de la barre et balaie par `background-position`. Sous `prefers-reduced-motion`, aucun reflet n'est peint. Spec : `data-table-skeleton-wave.spec.ts`.
+
 ## [2.46.0] - 2026-11-26
 
 ### Fixed — `TShikiHighlighter` accepte un highlighter `shiki/core` (#1136)
