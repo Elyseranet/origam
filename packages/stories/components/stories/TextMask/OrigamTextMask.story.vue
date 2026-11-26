@@ -24,6 +24,7 @@
 							:font-weight="state.fontWeight"
 							:line-height="state.lineHeight"
 							:letter-spacing="state.letterSpacing"
+							:font-style="state.fontStyle"
 							:text-transform="state.textTransform"
 							:align="state.align"
 					/>
@@ -42,6 +43,7 @@
 					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.fontStyle" title="Font Style" :options="FONT_STYLE_OPTIONS"/>
 					<HstSelect v-model="state.textTransform" title="Text Transform" :options="TEXT_TRANSFORM_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Align">
@@ -130,6 +132,7 @@
 					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.fontStyle" title="Font Style" :options="FONT_STYLE_OPTIONS"/>
 					<HstSelect v-model="state.textTransform" title="Text Transform" :options="TEXT_TRANSFORM_OPTIONS"/>
 					<HstSelect v-model="state.align"         title="Align"          :options="ALIGN_TEXT_OPTIONS"/>
 				</StoryGroup>
@@ -159,6 +162,7 @@
 		FONT_SIZE_OPTIONS,
 		FONT_WEIGHT_OPTIONS,
 		LETTER_SPACING_OPTIONS,
+		FONT_STYLE_OPTIONS,
 		TEXT_TRANSFORM_OPTIONS,
 		LINE_HEIGHT_OPTIONS,
 		TAG_OPTIONS

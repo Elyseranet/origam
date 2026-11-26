@@ -141,6 +141,7 @@
 		font-size:      var(--origam-text-mask---font-size, var(--origam-text-mask---font-size-default));
 		font-weight:    var(--origam-text-mask---font-weight, var(--origam-text-mask---font-weight-default));
 		font-family:    var(--origam-text-mask---font-family, inherit);
+		font-style:     var(--origam-text-mask---font-style, inherit);
 		line-height:    var(--origam-text-mask---line-height, var(--origam-text-mask---line-height-default));
 		letter-spacing: var(--origam-text-mask---letter-spacing, normal);
 		text-transform: var(--origam-text-mask---text-transform, inherit);

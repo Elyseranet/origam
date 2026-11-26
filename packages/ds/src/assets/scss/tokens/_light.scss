@@ -2325,6 +2325,7 @@
   --origam-title---font-weight: var(--origam-font__weight---semibold);
   --origam-title---letter-spacing: var(--origam-font__letterSpacing---tight);
   --origam-title---text-transform: initial;
+  --origam-title---font-style: initial;
   --origam-title---line-height: var(--origam-font__lineHeight---tight);
   --origam-title---margin-block-start: var(--origam-space---0);
   --origam-title---margin-block-end: var(--origam-space---0);
@@ -2845,6 +2846,7 @@
   --origam-text-mask---font-weight-default: var(--origam-font__weight---bold);
   --origam-text-mask---line-height-default: var(--origam-font__lineHeight---tight);
   --origam-text-mask---text-transform: initial;
+  --origam-text-mask---font-style: initial;
   --origam-text-mask__animation---duration-default: 3s;
   --origam-text-mask__animation---easing-default: var(--origam-motion__easing---standard);
   --origam-empty-state---padding-block: var(--origam-space---10);

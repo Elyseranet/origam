@@ -29,6 +29,7 @@ export {
     fontWeightList as FONT_WEIGHT_OPTIONS,
     lineHeightList as LINE_HEIGHT_OPTIONS,
     letterSpacingList as LETTER_SPACING_OPTIONS,
+    fontStyleList as FONT_STYLE_OPTIONS,
     textTransformList as TEXT_TRANSFORM_OPTIONS
 } from './font.const'
 

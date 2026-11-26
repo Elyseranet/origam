@@ -43,7 +43,10 @@ const TOKEN_MAP = {
     fontSize: 'font-size',
     fontWeight: 'font-weight',
     lineHeight: 'line-height',
-    letterSpacing: 'letter-spacing'
+    letterSpacing: 'letter-spacing',
+    // #1119 — the two PASSTHROUGH props (TYPOGRAPHY_PASSTHROUGH_MAP): same emitted var, no token wrap.
+    fontStyle: 'font-style',
+    textTransform: 'text-transform'
 }
 
 function walk (dir, out = []) {

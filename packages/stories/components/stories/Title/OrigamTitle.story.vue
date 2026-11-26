@@ -20,6 +20,7 @@
 						:font-weight="state.fontWeight"
 						:line-height="state.lineHeight"
 						:letter-spacing="state.letterSpacing"
+						:font-style="state.fontStyle"
 						:text-transform="state.textTransform"
 						:border="state.border"
 						:border-color="state.borderColor"
@@ -53,6 +54,7 @@
 					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.fontStyle" title="Font Style" :options="FONT_STYLE_OPTIONS"/>
 					<HstSelect v-model="state.textTransform" title="Text Transform" :options="TEXT_TRANSFORM_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Border">
@@ -128,6 +130,7 @@
 		FONT_SIZE_OPTIONS,
 		FONT_WEIGHT_OPTIONS,
 		LETTER_SPACING_OPTIONS,
+		FONT_STYLE_OPTIONS,
 		TEXT_TRANSFORM_OPTIONS,
 		LINE_HEIGHT_OPTIONS
 	} from '@stories/const'
