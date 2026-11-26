@@ -14,7 +14,7 @@ import type { Page } from '@playwright/test'
 // #1515 — le site rend toujours `origam` (le cookie de marque est ignoré).
 const THEMES = ['origam']
 const MODES = ['light', 'dark']
-const CTAS = ['hero-cta-components', 'cta-btn-start']
+const CTAS = ['hero-cta-start', 'cta-btn-start']
 const AA = 4.5
 
 /**
@@ -95,7 +95,7 @@ test.describe('#1428 — CTA primaires de l\'accueil : contraste AA', () => {
                     { name: 'origam-mode', value: mode, url: baseURL }
                 ])
                 await page.goto('/')
-                await page.locator('[data-cy="hero-cta-components"]').waitFor()
+                await page.locator('[data-cy="hero-cta-start"]').waitFor()
 
                 for (const cy of CTAS) {
                     const min = await minRatio(page, cy)
