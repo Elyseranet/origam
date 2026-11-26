@@ -1,7 +1,7 @@
 <template>
   <origam-theme-provider mode="dark">
     <section
-      class="home-cta home-container home-section"
+      class="home-cta home-section"
       aria-labelledby="cta-title"
     >
       <div class="home-cta__band">
@@ -31,7 +31,7 @@
               <feDisplacementMap
                 in="SourceGraphic"
                 in2="noise"
-                scale="7"
+                scale="12"
                 xChannelSelector="R"
                 yChannelSelector="G"
               />
@@ -45,29 +45,29 @@
             class="home-cta__tails"
             filter="url(#home-cta-dry)"
           >
-            <path d="M0 94 Q 215 37 430 26 Q 215 55 0 94 Z" opacity="0.8" />
-            <path d="M20 86 Q 280 39 540 30 Q 280 53 20 86 Z" opacity="0.55" />
-            <path d="M0 74 Q 155 29 310 20 Q 155 45 0 74 Z" opacity="0.7" />
-            <path d="M70 102 Q 345 55 620 40 Q 345 67 70 102 Z" opacity="0.4" />
-            <path d="M190 72 Q 380 32 570 26 Q 380 46 190 72 Z" opacity="0.6" />
-            <path d="M270 92 Q 460 54 650 42 Q 460 64 270 92 Z" opacity="0.35" />
-            <path d="M0 62 Q 125 25 250 16 Q 125 37 0 62 Z" opacity="0.5" />
-            <path d="M330 70 Q 475 38 620 32 Q 475 48 330 70 Z" opacity="0.45" />
+            <path d="M0 100 Q 280 -1 560 34 Q 280 95 0 100 Z" opacity="0.85" />
+            <path d="M0 84 Q 210 -3 420 22 Q 210 77 0 84 Z" opacity="0.6" />
+            <path d="M60 108 Q 380 16 700 48 Q 380 104 60 108 Z" opacity="0.5" />
+            <path d="M0 70 Q 150 -4 300 14 Q 150 64 0 70 Z" opacity="0.75" />
+            <path d="M200 80 Q 420 1 640 30 Q 420 81 200 80 Z" opacity="0.55" />
+            <path d="M320 100 Q 520 34 720 52 Q 520 94 320 100 Z" opacity="0.4" />
+            <path d="M0 58 Q 120 -4 240 10 Q 120 52 0 58 Z" opacity="0.5" />
           </g>
           <g
             class="home-cta__fan"
             filter="url(#home-cta-dry)"
           >
-            <path class="home-cta__fan--mid" d="M960 88 Q 1200 33 1440 26 Q 1200 61 960 88 Z" />
-            <path class="home-cta__fan--light" d="M1000 76 Q 1220 25 1440 10 Q 1220 43 1000 76 Z" />
-            <path class="home-cta__fan--mid" d="M1040 100 Q 1240 49 1440 44 Q 1240 75 1040 100 Z" />
-            <path class="home-cta__fan--dark" d="M980 94 Q 1210 58 1440 52 Q 1210 76 980 94 Z" />
-            <path class="home-cta__fan--mid" d="M1120 88 Q 1280 41 1440 30 Q 1280 61 1120 88 Z" />
-            <path class="home-cta__fan--light" d="M1180 68 Q 1310 29 1440 18 Q 1310 43 1180 68 Z" />
+            <path class="home-cta__fan--mid" d="M900 100 Q 1170 0 1440 16 Q 1170 88 900 100 Z" />
+            <path class="home-cta__fan--light" d="M960 84 Q 1200 -3 1440 2 Q 1200 65 960 84 Z" />
+            <path class="home-cta__fan--mid" d="M1000 112 Q 1220 24 1440 40 Q 1220 104 1000 112 Z" />
+            <path class="home-cta__fan--dark" d="M920 104 Q 1180 38 1440 48 Q 1180 98 920 104 Z" />
+            <path class="home-cta__fan--mid" d="M1080 96 Q 1260 15 1440 22 Q 1260 83 1080 96 Z" />
+            <path class="home-cta__fan--light" d="M1140 74 Q 1290 6 1440 6 Q 1290 58 1140 74 Z" />
           </g>
         </svg>
 
         <div class="home-cta__inner">
+          <div class="home-cta__content home-container">
           <div class="home-cta__copy">
             <origam-title
               id="cta-title"
@@ -134,6 +134,7 @@
               </origam-btn>
             </p>
           </div>
+          </div>
         </div>
       </div>
     </section>
@@ -150,7 +151,7 @@ const { t } = useT()
 
 <style scoped lang="scss">
 .home-cta {
-    --home-cta---bg: color-mix(in srgb, var(--origam-color__action--primary---bg) 24%, var(--origam-color__surface---default));
+    --home-cta---bg: var(--origam-color__primary---900);
     --home-cta---brush: 72px;
 
     color: var(--origam-color__text---primary);
@@ -191,10 +192,10 @@ const { t } = useT()
 
     &__inner {
         padding-block: var(--origam-space---3, 0.75rem) var(--origam-space---8, 2rem);
-        padding-inline: var(--origam-space---12, 3rem);
-        border-end-start-radius: var(--origam-radius---xl, 1rem);
-        border-end-end-radius: var(--origam-radius---xl, 1rem);
         background-color: var(--home-cta---bg);
+    }
+
+    &__content {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -247,7 +248,6 @@ const { t } = useT()
 
 @media (max-width: 640px) {
     .home-cta {
-        &__inner { padding-inline: var(--origam-space---5, 1.25rem); }
         &__side { align-items: flex-start; }
         &__btn { max-inline-size: 100%; }
     }

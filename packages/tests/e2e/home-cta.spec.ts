@@ -102,6 +102,10 @@ test.describe('HomeCta — bande de CTA finale', () => {
         expect(fs).toBeLessThanOrEqual(30)
         const band = await page.locator('.home-cta__band').boundingBox()
         expect(band!.height).toBeLessThanOrEqual(230)
+        // bande bord a bord ; contenu aligne sur le conteneur commun (bord a 80 px a 1440)
+        expect(band!.x).toBe(0)
+        expect(band!.width).toBe(1440)
+        expect(Math.round(title!.x)).toBe(80)
     })
 
     test('le pinceau : eventail jaune sur le tiers droit seulement', async ({ page }) => {
