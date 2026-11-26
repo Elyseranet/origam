@@ -4,242 +4,131 @@
     class="home-playground"
     aria-labelledby="playground-heading"
   >
-    <header class="home-playground__intro">
-      <p class="home-playground__eyebrow">
-        {{ t('home.playground.eyebrow', 'CODE EXAMPLE') }}
-      </p>
+    <h2
+      id="playground-heading"
+      class="home-playground__sr-title"
+    >
+      {{ t('home.playground.title', 'A few lines, real components.') }}
+    </h2>
 
-      <origam-title
-        id="playground-heading"
-        tag="h2"
-        class="home-playground__title"
+    <origam-sheet
+      tag="div"
+      rounded="xl"
+      bg-color="var(--origam-color__surface---overlay)"
+      class="home-playground__block"
+    >
+      <origam-theme-provider
+        mode="dark"
+        class="home-playground__window"
       >
-        {{ t('home.playground.title', 'A few lines, real components.') }}
-      </origam-title>
-    </header>
+        <origam-code
+          :code="snippet"
+          lang="vue"
+          :filename="t('home.playground.file', 'App.vue')"
+          rounded="lg"
+          class="home-playground__code"
+          data-cy="playground-code"
+        />
+      </origam-theme-provider>
 
-    <figure class="home-playground__window">
       <origam-sheet
         tag="div"
-        :rounded="PLAYGROUND_FRAME_RADIUS"
-        :style="PLAYGROUND_FRAME_VARS"
-        border
-        border-color="var(--origam-color__border---default)"
-        class="home-playground__frame"
+        rounded="lg"
+        elevation="sm"
+        bg-color="var(--origam-color__surface---raised)"
+        class="home-playground__variants"
+        data-cy="playground-preview"
       >
-        <div
-          class="home-playground__toolbar"
-          role="toolbar"
-          :aria-label="t('a11y.playground_toolbar', 'Editor toolbar')"
+        <origam-btn
+          v-for="button in buttons"
+          :key="button.key"
+          v-bind="button.props"
+          :data-cy="`playground-btn-${button.key}`"
         >
-                    <span
-                      class="home-playground__traffic"
-                      aria-hidden="true"
-                    >
-                        <span class="home-playground__dot home-playground__dot--red" />
-                        <span class="home-playground__dot home-playground__dot--yellow" />
-                        <span class="home-playground__dot home-playground__dot--green" />
-                    </span>
-
-          <span class="home-playground__tab">
-                        {{ t('home.playground.file', 'App.vue') }}
-                    </span>
-        </div>
-
-        <div class="home-playground__panes">
-          <origam-code
-            :code="PLAYGROUND_SNIPPET"
-            lang="vue"
-            line-numbers
-            copyable
-            rounded="none"
-            class="home-playground__code"
-            data-cy="playground-code"
-          />
-
-          <div class="home-playground__preview">
-            <origam-card
-              tag="div"
-              rounded="lg"
-              border
-              inert
-              lang="en"
-              class="home-playground__preview-card"
-              data-cy="playground-preview"
-            >
-              <origam-title tag="h3">
-                {{ PLAYGROUND_SAMPLE.title }}
-              </origam-title>
-              <p class="home-playground__preview-text">
-                {{ PLAYGROUND_SAMPLE.text }}
-              </p>
-              <origam-btn
-                color="primary"
-                append-icon="mdi-arrow-right"
-                class="home-playground__preview-btn"
-              >
-                {{ PLAYGROUND_SAMPLE.cta }}
-              </origam-btn>
-            </origam-card>
-          </div>
-        </div>
+          {{ labels[button.key] }}
+        </origam-btn>
       </origam-sheet>
-
-      <figcaption class="home-playground__caption">
-        {{ t('home.playground.caption', 'The preview renders the code shown on the left.') }}
-      </figcaption>
-    </figure>
+    </origam-sheet>
   </section>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useT } from '~/composables/useT'
-import {
-    PLAYGROUND_FRAME_RADIUS,
-    PLAYGROUND_FRAME_VARS,
-    PLAYGROUND_SAMPLE,
-    PLAYGROUND_SNIPPET
-} from '~/consts/playground.const'
+import { HOME_DEMO_BUTTONS, HOME_DEMO_CODE_BUTTON } from '~/consts/playground.const'
+import { buildHomeDemoSnippet } from '~/utils/home-demo.util'
 
 const { t } = useT()
+
+/*********************************************************
+ * Code window
+ *
+ * @description
+ * The window stays dark in both modes (brand kit A1), via
+ * <origam-theme-provider mode="dark">. shortcut: OrigamCode picks its
+ * syntax colours from `html[data-mode]` only, so the style block forces
+ * `--shiki-dark` inside `.home-playground__window`; drop it once #1532 is fixed.
+ ********************************************************/
+
+const buttons = HOME_DEMO_BUTTONS
+
+const labels = computed(() =>
+    Object.fromEntries(buttons.map(({ key, labelKey, labelFallback }) => [key, t(labelKey, labelFallback)]))
+)
+
+const snippet = computed(() => buildHomeDemoSnippet(HOME_DEMO_CODE_BUTTON, t(HOME_DEMO_CODE_BUTTON.labelKey, HOME_DEMO_CODE_BUTTON.labelFallback)))
+
+defineEmits([])
+
+defineSlots<Record<string, never>>()
+
+defineExpose({})
 </script>
 
 <style scoped lang="scss">
 .home-playground {
-    padding-block: var(--origam-space---24, 6rem);
+    padding-block: var(--origam-space---12, 3rem);
     padding-inline: var(--origam-space---6, 1.5rem);
-    max-width: 72rem;
+    max-width: 80rem;
     margin-inline: auto;
     width: 100%;
     box-sizing: border-box;
 
-    &__intro {
-        text-align: center;
-        margin-block-end: var(--origam-space---12, 3rem);
-    }
-
-    &__eyebrow {
-        margin: 0 0 var(--origam-space---3, 0.75rem);
-        font-size: var(--origam-font-size---xs, 0.75rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-    }
-
-    &__title {
-        margin: 0;
-        font-size: var(--origam-font-size---section, 3rem);
-        font-weight: var(--origam-font__weight---bold, 700);
-        line-height: 1;
-        letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-        color: var(--origam-color__text---primary, #0a0a0a);
-    }
-
-    &__window {
-        margin: 0;
-    }
-
-    &__frame {
+    &__sr-title {
+        position: absolute;
+        inline-size: 1px;
+        block-size: 1px;
         overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
     }
 
-    &__toolbar {
-        display: flex;
-        align-items: center;
-        gap: var(--origam-space---3, 0.75rem);
-        padding: var(--origam-space---2, 0.5rem) var(--origam-space---4, 1rem);
-        background-color: var(--origam-color__surface---overlay, #f5f5f5);
-        border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-    }
-
-    &__traffic {
-        display: flex;
-        align-items: center;
-        gap: var(--origam-space---1, 0.25rem);
-        flex-shrink: 0;
-    }
-
-    &__dot {
-        display: block;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-
-        &--red    { background-color: #FF5F57; }
-        &--yellow { background-color: #FFBC2E; }
-        &--green  { background-color: #28C840; }
-    }
-
-    &__tab {
-        flex: 1;
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        font-weight: var(--origam-font__weight---medium, 500);
-        color: var(--origam-color__text---secondary, #525252);
-        font-family: var(--origam-font__family---mono, ui-monospace, monospace);
-    }
-
-    &__panes {
+    &__block {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        min-block-size: 320px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--origam-space---6, 1.5rem);
+        align-items: center;
+        padding: var(--origam-space---8, 2rem);
     }
 
-    &__code {
-        --origam-code---border-width: 0;
-        border-inline-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-        overflow: hidden;
-        font-size: var(--origam-font-size---sm, 0.875rem);
+    &__window :deep(.origam-code__code span) {
+        color: var(--shiki-dark);
     }
 
-    &__preview {
-        display: grid;
-        place-items: center;
-        padding: var(--origam-space---8, 2.5rem);
-        background-color: var(--origam-color__surface---raised, #fafafa);
-        background-image: radial-gradient(var(--origam-color__border---default, rgba(0, 0, 0, 0.08)) 1.5px, transparent 1.5px);
-        background-size: 18px 18px;
-    }
-
-    &__preview-card {
+    &__variants {
         display: flex;
-        flex-direction: column;
-        gap: var(--origam-space---3, 0.75rem);
-        align-items: flex-start;
-        max-inline-size: 22rem;
-        padding: var(--origam-space---6, 1.5rem);
-    }
-
-    &__preview-text {
-        margin: 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        line-height: 1.5;
-        color: var(--origam-color__text---secondary, #525252);
-    }
-
-    &__preview-btn {
-        margin-block-start: var(--origam-space---2, 0.5rem);
-    }
-
-    &__caption {
-        display: block;
-        margin-block-start: var(--origam-space---4, 1rem);
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        color: var(--origam-color__text---secondary, #525252);
-        text-align: center;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: var(--origam-space---4, 1rem);
+        padding: var(--origam-space---10, 2.5rem) var(--origam-space---6, 1.5rem);
     }
 }
 
-@media (max-width: 800px) {
-    .home-playground {
-        &__panes {
-            grid-template-columns: 1fr;
-        }
-
-        &__code {
-            border-inline-end: 0;
-            border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-        }
+@media (max-width: 1024px) {
+    .home-playground__block {
+        grid-template-columns: 1fr;
+        padding: var(--origam-space---4, 1rem);
     }
 }
 </style>

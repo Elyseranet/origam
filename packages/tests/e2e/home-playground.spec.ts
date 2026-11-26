@@ -31,26 +31,68 @@ test.describe('HomePlayground section', () => {
         await expect(section).toBeVisible()
     })
 
-    test('eyebrow text is present', async ({ page }) => {
-        const eyebrow = page.locator('section#playground .home-playground__eyebrow')
-        await expect(eyebrow).toContainText('CODE EXAMPLE')
-    })
-
     test('h2 title is present', async ({ page }) => {
         const title = page.locator('section#playground h2')
         await expect(title).toContainText('A few lines, real components.')
     })
 
-    test('toolbar shows file tab (App.vue) — no SHARE/OPEN buttons', async ({ page }) => {
-        const toolbar = page.locator('section#playground .home-playground__toolbar')
-        await expect(toolbar).toBeVisible()
+    test('code window shows the file name (App.vue) — no SHARE/OPEN buttons', async ({ page }) => {
+        await expect(page.locator('[data-cy="playground-code"]')).toContainText('App.vue')
 
-        const tab = toolbar.locator('.home-playground__tab')
-        await expect(tab).toContainText('App.vue')
-
-        // SHARE / OPEN supprimés en v5-phase1 (split statique OrigamCode + preview)
         await expect(page.locator('[data-cy="playground-btn-share"]')).toHaveCount(0)
         await expect(page.locator('[data-cy="playground-btn-open"]')).toHaveCount(0)
+    })
+
+    test('the 3 real OrigamBtn variants are rendered', async ({ page }) => {
+        for (const [key, label, variant] of [['primary', 'Primary', 'flat'], ['secondary', 'Secondary', 'outlined'], ['ghost', 'Ghost', 'flat']]) {
+            const btn = page.locator(`[data-cy="playground-btn-${key}"]`)
+            await expect(btn).toBeVisible()
+            await expect(btn).toHaveClass(new RegExp(`origam-btn--variant-${variant}`))
+            await expect(btn).toContainText(label)
+        }
+    })
+
+    // #1517 — owner decision: like the mockup, the code shows the Primary button alone, on one line.
+    test('the code shows the rendered Primary button only', async ({ page }) => {
+        const code = page.locator('[data-cy="playground-code"] pre')
+        await expect.poll(async () => (await code.innerText()).trim())
+            .toBe('<template>\n  <OrigamBtn variant="flat" bg-color="primary">Primary</OrigamBtn>\n</template>')
+        await expect(page.locator('[data-cy="playground-btn-primary"]')).toHaveClass(/origam--bg-primary/)
+    })
+
+    // #1517 — owner decision: Primary filled violet, Secondary violet outline + ink text,
+    // Ghost light fill + border. Bare `ghost` / `outlined` + `color` paint none of that.
+    test('the buttons paint the kit roles (filled / violet outline + ink text / filled + border)', async ({ page }) => {
+        const paint = await page.evaluate(() => Object.fromEntries(['primary', 'secondary', 'ghost'].map((key) => {
+            const s = getComputedStyle(document.querySelector(`[data-cy="playground-btn-${key}"]`) as Element)
+            return [key, { bg: s.backgroundColor, color: s.color, borderColor: s.borderTopColor, borderWidth: s.borderTopWidth }]
+        })))
+        const transparent = 'rgba(0, 0, 0, 0)'
+
+        expect(paint.primary.bg).not.toBe(transparent)
+        expect(paint.secondary.borderColor).toBe(paint.primary.bg)
+        expect(paint.secondary.color).not.toBe(paint.primary.bg)
+        expect(paint.ghost.bg).not.toBe(transparent)
+        expect(paint.ghost.borderWidth).not.toBe('0px')
+    })
+
+    // #1532 — the window is always dark: its tokens must use shiki's DARK colours, even on a light page.
+    test('code tokens are painted with the dark shiki colours inside the dark window', async ({ page }) => {
+        await expect(page.locator('[data-cy="playground-code"] .origam-code__code span[style*="--shiki-dark"]').first()).toBeAttached()
+        const counts = await page.evaluate(() => {
+            const spans = [...document.querySelectorAll<HTMLElement>('[data-cy="playground-code"] .origam-code__code span[style*="--shiki-dark"]')]
+            const wrong = spans.filter((span) => {
+                const probe = document.createElement('i')
+                probe.style.color = span.style.getPropertyValue('--shiki-dark')
+                document.body.appendChild(probe)
+                const expected = getComputedStyle(probe).color
+                probe.remove()
+                return getComputedStyle(span).color !== expected
+            })
+            return { total: spans.length, wrong: wrong.length }
+        })
+        expect(counts.total).toBeGreaterThan(0)
+        expect(counts.wrong).toBe(0)
     })
 
     test('OrigamCode pane is present (left split)', async ({ page }) => {
@@ -64,12 +106,6 @@ test.describe('HomePlayground section', () => {
     test('preview card pane is present (right split)', async ({ page }) => {
         const previewPane = page.locator('[data-cy="playground-preview"]')
         await expect(previewPane).toBeVisible()
-    })
-
-    test('caption figcaption is present', async ({ page }) => {
-        const caption = page.locator('section#playground .home-playground__caption')
-        await expect(caption).toBeVisible()
-        await expect(caption).not.toBeEmpty()
     })
 
     test('no legacy REPL container (playground-repl) — replaced by static split', async ({ page }) => {

@@ -116,3 +116,8 @@ export function groupComponentsByCategory (
 
     return groups
 }
+
+/** DOM id of a catalogue category group (`Form & Input` -> `components-category-form---input`), the target of the home library links. */
+export function categoryAnchor (category: string): string {
+    return `components-category-${category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`
+}

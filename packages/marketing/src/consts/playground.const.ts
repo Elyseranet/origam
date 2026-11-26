@@ -1,57 +1,43 @@
-import type { CSSProperties } from 'vue'
+import type { IHomeDemoButton } from '../interfaces/home-demo.interface'
 
 /**
- * HomePlayground — static showcase. The snippet below and the preview in
- * HomePlayground.vue are built from the same sample strings and the same
- * component props, so the preview renders exactly what the code shows.
- * The sample is code, so it is intentionally not translated.
+ * HomePlayground — static showcase. The buttons below are rendered as real
+ * OrigamBtn; the first one (Primary) also drives the displayed code
+ * (utils/home-demo.util.ts), so the code shows exactly what it renders.
+ * The component name and prop names are code, so they are intentionally not
+ * translated; only the labels are.
+ *
+ * Owner decision (#1517): Secondary = violet outline + ink text, Ghost = white
+ * fill + lavender border. The `ghost` / `outlined` variants do not paint that
+ * (measured: `outlined` + `color` gives violet text on an ink border, `ghost`
+ * a grey veil), and Btn has no surface intent, hence the `var()` values.
+ * Keys are kebab-case because they are printed verbatim in the snippet.
  */
-export const PLAYGROUND_SAMPLE = {
-    title: 'Hello Origam',
-    text: 'The Vue 3 design system that just works.',
-    cta: 'Get started'
-} as const
+/** The Primary, also the one button the code window shows (owner decision, #1517: like the mockup). */
+export const HOME_DEMO_CODE_BUTTON: IHomeDemoButton = {
+    key: 'primary',
+    labelKey: 'home.playground.btn_primary',
+    labelFallback: 'Primary',
+    props: { variant: 'flat', 'bg-color': 'primary' }
+}
 
-export const PLAYGROUND_SNIPPET = `<script setup lang="ts">
-import { OrigamCard, OrigamTitle, OrigamBtn } from 'origam'
-</script>
-
-<template>
-  <OrigamCard rounded="lg" border>
-    <OrigamTitle tag="h3">${PLAYGROUND_SAMPLE.title}</OrigamTitle>
-    <p>${PLAYGROUND_SAMPLE.text}</p>
-    <OrigamBtn color="primary" append-icon="mdi-arrow-right">
-      ${PLAYGROUND_SAMPLE.cta}
-    </OrigamBtn>
-  </OrigamCard>
-</template>
-`
-
-/**
- * Editor-frame chrome (browser window) instance overrides for <OrigamSheet>.
- *
- * `bgColor`/`rounded` reject `var(--origam-…)` (they expect a TIntent / a
- * radius literal, and warn+deprecate a raw var). The frame surface/radius are
- * non-intent semantic tokens, so — per the project color policy — we paint
- * the sheet's public bg/radius custom-props with the origam tokens directly.
- * Border colour/width still ride the Sheet's typed `border`/`borderColor`
- * props in the template.
- *
- *   bg     #fafafa → --origam-color__surface---raised (origam)
- *   shadow         → --origam-shadow---card-elevated (marketing display token)
- *
- * Radius rides the typed `rounded="var(--origam-radius---lg)"` prop now
- * (useRounded accepts custom-property refs since the v2.6 DS fix). The shadow
- * is set on the BASE `--origam-sheet---box-shadow` custom-prop: since the v2.6
- * Sheet fix, the `.origam-sheet--border` rule reads
- * `var(--origam-sheet--border---box-shadow, var(--origam-sheet---box-shadow))`,
- * so the base var is honoured even when `border` is active (border no longer
- * clobbers the elevation).
- */
-export const PLAYGROUND_FRAME_RADIUS = 'var(--origam-radius---lg, 14px)'
-
-export const PLAYGROUND_FRAME_VARS: CSSProperties = {
-    '--origam-sheet---background': 'var(--origam-color__surface---raised, #fafafa)',
-    '--origam-sheet---box-shadow': 'var(--origam-shadow---card-elevated)'
-} as CSSProperties
-
+export const HOME_DEMO_BUTTONS: IHomeDemoButton[] = [
+    HOME_DEMO_CODE_BUTTON,
+    {
+        key: 'secondary',
+        labelKey: 'home.playground.btn_secondary',
+        labelFallback: 'Secondary',
+        props: { variant: 'outlined', 'border-color': 'var(--origam-color__action--primary---bg)' }
+    },
+    {
+        key: 'ghost',
+        labelKey: 'home.playground.btn_ghost',
+        labelFallback: 'Ghost',
+        props: {
+            variant: 'flat',
+            border: true,
+            'border-color': 'var(--origam-color__surface---sunken)',
+            'bg-color': 'var(--origam-color__surface---raised)'
+        }
+    }
+]

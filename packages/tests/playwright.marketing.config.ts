@@ -185,7 +185,12 @@ const MARKETING_GREEN_SPECS = [
 
     // #1172 — encart « même sujet » en index de lignes, repli au-delà de 12.
     // Mesure d'admission : voir la PR (A/B rouge sur le parent, repeat-each).
-    'marketing-catalog-related-families.spec.ts'
+    'marketing-catalog-related-families.spec.ts',
+
+    // #1517 lot 4B — les 6 cartes de la bibliotheque de la home ouvrent une VRAIE
+    // categorie du catalogue (depend de la base, comme components.spec.ts).
+    // Mesure d'admission : voir la PR #1534 (rouge sur la coquille de develop).
+    'home-library.spec.ts'
 ]
 
 /*
