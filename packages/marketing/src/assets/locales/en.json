@@ -1032,7 +1032,7 @@
             "navigation": "Navigation",
             "data": "Data",
             "charts": "Charts",
-            "charts_hint": "29 types, from line to heatmap",
+            "charts_hint": "{count} types, from line to heatmap",
             "feedback": "Alerts and status",
             "overlays": "Dialogs and menus",
             "layout": "Layout"
@@ -1070,6 +1070,22 @@
             "description": "npm i origam, then the plugin and a first component. On Nuxt, one module to add.",
             "support": "Origam is free, MIT licensed and maintained by one person.",
             "support_link": "Support the project"
+        },
+        "proof": {
+            "title": "What the repository lets you verify",
+            "intro": "Figures measured in the code, at every release.",
+            "families_label": "component families",
+            "charts_label": "chart types",
+            "a11y_label": "stories tested with axe-core",
+            "unit_label": "unit test files",
+            "e2e_label": "e2e test files",
+            "license_label": "open source licence",
+            "families_definition": "A top-level folder of packages/ds/src/components.",
+            "charts_definition": "A value of the CHART_TYPE enum.",
+            "a11y_definition": "An entry of SWEPT_STORIES, swept on its default variant; only serious and critical violations block.",
+            "unit_definition": "A *.spec.ts file under packages/tests/TU: files, not a number of tests.",
+            "e2e_definition": "A *.spec.ts file under packages/tests/e2e: files, not a number of tests.",
+            "license_definition": "The license field of the published package."
         }
     },
     "installation": {
@@ -1313,7 +1329,7 @@
             "description": "Where origam is today, what has been delivered, and what is coming next. Public, honest, updated with each release."
         },
         "hero": {
-            "badge": "v{version} — Wave 4 shipped",
+            "badge": "v{version} — published on npm",
             "title_line1": "Roadmap.",
             "title_line2": "Honest & public.",
             "subtitle": "origam is an early-stage Vue 3 design system. Here is where we stand today, what we have already shipped, and what is on the horizon.",
@@ -1330,17 +1346,15 @@
             "monorepo": "Monorepo in place — 5 pnpm workspace packages (ds, docs, marketing, stories, tests), the library still publishing from packages/ds",
             "bundle_monitoring": "No bundle-size monitoring — no size budget is enforced on any sub-export",
             "wave4_shipped": "Wave 4 shipped — 13 components + gradient support + OrigamTextMask (v2.6.0)",
-            "ci_pipeline": "Full CI pipeline — 20 jobs across 5 workflows: lint, architecture guards, migration guard, type-check, unit tests, builds, i18n check, changelog drift check, e2e, marketing e2e, component a11y, marketing a11y and visual regression",
             "docs_deployed": "Documentation and stories deployed — the VitePress reference and the Histoire build both answer HTTP 200",
-            "unit_tests": "7,192 unit tests green across 564 spec files — 77.8 % statement coverage, 79.9 % line coverage",
-            "e2e_specs": "256 Playwright spec files for 218 stories — every component family has an e2e guard",
-            "guards": "29 of 29 architecture guards passing, and 16 of 16 guard self-tests proving the detectors still measure",
+            "unit_tests": "{unit} unit test files and {e2e} e2e test files",
+            "guards": "{guards} architecture guards",
             "inspection": "Inspected on 1 September 2026: 216 components against 8 criteria — rendering, theme channel, reactivity, prop resolution, emits, semantics, story and doc sync, hardcoded strings: zero defect at that date",
             "sonarqube": "SonarQube wired with unit-test coverage and a quality gate that blocks on security and critical issues",
             "dependency_automation": "Automated dependency updates — Dependabot opens grouped weekly pull requests for npm and GitHub Actions",
             "a11y_sweep": "Overlays still lack focus-trap assertions — one component out of the whole overlay family is covered, even though the per-component sweep now gates CI on an empty violation baseline",
             "visual_regression": "Visual regression only started — the pinned-container suite covers a single component so far",
-            "measured_on": "Measured against the repository on 25 September 2026",
+            "measured_on": "Measured on {date}",
             "live_title": "Live today ({count})",
             "pending_title": "Not yet ({count})"
         },
@@ -1358,7 +1372,7 @@
             "stories": "interactive stories",
             "themes": "base themes (light + dark)",
             "token_tiers": "design-token tiers",
-            "measured_on": "Counted from the repository source tree on 25 September 2026"
+            "measured_on": "Measured on {date}"
         },
         "waves": {
             "wave1": {
@@ -1385,10 +1399,10 @@
         "phases": {
             "eyebrow": "WHAT'S NEXT",
             "title": "A phased roadmap.",
-            "subtitle": "Each phase builds on the previous. The order reflects real technical dependencies, not arbitrary milestones. Open a phase to read every item in full.",
+            "subtitle": "Each phase builds on the previous one. The order follows technical dependencies, not a calendar.",
             "short_term": {
-                "eyebrow": "Q3 2026",
-                "title": "Short term",
+                "eyebrow": "Coming up",
+                "title": "Phase 1",
                 "a11y_audit": {
                     "title": "Overlay a11y audit",
                     "description": "The per-component axe sweep gates CI on an empty violation baseline, so the automated pass is covered. What is missing is the overlay-specific contract: focus trap, focus restoration, aria-modal and Escape are asserted for Dialog, Select and the command palette — Menu, contextual menu, Tooltip, Drawer, Sheet and Snackbar have none."
@@ -1411,8 +1425,8 @@
                 }
             },
             "mid_term": {
-                "eyebrow": "Q4 2026 / Q1 2027",
-                "title": "Mid term",
+                "eyebrow": "After that",
+                "title": "Phase 2",
                 "v3": {
                     "title": "v3.0.0 — Strategy B",
                     "description": "Remove *Styles returns when the value is tokenised. Utility classes become the sole API. ~2× less reactive computation."
@@ -1479,8 +1493,8 @@
                 }
             },
             "long_term": {
-                "eyebrow": "> 6 MONTHS",
-                "title": "Long term",
+                "eyebrow": "Later",
+                "title": "Phase 3",
                 "vapor": {
                     "title": "Vue Vapor mode (exploratory)",
                     "description": "No-virtual-DOM compilation — ~40 % less runtime overhead. POC on 5 pivot components, benchmarks first."

@@ -5,6 +5,7 @@ import type {
     IRoadmapPhase,
     IRoadmapStat
 } from '~/interfaces/roadmap.interface'
+import { BUILD_STATS } from '~/consts/build-stats.const'
 
 /**
  * Hero badge CSS vars — same pattern as why-origam.
@@ -55,12 +56,16 @@ export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
  * engineering and go-to-market state — true, but not what a public roadmap is
  * for. This page says what the LIBRARY does and does not do yet.
  */
+/*
+ * #1545 — `unit_tests` et `guards` ne portent plus de chiffre figé : `{unit}`,
+ * `{e2e}` et `{guards}` viennent de BUILD_STATS (mesuré au build), et la date
+ * de la pastille aussi. `e2e_specs` est fusionné dans `unit_tests`, et
+ * `ci_pipeline` est retiré : son « 20 jobs » n'était mesuré par rien.
+ */
 export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
     { labelKey: 'roadmap.status.npm_published', done: true },
-    { labelKey: 'roadmap.status.ci_pipeline', done: true },
     { labelKey: 'roadmap.status.docs_deployed', done: true },
     { labelKey: 'roadmap.status.unit_tests', done: true },
-    { labelKey: 'roadmap.status.e2e_specs', done: true },
     { labelKey: 'roadmap.status.guards', done: true },
     { labelKey: 'roadmap.status.inspection', done: true },
     { labelKey: 'roadmap.status.sonarqube', done: true },
@@ -73,24 +78,20 @@ export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
 ]
 
 /**
- * Delivered overview stats — exact counts taken from the DS source tree on
- * 2026-09-25, not rounded-down placeholders. All six re-counted on that date;
- * none moved:
- *   96  directories under packages/ds/src/components/ (218 Origam*.vue files)
- *   139 *.composable.ts under packages/ds/src/composables/
- *   6   directories under packages/ds/src/directives/
- *   218 *.story.vue under packages/stories/components/
- *   2   base token themes (light.css + dark.css)
- *   3   token tiers (primitive / semantic / component)
+ * Delivered overview stats (#1545) — the first four come from BUILD_STATS,
+ * measured in the repository at build time (definitions in
+ * build-stats.interface.ts; « stories » = entries of SWEPT_STORIES). The last
+ * two are structural: 2 base token themes (light.css + dark.css) and 3 token
+ * tiers (primitive / semantic / component).
  *
- * `packages/tests/e2e/roadmap.spec.ts` asserts the FIRST value rendered here —
- * change one without the other and that spec goes red.
+ * `packages/tests/e2e/roadmap.spec.ts` asserts the FIRST value rendered here
+ * against BUILD_STATS.
  */
 export const ROADMAP_OVERVIEW_STATS: IRoadmapStat[] = [
-    { value: '96', labelKey: 'roadmap.overview.components', icon: 'mdi-shape-outline' },
-    { value: '139', labelKey: 'roadmap.overview.composables', icon: 'mdi-function-variant' },
-    { value: '6', labelKey: 'roadmap.overview.directives', icon: 'mdi-code-tags' },
-    { value: '218', labelKey: 'roadmap.overview.stories', icon: 'mdi-book-open-variant' },
+    { value: String(BUILD_STATS.componentFamilies), labelKey: 'roadmap.overview.components', icon: 'mdi-shape-outline' },
+    { value: String(BUILD_STATS.composables), labelKey: 'roadmap.overview.composables', icon: 'mdi-function-variant' },
+    { value: String(BUILD_STATS.directives), labelKey: 'roadmap.overview.directives', icon: 'mdi-code-tags' },
+    { value: String(BUILD_STATS.a11ySweptStories), labelKey: 'roadmap.overview.stories', icon: 'mdi-book-open-variant' },
     { value: '2', labelKey: 'roadmap.overview.themes', icon: 'mdi-theme-light-dark' },
     { value: '3', labelKey: 'roadmap.overview.token_tiers', icon: 'mdi-layers-triple-outline' }
 ]

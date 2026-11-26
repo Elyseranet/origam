@@ -10,6 +10,9 @@
 
 import { expect, test } from '@playwright/test'
 
+// @ts-expect-error script .mjs sans déclaration de types
+import { measure } from '../../marketing/scripts/generate-build-stats.mjs'
+
 const BASE = process.env.MARKETING_BASE_URL ?? 'http://localhost:3000'
 
 const CARDS: Array<[string, string]> = [
@@ -29,6 +32,12 @@ test.describe('HomeLibrary section', () => {
         await expect(section).toBeVisible()
         await expect(section.locator('h2')).toHaveCount(1)
         await expect(section.locator('[data-cy^="library-card-"]')).toHaveCount(7)
+    })
+
+    test('#1545 — la légende « Graphiques » porte le nombre de types mesuré au build', async ({ page }) => {
+        await page.goto(BASE, { waitUntil: 'domcontentloaded' })
+        await expect(page.locator('[data-cy="library-card-charts"] .home-library__hint'))
+            .toHaveText(`${ measure().chartTypes } types, from line to heatmap`)
     })
 
     for (const [key, category] of CARDS) {

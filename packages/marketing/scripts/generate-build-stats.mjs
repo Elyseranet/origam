@@ -40,7 +40,8 @@ function block (src, marker, open, close, what) {
     return src.slice(from + 1, to)
 }
 
-export function measure (root = defaultRoot) {
+/** `now` est injectable pour que le test fige la date de mesure. */
+export function measure (root = defaultRoot, now = new Date()) {
     const ds = 'packages/ds'
     // famille = dossier de premier niveau de components/
     const families = fs.readdirSync(path.join(root, ds, 'src/components'), { withFileTypes: true })
@@ -76,7 +77,8 @@ export function measure (root = defaultRoot) {
         directives: countFiles(path.join(root, ds, 'src/directives'), '.directive.ts'),
         architectureGuards,
         license: pkg.license,
-        version: pkg.version
+        version: pkg.version,
+        measuredOn: now.toISOString().slice(0, 10)
     }
     for (const [k, v] of Object.entries(stats)) {
         const ok = typeof v === 'number' ? Number.isInteger(v) && v > 0 : typeof v === 'string' && v.length > 0

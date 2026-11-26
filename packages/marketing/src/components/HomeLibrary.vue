@@ -51,7 +51,7 @@
             <span
               v-if="category.hintKey"
               class="home-library__hint"
-            >{{ t(category.hintKey, category.hintFallback) }}</span>
+            >{{ t(category.hintKey, category.hintFallback, category.hintParams) }}</span>
           </span>
         </origam-card>
       </origam-grid-item>

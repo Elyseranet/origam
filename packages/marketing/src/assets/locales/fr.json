@@ -1032,7 +1032,7 @@
             "navigation": "Navigation",
             "data": "Données",
             "charts": "Graphiques",
-            "charts_hint": "29 types, de la ligne à la heatmap",
+            "charts_hint": "{count} types, de la ligne à la heatmap",
             "feedback": "Alertes et états",
             "overlays": "Fenêtres et menus",
             "layout": "Mise en page"
@@ -1070,6 +1070,22 @@
             "description": "npm i origam, puis le plugin et un premier composant. Sous Nuxt, un module à ajouter.",
             "support": "Origam est libre, sous licence MIT, et maintenu par une seule personne.",
             "support_link": "Soutenir le projet"
+        },
+        "proof": {
+            "title": "Ce que le dépôt permet de vérifier",
+            "intro": "Des chiffres mesurés dans le code, à chaque publication.",
+            "families_label": "familles de composants",
+            "charts_label": "types de graphiques",
+            "a11y_label": "stories testées avec axe-core",
+            "unit_label": "fichiers de tests unitaires",
+            "e2e_label": "fichiers de tests e2e",
+            "license_label": "licence libre",
+            "families_definition": "Un dossier de premier niveau de packages/ds/src/components.",
+            "charts_definition": "Une valeur de l'énumération CHART_TYPE.",
+            "a11y_definition": "Une entrée de SWEPT_STORIES, balayée sur sa variante par défaut ; seules les violations serious et critical bloquent.",
+            "unit_definition": "Un fichier *.spec.ts sous packages/tests/TU : des fichiers, pas un nombre de tests.",
+            "e2e_definition": "Un fichier *.spec.ts sous packages/tests/e2e : des fichiers, pas un nombre de tests.",
+            "license_definition": "Le champ license du paquet publié."
         }
     },
     "installation": {
@@ -1313,7 +1329,7 @@
             "description": "Où en est origam aujourd'hui, ce qui a été livré, et ce qui arrive. Public, honnête, mis à jour à chaque release."
         },
         "hero": {
-            "badge": "v{version} — Vague 4 livrée",
+            "badge": "v{version} — publiée sur npm",
             "title_line1": "Feuille de route.",
             "title_line2": "Honnête & publique.",
             "subtitle": "origam est un design system Vue 3 en phase de démarrage. Voici où nous en sommes aujourd'hui, ce que nous avons livré, et ce qui arrive.",
@@ -1330,17 +1346,15 @@
             "monorepo": "Monorepo en place — 5 packages pnpm workspace (ds, docs, marketing, stories, tests), la bibliothèque publiant toujours depuis packages/ds",
             "bundle_monitoring": "Aucun suivi de la taille du bundle — aucun budget de poids n'est imposé sur les sous-exports",
             "wave4_shipped": "Wave 4 livrée — 13 composants + support des dégradés + OrigamTextMask (v2.6.0)",
-            "ci_pipeline": "Chaîne d'intégration complète — 20 jobs répartis sur 5 workflows : lint, gardes d'architecture, garde des migrations, vérification des types, tests unitaires, builds, contrôle i18n, contrôle de dérive du changelog, e2e, e2e marketing, a11y des composants, a11y marketing et régression visuelle",
             "docs_deployed": "Documentation et stories déployées — la référence VitePress et le build Histoire répondent tous deux en HTTP 200",
-            "unit_tests": "7 192 tests unitaires au vert sur 564 fichiers de specs — 77,8 % des instructions et 79,9 % des lignes couvertes",
-            "e2e_specs": "256 fichiers de specs Playwright pour 218 stories — chaque famille de composants a son garde-fou e2e",
-            "guards": "29 gardes d'architecture sur 29 au vert, et 16 auto-tests sur 16 prouvant que les détecteurs mesurent encore",
+            "unit_tests": "{unit} fichiers de tests unitaires et {e2e} fichiers de tests e2e",
+            "guards": "{guards} garde-fous d'architecture",
             "inspection": "Inspectés le 1er septembre 2026 : 216 composants sur 8 critères — rendu, canal du thème, réactivité, résolution des props, emits, sémantique, cohérence story et doc, chaînes en dur : zéro défaut à cette date",
             "sonarqube": "SonarQube branché avec la couverture des tests unitaires et une quality gate qui bloque sur la sécurité et la criticité",
             "dependency_automation": "Mises à jour de dépendances automatisées — Dependabot ouvre chaque semaine des pull requests groupées pour npm et GitHub Actions",
             "a11y_sweep": "Les overlays n'ont toujours pas d'assertions de piège au focus — un seul composant de toute la famille est couvert, alors que le balayage par composant barre désormais la CI sur une baseline de violations vide",
             "visual_regression": "La régression visuelle est seulement amorcée — la suite en conteneur épinglé ne couvre qu'un composant pour l'instant",
-            "measured_on": "Mesuré sur le dépôt le 25 septembre 2026",
+            "measured_on": "Mesuré le {date}",
             "live_title": "En place aujourd’hui ({count})",
             "pending_title": "Pas encore ({count})"
         },
@@ -1358,7 +1372,7 @@
             "stories": "stories interactives",
             "themes": "thèmes de base (clair + sombre)",
             "token_tiers": "niveaux de design tokens",
-            "measured_on": "Compté dans l’arbre source du dépôt le 25 septembre 2026"
+            "measured_on": "Mesuré le {date}"
         },
         "waves": {
             "wave1": {
@@ -1385,10 +1399,10 @@
         "phases": {
             "eyebrow": "LA SUITE",
             "title": "Une roadmap par phases.",
-            "subtitle": "Chaque phase s’appuie sur la précédente. L’ordre reflète de vraies dépendances techniques, pas des jalons arbitraires. Dépliez une phase pour lire chaque chantier en entier.",
+            "subtitle": "Chaque phase s'appuie sur la précédente. L'ordre suit les dépendances techniques, pas un calendrier.",
             "short_term": {
-                "eyebrow": "Q3 2026",
-                "title": "Court terme",
+                "eyebrow": "Prochainement",
+                "title": "Phase 1",
                 "a11y_audit": {
                     "title": "Audit d'accessibilité des overlays",
                     "description": "Le balayage axe par composant barre la CI sur une baseline de violations vide : la passe automatisée est donc couverte. Ce qui manque est le contrat propre aux overlays — le piège au focus, sa restitution, aria-modal et la touche Échap ne sont assertés que pour Dialog, Select et la palette de commandes ; Menu, menu contextuel, Tooltip, Drawer, Sheet et Snackbar n’en ont aucun."
@@ -1411,8 +1425,8 @@
                 }
             },
             "mid_term": {
-                "eyebrow": "Q4 2026 / Q1 2027",
-                "title": "Moyen terme",
+                "eyebrow": "Ensuite",
+                "title": "Phase 2",
                 "v3": {
                     "title": "v3.0.0 — Strategy B",
                     "description": "Suppression des retours *Styles quand la valeur est tokenisée. Les classes utilitaires deviennent l'unique API. ~2× moins de calcul réactif."
@@ -1479,8 +1493,8 @@
                 }
             },
             "long_term": {
-                "eyebrow": "> 6 MOIS",
-                "title": "Long terme",
+                "eyebrow": "Plus tard",
+                "title": "Phase 3",
                 "vapor": {
                     "title": "Vue Vapor mode (exploratoire)",
                     "description": "Compilation sans virtual DOM — ~40 % moins d'overhead runtime. POC sur 5 composants pivots, benchmarks d'abord."

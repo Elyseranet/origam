@@ -2,6 +2,11 @@
   <article class="home">
     <home-hero />
 
+    <home-proof
+      id="proof"
+      data-cy="section-proof"
+    />
+
     <home-benefits
       id="benefits"
       data-cy="section-benefits"

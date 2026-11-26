@@ -28,6 +28,11 @@ const MARKETING_GREEN_SPECS = [
     // #1517 — la vitrine des themes ouvre le Theme Builder avec le theme precharge.
     'home-themes-builder-link.spec.ts',
 
+    // #1545 — la section « preuves » affiche les chiffres que le build mesure
+    // dans le dépôt (le spec refait la mesure et compare). Admise : 25 passed
+    // en `--repeat-each=5 --retries=0`, 20,1 s, serveur de dev isolé.
+    'home-proof.spec.ts',
+
     // #953 — le catalogue ne peut plus se vider en silence.
     //
     // Ce spec existait depuis longtemps et n'etait execute par AUCUN job :

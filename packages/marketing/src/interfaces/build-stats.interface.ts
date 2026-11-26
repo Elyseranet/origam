@@ -20,4 +20,6 @@ export interface IBuildStats {
     license: string
     /** Champ `version` de packages/ds/package.json. */
     version: string
+    /** Date de la mesure (AAAA-MM-JJ, UTC), c'est-à-dire du build qui a produit l'artefact. */
+    measuredOn: string
 }
