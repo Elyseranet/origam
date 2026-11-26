@@ -434,6 +434,7 @@
             overflow-y: auto;
 
             > div[data-cy='playground-inspector-slot'] {
+                min-height: var(--pg-inspector---stacked-min-height, 14rem);
                 max-height: var(--pg-inspector---stacked-max-height, 28rem);
                 border-block-start: 1px solid var(--pg-inspector---border-color, #e5e5e5);
             }
@@ -457,6 +458,7 @@
         --pg---background-color: #fff;
         --pg---color: #111;
         --pg-preview---stacked-min-height: 240px;
+        --pg-inspector---stacked-min-height: 14rem;
         --pg-inspector---stacked-max-height: 28rem;
         --pg-drawer---stacked-max-height: 20rem;
     }
