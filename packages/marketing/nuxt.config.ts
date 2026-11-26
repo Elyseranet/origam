@@ -184,7 +184,8 @@ export default defineNuxtConfig({
         '~/assets/css/fonts.css',
         'origam/tokens/css/dark',
         '~/assets/css/themes/_shared.css',
-        '~/assets/css/base.css'
+        '~/assets/css/base.css',
+        '~/assets/css/home.css'
     ],
 
     runtimeConfig: {

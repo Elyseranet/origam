@@ -1,9 +1,12 @@
 <template>
   <section
-    class="home-benefits"
+    class="home-benefits home-section"
     :aria-label="t('home.benefits.label', 'Why Origam')"
   >
-    <origam-container class="home-benefits__inner">
+    <origam-container
+class="home-benefits__inner home-container"
+      max-width="none"
+    >
       <origam-row
         tag="ul"
         class="home-benefits__grid"
@@ -68,8 +71,6 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-benefits {
-    padding-block: var(--origam-space---12, 3rem);
-
     &__grid {
         list-style: none;
         margin: 0;

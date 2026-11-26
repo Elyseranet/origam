@@ -1,7 +1,7 @@
 <template>
   <section
     id="library"
-    class="home-library"
+    class="home-library home-container home-section"
     aria-labelledby="library-heading"
   >
     <header class="home-library__intro">
@@ -81,13 +81,6 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-library {
-    padding-block: var(--origam-space---12, 3rem);
-    padding-inline: var(--origam-space---6, 1.5rem);
-    max-width: 80rem;
-    margin-inline: auto;
-    width: 100%;
-    box-sizing: border-box;
-
     &__intro {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
