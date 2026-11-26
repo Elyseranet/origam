@@ -100,7 +100,7 @@
         <origam-code
           :code="installCommand"
           :prompt="HERO_INSTALL_PROMPT"
-          lang="bash"
+          lang="plaintext"
           compact
           copyable
           class="home-hero__install"
