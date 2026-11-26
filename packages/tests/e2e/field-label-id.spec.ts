@@ -30,7 +30,7 @@ for (const [name, storyId] of FIELDS) {
 
             const r = await sb.locator('body').evaluate(() => {
                 const counts: Record<string, number> = {}
-                document.querySelectorAll('.origam-field [id], .origam-field[id]').forEach((e) => { counts[e.id] = (counts[e.id] ?? 0) + 1 })
+                document.querySelectorAll('[id]').forEach((e) => { counts[e.id] = (counts[e.id] ?? 0) + 1 })
                 const dups = Object.entries(counts).filter(([, n]) => n > 1).map(([id]) => id)
                 const labels = [...document.querySelectorAll('label.origam-field__label[for]')]
                 const badFor = labels.filter((l) => {
@@ -53,7 +53,6 @@ test('axe duplicate-id : zero violation sur TextField', async ({ page }) => {
     const sb = page.frameLocator('iframe[src*="__sandbox"]')
     await expect(sb.locator('label.origam-field__label').first()).toBeAttached({ timeout: 15000 })
     const res = await new AxeBuilder({ page }).withRules(['duplicate-id', 'duplicate-id-aria']).analyze()
-    // Le wrapper `origam-app` du bac a sable duplique son propre id (hors perimetre) : on ne garde que les noeuds du champ.
-    const nodes = res.violations.flatMap((v) => v.nodes.map((n) => `${v.id} ${n.html}`)).filter((h) => h.includes('origam-field') || h.includes('origam-label') || h.includes('input-v-'))
+    const nodes = res.violations.flatMap((v) => v.nodes.map((n) => `${v.id} ${n.html}`))
     expect(nodes).toEqual([])
 })
