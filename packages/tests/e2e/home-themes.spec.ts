@@ -5,7 +5,7 @@
  * 1. The <section> renders with aria-labelledby="themes-title".
  * 2. Eyebrow <p> contains the i18n value "THEMING".
  * 3. <h2> title is present and non-empty.
- * 4. Exactly 7 brand chips are rendered.
+ * 4. No brand chip is rendered any more (#1515).
  * 5. Exactly 4 preview tiles are rendered.
  * 6. Both tooling mentions (tokens.studio / Style Dictionary v4) are visible.
  * 7. No raw i18n key leakage.
@@ -17,8 +17,6 @@
  */
 
 import { expect, test } from '@playwright/test'
-
-import { readSettledStyle } from './_support/settled-style'
 
 test.describe('HomeThemes section', () => {
 
@@ -61,31 +59,11 @@ test.describe('HomeThemes section', () => {
         await expect(h2).toContainText('One design system')
     })
 
-    // ── 4. Exactly 8 brand chips (Origam inclus en v5-phase1) ──────────────
+    // ── 4. #1515 — plus de sélecteur de marque du site ──────────────────────
 
-    test('renders exactly 8 brand chips (Origam + 7 variants)', async ({ page }) => {
-        const chips = page.locator('section.home-themes .home-themes__chips .origam-chip')
-        await expect(chips).toHaveCount(8)
-    })
-
-    test('all 8 brand chip labels are visible', async ({ page }) => {
-        const section = page.locator('section.home-themes')
-        await expect(section).toContainText('Origam')
-        await expect(section).toContainText('Glass')
-        await expect(section).toContainText('Geek')
-        await expect(section).toContainText('Cartoon')
-        await expect(section).toContainText('Editorial')
-        await expect(section).toContainText('Material')
-        await expect(section).toContainText('Ecom')
-        await expect(section).toContainText('Apple')
-    })
-
-    test('chips have data-cy attributes', async ({ page }) => {
-        const chipKeys = ['origam', 'glass', 'geek', 'cartoon', 'editorial', 'material', 'ecom', 'apple']
-        for (const key of chipKeys) {
-            const chip = page.locator(`[data-cy="themes-chip-${key}"]`)
-            await expect(chip).toBeVisible()
-        }
+    test('ne rend plus de chips de marque : le site n\'a plus de sélecteur de thème (#1515)', async ({ page }) => {
+        await expect(page.locator('section.home-themes .home-themes__chips')).toHaveCount(0)
+        await expect(page.locator('[data-cy^="themes-chip-"]')).toHaveCount(0)
     })
 
     // ── 5. Exactly 4 preview tiles ─────────────────────────────────────────
@@ -241,91 +219,4 @@ test.describe('HomeThemes section', () => {
         const text = await section.textContent()
         expect(text).not.toContain('home.themes.')
     })
-})
-
-/**
- * Selected-chip contrast (#28) — the active theme chip (data-active="true")
- * pairs a solid brand-colour fill with its own text colour. `OrigamChip`
- * binds resting-state `color` as an INLINE style (useBothColor →
- * --origam-color__action--primary---fgSubtle), which always outranks any
- * external CSS rule regardless of specificity — so every theme's active-chip
- * text override needed `!important` to actually take effect. Verified via
- * WCAG contrast ratio (not just "is it white/dark") because the fix for
- * ecom/apple/origam dark mode required darkening the fill itself, not just
- * swapping to white text (their brand accent is too light for white text
- * to reach 4.5:1 even once the inline-style override works).
- */
-test.describe('HomeThemes section · selected chip contrast (#28)', () => {
-    const COMBOS: Array<{ theme: string; mode: 'light' | 'dark' }> = [
-        { theme: 'origam', mode: 'light' }, { theme: 'origam', mode: 'dark' },
-        { theme: 'glass', mode: 'light' }, { theme: 'glass', mode: 'dark' },
-        { theme: 'cartoon', mode: 'light' }, { theme: 'cartoon', mode: 'dark' },
-        { theme: 'geek', mode: 'light' }, { theme: 'geek', mode: 'dark' },
-        { theme: 'ecom', mode: 'light' }, { theme: 'ecom', mode: 'dark' },
-        { theme: 'editorial', mode: 'light' }, { theme: 'editorial', mode: 'dark' },
-        { theme: 'apple', mode: 'light' }, { theme: 'apple', mode: 'dark' },
-        { theme: 'material', mode: 'light' }, { theme: 'material', mode: 'dark' }
-    ]
-
-    function relativeLuminance ({ r, g, b }: { r: number; g: number; b: number }): number {
-        const linearize = (c: number): number => {
-            const s = c / 255
-            return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4)
-        }
-        return 0.2126 * linearize(r) + 0.7152 * linearize(g) + 0.0722 * linearize(b)
-    }
-
-    function parseRgb (value: string): { r: number; g: number; b: number } | null {
-        const m = value.match(/rgba?\(([^)]+)\)/)
-        if (!m) return null
-        const [r, g, b] = m[1].split(',').map(s => parseFloat(s.trim()))
-        return { r, g, b }
-    }
-
-    function contrastRatio (fg: string, bg: string): number | null {
-        const fgRgb = parseRgb(fg)
-        const bgRgb = parseRgb(bg)
-        if (!fgRgb || !bgRgb) return null
-        const l1 = relativeLuminance(fgRgb)
-        const l2 = relativeLuminance(bgRgb)
-        const [lighter, darker] = l1 > l2 ? [l1, l2] : [l2, l1]
-        return (lighter + 0.05) / (darker + 0.05)
-    }
-
-    for (const { theme, mode } of COMBOS) {
-        test(`selected "${theme}" chip text meets 4.5:1 against its fill — ${mode}`, async ({ page }) => {
-            await page.context().addCookies([
-                { name: 'origam-theme', value: theme, url: 'http://localhost:3000' },
-                { name: 'origam-mode', value: mode, url: 'http://localhost:3000' }
-            ])
-            await page.goto('/', { waitUntil: 'load' })
-            // Dev server Nuxt : `networkidle` n'arrive jamais (SSE d'erreur). On
-            // attend l'hydratation — avant elle le chip porte le style SSR, stable
-            // mais pas final (ecom/dark 3.83, apple/dark 4.33 mesurés ainsi).
-            await page.waitForFunction(() => {
-                const w = window as unknown as { useNuxtApp?: () => { isHydrating: boolean } }
-                return w.useNuxtApp !== undefined && !w.useNuxtApp().isHydrating
-            })
-
-            const chip = page.locator(`[data-cy="themes-chip-${theme}"]`)
-            await expect(chip).toBeVisible()
-            await expect(chip).toHaveAttribute('data-active', 'true')
-
-            // Le chip transitionne color/background quand le thème s'applique : une
-            // lecture synchrone attrape une valeur à mi-course (ecom/dark 3.83,
-            // apple/dark 4.33 mesurés ainsi, alors que le rendu posé est blanc/AA).
-            const styles = await readSettledStyle(() => chip.evaluate((el) => {
-                const cs = getComputedStyle(el)
-                return { color: cs.color, backgroundColor: cs.backgroundColor }
-            }))
-
-            const ratio = contrastRatio(styles.color, styles.backgroundColor)
-            expect(ratio, `could not parse computed colours: ${JSON.stringify(styles)}`).not.toBeNull()
-            expect(
-                ratio!,
-                `selected chip text/fill contrast is ${ratio} under ${theme}/${mode} ` +
-                `(color=${styles.color}, background=${styles.backgroundColor}) — WCAG AA needs >= 4.5`
-            ).toBeGreaterThanOrEqual(4.5)
-        })
-    }
 })

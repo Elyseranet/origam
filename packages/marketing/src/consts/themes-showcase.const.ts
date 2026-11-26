@@ -8,23 +8,7 @@ import type { IThemeChip, IThemePreviewTile } from '~/interfaces/themes-showcase
 export const HOME_THEMES_BUILDER_HREF = '/theming'
 
 /**
- * Theme chips — Origam first (the DS baseline identity), then alphabetical variants.
- * Rendered as a plain flex-wrap <ul> (no OrigamChipGroup slide behaviour).
- */
-export const THEME_CHIPS: IThemeChip[] = [
-    { key: 'origam', labelKey: 'home.themes.chip_origam', labelFallback: 'Origam' },
-    { key: 'glass', labelKey: 'home.themes.chip_glass', labelFallback: 'Glass' },
-    { key: 'geek', labelKey: 'home.themes.chip_geek', labelFallback: 'Geek' },
-    { key: 'cartoon', labelKey: 'home.themes.chip_cartoon', labelFallback: 'Cartoon' },
-    { key: 'editorial', labelKey: 'home.themes.chip_editorial', labelFallback: 'Editorial' },
-    { key: 'material', labelKey: 'home.themes.chip_material', labelFallback: 'Material' },
-    { key: 'ecom', labelKey: 'home.themes.chip_ecom', labelFallback: 'Ecom' },
-    { key: 'apple', labelKey: 'home.themes.chip_apple', labelFallback: 'Apple' },
-]
-
-/**
- * Tooling meta line — monospaced, grey, displayed below the chips as a
- * separate <p> row (NOT inside the chip group / carousel).
+ * Tooling meta line — monospaced, grey, displayed as a separate <p> row.
  */
 export const THEMES_TOOLING_TEXT: IThemeChip[] = [
     { key: 'theming', labelKey: 'home.themes.tooling_theming', labelFallback: '→ props-first theming, whole catalogue' },

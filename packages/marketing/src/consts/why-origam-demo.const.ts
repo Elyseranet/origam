@@ -14,8 +14,8 @@ import { origamThemes } from '~/themes/origam.theme'
  *
  * ⛔ MEASURED, not assumed: these are the theme NAMES that actually emit a
  * `[data-theme="…"]` token block in the running app. The legacy `sobre` name
- * is gone (#245): the `THEME_CHIPS` chip is now `origam`, the baseline
- * identity listed first below.
+ * is gone (#245): the `origam` identity is the baseline,
+ * listed first below.
  */
 export const WHY_DEMO_THEMES: ReadonlyArray<{ key: string, themes: IOrigamTheme[] }> = [
     { key: 'origam', themes: origamThemes },

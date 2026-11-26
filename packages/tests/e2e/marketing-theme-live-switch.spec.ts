@@ -1,131 +1,109 @@
 /**
- * Live theme switch — component PROPS follow the brand/mode change without
- * a reload (#275).
+ * Les sous-arbres rendent leur thème, et le site reste `origam` (#275, #1515)
  *
- * Root cause: a consuming app can alias the DS's Nuxt module to *source*
- * (dev-mode convenience/HMR) while every other DS import resolves to the
- * *compiled* package export — two different files on disk, hence two
- * independent module instances of `theme.composable.ts`, each with its own
- * `_theme`/`_mode` singleton. `setTheme()` called through the instance the
- * header's theme switcher uses never notified the Nuxt plugin's watcher
- * (living on the OTHER instance), which is what reassigns `_defaultsRef`
- * (component default PROPS driven by `theme.components`). Symptom: cssVars
- * (plain CSS cascade, `data-theme` attribute — nothing to do with this
- * module) kept updating live, but any prop resolved through `useDefaults()`
- * (`rounded`, `elevation`, `border`, …) froze on the theme active at initial
- * load until a full reload re-seeded both instances from the same cookie.
+ * ## Contrat (#1515, décision propriétaire 2026-11-26)
  *
- * Fix: the singleton now anchors on `globalThis` on the client, surviving
- * module duplication regardless of its exact cause.
+ * Le site n'a plus de sélecteur de thème de marque : `<html data-theme>` reste
+ * `origam`. Les 8 marques restent enregistrées pour les SOUS-ARBRES
+ * (`<OrigamThemeProvider theme="…">`) : la démo de `/why-origam` et les tuiles
+ * de la home.
  *
- * ⛔ Re-opened 2026-09-18, then re-measured and closed again: the box-shadow
- * assertion below used to read `document.querySelector('.origam-btn')` —
- * the FIRST `.origam-btn` in DOM order on this page, which is a header NAV
- * LINK ("Introduction") rendered with an EXPLICIT `variant="text"`. A
- * text-variant button structurally renders `box-shadow: none` (see
- * `OrigamBtn.vue`'s scoped SCSS, `&--variant-text { box-shadow: none; }`),
- * by design, for EVERY brand — the assertion was measuring a button that
- * can never show elevation, regardless of whether the live-switch mechanism
- * works. Verified against the SAME commit with a DOM enumeration of all 23
- * `.origam-btn` instances on the homepage after a live switch to `cartoon`:
- * every ACTUAL outlined button (unmodified `variant`, e.g. the theme
- * switcher trigger itself) correctly shows `rgb(23, 23, 23) 3px 3px 0px 0px`
- * — the cartoon signature shadow — and reverts correctly on switching away.
- * The mechanism was never broken; the selector was. Now targets the theme
- * switcher trigger button itself (`data-cy="theme-switcher-trigger"`,
- * `packages/marketing/src/layouts/default.vue`), which never has an explicit
- * `variant`/`rounded`/`elevation` override, so its box-shadow / border-radius
- * are driven ENTIRELY by the active theme's `origam-btn` defaults — a stable,
- * unambiguous target for this assertion (also used to trigger the switch, so
- * click target and measurement target are the same element).
+ * ## Ce que ce fichier garde de #275
  *
- * Prerequisites: marketing dev server (or MARKETING_BASE_URL env var). Run:
- *   pnpm -F @origam/tests playwright test --config=playwright.marketing.config.ts
- *   e2e/marketing-theme-live-switch.spec.ts
+ * #275 : les PROPS de composant résolues par `theme.components` (`rounded`,
+ * `elevation`, `border`, …) doivent suivre un changement de marque en direct,
+ * pas seulement les cssVars. Le déclencheur n'est plus le menu de l'appbar mais
+ * le radiogroup d'identités de la démo `/why-origam` : on mesure un style piloté
+ * par les props (rayon, ombre) sur un bouton du stage, sans recharger.
+ *
+ * ⛔ Le bouton est dans le stage (sous-arbre) ; `<html>` ne change JAMAIS — c'est
+ * l'autre moitié de l'assertion : un changement de marque dans un sous-arbre ne
+ * doit pas repeindre le site.
+ *
+ * Run :
+ *   MARKETING_BASE_URL=http://localhost:3011 pnpm -F @origam/tests exec \
+ *     playwright test --config=playwright.marketing.config.ts marketing-theme-live-switch
  */
 
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
-const THEME_TRIGGER_SELECTOR = '[data-cy="theme-switcher-trigger"]'
+const STAGE_BUTTON = '[data-cy="why-demo-stage"] [data-cy="why-demo-card-secondary"]'
 
-async function switchThemeLive (page: import('@playwright/test').Page, key: string): Promise<void> {
-    await page.locator(THEME_TRIGGER_SELECTOR).click()
-    await page.locator(`[data-cy="theme-menu-${key}"]`).click()
-    // Let the reactive watcher chain (theme ref -> resolvedMode computed ->
-    // Nuxt plugin watcher -> _defaultsRef reassignment -> useDefaults()
-    // computeds -> re-render) settle. No reload anywhere in this test.
-    await page.waitForTimeout(400)
+/**
+ * Re-clique tant que le stage ne porte pas l'identité demandée : avant
+ * l'hydratation le clic réussit pour Playwright mais n'attache rien (mesuré :
+ * 2 échecs sur 3 avec un clic unique). Re-cliquer sur l'identité déjà active est
+ * sans effet. Aucun rechargement.
+ */
+async function pickIdentity (page: Page, key: string): Promise<void> {
+    await expect.poll(async () => {
+        if (await stageTheme(page) !== key) {
+            await page.locator(`[data-cy="why-demo-identity-${key}"]`).click()
+            await page.waitForTimeout(250)
+        }
+        return stageTheme(page)
+    }, { timeout: 20_000, message: `le stage n'a jamais pris l'identité ${ key }` }).toBe(key)
+    // Laisse la chaîne réactive (thème -> defaults -> rendu) se poser.
+    await page.waitForTimeout(500)
 }
 
-test.describe('Live theme switch — props follow the switch, not just cssVars (#275)', () => {
+const stageTheme = (page: Page) => page.evaluate(() => document.querySelector('[data-cy="why-demo-stage"]')?.getAttribute('data-theme') ?? null)
+
+async function stageButtonStyle (page: Page): Promise<{ radius: string, shadow: string }> {
+    return page.evaluate((sel) => {
+        const btn = document.querySelector(sel)
+        const cs = btn ? getComputedStyle(btn) : null
+        return { radius: cs?.borderTopLeftRadius ?? '', shadow: cs?.boxShadow ?? '' }
+    }, STAGE_BUTTON)
+}
+
+const siteTheme = (page: Page) => page.evaluate(() => document.documentElement.getAttribute('data-theme'))
+
+test.describe('Sous-arbres — les props suivent la marque du sous-arbre, le site reste origam', () => {
     test.beforeEach(async ({ page }) => {
-        await page.context().addCookies([
-            { name: 'origam-theme', value: 'origam', url: 'http://localhost:3000' },
-            { name: 'origam-mode', value: 'light', url: 'http://localhost:3000' }
-        ])
-        await page.goto('/')
-        await page.waitForLoadState('networkidle')
+        await page.goto('/why-origam')
+        await page.waitForSelector('[data-cy="why-demo-stage"]')
     })
 
-    test('switching brand via the header updates a props-driven style (border-radius) without reload', async ({ page }) => {
-        const before = await page.evaluate((sel) => {
-            const btn = document.querySelector(sel)
-            return btn ? getComputedStyle(btn).borderRadius : null
-        }, THEME_TRIGGER_SELECTOR)
-        expect(before).not.toBeNull()
+    test('changer l\'identité du stage change un style piloté par les props, sans toucher <html>', async ({ page }) => {
+        const before = await stageButtonStyle(page)
+        expect(before.radius).not.toBe('')
 
-        await switchThemeLive(page, 'cartoon')
+        await pickIdentity(page, 'cartoon')
+        const cartoon = await stageButtonStyle(page)
 
-        const after = await page.evaluate((sel) => {
-            const btn = document.querySelector(sel)
-            return {
-                borderRadius: btn ? getComputedStyle(btn).borderRadius : null,
-                dataTheme: document.documentElement.getAttribute('data-theme')
-            }
-        }, THEME_TRIGGER_SELECTOR)
-
-        expect(after.dataTheme, 'data-theme attribute must reflect the click immediately').toBe('cartoon')
+        expect(await siteTheme(page), '<html data-theme> ne doit pas suivre l\'identité du stage').toBe('origam')
         expect(
-            after.borderRadius,
-            'border-radius (driven by the `rounded` prop, resolved through useDefaults()) must change once the theme switch propagates to _defaultsRef — if it stays equal to the value before the click, the plugin watcher is not reaching the same theme singleton the header switcher uses'
-        ).not.toBe(before)
+            cartoon,
+            'rayon / ombre (props `rounded` / `elevation` résolues par theme.components) doivent changer avec l\'identité du sous-arbre'
+        ).not.toEqual(before)
+        // Ombre signature de cartoon : décalage dur 3px 3px — valeur piloté par les props, distincte par marque.
+        expect(cartoon.shadow).toContain('3px 3px 0px 0px')
+
+        await pickIdentity(page, 'geek')
+        expect(await stageButtonStyle(page), 'une 2e bascule ne doit pas rester collée sur cartoon').not.toEqual(cartoon)
+        expect(await siteTheme(page)).toBe('origam')
     })
 
-    test('switching brand via the header updates a props-driven box-shadow (elevation/shadow) without reload', async ({ page }) => {
-        await switchThemeLive(page, 'cartoon')
-        const cartoonShadow = await page.evaluate((sel) => {
-            const btn = document.querySelector(sel)
-            return btn ? getComputedStyle(btn).boxShadow : null
-        }, THEME_TRIGGER_SELECTOR)
-        // Cartoon's signature hard offset shadow (rgb(23,23,23) 3px 3px 0 0) —
-        // a prop-driven value, distinct per theme, unrelated to any cssVar
-        // that would update regardless of this bug.
-        expect(cartoonShadow).not.toBe('none')
-        expect(cartoonShadow).toContain('3px 3px 0px 0px')
+    test('revenir à origam restitue le style d\'origine', async ({ page }) => {
+        await pickIdentity(page, 'origam')
+        const original = await stageButtonStyle(page)
 
-        await switchThemeLive(page, 'geek')
-        const geekShadow = await page.evaluate((sel) => {
-            const btn = document.querySelector(sel)
-            return btn ? getComputedStyle(btn).boxShadow : null
-        }, THEME_TRIGGER_SELECTOR)
-        expect(geekShadow, 'switching again must produce a DIFFERENT prop-driven shadow, not the cartoon one stuck from the previous click').not.toBe(cartoonShadow)
+        await pickIdentity(page, 'cartoon')
+        await pickIdentity(page, 'geek')
+        await pickIdentity(page, 'origam')
+
+        expect(await stageButtonStyle(page)).toEqual(original)
+        expect(await siteTheme(page)).toBe('origam')
     })
 
-    test('switching back to the original brand restores its original props-driven style', async ({ page }) => {
-        const original = await page.evaluate((sel) => {
-            const btn = document.querySelector(sel)
-            return btn ? getComputedStyle(btn).borderRadius : null
-        }, THEME_TRIGGER_SELECTOR)
+    test('les 8 marques restent enregistrées : chacune est proposée et rend son propre data-theme', async ({ page }) => {
+        const brands = ['origam', 'apple', 'cartoon', 'ecom', 'editorial', 'geek', 'glass', 'material']
 
-        await switchThemeLive(page, 'cartoon')
-        await switchThemeLive(page, 'geek')
-        await switchThemeLive(page, 'origam')
-
-        const restored = await page.evaluate((sel) => {
-            const btn = document.querySelector(sel)
-            return btn ? getComputedStyle(btn).borderRadius : null
-        }, THEME_TRIGGER_SELECTOR)
-
-        expect(restored).toBe(original)
+        for (const key of brands) {
+            await pickIdentity(page, key)
+            expect(await stageTheme(page), `le stage doit porter data-theme="${ key }"`).toBe(key)
+            expect(await siteTheme(page)).toBe('origam')
+        }
     })
 })

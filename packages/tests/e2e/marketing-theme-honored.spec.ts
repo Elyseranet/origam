@@ -1,46 +1,24 @@
 /**
- * Le thème servi par le serveur est-il encore là après hydratation ? (#835)
+ * Le thème servi par le serveur est-il encore là après hydratation, et le
+ * cookie de marque d'un ancien visiteur est-il ignoré ? (#835, #1515)
  *
- * ## Le défaut que ce fichier garde
+ * ## Contrat (#1515, décision propriétaire 2026-11-26)
  *
- * `packages/marketing/nuxt.config.ts` portait, dans `app.head.htmlAttrs`, un
- * couple d'attributs EN DUR :
+ * Le site n'a plus de sélecteur de thème de marque : il rend TOUJOURS `origam`.
+ * Un ancien visiteur dont le cookie `origam-theme` vaut `cartoon` (ou tout autre
+ * thème) voit `origam`, rechargement compris. Le cookie de MODE reste honoré,
+ * et le bouton clair / sombre reste.
  *
- *     htmlAttrs: { lang: …, 'data-theme': 'geek', 'data-mode': 'light' }
+ * ## Le défaut #835 que ce fichier garde toujours
  *
- * posé le 2026-06-12 (`958a1b6fa`, « self-sufficient theme layer »), à une
- * époque où le site n'avait que deux thèmes de démonstration. Il a survécu au
- * passage de `defaultTheme` à `'origam'` (2026-06-27, `df88e8d24`) et à tout
- * ce qui a suivi.
- *
- * Conséquence, MESURÉE et non déduite : le serveur rend le bon thème, puis
- * unhead réécrit `<html>` ~1,3 s plus tard et le remplace par `geek`. Trace
- * d'appel capturée en patchant `documentElement.setAttribute` :
- *
- *     +1117 ms  data-theme="origam"   applyToDocument  (theme.composable.ts)
- *     +1296 ms  data-theme="origam"   applyToDocument
- *     +1359 ms  data-theme="geek"     trackCtx → _renderDOMHead  (unhead)
- *
- * Le dernier write gagne. Portée relevée sur le serveur de dev, 7 cas sur 7 :
- *
- *     /            cookie=—        SERVI=origam            APRÈS=geek
- *     /components  cookie=—        SERVI=origam            APRÈS=geek
- *     /roadmap     cookie=—        SERVI=origam            APRÈS=geek
- *     /theming     cookie=—        SERVI=origam            APRÈS=geek
- *     /            cookie=cartoon  SERVI=cartoon           APRÈS=geek
- *     /            cookie=glass    SERVI=glass             APRÈS=geek
- *     /            cookie=cartoon  SERVI=cartoon/dark      APRÈS=geek/light
- *
- * Les DEUX axes sont écrasés : la marque ET le clair/sombre. Autrement dit le
- * sélecteur de thème du site ne survivait à aucun rechargement, pour aucun
- * visiteur, sur aucune page, depuis trois mois.
- *
- * ## Ce que ce fichier assert, et pourquoi sous cette forme
- *
- * Il ne compare PAS à une valeur en dur — ce serait reproduire le défaut d'en
- * face. Il compare l'attribut SERVI par le serveur à celui présent APRÈS
- * hydratation : si quelque chose réécrit `<html>` dans le dos du rendu, les
- * deux divergent, quel que soit le thème par défaut du jour.
+ * `app.head.htmlAttrs` portait `data-theme` / `data-mode` en dur ; unhead
+ * réécrivait `<html>` ~1,3 s après l'hydratation, par-dessus ce que le serveur
+ * avait rendu — la marque ET le mode. Une lecture « après hydratation » ne
+ * l'attrape pas (la réécriture arrive tard) : on enregistre CHAQUE écriture de
+ * `data-theme` / `data-mode` sur une fenêtre d'observation, et on compare à ce
+ * que le serveur a envoyé. Pour le mode, c'est le test « le mode choisi survit »
+ * qui l'attrape (la valeur écrite par unhead et celle du serveur coïncident
+ * sinon avec le défaut).
  *
  * Run :
  *   MARKETING_BASE_URL=http://localhost:3011 pnpm -F @origam/tests exec \
@@ -52,23 +30,16 @@ import { expect, test, type Page, type Response } from '@playwright/test'
 /** Les pages échantillonnées — une par famille de layout. */
 const SAMPLED_PATHS = ['/', '/components', '/roadmap']
 
-/** Un couple marque + mode qu'un visiteur peut avoir choisi. */
-const PICKED_BRAND = 'cartoon'
+/** Le mode qu'un visiteur peut avoir choisi, et la marque d'un ancien choix. */
 const PICKED_MODE = 'dark'
+const STALE_BRAND_COOKIE = 'cartoon'
 
 /**
- * L'apparence du site quand le visiteur n'a rien choisi — décision mainteneur
- * (2026-09-17) : `geek` reste ce que le site montre.
- *
- * ⛔ Elle est épinglée ici parce qu'elle doit tenir EN MÊME TEMPS que la
- * persistance testée plus bas. C'est tout l'enjeu de la correction : l'ancienne
- * implémentation obtenait cette apparence-ci en écrasant le choix du visiteur.
- * Un test qui ne vérifierait que l'une des deux laisserait repasser le défaut.
- *
- * Source de vérité : `origam.defaultTheme` / `origam.defaultMode` dans
+ * L'apparence du site, toujours. Source de vérité : `origam.defaultTheme` dans
  * `packages/marketing/nuxt.config.ts`.
  */
-const DEFAULT_BRAND = 'geek'
+const DEFAULT_BRAND = 'origam'
+
 /**
  * #1103 — `defaultMode: 'auto'` : sans préférence stockée, le serveur n'épingle
  * AUCUN mode (pas de `data-mode` dans le HTML servi) et laisse le `@media
@@ -107,19 +78,7 @@ interface IAttrWrite {
     value: string
 }
 
-/**
- * Enregistre CHAQUE écriture de `data-theme` / `data-mode` sur `<html>`.
- *
- * ⛔ C'est le point de conception de ce fichier. Une simple lecture de
- * l'attribut « après hydratation » ne suffit pas : la réécriture fautive
- * arrive ~1,36 s après la navigation, donc une version antérieure de cette
- * spec — qui lisait après deux `requestAnimationFrame` — passait AU VERT SUR
- * LE CODE DÉFECTUEUX. Vérifié en la jouant contre le produit non corrigé :
- * 4 passed. Une spec verte des deux côtés ne prouve rien.
- *
- * On observe donc l'INVARIANT (« rien ne réécrit ces attributs ») sur une
- * fenêtre, au lieu d'échantillonner un instant.
- */
+/** Enregistre CHAQUE écriture de `data-theme` / `data-mode` sur `<html>`. */
 async function recordAttrWrites (page: Page): Promise<void> {
     await page.addInitScript(() => {
         const store: IAttrWrite[] = []
@@ -139,14 +98,9 @@ async function recordAttrWrites (page: Page): Promise<void> {
 }
 
 /**
- * Laisse passer la fenêtre d'observation : hydratation, puis le rendu du
- * `<head>` par unhead qui la suit.
- *
- * ⛔ Ce n'est PAS un délai posé pour faire passer un test instable — il n'y a
- * rien à attendre qui deviendrait vrai. C'est la durée pendant laquelle on
- * SURVEILLE que rien ne change : la réécriture mesurée tombe à +1,36 s, la
- * fenêtre est prise à plus du double. Un test qui « attend l'état » n'a pas de
- * sens pour une propriété de non-événement.
+ * Durée pendant laquelle on SURVEILLE que rien ne change : la réécriture mesurée
+ * tombe à +1,36 s, la fenêtre est prise à plus du double. Ce n'est pas un délai
+ * posé pour faire passer un test instable — c'est une propriété de non-événement.
  */
 const OBSERVATION_WINDOW_MS = 3_500
 
@@ -180,10 +134,10 @@ function divergentWrites (writes: IAttrWrite[], served: IThemeAttrs): IAttrWrite
     return writes.filter(w => w.value !== (w.name === 'data-theme' ? served.theme : (served.mode ?? SYSTEM_MODE)))
 }
 
-test.describe('Thème marketing — ce que le serveur rend survit à l\'hydratation', () => {
+test.describe('Thème marketing — toujours origam, le mode seul est au choix du visiteur', () => {
 
     for (const path of SAMPLED_PATHS) {
-        test(`${path} — rend "${ DEFAULT_BRAND }" par défaut, et rien ne le réécrit côté client`, async ({ page }) => {
+        test(`${path} — rend "${ DEFAULT_BRAND }", et rien ne le réécrit côté client`, async ({ page }) => {
             await page.emulateMedia({ colorScheme: SYSTEM_MODE })
             await recordAttrWrites(page)
 
@@ -192,8 +146,7 @@ test.describe('Thème marketing — ce que le serveur rend survit à l\'hydratat
 
             expect(
                 served.theme,
-                `${path} : sans préférence stockée, le site doit rendre "${ DEFAULT_BRAND }" ` +
-                `(origam.defaultTheme dans nuxt.config.ts)`
+                `${path} : le site doit rendre "${ DEFAULT_BRAND }" (origam.defaultTheme dans nuxt.config.ts)`
             ).toBe(DEFAULT_BRAND)
 
             expect(
@@ -207,40 +160,21 @@ test.describe('Thème marketing — ce que le serveur rend survit à l\'hydratat
                 `(servi data-theme="${ served.theme }" data-mode="${ served.mode }")`
             ).toEqual([])
 
-            expect(
-                hydrated.theme,
-                `${path} : le serveur a rendu data-theme="${ served.theme }", la page affiche "${ hydrated.theme }" après hydratation`
-            ).toBe(served.theme)
-
-            expect(
-                hydrated.mode,
-                `${path} : le serveur a rendu data-mode="${ served.mode }", la page affiche "${ hydrated.mode }" après hydratation`
-            ).toBe(served.mode ?? SYSTEM_MODE)
+            expect(hydrated.theme, `${path} : data-theme après hydratation`).toBe(served.theme)
+            expect(hydrated.mode, `${path} : data-mode après hydratation`).toBe(served.mode ?? SYSTEM_MODE)
         })
     }
 
     /**
-     * ⛔ CE TEST EST LE SEUL QUI ATTRAPE LA RÉGRESSION. Ne pas le retirer en
-     * jugeant les trois précédents suffisants — contrôle positif mesuré.
-     *
-     * En réintroduisant `'data-theme': 'geek'` dans `app.head.htmlAttrs`, le
-     * défaut exact d'origine, avec `origam.defaultTheme: 'geek'` en place :
-     *
-     *     ✓ / — rend "geek" par défaut …                    (3 tests VERTS)
-     *     ✘ le couple marque + mode … survit au rechargement
-     *       « marque choisie "cartoon" perdue à l'hydratation — <html> affiche "geek" »
-     *
-     * Les trois tests d'apparence par défaut **passent**, parce que la valeur
-     * écrite par unhead et celle rendue par le serveur coïncident alors. Le
-     * défaut n'est visible QUE du point de vue d'un visiteur qui a choisi autre
-     * chose. C'est précisément ainsi qu'il a vécu trois mois sans être vu : son
-     * symptôme EST l'apparence normale du site.
+     * #1515 — un ancien visiteur : cookie de marque `cartoon` + cookie de mode
+     * `dark`. La marque est ignorée (serveur ET après hydratation, rechargement
+     * compris) ; le mode reste honoré.
      */
-    test('le couple marque + mode choisi par le visiteur survit au rechargement', async ({ page, context }) => {
+    test('le cookie de marque d\'un ancien visiteur est ignoré, son mode est honoré, rechargement compris', async ({ page, context }) => {
         const baseURL = test.info().project.use.baseURL!
 
         await context.addCookies([
-            { name: 'origam-theme', value: PICKED_BRAND, url: baseURL },
+            { name: 'origam-theme', value: STALE_BRAND_COOKIE, url: baseURL },
             { name: 'origam-mode', value: PICKED_MODE, url: baseURL }
         ])
 
@@ -249,18 +183,53 @@ test.describe('Thème marketing — ce que le serveur rend survit à l\'hydratat
         const response = await page.goto('/')
         const { served, hydrated } = await readBothSides(page, response)
 
-        expect(served.theme, 'le serveur devrait honorer le cookie de marque').toBe(PICKED_BRAND)
-        expect(served.mode, 'le serveur devrait honorer le cookie de mode').toBe(PICKED_MODE)
+        expect(served.theme, 'le serveur ne doit plus honorer le cookie de marque').toBe(DEFAULT_BRAND)
+        expect(served.mode, 'le serveur doit honorer le cookie de mode').toBe(PICKED_MODE)
+        expect(hydrated.theme, `la page affiche "${ hydrated.theme }" après hydratation`).toBe(DEFAULT_BRAND)
+        expect(hydrated.mode, `le mode choisi "${ PICKED_MODE }" est perdu à l'hydratation`).toBe(PICKED_MODE)
 
-        expect(
-            hydrated.theme,
-            `marque choisie "${ PICKED_BRAND }" perdue à l'hydratation — <html> affiche "${ hydrated.theme }"`
-        ).toBe(PICKED_BRAND)
+        await page.reload()
+        await page.waitForFunction(() => Boolean((document.querySelector('#__nuxt') as unknown as { __vue_app__?: unknown } | null)?.__vue_app__))
+        const again = await hydratedAttrs(page)
+        expect(again.theme, 'après rechargement').toBe(DEFAULT_BRAND)
+        expect(again.mode, 'après rechargement').toBe(PICKED_MODE)
+    })
 
-        expect(
-            hydrated.mode,
-            `mode choisi "${ PICKED_MODE }" perdu à l'hydratation — <html> affiche "${ hydrated.mode }"`
-        ).toBe(PICKED_MODE)
+    test('une marque restée dans le localStorage ne repeint pas le site', async ({ page, context }) => {
+        const baseURL = test.info().project.use.baseURL!
+
+        await context.addCookies([{ name: 'origam-theme', value: STALE_BRAND_COOKIE, url: baseURL }])
+        await page.addInitScript((brand: string) => {
+            try { localStorage.setItem('origam-theme', brand) } catch { /* fenêtre privée */ }
+        }, STALE_BRAND_COOKIE)
+
+        const response = await page.goto('/')
+        const { hydrated } = await readBothSides(page, response)
+
+        expect(hydrated.theme).toBe(DEFAULT_BRAND)
+    })
+
+    test('le bouton clair / sombre bascule le mode sans recharger, et le mode survit au rechargement', async ({ page }) => {
+        await page.emulateMedia({ colorScheme: SYSTEM_MODE })
+        await page.goto('/')
+        await page.waitForFunction(() => Boolean((document.querySelector('#__nuxt') as unknown as { __vue_app__?: unknown } | null)?.__vue_app__))
+
+        // Cible nommée par son libellé accessible : un clic à l'aveugle dans l'appbar bascule le mode.
+        await page.getByRole('button', { name: 'Toggle light and dark mode' }).click()
+        await expect.poll(async () => (await hydratedAttrs(page)).mode).toBe('dark')
+        expect((await hydratedAttrs(page)).theme).toBe(DEFAULT_BRAND)
+
+        await page.reload()
+        await expect.poll(async () => (await hydratedAttrs(page)).mode).toBe('dark')
+        expect((await hydratedAttrs(page)).theme).toBe(DEFAULT_BRAND)
+    })
+
+    test('le sélecteur de thème de marque n\'existe plus', async ({ page }) => {
+        await page.goto('/')
+        await page.waitForFunction(() => Boolean((document.querySelector('#__nuxt') as unknown as { __vue_app__?: unknown } | null)?.__vue_app__))
+        await expect(page.locator('[data-cy="theme-switcher-trigger"]')).toHaveCount(0)
+        await expect(page.locator('[data-cy^="theme-menu-"]')).toHaveCount(0)
+        await expect(page.getByRole('button', { name: 'Toggle light and dark mode' })).toHaveCount(1)
     })
 
 })

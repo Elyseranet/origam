@@ -1,9 +1,6 @@
 [
     "packages/marketing/src/assets/css/base.css::--origam-line-height---normal",
     "packages/marketing/src/assets/css/themes/_shared.css::--origam-color__text---ink",
-    "packages/marketing/src/assets/css/themes/cartoon.css::--origam-color---btn-primary-bg",
-    "packages/marketing/src/assets/css/themes/ecom.css::--origam-shadow---card-elevated",
-    "packages/marketing/src/assets/css/themes/geek.css::--origam-color__text---ink",
     "packages/marketing/src/assets/scss/_why-section.scss::--origam-font-size---lg",
     "packages/marketing/src/assets/scss/_why-section.scss::--origam-font-size---xs",
     "packages/marketing/src/components/HomeCta.vue::--origam-color---btn-primary-bg",
@@ -119,7 +116,6 @@
     "packages/marketing/src/layouts/admin.vue::--origam-font-size---sm",
     "packages/marketing/src/layouts/default.vue::--origam-color__border---ghost",
     "packages/marketing/src/layouts/default.vue::--origam-color__surface---variant",
-    "packages/marketing/src/layouts/default.vue::--origam-color__text---ink",
     "packages/marketing/src/layouts/default.vue::--origam-font-size---lg",
     "packages/marketing/src/layouts/default.vue::--origam-font-size---md",
     "packages/marketing/src/layouts/default.vue::--origam-font-size---sm",

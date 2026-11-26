@@ -183,6 +183,9 @@ test.describe('HomeShowcase section', () => {
  * `box-shadow`) driven by dedicated `--origam-avatar-group__item---outline-*`
  * cssVars, and removing the marketing-side hack.
  *
+ * #1515 — the site always renders `origam`: the per-brand cases (glass, cartoon,
+ * geek) are gone with the brand switcher; a brand now lives in sub-trees only.
+ *
  * These tests drive the theme via the `origam-theme`/`origam-mode` cookies
  * BEFORE navigation (cold load) — the live in-page theme-switch UI does not
  * re-run the client plugin's per-component `_defaultsRef` watcher (a
@@ -219,53 +222,5 @@ test.describe('HomeShowcase — AvatarGroup theming (#263)', () => {
         expect(style.borderWidth).toBe('0px')
         expect(style.outlineWidth).toBe('2px')
         expect(style.outlineStyle).toBe('solid')
-    })
-
-    test('glass theme: the theme border AND the separation ring both apply (no clobbering)', async ({ page, baseURL }) => {
-        await gotoWithTheme(page, baseURL, 'glass', 'light')
-        const item = firstGroupItem(page)
-        await expect(item).toBeVisible()
-        await expect(item).toHaveClass(/origam-avatar--border\b/)
-
-        const style = await item.evaluate((el) => {
-            const cs = getComputedStyle(el)
-            return { borderWidth: cs.borderWidth, outlineWidth: cs.outlineWidth }
-        })
-        expect(style.borderWidth).not.toBe('0px')
-        expect(style.outlineWidth).toBe('2px')
-    })
-
-    test('cartoon theme: border-width 3px / #171717 AND the hard-shadow signature both apply, ring does not erase them', async ({ page, baseURL }) => {
-        await gotoWithTheme(page, baseURL, 'cartoon', 'light')
-        const item = firstGroupItem(page)
-        await expect(item).toBeVisible()
-
-        const style = await item.evaluate((el) => {
-            const cs = getComputedStyle(el)
-            return { borderWidth: cs.borderWidth, borderColor: cs.borderColor, boxShadow: cs.boxShadow, outlineWidth: cs.outlineWidth }
-        })
-        expect(style.borderWidth).toBe('3px')
-        expect(style.borderColor).toBe('rgb(23, 23, 23)')
-        // The cartoon hard-shadow signature (3px 3px 0 #171717) must still be
-        // present on `box-shadow` — this is exactly what the old
-        // `--origam-avatar---box-shadow` hack in HomeShowcase.vue erased.
-        expect(style.boxShadow).toContain('rgb(23, 23, 23)')
-        expect(style.boxShadow).toContain('3px 3px')
-        // The ring is a SEPARATE CSS property (outline), unaffected.
-        expect(style.outlineWidth).toBe('2px')
-    })
-
-    test('geek theme: the theme border applies and the ring stays independent', async ({ page, baseURL }) => {
-        await gotoWithTheme(page, baseURL, 'geek', 'dark')
-        const item = firstGroupItem(page)
-        await expect(item).toBeVisible()
-        await expect(item).toHaveClass(/origam-avatar--border\b/)
-
-        const style = await item.evaluate((el) => {
-            const cs = getComputedStyle(el)
-            return { borderWidth: cs.borderWidth, outlineWidth: cs.outlineWidth }
-        })
-        expect(style.borderWidth).not.toBe('0px')
-        expect(style.outlineWidth).toBe('2px')
     })
 })

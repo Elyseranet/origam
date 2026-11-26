@@ -74,7 +74,7 @@
                         {{ t('privacy.cookies.locale', 'origam_locale — the display language, so the site does not revert to English on your next visit.') }}
                     </li>
                     <li>
-                        {{ t('privacy.cookies.theme', 'origam-theme and origam-mode — the theme and the light or dark appearance you selected.') }}
+                        {{ t('privacy.cookies.theme', 'origam-mode — the light or dark appearance you selected.') }}
                     </li>
                 </ul>
 

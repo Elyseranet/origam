@@ -14,6 +14,10 @@
  * plugins). We call useTheme().setTheme() with the same resolved value the DS
  * plugin already computed, so the singleton reflects the correct brand before
  * any component is rendered.
+ *
+ * #1515 — the brand is always `config.defaultTheme`: the site has no brand
+ * switcher any more, and the DS reads its brand cookie under a name nobody
+ * writes (`origam.cookieName` in nuxt.config.ts).
  */
 import { useTheme } from 'origam/composables'
 import { defineNuxtPlugin, useCookie, useRuntimeConfig } from '#app'
@@ -28,12 +32,9 @@ export default defineNuxtPlugin({
         const runtimeConfig = useRuntimeConfig().public as { origam: IOrigamNuxtRuntimeConfig }
         const config = runtimeConfig.origam
 
-        const themeCookie = useCookie<string | null>(config.cookieName)
         const modeCookie = useCookie<string | null>(config.modeCookieName)
 
-        const resolvedTheme: TTheme = (themeCookie.value && themeCookie.value !== ORIGAM_THEME_AUTO)
-            ? (themeCookie.value as TTheme)
-            : (config.defaultTheme as TTheme) ?? ORIGAM_THEME_AUTO
+        const resolvedTheme: TTheme = (config.defaultTheme as TTheme) ?? ORIGAM_THEME_AUTO
 
         const resolvedMode: TMode = (modeCookie.value === 'light' || modeCookie.value === 'dark')
             ? (modeCookie.value as TMode)

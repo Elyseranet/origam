@@ -17,6 +17,10 @@
  * du site, et il redevient un vrai filet : s'il casse, c'est que la marque a
  * changé de rendu.
  *
+ * ⛔ #1515 — le cookie de MARQUE est désormais ignoré : le site rend toujours
+ * `origam`. Seule la marque `origam` est donc atteignable ici ; une autre marque
+ * ferait expirer l'attente du `data-theme`. Le MODE, lui, reste honoré.
+ *
  * ⛔ Ne PAS s'en servir pour figer le thème par défaut du site — c'est l'objet
  * de `marketing-theme-honored.spec.ts`, et lui seul.
  */

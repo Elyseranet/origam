@@ -45,7 +45,8 @@ import { requireMarketingDb } from './_support/require-marketing-db'
 // #835 — voir marketing-theme-builder.spec.ts pour le contexte complet.
 requireMarketingDb()
 
-const BRAND_THEMES = ['cartoon', 'glass', 'geek', 'origam'] as const
+// #1515 — le site rend toujours `origam` : le cookie de marque est ignoré.
+const BRAND_THEMES = ['origam'] as const
 
 async function applyBrand (page: Page, theme: string): Promise<void> {
     await page.context().addCookies([
@@ -156,7 +157,7 @@ test.describe('Theme Builder · lot B — Color/Rounded/Elevation/Border render 
 })
 
 test.describe('Theme Builder · lot D — Color select chrome matches the Rounded select chrome (both are `<origam-select>`)', () => {
-    const THEMES = ['cartoon', 'glass', 'geek', 'origam'] as const
+    const THEMES = ['origam'] as const
     const MODES = ['light', 'dark'] as const
 
     for (const theme of THEMES) {

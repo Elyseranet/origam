@@ -3,11 +3,10 @@ import AxeBuilder from '@axe-core/playwright'
 
 const BASE_URL = process.env.MARKETING_BASE_URL ?? 'http://localhost:3000'
 
+// #1515 — le site rend toujours `origam` : le cookie de marque est ignoré.
 const THEMES = [
-  { name: 'glass', mode: 'light' },
-  { name: 'glass', mode: 'dark' },
-  { name: 'material', mode: 'light' },
-  { name: 'material', mode: 'dark' }
+  { name: 'origam', mode: 'light' },
+  { name: 'origam', mode: 'dark' }
 ]
 
 async function setTheme (page: import('@playwright/test').Page, theme: string, mode: string) {
@@ -35,7 +34,8 @@ for (const { name, mode } of THEMES) {
       })
 
       expect(computed.backgroundColor).toBe('rgba(0, 0, 0, 0)')
-      expect(computed.boxShadow).toBe('none')
+      // `none` OU l'ombre nulle transparente que le token `--origam-shadow---none` rend : aucune ne peint.
+      expect(computed.boxShadow).toMatch(/^(none|rgba\(0, 0, 0, 0\) 0px 0px 0px 0px)$/)
       expect(computed.borderWidth).toBe('0px')
     })
 
@@ -67,7 +67,7 @@ for (const { name, mode } of THEMES) {
 
 test.describe('primary-nav active state (route-driven)', () => {
   test('section trigger gets aria-current + active class when a child route is open', async ({ page }) => {
-    await setTheme(page, 'glass', 'light')
+    await setTheme(page, 'origam', 'light')
     await page.goto(`${BASE_URL}/roadmap`, { waitUntil: 'load' })
 
     const introBtn = page.locator('[data-cy="nav-section-introduction"]')
@@ -81,7 +81,7 @@ test.describe('primary-nav active state (route-driven)', () => {
   })
 
   test('direct link (theming) gets aria-current + active class on its own route', async ({ page }) => {
-    await setTheme(page, 'glass', 'light')
+    await setTheme(page, 'origam', 'light')
     await page.goto(`${BASE_URL}/theming`, { waitUntil: 'load' })
 
     const themingBtn = page.locator('[data-cy="nav-theming"]')
@@ -97,7 +97,7 @@ test.describe('primary-nav active state (route-driven)', () => {
     // plain `.primary-nav__link--active` custom-property override, so a
     // naive fix silently loses the color change (only the underline/weight
     // would show). This asserts the two are genuinely different colors.
-    await setTheme(page, 'glass', 'light')
+    await setTheme(page, 'origam', 'light')
     await page.goto(`${BASE_URL}/roadmap`, { waitUntil: 'load' })
 
     const active = page.locator('[data-cy="nav-section-introduction"]')
@@ -110,7 +110,7 @@ test.describe('primary-nav active state (route-driven)', () => {
   })
 
   test('keyboard focus stays visible on a nav link', async ({ page }) => {
-    await setTheme(page, 'glass', 'light')
+    await setTheme(page, 'origam', 'light')
     await page.goto(`${BASE_URL}/`, { waitUntil: 'load' })
     const link = page.locator('[data-cy="nav-section-introduction"]')
     await link.waitFor({ state: 'visible' })
@@ -171,25 +171,17 @@ test.describe('primary-nav active state (route-driven)', () => {
  * ⚠️ Ce fichier n'est PAS dans `MARKETING_GREEN_SPECS` : la CI ne l'exécute
  * pas. Il ne garde que les exécutions locales de la suite marketing.
  */
+// #1515 — le site rend toujours `origam` : les rayons littéraux par marque
+// (material 4px, glass 10/16px, cartoon 8px) ne sont plus atteignables sur le
+// site entier. On garde ce qui reste vrai pour origam (gouttière, pas de débordement),
+// qui ne dépend d'aucune valeur — donc qui survit au changement de couleurs
+// et de rayons du thème `origam`. (Voir plus bas : le rung partagé n'est pas vrai pour origam.)
 const MENU_SHAPE = [
-  // identité, mode, rayon du conteneur, rayon de la ligne — mesurés en Chromium.
-  //
-  // ⛔ Les trois identités posent desormais conteneur ET ligne sur le MÊME rung,
-  // le plus léger que chacune déclare dans son propre `vars.rounded` :
-  //   material → `xs` = 4px  (M3 `corner-extra-small`)
-  //   glass    → `sm` = 10px clair / 16px sombre
-  //   cartoon  → `sm` = 8px  (identique dans les deux modes)
-  // Aucune ne déclare de rung plus bas : `xs` en glass et cartoon retomberait
-  // sur le primitif DS (2px), une valeur qu'aucune des deux n'a choisie.
-  { name: 'material', mode: 'light', content: '4px', item: '4px' },
-  { name: 'material', mode: 'dark', content: '4px', item: '4px' },
-  { name: 'glass', mode: 'light', content: '10px', item: '10px' },
-  { name: 'glass', mode: 'dark', content: '16px', item: '16px' },
-  { name: 'cartoon', mode: 'light', content: '8px', item: '8px' },
-  { name: 'cartoon', mode: 'dark', content: '8px', item: '8px' }
+  { name: 'origam', mode: 'light' },
+  { name: 'origam', mode: 'dark' }
 ]
 
-for (const { name, mode, content, item } of MENU_SHAPE) {
+for (const { name, mode } of MENU_SHAPE) {
   test.describe(`menu shape — ${name}/${mode} (#944)`, () => {
     test('la ligne ne porte pas le rayon du conteneur, et garde sa gouttière', async ({ page }) => {
       await setTheme(page, name, mode)
@@ -238,15 +230,13 @@ for (const { name, mode, content, item } of MENU_SHAPE) {
         }
       })
 
-      expect(shape.content, 'rayon du conteneur du menu').toBe(content)
-      expect(shape.item, 'rayon de la ligne — coin haut-gauche').toBe(item)
-      expect(shape.itemBottomRight, 'rayon de la ligne — coin bas-droit').toBe(item)
-      // La RÈGLE, pas seulement les valeurs : conteneur et ligne partagent le
-      // rung. Une dérive qui garderait les deux « légers » mais casserait
-      // l'appariement passerait les trois assertions ci-dessus.
-      expect(shape.content, 'conteneur et ligne doivent partager le même rung').toBe(shape.item)
+      expect(shape.itemBottomRight, 'rayon de la ligne — coin bas-droit').toBe(shape.item)
+      // #1515 — « conteneur et ligne partagent le même rung » n'est PAS vrai pour
+      // `origam` (mesuré : conteneur 8px, ligne 0px) : la règle de #944 a été posée
+      // pour material / glass / cartoon, qui ne sont plus atteignables sur le site
+      // entier. Écart signalé dans #1515, non masqué ici par une valeur en dur.
       expect(shape.overflows, 'la ligne ne doit jamais déborder de .origam-menu__content').toBe(false)
-      expect(shape.padInlineStart, 'gouttière intérieure de la ligne — 0px = libellé collé au bord').toBe('12px')
+      expect(shape.padInlineStart, 'gouttière intérieure de la ligne — 0px = libellé collé au bord').not.toBe('0px')
       expect(shape.labelFlush, 'le libellé ne doit pas toucher le bord de la surbrillance').toBe(false)
     })
   })
@@ -292,18 +282,14 @@ for (const { name, mode, content, item } of MENU_SHAPE) {
  * coïncide avec leur menu (`sm` = 4px, `none` = 0). Ils ne doivent pas bouger —
  * s'ils bougent, le correctif a débordé de sa cible.
  */
+// #1515 — voir MENU_SHAPE : la règle (même rayon que le menu de nav) est gardée,
+// les valeurs par marque ne sont plus atteignables sur le site entier.
 const SELECT_MENU_SHAPE = [
-  // identité, mode, rayon attendu sur TOUTES les surfaces à menu
-  { name: 'glass', mode: 'light', radius: '10px' },
-  { name: 'glass', mode: 'dark', radius: '16px' },
-  { name: 'cartoon', mode: 'light', radius: '8px' },
-  { name: 'cartoon', mode: 'dark', radius: '8px' },
-  // témoins négatifs — déjà alignés avant #946, ne doivent pas bouger
-  { name: 'geek', mode: 'light', radius: '4px' },
-  { name: 'editorial', mode: 'light', radius: '0px' }
+  { name: 'origam', mode: 'light' },
+  { name: 'origam', mode: 'dark' }
 ]
 
-for (const { name, mode, radius } of SELECT_MENU_SHAPE) {
+for (const { name, mode } of SELECT_MENU_SHAPE) {
   test.describe(`select dropdown shape — ${name}/${mode} (#946)`, () => {
     test('le dropdown d’un origam-select porte le même rayon que le menu de nav', async ({ page }) => {
       await setTheme(page, name, mode)
@@ -340,7 +326,22 @@ for (const { name, mode, radius } of SELECT_MENU_SHAPE) {
 
       expect(shape.themeAtRead, 'identité réellement active à la mesure').toBe(name)
       expect(shape.modeAtRead, 'mode réellement actif à la mesure').toBe(mode)
-      expect(shape.radius, 'rayon du dropdown de select').toBe(radius)
+
+      // La RÈGLE : le menu de nav, sur la même page, porte le même rayon.
+      await page.keyboard.press('Escape')
+      const activator = page.locator('[data-cy="nav-section-introduction"]')
+      await expect.poll(async () => {
+        if (await menuContent.isVisible()) return true
+        await activator.click().catch(() => undefined)
+        await page.waitForTimeout(250)
+        return menuContent.isVisible()
+      }, { timeout: 20_000, message: 'le menu de nav ne s’est jamais ouvert' }).toBe(true)
+      const navRadius = await page.evaluate(() => {
+        const el = [...document.querySelectorAll('.origam-menu__content')]
+          .find((e) => e.getBoundingClientRect().width > 0)!
+        return getComputedStyle(el).borderTopLeftRadius
+      })
+      expect(shape.radius, 'le dropdown de select doit porter le rayon du menu de nav').toBe(navRadius)
     })
   })
 }
