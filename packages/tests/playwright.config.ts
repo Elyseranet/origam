@@ -35,6 +35,8 @@ const GREEN_SPECS = [
     // #1097 — verifiee verte et stable avant inscription : 13/13 puis 65/65 sous `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
     // Avant le correctif (mesure sur le parent) : cursor `pointer`, remplissage violet de marque, `plain` a 0.7.
     'btn-disabled.spec.ts',
+    // #1555 — 4/4 puis 20/20 sous `--repeat-each=5`, E2E_STATIC=1, chromium, port isole ; rouge sur le parent (9999px sur Btn, BtnGroup, BtnToggle).
+    'btn-radius-1555.spec.ts',
     // #1179 — verifiee verte et stable avant inscription : 9/9 puis 45/45 sous
     // `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
     'code-group.spec.ts',

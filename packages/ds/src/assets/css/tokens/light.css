@@ -190,7 +190,7 @@
   --origam-btn---background-color-hover: var(--origam-color__action--secondary---bgHover);
   --origam-btn---background-color-disabled: var(--origam-color__action--primary---bgDisabled);
   --origam-btn---color-disabled: var(--origam-color__action--primary---fgDisabled);
-  --origam-btn---border-radius: var(--origam-radius---full); /* #1514 — pilule (brand kit A1), par token et non par prop : voir origam.theme.ts et #1523 */
+  --origam-btn---border-radius: var(--origam-radius---lg); /* #1555 — rectangle arrondi 12 px (maquette du brand kit), par token et non par prop : voir origam.theme.ts et #1523 */
   --origam-btn---border-radius-icon: var(--origam-radius---full);
   --origam-btn---border-radius-rounded: var(--origam-radius---2xl);
   --origam-btn---border-width: var(--origam-border__width---0);
@@ -258,7 +258,7 @@
   --origam-btn-group---border-width: var(--origam-border__width---0);
   --origam-btn-group---border-style: solid;
   --origam-btn-group---border-color: var(--origam-color__border---subtle);
-  --origam-btn-group---border-radius: var(--origam-radius---full); /* #1514 — pilule, comme --origam-btn---border-radius */
+  --origam-btn-group---border-radius: var(--origam-radius---lg); /* #1555 — 12 px, comme --origam-btn---border-radius */
   --origam-card---display: block;
   --origam-card---overflow: hidden;
   --origam-card---overflow-wrap: break-word;

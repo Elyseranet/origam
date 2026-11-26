@@ -457,7 +457,7 @@ document root or via a `:style` binding to re-skin a single instance.
 | `--origam-btn---background-color` | `{color.action.secondary.bg}` |
 | `--origam-btn---color` | `{color.action.secondary.fg}` |
 | `--origam-btn---background-color-hover` | `{color.action.secondary.bgHover}` |
-| `--origam-btn---border-radius` | `{radius.sm}` |
+| `--origam-btn---border-radius` | `{radius.lg}` (12px) |
 | `--origam-btn---border-color` | `currentColor` (outlined variant; overridable via `borderColor` prop) |
 | `--origam-btn---border-compensation` | `0px`; set by `outlined` / `ghost` to their outline width and subtracted from `padding-inline` (internal, do not set) |
 | `--origam-btn---background-color-text-active` | `transparent` by default: set it to give the `text` variant an active (`active` / selected) fill |
