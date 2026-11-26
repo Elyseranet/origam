@@ -259,8 +259,7 @@
         "search_page_wireframe": "Wireframe de design et aperçus de composants",
         "search_page_theming": "Générateur de thèmes visuel — personnaliser les design tokens",
         "search_page_why_origam": "Décisions de conception et philosophie",
-        "search_page_stability": "Numéros de version, cadence des releases et politique de dépréciation",
-        "star_count": "4.2k"
+        "search_page_stability": "Numéros de version, cadence des releases et politique de dépréciation"
     },
     "components": {
         "meta": {
@@ -985,35 +984,37 @@
     },
     "home": {
         "meta": {
-            "title": "origam · design system Vue 3",
-            "description": "218 composants. 26 primitives de graphiques. Accessibilité complète. Design tokens prêts à l'emploi. Conçu pour Vue 3 avec une DX TypeScript-first."
+            "title": "origam · le design system Vue 3 qui se plie à votre marque",
+            "description": "97 familles de composants Vue 3, des formulaires aux graphiques. Un thème est un objet : vous réglez d'abord les props, puis les tokens. Licence MIT."
         },
         "hero": {
-            "eyebrow": "DESIGN SYSTEM",
-            "title": "Origam",
-            "tagline": "Un design system moderne, flexible et accessible",
-            "description": "Une bibliothèque de composants et d'outils pour créer des interfaces cohérentes, performantes et élégantes.",
-            "cta_start": "Bien démarrer",
+            "eyebrow": "DESIGN SYSTEM VUE 3",
+            "title": "Le design system Vue 3 qui se plie à votre marque",
+            "tagline": "Les props d'abord, le CSS ensuite.",
+            "description": "97 familles de composants, des formulaires aux graphiques, et un module Nuxt dans le même paquet. Un thème est un objet : une seule écriture pour tout le catalogue.",
+            "cta_start": "Installer",
             "cta_github": "Voir sur GitHub",
-            "ctas_label": "Appels à l'action du hero"
+            "ctas_label": "Appels à l'action du hero",
+            "proof": "Licence MIT · Vue 3.5+ · Module Nuxt inclus",
+            "install": "npm i origam"
         },
         "benefits": {
             "label": "Pourquoi Origam",
             "components": {
-                "title": "Composants",
-                "description": "Une collection riche et cohérente"
+                "title": "Un catalogue entier",
+                "description": "97 familles, dont 29 types de graphiques"
             },
             "theming": {
-                "title": "Theming",
-                "description": "Personnalisez facilement l'apparence"
+                "title": "Thème par les props",
+                "description": "Un seul objet de thème règle tout le catalogue"
             },
             "accessibility": {
-                "title": "Accessibilité",
-                "description": "Interfaces inclusives et conformes"
+                "title": "Accessibilité testée",
+                "description": "Testé automatiquement avec axe-core sur 220 stories"
             },
             "ecosystem": {
-                "title": "Écosystème",
-                "description": "Intégration simple avec Vue.js et Vite"
+                "title": "Vue, Nuxt, SSR",
+                "description": "Module Nuxt et rendu serveur dans le même paquet"
             }
         },
         "playground": {
@@ -1024,23 +1025,23 @@
             "btn_ghost": "Fantôme"
         },
         "library": {
-            "eyebrow": "Une bibliothèque complète",
-            "title": "Des composants pour tous vos besoins",
-            "text": "De l'essentiel aux composants avancés, Origam vous offre une base solide pour construire des interfaces modernes et cohérentes.",
+            "eyebrow": "Un catalogue complet",
+            "title": "Du formulaire au graphique.",
+            "text": "97 familles de composants dans un seul paquet, graphiques compris : aucune bibliothèque à brancher à côté.",
             "forms": "Formulaires",
             "navigation": "Navigation",
             "data": "Données",
             "charts": "Graphiques",
             "charts_hint": "29 types, de la ligne à la heatmap",
-            "feedback": "Feedback",
-            "overlays": "Surcouches",
+            "feedback": "Alertes et états",
+            "overlays": "Fenêtres et menus",
             "layout": "Mise en page"
         },
         "themes": {
             "eyebrow": "THÉMATISATION",
-            "title_line1": "Un design system.",
-            "title_line2": "Toutes les marques.",
-            "subtitle": "Design tokens tenus à la main, props-first — multi-thème nativement. Basculez entre clair, sombre ou votre marque à l'exécution, sans remontage.",
+            "title_line1": "Un objet de thème.",
+            "title_line2": "Une identité par marque.",
+            "subtitle": "Huit identités, écrites avec l'objet de thème public, comme le sera la vôtre. Claires ou sombres, elles changent à l'exécution.",
             "chip_glass": "Glass",
             "chip_geek": "Geek",
             "chip_cartoon": "Cartoon",
@@ -1049,40 +1050,44 @@
             "chip_ecom": "Ecom",
             "chip_apple": "Apple",
             "tooling_label": "Outillage",
-            "tooling_theming": "→ theming props-first, tout le catalogue",
-            "tooling_tokens": "→ CSS/SCSS tenus à la main, sans build",
+            "tooling_theming": "→ les props d'abord, tout le catalogue",
+            "tooling_tokens": "→ tokens en CSS/SCSS simples, sans étape de build",
             "preview_light": "light.json",
             "preview_dark": "dark.json",
             "preview_brand_a": "brand-a.json",
             "preview_brand_b": "brand-b.json",
             "preview_open": "Personnaliser",
-            "preview_open_aria": "Ouvrir le thème {theme} dans le builder",
-            "actions_label": "Essayer le générateur de thème",
-            "cta_builder": "Essayer le générateur de thème"
+            "preview_open_aria": "Ouvrir le thème {theme} dans le Theme Builder",
+            "actions_label": "Ouvrir le Theme Builder",
+            "cta_builder": "Ouvrir le Theme Builder",
+            "note": "Le paquet npm livre le thème de base origam. Les autres sont des exemples, à ouvrir dans le Theme Builder."
         },
         "cta": {
-            "title": "Prêt à construire vos interfaces ?",
-            "cta_start": "Explorer les composants",
-            "cta_docs": "Lire la documentation",
-            "actions_label": "Pour commencer"
+            "title": "Trois gestes pour commencer.",
+            "cta_start": "Installer",
+            "cta_docs": "Explorer les composants",
+            "actions_label": "Pour commencer",
+            "description": "npm i origam, puis le plugin et un premier composant. Sous Nuxt, un module à ajouter.",
+            "support": "Origam est libre, sous licence MIT, et maintenu par une seule personne.",
+            "support_link": "Soutenir le projet"
         }
     },
     "installation": {
         "meta": {
             "title": "Installation · origam design system",
-            "description": "Lancez origam en quelques minutes. Installez le package npm, enregistrez le plugin et commencez à construire avec 218 composants Vue 3 accessibles."
+            "description": "Installez origam avec npm i origam, enregistrez le plugin et affichez votre premier composant. 97 familles Vue 3, module Nuxt inclus."
         },
         "hero": {
             "badge": "npm install origam",
             "title_line1": "Prêt à tourner",
             "title_line2": "en quelques minutes.",
-            "subtitle": "Installez origam, enregistrez le plugin et commencez à construire avec 218 composants Vue 3 accessibles et pilotés par tokens."
+            "subtitle": "Installez origam, enregistrez le plugin et construisez avec 97 familles de composants Vue 3."
         },
         "steps": {
             "eyebrow": "ÉTAPE PAR ÉTAPE",
-            "title_line1": "Cinq étapes.",
-            "title_line2": "C'est parti.",
-            "subtitle": "De zéro à une app Vue 3 entièrement thémée avec origam — sans boilerplate.",
+            "title_line1": "Trois étapes,",
+            "title_line2": "puis deux au besoin.",
+            "subtitle": "Du paquet au premier composant affiché.",
             "list_label": "Étapes d'installation",
             "install": {
                 "title": "1. Installer",
@@ -1243,8 +1248,7 @@
             "sitemap": "Plan du site",
             "open_menu": "Ouvrir le menu de navigation",
             "mobile_menu": "Menu de navigation"
-        },
-        "documentation": "Documentation"
+        }
     },
     "privacy": {
         "meta": {
@@ -1583,7 +1587,7 @@
         "hero": {
             "badge": "Politique de versionnement",
             "title": "Stabilité et versionnement",
-            "lead": "Un numéro de version élevé et des releases fréquentes ne signifient pas qu’origam casse souvent. Cette page explique ce que signifie le numéro, comment les releases sont publiées et où les changements sont consignés."
+            "lead": "Un numéro de version élevé et des releases fréquentes ne signifient pas qu'origam casse souvent : 143 versions publiées depuis juillet 2025. Cette page dit ce que le numéro signifie et où lire les changements."
         },
         "sections": {
             "number": {
@@ -1645,7 +1649,7 @@
             "title": "Theme builder · origam design system",
             "description": "Configurez visuellement un thème origam par défaut — éditez les props et les tokens CSS des composants avec un aperçu en direct, puis exportez un module de thème prêt à l'emploi."
         },
-        "eyebrow": "Theme builder",
+        "eyebrow": "Theme Builder",
         "title": "Theme Builder",
         "lead": "Choisissez un composant, ajustez ses props et ses tokens CSS, observez l'aperçu se mettre à jour, puis exportez un module de thème prêt à enregistrer.",
         "name": {
@@ -2028,11 +2032,11 @@
             "badge": "Honnête par conception",
             "title_line1": "Pourquoi origam ?",
             "title_line2": "Une réponse honnête.",
-            "subtitle": "Nous avons construit origam pour les équipes Vue 3 qui accordent de l'importance à la qualité du design, à l'accessibilité et à la cohérence par tokens. Voici ce que nous faisons bien — et où nous progressons encore.",
+            "subtitle": "Origam s'adresse aux développeurs Vue 3 qui veulent thématiser par les props et décliner une même base en plusieurs identités. Voici ce qu'il fait bien, et ce qui lui manque encore.",
             "actions_label": "Explorer les preuves",
             "cta_demo": "Voir la démo",
-            "cta_comparison": "Comparer avec le reste",
-            "identities_label": "Identités de marque livrées avec le site"
+            "identities_label": "Identités de marque livrées avec le site",
+            "cta_use_cases": "Quand le choisir"
         },
         "demo": {
             "eyebrow": "VOIR LA DÉMO",
@@ -2079,15 +2083,15 @@
             },
             "theming": {
                 "title": "Theming, props d'abord",
-                "description": "Chaque thème est un objet IOrigamTheme dont le bloc components configure d'abord les props des composants, les tokens sémantiques ensuite. Un seul résolveur (ADR-005) l'applique aux 218 composants sans aucune inscription requise. Deux axes indépendants, data-theme x data-mode : 8 thèmes basculent à l'exécution sans remontage."
+                "description": "Un thème est un objet IOrigamTheme : son bloc components règle d'abord les props des composants, les tokens sémantiques ensuite. Un seul résolveur (ADR-005) l'applique à tout le catalogue, sans inscription par composant. Le paquet livre le thème de base ; les 7 autres identités du site sont des exemples écrits avec la même API."
             },
             "charts": {
-                "title": "218 composants + 26 primitives de graphiques",
-                "description": "Des boutons atomiques aux graphiques ligne, aire, donut, heatmap et chandelier — dans un seul package cohérent."
+                "title": "97 familles, 29 types de graphiques",
+                "description": "Du bouton atomique aux graphiques en ligne, aire, donut, heatmap et chandelier, dans un seul paquet cohérent."
             },
             "a11y": {
-                "title": "218/218 composants testés en accessibilité",
-                "description": "axe-core + Playwright balaient chaque composant — la variante par défaut plus 7 variantes d'intention — et la baseline est à zéro violation depuis le 2026-09-23. Ça couvre la variante par défaut, pas tous les états ; les défauts moderate/minor ne bloquent pas la porte."
+                "title": "Testé avec axe-core sur 220 stories",
+                "description": "Un balayage axe-core parcourt chaque story du catalogue, sur sa variante par défaut, à chaque CI ; seules les violations serious et critical bloquent. C'est un contrôle automatisé, pas un audit de conformité WCAG."
             },
             "css": {
                 "title": "Architecture CSS-first",
@@ -2095,7 +2099,7 @@
             },
             "treeshake": {
                 "title": "Vous payez ce que le composant fait",
-                "description": "Build ESM-first : vous n'importez que ce que vous utilisez. Mesuré sur de vrais builds Vite — Divider pèse environ 7 ko gzip, Btn environ 35 ko car il embarque icônes, transitions et loader, DataTable environ 172 ko car il embarque tri, pagination et groupement."
+                "description": "Build ESM : on n'importe que ce qu'on utilise."
             },
             "composables": {
                 "title": "Composables headless",
@@ -2106,32 +2110,6 @@
                 "description": "Pas de frais de licence, pas de restrictions d'usage. origam est et restera open source."
             }
         },
-        "comparison": {
-            "eyebrow": "COMPARAISON HONNÊTE",
-            "title": "Comment se positionne origam ?",
-            "subtitle": "Un aperçu fonctionnalité par fonctionnalité des principaux design systems de l'écosystème Vue. Les appréciations sont les nôtres et peuvent être obsolètes — vérifiez toujours auprès de la documentation actuelle des projets.",
-            "disclaimer": "Certaines appréciations reflètent notre interprétation de la documentation publique disponible. Les concurrents évoluent vite — vérifiez leurs docs.",
-            "col_library": "Bibliothèque",
-            "col_vue_native": "Vue 3 natif",
-            "col_theming_props_first": "Theming props d'abord",
-            "col_a11y_tested": "A11y testée",
-            "col_css_first": "CSS-first",
-            "col_tree_shakable": "Tree-shakable",
-            "col_charts": "Graphiques inclus",
-            "origam": "origam",
-            "vuetify": "Vuetify",
-            "vuetify_note": "Design system Material Design mature, grande communauté et riche écosystème.",
-            "prime_vue": "PrimeVue",
-            "prime_vue_note": "Très grand nombre de composants. Tokens de design conformes DTCG via PrimeOne 3.0 — mais pas de résolveur de theming props-first.",
-            "quasar": "Quasar",
-            "quasar_note": "Framework multi-plateforme complet (web, Cordova, Electron). Un périmètre différent.",
-            "element_plus": "Element Plus",
-            "element_plus_note": "Populaire dans la communauté de développeurs chinoise, large couverture de composants.",
-            "naive_ui": "Naive UI",
-            "naive_ui_note": "TypeScript-first, personnalisation du thème par JS, léger.",
-            "yes": "Oui",
-            "no": "Non"
-        },
         "weaknesses": {
             "eyebrow": "SOYONS HONNÊTES",
             "title": "Là où nous progressons encore.",
@@ -2139,8 +2117,8 @@
             "title_line2": "progressons encore.",
             "subtitle": "origam est jeune. C'est un atout en termes de fraîcheur d'API — et une contrainte en termes de maturité.",
             "community": {
-                "title": "Pas encore de communauté externe",
-                "description": "origam n'a aucun consommateur externe à ce jour, donc pas encore de communauté à l'extérieur — pas de trace Stack Overflow accumulée, pas de marché de templates tiers. C'est l'état honnête d'un design system jeune et construit en interne, pas une comparaison avec des bibliothèques ayant des années d'usage externe en production."
+                "title": "Une communauté encore à bâtir",
+                "description": "Origam est jeune et maintenu par une seule personne : peu de ressources tierces, pas de marché de templates. C'est l'état d'un design system qui commence, pas un défaut caché."
             },
             "templates": {
                 "title": "Moins de templates prêts à l'emploi",
@@ -2166,20 +2144,20 @@
             },
             "dataviz": {
                 "title": "UI riche en données avec graphiques",
-                "description": "26 primitives de graphiques — ligne, aire, barre, donut, heatmap, chandelier — thémés et accessibles, en un seul install."
+                "description": "29 types de graphiques (ligne, aire, barre, donut, heatmap, chandelier), thémables et testés avec axe-core, dans une seule installation."
             },
             "migration": {
-                "title": "Migration d'une grande base Vuetify 2",
-                "description": "Si vous avez des milliers de composants Vuetify à migrer, Vuetify 3 sera un chemin moins accidenté qu'origam."
+                "title": "Migrer une grande base existante",
+                "description": "Migrer des milliers de composants d'une autre bibliothèque demandera beaucoup de travail : Origam n'est pas le chemin le plus court."
             },
             "ecosystem": {
-                "title": "Besoin d'un grand marché de templates tiers",
-                "description": "Si vous comptez sur des thèmes admin prêts à l'emploi ou des templates marketplace, Vuetify ou PrimeVue ont un catalogue plus large aujourd'hui."
+                "title": "Besoin de templates prêts à l'emploi",
+                "description": "Si vous comptez sur des thèmes d'administration ou un marché de templates, Origam n'en propose pas aujourd'hui."
             }
         },
         "cta": {
             "title": "Prêt à l'essayer ?",
-            "description": "Installez origam en 30 secondes et voyez jusqu'où les valeurs par défaut vous emmènent.",
+            "description": "Installez origam et voyez jusqu'où vont les valeurs par défaut.",
             "cta_components": "Parcourir les composants",
             "cta_install": "Commencer",
             "cta_theming": "Ouvrir le générateur de thème",

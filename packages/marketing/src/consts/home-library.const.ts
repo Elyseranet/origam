@@ -12,7 +12,7 @@ export const HOME_LIBRARY_CATEGORIES: IHomeLibraryCategory[] = [
     { key: 'navigation', icon: 'mdi-menu', labelKey: 'home.library.navigation', labelFallback: 'Navigation', catalogCategory: 'Navigation' },
     { key: 'data', icon: 'mdi-table', labelKey: 'home.library.data', labelFallback: 'Data', catalogCategory: 'Data Display' },
     { key: 'charts', icon: 'mdi-chart-line', labelKey: 'home.library.charts', labelFallback: 'Charts', hintKey: 'home.library.charts_hint', hintFallback: '29 types, from line to heatmap', catalogCategory: 'Data Visualization' },
-    { key: 'feedback', icon: 'mdi-check-circle-outline', labelKey: 'home.library.feedback', labelFallback: 'Feedback', catalogCategory: 'Feedback & Status' },
-    { key: 'overlays', icon: 'mdi-layers-outline', labelKey: 'home.library.overlays', labelFallback: 'Overlays', catalogCategory: 'Overlay & Surface' },
+    { key: 'feedback', icon: 'mdi-check-circle-outline', labelKey: 'home.library.feedback', labelFallback: 'Alerts and status', catalogCategory: 'Feedback & Status' },
+    { key: 'overlays', icon: 'mdi-layers-outline', labelKey: 'home.library.overlays', labelFallback: 'Dialogs and menus', catalogCategory: 'Overlay & Surface' },
     { key: 'layout', icon: 'mdi-view-dashboard-outline', labelKey: 'home.library.layout', labelFallback: 'Layout', catalogCategory: 'Layout & Structure' }
 ]

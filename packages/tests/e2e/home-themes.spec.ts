@@ -56,7 +56,14 @@ test.describe('HomeThemes section', () => {
 
     test('h2 title contains expected text', async ({ page }) => {
         const h2 = page.locator('section.home-themes h2#themes-title')
-        await expect(h2).toContainText('One design system')
+        await expect(h2).toContainText('One theme object.')
+        await expect(h2).toContainText('One identity per brand.')
+    })
+
+    test('la note dit qu\'un seul thème est livré par le paquet npm (#1543)', async ({ page }) => {
+        await expect(page.locator('[data-cy="themes-note"]')).toHaveText(
+            'The npm package ships the base origam theme. The others are examples, to open in the Theme Builder.'
+        )
     })
 
     // ── 4. #1515 — plus de sélecteur de marque du site ──────────────────────
@@ -185,13 +192,13 @@ test.describe('HomeThemes section', () => {
     test('props-first theming mention is visible in the tooling <p>', async ({ page }) => {
         const tooling = page.locator('section.home-themes p.home-themes__tooling')
         await expect(tooling).toBeVisible()
-        await expect(tooling).toContainText('props-first theming')
+        await expect(tooling).toContainText('props first, whole catalogue')
     })
 
-    test('hand-maintained CSS/SCSS mention is visible in the tooling <p> (pipeline Style Dictionary retiré)', async ({ page }) => {
+    test('plain CSS/SCSS tokens mention is visible in the tooling <p> (pipeline Style Dictionary retiré)', async ({ page }) => {
         const tooling = page.locator('section.home-themes p.home-themes__tooling')
         await expect(tooling).toBeVisible()
-        await expect(tooling).toContainText('hand-maintained CSS/SCSS')
+        await expect(tooling).toContainText('plain CSS/SCSS tokens, no build step')
         await expect(tooling).not.toContainText('Style Dictionary')
     })
 

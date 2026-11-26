@@ -7,7 +7,7 @@
  * - Les titres sont rendus par OrigamTitle (élément portant la classe origam-title)
  * - Les 8 cellules "strengths" sont dans un seul panneau (OrigamSheet) avec avatar OrigamAvatar
  * - La liste "weaknesses" est une liste de lignes plates (pas de carte) avec icône OrigamIcon
- * - Le tableau de comparaison est rendu par OrigamTable (origam-table)
+ * - Aucun tableau comparatif ni concurrent nommé (#1543, A6 et A8)
  * - Les icônes ✓/✗ du tableau ont une couleur intent success/error visible
  * - La démo de theming (WhyOrigamThemeDemo) change les 6 composants et le
  *   panneau de code quand on change d'identité
@@ -49,7 +49,7 @@ test.describe('why-origam — redesign', () => {
     })
 
     test('les titres de section sont des OrigamTitle (h2)', async ({ page }) => {
-        const sectionTitles = page.locator('#why-demo-title, #why-strengths-title, #why-comparison-title, #why-weaknesses-title, #why-usecases-title, #why-cta-title')
+        const sectionTitles = page.locator('#why-demo-title, #why-strengths-title, #why-weaknesses-title, #why-usecases-title, #why-cta-title')
         const count = await sectionTitles.count()
         expect(count).toBeGreaterThanOrEqual(5)
         for (let i = 0; i < count; i++) {
@@ -57,9 +57,12 @@ test.describe('why-origam — redesign', () => {
         }
     })
 
-    test('la barre d\'actions du hero pointe vers la démo et le comparatif', async ({ page }) => {
+    test('la barre d\'actions du hero pointe vers la démo et « Quand le choisir »', async ({ page }) => {
         await expect(page.locator('[data-cy="why-hero-demo-link"]')).toHaveClass(/origam-btn/)
-        await expect(page.locator('[data-cy="why-hero-comparison-link"]')).toHaveClass(/origam-btn/)
+        const useCases = page.locator('[data-cy="why-hero-usecases-link"]')
+        await expect(useCases).toHaveClass(/origam-btn/)
+        await expect(useCases).toHaveAttribute('href', '#why-usecases-title')
+        await expect(page.locator('#why-usecases-title')).toBeAttached()
     })
 
     test('la bande d\'identités du hero liste les 8 marques', async ({ page }) => {
@@ -79,21 +82,12 @@ test.describe('why-origam — redesign', () => {
         }
     })
 
-    test('le tableau de comparaison est rendu par OrigamTable (.origam-table)', async ({ page }) => {
-        const table = page.locator('[data-cy="why-comparison-table"]')
-        await expect(table).toBeVisible()
-        await expect(table).toHaveClass(/origam-table/)
-    })
-
-    test('les icônes ✓ dans le tableau ont une couleur success visible', async ({ page }) => {
-        await page.locator('[data-cy="why-comparison"]').scrollIntoViewIfNeeded()
-        await page.waitForTimeout(500)
-        const icons = page.locator('.why-comparison__cell-icon')
-        const count = await icons.count()
-        expect(count).toBeGreaterThan(0)
-        const firstIcon = icons.first()
-        await expect(firstIcon).toBeVisible()
-        await expect(firstIcon).toHaveClass(/origam-icon/)
+    test('aucun tableau comparatif ni concurrent nommé (#1543, A6 et A8)', async ({ page }) => {
+        await expect(page.locator('[data-cy="why-comparison"]')).toHaveCount(0)
+        await expect(page.locator('[data-cy="page-why-origam"] table')).toHaveCount(0)
+        await expect(page.locator('[data-cy="page-why-origam"]')).not.toContainText(
+            /Vuetify|PrimeVue|Quasar|Element Plus|Naive UI|Highcharts/
+        )
     })
 
     test('la section weaknesses est une liste plate de 3 lignes avec OrigamIcon', async ({ page }) => {

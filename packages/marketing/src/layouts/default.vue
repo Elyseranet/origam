@@ -9,7 +9,8 @@
 
   import { SKIP_LINK_HREF, SKIP_LINK_TARGET_ID } from '~/consts/a11y.const'
   import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_SECTIONS, NAV_THEMING_LINK } from '~/consts/nav.const'
-  import { SEARCH_SHORTCUT, GITHUB_STARS_MIN_DISPLAY } from '~/consts/chrome.const'
+  import { GITHUB_STARS_MIN_DISPLAY } from '~/consts/adoption.const'
+  import { SEARCH_SHORTCUT } from '~/consts/chrome.const'
   import { CATALOG_FAMILIES } from '~/consts/catalog-family.const'
   import { GLOBAL_SEARCH_ALL_FAMILY } from '~/consts/global-search.const'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'

@@ -23,12 +23,19 @@
           tag="h2"
           class="home-themes__title"
         >
-          <span class="home-themes__title-line">{{ t('home.themes.title_line1', 'One design system.') }}</span>
-          <span class="home-themes__title-line">{{ t('home.themes.title_line2', 'Every brand.') }}</span>
+          <span class="home-themes__title-line">{{ t('home.themes.title_line1', 'One theme object.') }}</span>
+          <span class="home-themes__title-line">{{ t('home.themes.title_line2', 'One identity per brand.') }}</span>
         </origam-title>
 
         <p class="home-themes__subtitle">
-          {{ t('home.themes.subtitle', 'Hand-maintained, props-first design tokens — multi-theme out of the box. Switch between light, dark or your custom brand at runtime, with zero remount.') }}
+          {{ t('home.themes.subtitle', 'Eight identities, written with the public theme object, as yours will be. Light or dark, they switch at runtime.') }}
+        </p>
+
+        <p
+          class="home-themes__note"
+          data-cy="themes-note"
+        >
+          {{ t('home.themes.note', 'The npm package ships the base origam theme. The others are examples, to open in the Theme Builder.') }}
         </p>
 
         <p
@@ -47,7 +54,7 @@
 
         <nav
           class="home-themes__actions"
-          :aria-label="t('home.themes.actions_label', 'Try the theme builder')"
+          :aria-label="t('home.themes.actions_label', 'Open the Theme Builder')"
         >
           <origam-btn
             class="home-themes__btn"
@@ -56,7 +63,7 @@
             :href="HOME_THEMES_BUILDER_HREF"
             data-cy="themes-cta-builder"
           >
-            {{ t('home.themes.cta_builder', 'Try the theme builder') }}
+            {{ t('home.themes.cta_builder', 'Open the Theme Builder') }}
           </origam-btn>
         </nav>
       </origam-grid-item>
@@ -111,7 +118,7 @@
                       size="small"
                       append-icon="mdi-arrow-right"
                       :href="tile.href"
-                      :aria-label="t('home.themes.preview_open_aria', 'Open the {theme} theme in the builder', { theme: t(tile.labelKey, tile.labelFallback) })"
+                      :aria-label="t('home.themes.preview_open_aria', 'Open the {theme} theme in the Theme Builder', { theme: t(tile.labelKey, tile.labelFallback) })"
                       class="home-themes__preview-btn"
                       data-cy="themes-tile-button"
                     >
@@ -179,6 +186,14 @@ const { t } = useT()
         font-size: var(--origam-font__size---lg, 1rem);
         line-height: 1.6;
         color: var(--origam-color__text---secondary, #525252);
+    }
+
+    &__note {
+        margin: 0;
+        max-inline-size: 34rem;
+        font-size: var(--origam-font__size---sm, 0.875rem);
+        line-height: 1.6;
+        color: var(--origam-color__text---secondary);
     }
 
     &__tooling {

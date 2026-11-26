@@ -4,8 +4,9 @@
  * Contrat :
  *  - <section> labellee par le H2 #cta-title, sous-arbre force en mode sombre
  *    (la bande reste encre/violet en clair comme en sombre) ;
- *  - deux CTA : « Explorer les composants » (/components) et « Lire la
- *    documentation » (/installation) ;
+ *  - deux CTA (#1543) : « Installer » (/installation) et « Explorer les
+ *    composants » (/components) ;
+ *  - une ligne de soutien discrete qui mene a /support (seul canal : le don) ;
  *  - le balayage est un SVG decoratif (aria-hidden, non focusable), aucun
  *    asset du kit embarque ;
  *  - le titre est lisible AA sur la bande (mesure, 2 modes du site).
@@ -28,25 +29,34 @@ test.describe('HomeCta — bande de CTA finale', () => {
         await expect(section).toBeVisible()
         await expect(section).toHaveAttribute('aria-labelledby', 'cta-title')
         await expect(page.locator('section.home-cta h2')).toHaveCount(1)
-        await expect(page.locator('h2#cta-title')).toContainText('Ready to build your interfaces?')
+        await expect(page.locator('h2#cta-title')).toContainText('Three steps to begin.')
+    })
+
+    test('« Installer » mene a /installation (action principale, #1543 A3)', async ({ page }) => {
+        const btn = page.locator('[data-cy="cta-btn-start"]')
+        await expect(btn).toBeVisible()
+        await expect(btn).toContainText('Install')
+        await expect(btn).toHaveAttribute('href', '/installation')
     })
 
     test('« Explorer les composants » mene a /components', async ({ page }) => {
-        const btn = page.locator('[data-cy="cta-btn-start"]')
+        const btn = page.locator('[data-cy="cta-btn-docs"]')
         await expect(btn).toBeVisible()
         await expect(btn).toContainText('Explore the components')
         await expect(btn).toHaveAttribute('href', '/components')
     })
 
-    test('« Lire la documentation » mene a /docs/ (meme cible que le header)', async ({ page }) => {
-        const btn = page.locator('[data-cy="cta-btn-docs"]')
-        await expect(btn).toBeVisible()
-        await expect(btn).toContainText('Read the documentation')
-        await expect(btn).toHaveAttribute('href', '/docs/')
+    test('la description et le lien de soutien vers /support sont rendus', async ({ page }) => {
+        await expect(page.locator('[data-cy="cta-description"]')).toContainText('npm i origam')
+        await expect(page.locator('[data-cy="cta-support"]')).toContainText('MIT')
+        const link = page.locator('[data-cy="cta-support-link"]')
+        await expect(link).toHaveAttribute('href', '/support')
+        await expect(link).toContainText('Support the project')
+        await expect(page.locator('section.home-cta')).not.toContainText(/Sponsors|Open Collective/)
     })
 
     test('les deux CTA se focalisent au clavier', async ({ page }) => {
-        for (const cy of ['cta-btn-start', 'cta-btn-docs']) {
+        for (const cy of ['cta-btn-start', 'cta-btn-docs', 'cta-support-link']) {
             const btn = page.locator(`[data-cy="${ cy }"]`)
             await btn.focus()
             await expect(btn).toBeFocused()

@@ -31,7 +31,7 @@
         </origam-title>
 
         <p class="installation-hero__subtitle">
-          {{ t('installation.hero.subtitle', 'Install origam, register the plugin, and start building with 218 accessible, token-driven Vue 3 components right away.') }}
+          {{ t('installation.hero.subtitle', 'Install origam, register the plugin and build with 97 Vue 3 component families.') }}
         </p>
       </origam-container>
     </section>
@@ -52,12 +52,12 @@
             tag="h2"
             class="installation-section__title"
           >
-            <span class="installation-section__title-line">{{ t('installation.steps.title_line1', 'Five steps.') }}</span>
-            <span class="installation-section__title-line installation-section__title-line--muted">{{ t('installation.steps.title_line2', 'You\'re set.') }}</span>
+            <span class="installation-section__title-line">{{ t('installation.steps.title_line1', 'Three steps,') }}</span>
+            <span class="installation-section__title-line installation-section__title-line--muted">{{ t('installation.steps.title_line2', 'then two if you need them.') }}</span>
           </origam-title>
 
           <p class="installation-section__subtitle">
-            {{ t('installation.steps.subtitle', 'From zero to a fully themed Vue 3 app with origam — no boilerplate needed.') }}
+            {{ t('installation.steps.subtitle', 'From package to first rendered component.') }}
           </p>
         </header>
 
@@ -524,9 +524,9 @@ const { localeHref } = useLocaleHref()
 
 useSeoMeta({
     title: () => t('installation.meta.title', 'Installation · origam design system'),
-    description: () => t('installation.meta.description', 'Get origam up and running in minutes. Install the npm package, register the plugin, and start building with 218 accessible Vue 3 components.'),
+    description: () => t('installation.meta.description', 'Install origam with npm i origam, register the plugin and render your first component. 97 Vue 3 families, Nuxt module included.'),
     ogTitle: () => t('installation.meta.title', 'Installation · origam design system'),
-    ogDescription: () => t('installation.meta.description', 'Get origam up and running in minutes. Install the npm package, register the plugin, and start building with 218 accessible Vue 3 components.')
+    ogDescription: () => t('installation.meta.description', 'Install origam with npm i origam, register the plugin and render your first component. 97 Vue 3 families, Nuxt module included.')
 })
 
 const peerDeps = computed(() => INSTALLATION_PEER_DEPS)

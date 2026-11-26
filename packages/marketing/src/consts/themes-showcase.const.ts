@@ -11,8 +11,8 @@ export const HOME_THEMES_BUILDER_HREF = '/theming'
  * Tooling meta line — monospaced, grey, displayed as a separate <p> row.
  */
 export const THEMES_TOOLING_TEXT: IThemeChip[] = [
-    { key: 'theming', labelKey: 'home.themes.tooling_theming', labelFallback: '→ props-first theming, whole catalogue' },
-    { key: 'tokens', labelKey: 'home.themes.tooling_tokens', labelFallback: '→ hand-maintained CSS/SCSS, no build step' },
+    { key: 'theming', labelKey: 'home.themes.tooling_theming', labelFallback: '→ props first, whole catalogue' },
+    { key: 'tokens', labelKey: 'home.themes.tooling_tokens', labelFallback: '→ plain CSS/SCSS tokens, no build step' },
 ]
 
 /**

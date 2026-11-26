@@ -32,7 +32,7 @@
         </origam-title>
 
         <p class="why-hero__subtitle">
-          {{ t('why_origam.hero.subtitle', "We built origam for Vue 3 teams who care about design quality, accessibility, and token-driven consistency. Here's what we do well — and where we're still growing.") }}
+          {{ t('why_origam.hero.subtitle', 'Origam is for Vue 3 developers who want to theme through props and ship one base in several identities. Here is what it does well, and what it still lacks.') }}
         </p>
 
         <nav
@@ -52,11 +52,11 @@
           <origam-btn
             class="why-hero__action"
             variant="text"
-            prepend-icon="mdi-table-large"
-            href="#why-comparison-title"
-            data-cy="why-hero-comparison-link"
+            prepend-icon="mdi-compass-outline"
+            href="#why-usecases-title"
+            data-cy="why-hero-usecases-link"
           >
-            {{ t('why_origam.hero.cta_comparison', 'Compare with the rest') }}
+            {{ t('why_origam.hero.cta_use_cases', 'When to choose it') }}
           </origam-btn>
         </nav>
 
@@ -168,160 +168,6 @@
             </origam-grid-item>
           </origam-grid>
         </origam-sheet>
-      </origam-container>
-    </section>
-
-    <!-- ───────────────────────────── COMPARISON ─────────────────────── -->
-    <section
-      class="why-comparison-wrap"
-      aria-labelledby="why-comparison-title"
-      data-cy="why-comparison"
-    >
-      <origam-container>
-        <header class="why-comparison__header why-section">
-          <p class="why-section__eyebrow">
-            {{ t('why_origam.comparison.eyebrow', 'HONEST COMPARISON') }}
-          </p>
-
-          <origam-title
-            id="why-comparison-title"
-            tag="h2"
-            class="why-section__title why-section__title--single"
-          >
-            {{ t('why_origam.comparison.title', 'How does origam compare?') }}
-          </origam-title>
-
-          <p class="why-section__subtitle">
-            {{ t('why_origam.comparison.subtitle', "A feature-by-feature look at the Vue ecosystem's main design systems. Assessments are our own and may be out of date — always verify against the project's current docs.") }}
-          </p>
-        </header>
-
-        <origam-table
-          class="why-comparison__table"
-          border
-          rounded="lg"
-          data-cy="why-comparison-table"
-          :caption="t('why_origam.comparison.title', 'How does origam compare?')"
-        >
-          <thead>
-          <tr>
-            <th
-              scope="col"
-              class="why-comparison__th why-comparison__th--lib"
-            >
-              {{ t('why_origam.comparison.col_library', 'Library') }}
-            </th>
-            <th scope="col" class="why-comparison__th">
-              {{ t('why_origam.comparison.col_vue_native', 'Vue 3 native') }}
-            </th>
-            <th scope="col" class="why-comparison__th">
-              {{ t('why_origam.comparison.col_theming_props_first', 'Theming props-first') }}
-            </th>
-            <th scope="col" class="why-comparison__th">
-              {{ t('why_origam.comparison.col_a11y_tested', 'A11y tested') }}
-            </th>
-            <th scope="col" class="why-comparison__th">
-              {{ t('why_origam.comparison.col_css_first', 'CSS-first') }}
-            </th>
-            <th scope="col" class="why-comparison__th">
-              {{ t('why_origam.comparison.col_tree_shakable', 'Tree-shakable') }}
-            </th>
-            <th scope="col" class="why-comparison__th">
-              {{ t('why_origam.comparison.col_charts', 'Charts included') }}
-            </th>
-          </tr>
-          </thead>
-
-          <tbody>
-          <tr
-            v-for="item in comparisonItems"
-            :key="item.library"
-            class="why-comparison__row"
-            :data-origam="item.isOrigam"
-          >
-            <th scope="row" class="why-comparison__lib">
-              <span class="why-comparison__lib-name">{{ t(item.library, item.library) }}</span>
-
-              <span
-                v-if="item.libraryNote"
-                class="why-comparison__lib-note"
-              >
-                                    {{ t(item.libraryNote, '') }}
-                                </span>
-            </th>
-
-            <td
-              class="why-comparison__cell"
-              :data-yes="item.vueNative"
-            >
-              <origam-icon
-                class="why-comparison__cell-icon"
-                :icon="item.vueNative ? 'mdi-check' : 'mdi-minus'"
-                :aria-label="item.vueNative ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
-              />
-            </td>
-
-            <td
-              class="why-comparison__cell"
-              :data-yes="item.themingPropsFirst"
-            >
-              <origam-icon
-                class="why-comparison__cell-icon"
-                :icon="item.themingPropsFirst ? 'mdi-check' : 'mdi-minus'"
-                :aria-label="item.themingPropsFirst ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
-              />
-            </td>
-
-            <td
-              class="why-comparison__cell"
-              :data-yes="item.a11yTested"
-            >
-              <origam-icon
-                class="why-comparison__cell-icon"
-                :icon="item.a11yTested ? 'mdi-check' : 'mdi-minus'"
-                :aria-label="item.a11yTested ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
-              />
-            </td>
-
-            <td
-              class="why-comparison__cell"
-              :data-yes="item.cssFirst"
-            >
-              <origam-icon
-                class="why-comparison__cell-icon"
-                :icon="item.cssFirst ? 'mdi-check' : 'mdi-minus'"
-                :aria-label="item.cssFirst ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
-              />
-            </td>
-
-            <td
-              class="why-comparison__cell"
-              :data-yes="item.treeShakable"
-            >
-              <origam-icon
-                class="why-comparison__cell-icon"
-                :icon="item.treeShakable ? 'mdi-check' : 'mdi-minus'"
-                :aria-label="item.treeShakable ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
-              />
-            </td>
-
-            <td
-              class="why-comparison__cell"
-              :data-yes="item.charts"
-            >
-              <origam-icon
-                class="why-comparison__cell-icon"
-                :icon="item.charts ? 'mdi-check' : 'mdi-minus'"
-                :aria-label="item.charts ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
-              />
-            </td>
-          </tr>
-          </tbody>
-        </origam-table>
-
-        <p class="why-comparison__disclaimer">
-          {{ t('why_origam.comparison.disclaimer', 'Some assessments reflect our interpretation of publicly available documentation. Competitors ship fast — check their docs.') }}
-        </p>
       </origam-container>
     </section>
 
@@ -483,7 +329,7 @@
         </origam-title>
 
         <p class="why-cta__desc">
-          {{ t('why_origam.cta.description', 'Install origam in 30 seconds and see how far the defaults take you.') }}
+          {{ t('why_origam.cta.description', 'Install origam and see how far the defaults take you.') }}
         </p>
 
         <nav
@@ -532,8 +378,7 @@ import {
     WHY_HERO_BADGE_VARS,
     WHY_STRENGTHS,
     WHY_WEAKNESSES,
-    WHY_USE_CASES,
-    WHY_COMPARISONS
+    WHY_USE_CASES
 } from '~/consts/why-origam.const'
 import { WHY_DEMO_THEMES } from '~/consts/why-origam-demo.const'
 import { CTA_START_HREF } from '~/consts/cta.const'
@@ -563,20 +408,6 @@ const noFits = computed(() => useCases.value.filter(u => !u.fits))
 function identityKey (themeKey: string): string {
     return `why_origam.demo.identity_${themeKey}`
 }
-
-const comparisonItems = computed(() =>
-    WHY_COMPARISONS.map(lib => ({
-        library: lib.nameKey,
-        libraryNote: lib.noteKey,
-        isOrigam: lib.nameKey === 'why_origam.comparison.origam',
-        vueNative: lib.vueNative,
-        themingPropsFirst: lib.themingPropsFirst,
-        a11yTested: lib.a11yTested,
-        cssFirst: lib.cssFist,
-        treeShakable: lib.treeShakable,
-        charts: lib.chartsIncluded
-    }))
-)
 </script>
 
 <style scoped lang="scss">
@@ -783,112 +614,6 @@ const comparisonItems = computed(() =>
     @media (max-width: 34rem) {
         .why-strengths__grid {
             grid-template-columns: minmax(0, 1fr);
-        }
-    }
-
-    /* ───────────────────────────── COMPARISON ───────────────────────────── */
-    .why-comparison-wrap {
-        padding-block: var(--origam-space---24, 6rem);
-        background: var(--origam-color__surface---sunken, #f5f5f5);
-        border-block: 1px solid var(--origam-color__border---subtle);
-    }
-
-    .why-comparison {
-        &__header {
-            margin-block-end: var(--origam-space---10, 2.5rem);
-        }
-
-        &__table {
-            inline-size: 100%;
-        }
-
-        &__th {
-            font-size: var(--origam-font-size---xs, 0.75rem);
-            font-weight: var(--origam-font__weight---semibold, 600);
-            letter-spacing: var(--origam-letter-spacing---wide, 0.08em);
-            text-transform: uppercase;
-            color: var(--origam-color__text---tertiary);
-        }
-
-        /*
-          The origam row is the answer to the section's question, so it is the
-          only row with a surface of its own. Before, it differed by a violet
-          word in a table where every row carried six identical green ticks.
-        */
-        &__row[data-origam='true'] {
-            background: var(--origam-color__action--primary---bgSubtle);
-
-            .why-comparison__lib-name {
-                font-weight: var(--origam-font__weight---bold, 700);
-                color: var(--origam-color__action--primary---fgSubtle);
-            }
-        }
-
-        &__lib {
-            text-align: start;
-            font-weight: var(--origam-font__weight---medium, 500);
-        }
-
-        &__lib-name {
-            display: block;
-            font-size: var(--origam-font-size---sm, 0.875rem);
-        }
-
-        /*
-          ⚠️ MEASURED (#921 follow-up): under the site's default identity this
-          text used `--origam-color__text---tertiary`, which axe-core flags at
-          4.03:1 on this section's background — below the 4.5:1 AA floor for
-          body text (WCAG 1.4.3). `--origam-color__text---secondary` is the
-          next rung up the same DS text hierarchy — already used one section
-          up for `.why-section__subtitle` on this very page — and clears AA
-          here. `tertiary` stays correct for truly decorative/disabled text
-          (e.g. `.why-comparison__cell[data-yes='false']`), just not for a
-          full sentence of body copy.
-        */
-        &__lib-note {
-            display: block;
-            margin-block-start: var(--origam-space---1, 0.25rem);
-            font-size: var(--origam-font-size---xs, 0.75rem);
-            font-weight: var(--origam-font__weight---regular, 400);
-            color: var(--origam-color__text---secondary);
-            max-inline-size: 15rem;
-        }
-
-        /*
-          "Yes" and "no" used to be two icons of the same size and weight, so
-          the table read as texture. Now only "yes" is inked; "no" recedes to
-          a hairline dash. The aria-label carries the value for screen readers,
-          so the weight difference is decoration, not the only channel.
-        */
-        &__cell {
-            text-align: center;
-
-            /*
-              ⛔ `fgSubtle`, jamais `fg` (#951). `fg` est l'ENCRE posee SUR l'aplat
-              de l'intention, pas sa teinte : hors de cet aplat il peint un neutre.
-              Mesure 8 identites x 2 modes : `fg` ne rend une teinte NULLE PART, et
-              9 des 16 configurations tombent sous 1.6:1 (glass sombre a 1.00 — le
-              filet a la couleur de son fond). `fgSubtle` tient 4.38:1 a 13.22:1.
-            */
-            &[data-yes='true'] .why-comparison__cell-icon {
-                color: var(--origam-color__feedback--success---fgSubtle);
-            }
-
-            &[data-yes='false'] .why-comparison__cell-icon {
-                color: var(--origam-color__text---disabled);
-            }
-        }
-
-        &__cell-icon {
-            font-size: var(--origam-font-size---lg, 1.125rem);
-        }
-
-        /* Same AA fix as `&__lib-note` above — see that comment. */
-        &__disclaimer {
-            margin-block-start: var(--origam-space---5, 1.25rem);
-            font-size: var(--origam-font-size---xs, 0.75rem);
-            color: var(--origam-color__text---secondary);
-            font-style: italic;
         }
     }
 
