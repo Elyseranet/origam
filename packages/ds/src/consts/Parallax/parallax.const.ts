@@ -32,3 +32,21 @@ export const PARALLAX_SPRING_DAMPING = 0.12
  * style string rewritten on every frame.
  ********************************************************/
 export const PARALLAX_TRANSFORM_PRECISION = 2
+
+/*********************************************************
+ * PARALLAX_MOUSE_SMOOTHING
+ *
+ * @description
+ * Duration (ms) of the CSS `transition` that smooths the pointer-driven
+ * `translate` of a layer. The browser interpolates — no JS timer, no rAF.
+ ********************************************************/
+export const PARALLAX_MOUSE_SMOOTHING = 400
+
+/*********************************************************
+ * PARALLAX_FINE_POINTER_QUERY
+ *
+ * @description
+ * Pointer-driven movement is only wired on devices with a hover-capable
+ * fine pointer; touch devices keep the scroll-only behaviour.
+ ********************************************************/
+export const PARALLAX_FINE_POINTER_QUERY = '(hover: hover) and (pointer: fine)'

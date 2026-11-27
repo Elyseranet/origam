@@ -35,7 +35,9 @@
 		tag: 'div',
 		speed: 1,
 		offsetX: 0,
-		offsetY: 0
+		offsetY: 0,
+		mouseX: undefined,
+		mouseY: undefined
 	})
 
 	const { filterProps } = useProps<IParallaxLayerProps>(props)
@@ -79,6 +81,8 @@
 			speed: props.speed ?? 1,
 			offsetX: props.offsetX ?? 0,
 			offsetY: props.offsetY ?? 0,
+			mouseX: props.mouseX,
+			mouseY: props.mouseY,
 			target: layerRef.value
 		}
 		parallax.register(registry)
@@ -105,12 +109,14 @@
 	 * so there's no ADR-005 ordering concern here to defer against.
 	 ********************************************************/
 	watch(
-		() => [props.speed, props.offsetX, props.offsetY] as const,
-		([speed, offsetX, offsetY]) => {
+		() => [props.speed, props.offsetX, props.offsetY, props.mouseX, props.mouseY] as const,
+		([speed, offsetX, offsetY, mouseX, mouseY]) => {
 			parallax.update(registryToken, {
 				speed: speed ?? 1,
 				offsetX: offsetX ?? 0,
-				offsetY: offsetY ?? 0
+				offsetY: offsetY ?? 0,
+				mouseX,
+				mouseY
 			})
 		}
 	)

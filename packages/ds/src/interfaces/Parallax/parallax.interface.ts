@@ -181,7 +181,7 @@ export interface IParallaxLayerProvide {
      * running rAF loop / CSS scroll-driven animation, which both read the
      * registry entry directly rather than through Vue reactivity.
      */
-    update: (id: symbol, patch: Pick<IParallaxLayerRegistry, 'speed' | 'offsetX' | 'offsetY'>) => void
+    update: (id: symbol, patch: Pick<IParallaxLayerRegistry, 'speed' | 'offsetX' | 'offsetY' | 'mouseX' | 'mouseY'>) => void
 }
 
 /*********************************************************

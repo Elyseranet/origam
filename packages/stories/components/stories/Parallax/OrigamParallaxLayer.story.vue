@@ -41,6 +41,41 @@
 			</template>
 		</Variant>
 
+		<Variant
+				title="Functional"
+				:init-state="() => useStoryInitState<IParallaxLayerProps>({
+					speed: 0.3,
+					mouseX: 40,
+					mouseY: 24
+				})"
+		>
+			<template #default="{ state }">
+				<origam-parallax :style="hostStyleTall" :direction="PARALLAX_DIRECTION.BOTH">
+					<origam-parallax-layer data-cy="parallax-layer-back" :speed="0.1" :mouse-x="10" :mouse-y="6">
+						<div :style="layerStyle">back</div>
+					</origam-parallax-layer>
+					<origam-parallax-layer
+							data-cy="parallax-layer-front"
+							:speed="state.speed"
+							:mouse-x="state.mouseX"
+							:mouse-y="state.mouseY"
+					>
+						<div :style="layerStyle">front: mouse {{ state.mouseX }} / {{ state.mouseY }} px, scroll {{ state.speed }}</div>
+					</origam-parallax-layer>
+				</origam-parallax>
+				<div :style="scrollFiller"></div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Mouse">
+					<HstNumber v-model="state.mouseX" title="Mouse X" :min="-200" :max="200" :step="5"/>
+					<HstNumber v-model="state.mouseY" title="Mouse Y" :min="-200" :max="200" :step="5"/>
+				</StoryGroup>
+				<StoryGroup title="Scroll">
+					<HstNumber v-model="state.speed" title="Speed" :min="-2" :max="2" :step="0.1"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<origam-parallax :style="hostStyleTall" :event="PARALLAX_EVENT.SCROLL">
 				<origam-parallax-layer :speed="0.4">
@@ -76,6 +111,8 @@
 					<HstNumber v-model="state.speed"   title="Speed"    :min="-2" :max="2" :step="0.1"/>
 					<HstNumber v-model="state.offsetX" title="Offset X" :min="-200" :max="200" :step="10"/>
 					<HstNumber v-model="state.offsetY" title="Offset Y" :min="-200" :max="200" :step="10"/>
+					<HstNumber v-model="state.mouseX"  title="Mouse X"  :min="-200" :max="200" :step="5"/>
+					<HstNumber v-model="state.mouseY"  title="Mouse Y"  :min="-200" :max="200" :step="5"/>
 					<HstNumber v-model="state.zIndex"  title="Z-Index"  :step="1"/>
 				</StoryGroup>
 			</template>
@@ -90,7 +127,7 @@
 	import type { CSSProperties } from 'vue'
 
 	import { OrigamParallax, OrigamParallaxLayer } from '@origam/components'
-	import { PARALLAX_EASING, PARALLAX_EVENT } from '@origam/enums'
+	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT } from '@origam/enums'
 	import type { IParallaxLayerProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'

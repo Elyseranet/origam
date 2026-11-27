@@ -52,7 +52,7 @@ of scroll.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `direction` | `'vertical' \| 'horizontal' \| 'both'` | `'vertical'` | Axis of the parallax translation. `both` mixes scroll-progress (Y) and mouse-ratio (X). |
+| `direction` | `'vertical' \| 'horizontal' \| 'both'` | `'vertical'` | Axis of the parallax translation. `both` scrolls on Y and, by default, follows the pointer on X; per-layer `mouseX` / `mouseY` on `<OrigamParallaxLayer>` set the pointer amplitudes on both axes (see that page). |
 | `easing` | `'linear' \| 'ease-out' \| 'spring' \| string` | `'linear'` | Easing keyword or raw CSS timing-function. Only `linear` activates the CSS-first path. |
 | `speed` | `number` | `0.5` | Default speed multiplier when the host has no `<OrigamParallaxLayer>` children. |
 | `disabled` | `boolean` | `false` | Hard kill-switch. `<OrigamParallaxLayer>` **and** `<OrigamParallaxElement>` stay at offset 0 regardless of the event source — scroll, mouse, or device orientation. See "`disabled` vs `active`" below. |
@@ -127,6 +127,8 @@ custom debug overlays. The branch is computed at mount and re-evaluated
 when the `easing` prop changes.
 
 ## `prefers-reduced-motion` behavior
+
+The pointer listener of the layer runtime is not installed at all in this case, and is also skipped without a fine pointer (touch).
 
 When `(prefers-reduced-motion: reduce)` matches, every layer:
 - Snaps to `translate3d(offsetX, offsetY, 0)` and never moves.

@@ -26,6 +26,23 @@ export interface IParallaxLayerProps extends ICommonsComponentProps, ITagProps {
      */
     offsetY?: number
 
+    /*********************************************************
+     * mouseX / mouseY
+     *
+     * @description
+     * Pointer amplitude (px) per axis: how far the layer slides when the
+     * pointer goes from the host centre to its edge. Independent from
+     * `speed`, which only drives the scroll.
+     * @description
+     * Only active with a fine pointer (`(hover: hover) and (pointer: fine)`)
+     * and without `prefers-reduced-motion: reduce`.
+     * @description
+     * `mouseX` unset keeps the legacy rule (`direction="both"`: host width
+     * x 0.5 x speed; otherwise ignored). `mouseY` unset = no vertical move.
+     ********************************************************/
+    mouseX?: number
+    mouseY?: number
+
     /**
      * Optional `z-index` override. By default layers stack in document order.
      */
@@ -58,5 +75,7 @@ export interface IParallaxLayerRegistry {
     speed: number
     offsetX: number
     offsetY: number
+    mouseX?: number
+    mouseY?: number
     target: HTMLElement
 }
