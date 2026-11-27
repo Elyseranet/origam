@@ -1,20 +1,28 @@
-import type { IHeroVisual } from '~/interfaces/hero.interface'
+import { ENSO_HERO_ARCHITECTURE, ENSO_HERO_LANDSCAPE, ENSO_HERO_MOUNTAINS, ENSO_HERO_SAKURA, ENSO_HERO_SKY, ENSO_HERO_SUN } from '~/consts/enso.const'
+import type { IHeroPlane } from '~/interfaces/hero.interface'
 
-/** Paysage aquarelle du kit A1 (la section hero est rendue en clair dans les deux modes), servi en trois largeurs AVIF. */
-export const HERO_WATERCOLOR: IHeroVisual = {
-    src: '/brand/hero-watercolor-1672.avif',
-    srcset: '/brand/hero-watercolor-836.avif 836w, /brand/hero-watercolor-1254.avif 1254w, /brand/hero-watercolor-1672.avif 1672w'
-}
+/**
+ * Plans de la parallaxe du hero (#1572), du plus lointain au plus proche.
+ * `shift` = déplacement vertical (px) atteint après `HERO_PARALLAX_RANGE` de
+ * défilement : positif = le plan descend (il paraît défiler plus lentement que
+ * la page), négatif = il monte (il paraît plus rapide). `desktopOnly` = masqué
+ * sous 48rem (moins de plans en mobile). `darkOnly` = pas de variante claire : le ciel clair porte déjà son soleil, un second le doublerait. `lightOnly` = pas de variante sombre :
+ * `hero/dark/01-sky` est un ciel CLAIR dans le kit, le soleil seul tient le fond encre.
+ */
+export const HERO_PLANES: readonly IHeroPlane[] = [
+    { key: 'sky', art: ENSO_HERO_SKY, displayWidth: 1440, shift: 80, lightOnly: true },
+    { key: 'sun', art: ENSO_HERO_SUN, displayWidth: 240, shift: 64, darkOnly: true },
+    { key: 'mountains', art: ENSO_HERO_MOUNTAINS, displayWidth: 900, shift: 40 },
+    { key: 'landscape', art: ENSO_HERO_LANDSCAPE, displayWidth: 1440, shift: 20 },
+    { key: 'pagoda', art: ENSO_HERO_ARCHITECTURE, displayWidth: 260, shift: 0, desktopOnly: true },
+    { key: 'sakura', art: ENSO_HERO_SAKURA, displayWidth: 480, shift: -48 }
+]
 
-export const HERO_WATERCOLOR_SIZES = '100vw'
+/** Défilement (px) sur lequel les plans atteignent leur `shift` ; égal à `animation-range` dans HomeHero. */
+export const HERO_PARALLAX_RANGE = 480
 
-export const HERO_SYMBOL_SIZES = '34rem'
-
-/** Symbole A1 en clair, posé au-dessus du paysage comme dans la maquette. */
-export const HERO_SYMBOL_DAY: IHeroVisual = {
-    src: '/brand/hero-symbol-light.avif',
-    srcset: '/brand/hero-symbol-light.avif 403w'
-}
+/** Pétales du hero (8 à 12 voulus ; EnsoPetals n'en garde que 6 sous 40rem). */
+export const HERO_PETAL_COUNT = 10
 
 /**
  * CTA « soleil » : la rampe `--origam-color__sun---*` arrive avec #1514 et

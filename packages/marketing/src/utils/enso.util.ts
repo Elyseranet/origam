@@ -1,6 +1,7 @@
 import { ENSO_DEMO_MODES, ENSO_GALLERY, ENSO_PETAL_FLIGHTS, ENSO_PETAL_WIDTH } from '~/consts/enso.const'
 import type { IEnsoArt, IEnsoDemoColumn, IEnsoPetalView, IEnsoSrcsetCandidate } from '~/interfaces/enso.interface'
-import type { IHeroVisual } from '~/interfaces/hero.interface'
+import { HERO_PLANES } from '~/consts/hero.const'
+import type { IHeroPlaneView, IHeroVisual } from '~/interfaces/hero.interface'
 import type { TEnsoArtVars } from '~/types/enso.type'
 
 /** Le plus petit fichier qui couvre `target`, sinon le plus grand, sinon `src` (srcset vide). */
@@ -67,6 +68,21 @@ export function ensoPetalViews (count: number): IEnsoPetalView[] {
             '--petal-delay': flight.delay,
             '--petal-scale': flight.scale,
             '--petal-spin': flight.spin
+        }
+    }))
+}
+
+/** Plans du hero prêts à poser en `style` ; sans variante sombre, `--enso-art-dark: none` laisse le fond encre nu. */
+export function heroPlaneViews (): IHeroPlaneView[] {
+    return HERO_PLANES.map(plane => ({
+        key: plane.key,
+        cy: `hero-plane-${plane.key}`,
+        classes: ['enso-art', `home-hero__plane--${plane.key}`, ...(plane.desktopOnly ? ['home-hero__plane--desktop-only'] : [])],
+        style: {
+            ...ensoArtVars(plane.art, plane.displayWidth),
+            ...(plane.lightOnly ? { '--enso-art-dark': 'none' } : {}),
+            ...(plane.darkOnly ? { '--enso-art-light': 'none' } : {}),
+            '--plane-shift': `${plane.shift}px`
         }
     }))
 }
