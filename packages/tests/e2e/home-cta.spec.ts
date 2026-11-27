@@ -2,8 +2,8 @@
  * home-cta.spec.ts — bande de CTA finale (#1517, maquette A du kit A1)
  *
  * Contrat :
- *  - <section> labellee par le H2 #cta-title ; la bande suit le mode du site
- *    (fond CTA du kit en clair ET en sombre, #1574) ;
+ *  - <section> labellee par le H2 #cta-title, sous-arbre force en mode sombre
+ *    (bande encre/lilas du kit en clair comme en sombre, #1574) ;
  *  - deux CTA (#1543) : « Installer » (/installation) et « Explorer les
  *    composants » (/components) ;
  *  - une ligne de soutien discrete qui mene a /support (seul canal : le don) ;
@@ -91,9 +91,9 @@ test.describe('HomeCta — bande de CTA finale', () => {
         })
     }
 
-    test('la bande suit le mode du site (aucun sous-arbre force en sombre)', async ({ page }) => {
+    test('la bande reste sombre meme quand le site est en clair', async ({ page }) => {
         await applyBrand(page, 'origam', 'light')
-        await expect(page.locator('[data-mode="dark"] > section.home-cta')).toHaveCount(0)
+        await expect(page.locator('[data-mode="dark"] > section.home-cta')).toHaveCount(1)
     })
 
     test('aucune cle i18n brute dans la section', async ({ page }) => {
