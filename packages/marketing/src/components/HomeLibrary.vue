@@ -32,15 +32,18 @@
         >
           <origam-card
             :to="categoryLink(category)"
-            rounded="xl"
+            rounded="lg"
             border
+            border-color="var(--origam-color__border---subtle)"
+            bg-color="var(--origam-color__surface---raised)"
+            elevation="none"
             class="home-library__card"
             :data-cy="`library-card-${category.key}`"
           >
             <span class="home-library__tile">
               <origam-icon
                 :icon="category.icon"
-                :size="40"
+                :size="26"
                 color="primary"
                 aria-hidden="true"
               />
@@ -85,9 +88,9 @@ defineExpose({})
     &__intro {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: var(--origam-space---6, 1.5rem);
-        align-items: center;
-        margin-block-end: var(--origam-space---8, 2rem);
+        gap: var(--origam-space---8, 2rem);
+        align-items: end;
+        margin-block-end: calc(var(--origam-space---8, 2rem) + var(--origam-space---1, 0.25rem));
     }
 
     &__text {
@@ -97,15 +100,14 @@ defineExpose({})
         line-height: 1.6;
     }
 
-    // 7 cards: a flex-wrap row centres the orphan row at every width, which a
-    // fixed-column grid cannot (it left-aligns it). --cols = cards per row.
+    // Maquette v12 : 7 cartes par rangée, la dernière rangée s'aligne à gauche. --cols = cartes par rangée.
     &__grid {
         --home-library-cols: 7;
-        --home-library-gap: var(--origam-space---6, 1.5rem);
+        --home-library-gap: var(--origam-space---3, 0.75rem);
 
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: flex-start;
         gap: var(--home-library-gap);
         margin: 0;
         padding: 0;
@@ -133,14 +135,15 @@ defineExpose({})
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: var(--origam-space---3, 0.75rem);
-        padding: var(--origam-space---4, 1rem) var(--origam-space---2, 0.5rem);
+        // Maquette v12 : tuile 18 px / 10 px, icône 26 px, 10 px sous l'icône.
+        gap: 0.625rem;
+        padding: 1.125rem 0.625rem;
         text-align: center;
     }
 
     &__label {
-        font-size: var(--origam-font__size---lg, 1rem);
-        font-weight: var(--origam-font__weight---bold, 700);
+        font-size: var(--origam-font__size---md, 0.875rem);
+        font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__text---primary);
     }
 
@@ -150,17 +153,17 @@ defineExpose({})
     }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1024px) {
+    .home-library__intro {
+        grid-template-columns: 1fr;
+    }
+
     .home-library__grid {
         --home-library-cols: 4;
     }
 }
 
-@media (max-width: 768px) {
-    .home-library__intro {
-        grid-template-columns: 1fr;
-    }
-
+@media (max-width: 480px) {
     .home-library__grid {
         --home-library-cols: 2;
     }

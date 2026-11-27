@@ -18,12 +18,14 @@
           class="home-benefits__item"
           data-cy="benefit-item"
         >
-          <origam-icon
-            :icon="benefit.icon"
-            color="primary"
-            :size="48"
-            aria-hidden="true"
-          />
+          <span class="home-benefits__tile">
+            <origam-icon
+              :icon="benefit.icon"
+              color="primary"
+              :size="20"
+              aria-hidden="true"
+            />
+          </span>
 
           <origam-title
             tag="h2"
@@ -96,30 +98,35 @@ defineExpose({})
         padding: 0;
     }
 
+    // Tuile d'icône, titre et texte : valeurs relevées dans la maquette v12.
     &__item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: var(--origam-space---2, 0.5rem);
         text-align: center;
+    }
 
-        // Icône → titre : 12 px (cible audit ≈ 14, cran de token le plus proche) ; titre → texte : 8 px.
-        > .origam-icon {
-            margin-block-end: var(--origam-space---1, 0.25rem);
-        }
+    &__tile {
+        display: grid;
+        place-items: center;
+        inline-size: 40px;
+        block-size: 40px;
+        margin-block-end: var(--origam-space---3, 0.75rem);
+        border: 1px solid var(--origam-color__border---subtle);
+        border-radius: var(--origam-radius---lg, 12px);
+        background-color: var(--origam-color__surface---raised);
     }
 
     &__title {
         margin: 0;
-        font-size: var(--home-fs-h3);
-        font-weight: var(--origam-font__weight---bold, 700);
+        font-size: var(--origam-font__size---xl, 1.125rem);
+        font-weight: var(--origam-font__weight---semibold, 600);
     }
 
     &__description {
-        margin: 0;
-        max-inline-size: 15rem;
-        font-size: var(--home-fs-small);
-        line-height: 1.5;
+        margin: var(--origam-space---1, 0.25rem) 0 0;
+        font-size: var(--origam-font__size---md, 0.875rem);
+        line-height: 1.6;
         color: var(--origam-color__text---secondary);
     }
 }

@@ -7,8 +7,8 @@
     <div class="home-container">
       <origam-grid
         tag="div"
-        columns="repeat(auto-fit, minmax(320px, 1fr))"
-        gap="xl"
+        columns="var(--home-themes---cols)"
+        gap="var(--origam-space---12)"
         align-items="center"
         class="home-themes__grid"
       >
@@ -73,8 +73,8 @@
         >
           <origam-grid
             tag="ul"
-            :columns="2"
-            gap="sm"
+            columns="var(--home-themes---tiles)"
+            gap="0.875rem"
             :aria-label="t('a11y.themes_preview_tiles', 'Theme preview tiles')"
             class="home-themes__previews"
           >
@@ -91,11 +91,11 @@
               >
                 <origam-sheet
                   :data-cy="`themes-tile-surface-${tile.key}`"
-                  rounded="xl"
+                  rounded="lg"
                   tag="article"
-                  elevation="md"
+                  :elevation="tile.elevation"
                   border
-                  border-color="var(--origam-color__border---ghost)"
+                  border-color="var(--origam-color__border---subtle)"
                   class="home-themes__preview-tile"
                 >
                   <figure class="home-themes__preview-figure">
@@ -164,6 +164,8 @@ const washStyle = {
 .home-themes {
     // Clair : sunken ; sombre : overlay (le sunken sombre est trop proche de l'encre).
     --home-themes---bg: var(--origam-color__surface---sunken);
+    --home-themes---cols: minmax(0, 1fr) minmax(0, 1.1fr);
+    --home-themes---tiles: repeat(2, minmax(0, 1fr));
 
     position: relative;
     isolation: isolate;
@@ -200,7 +202,7 @@ const washStyle = {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--origam-space---6, 1.5rem);
+        gap: var(--origam-space---3, 0.75rem);
     }
 
     &__eyebrow {
@@ -233,13 +235,14 @@ const washStyle = {
         flex-wrap: wrap;
         align-items: center;
         gap: var(--origam-space---2, 0.5rem);
-        font-size: var(--home-fs-small);
+        font-size: 0.84375rem;
+        line-height: 1.9;
         font-family: var(--origam-font__family---mono, 'JetBrains Mono', monospace);
-        color: var(--origam-color__text---tertiary, #737373);
+        color: var(--origam-color__text---secondary);
     }
 
     &__tooling-sep {
-        color: var(--origam-color__text---tertiary, #737373);
+        color: inherit;
         user-select: none;
     }
 
@@ -261,10 +264,13 @@ const washStyle = {
         list-style: none;
     }
 
+    // Tuile de la maquette v12 : 16 px de padding, 104 px mini, libellé mono 14 px, deux barres de 6 px.
     &__preview-tile {
+        min-block-size: 6.5rem;
         padding: var(--origam-space---4, 1rem);
         overflow: hidden;
-        background-color: var(--origam-color__surface---default);
+        background-color: var(--origam-color__surface---raised);
+        color: var(--origam-color__text---primary);
     }
 
     &__preview-figure {
@@ -275,10 +281,9 @@ const washStyle = {
     }
 
     &__preview-label {
-        font-size: var(--home-fs-small);
+        font-size: var(--origam-font__size---md, 0.875rem);
         font-weight: var(--origam-font__weight---semibold, 600);
-        letter-spacing: 0.04em;
-        color: var(--origam-color__text---secondary, #525252);
+        color: inherit;
         font-family: var(--origam-font__family---mono, 'JetBrains Mono', monospace);
     }
 
@@ -290,23 +295,35 @@ const washStyle = {
 
     &__skeleton-bar {
         display: block;
-        height: 10px;
-        border-radius: var(--origam-radius---sm, 4px);
-        background-color: var(--origam-color__neutral---300, #d4d4d4);
+        height: 6px;
+        border-radius: 3px;
+        background-color: currentColor;
+        opacity: 0.18;
 
         &--long {
             width: 100%;
         }
 
         &--short {
-            width: 72%;
-            background-color: var(--origam-color__neutral---200, #e5e5e5);
+            width: 60%;
         }
     }
 
     &__preview-footer {
         display: flex;
         align-items: center;
+    }
+}
+
+@media (max-width: 1024px) {
+    .home-themes {
+        --home-themes---cols: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .home-themes {
+        --home-themes---tiles: minmax(0, 1fr);
     }
 }
 

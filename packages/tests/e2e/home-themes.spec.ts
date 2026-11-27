@@ -173,9 +173,10 @@ test.describe('HomeThemes section', () => {
 
         // 2. Le couple clair/sombre se distingue par la surface, sur les
         //    valeurs de token attendues.
-        // #1514 — papier / encre du brand kit A1.
-        expect(signatures[0].surfaceBg).toBe('rgb(247, 245, 239)')
-        expect(signatures[1].surfaceBg).toBe('rgb(27, 17, 39)')
+        // #1595 — maquette v12 : la tuile peint `surface---raised` de SON thème
+        // (papier relevé / encre relevée du brand kit A1), plus `surface---default`.
+        expect(signatures[0].surfaceBg).toBe('rgb(255, 250, 247)')
+        expect(signatures[1].surfaceBg).toBe('rgb(36, 27, 48)')
 
         // 3. Les quatre tuiles ne rendent pas toutes la même chose.
         const distinct = new Set(signatures.map(s => JSON.stringify([s.surfaceBg, s.buttonBg, s.buttonBorderWidth])))
