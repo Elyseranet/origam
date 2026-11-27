@@ -114,8 +114,13 @@ test.describe('EnsoPageHeader — en-tête « Vallée » sur /why-origam', () =>
         await openPage(page, 'light')
 
         expect(await layerShift(page, 'back')).toBe(0)
-        await scrollToY(page, 300)
-        await expect.poll(() => layerShift(page, 'back'), { timeout: 5_000 }).toBeGreaterThan(0)
+        // Nuxt remonte en haut de page à l'hydratation (mesuré avec un CPU ralenti x10 : scrollY 300 -> 0, plans à 0) : tant que la
+        // parallaxe n'est pas montée, on redéfile à chaque lecture, jusqu'à ce que le plan bouge.
+        await expect.poll(async () => {
+            await page.evaluate(() => window.scrollTo({ top: 300, behavior: 'instant' }))
+            await page.waitForTimeout(150)
+            return layerShift(page, 'back')
+        }, { timeout: 20_000 }).toBeGreaterThan(0)
 
         const back = await layerShift(page, 'back')
         const front = await layerShift(page, 'front')
