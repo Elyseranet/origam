@@ -44,8 +44,8 @@
     --origam-radius---btn: 10px;
     --origam-radius---pill: 9999px;
 
-    /* ── Header height — measured 56px (layouts/default.vue, header du lot 3 #1516) ── */
-    --marketing-header-height: 3.5rem;
+    /* ── Header height — 72px, source unique (layouts/default.vue `:height="72"`, #1554 T10) ── */
+    --marketing-header-height: 4.5rem;
 
     /* ── Spaces (marketing-specific scale beyond DS primitives) ─────────── */
     --origam-space---24: 6rem;

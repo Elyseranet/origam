@@ -26,7 +26,7 @@ test.describe('chrome du site — desktop (#1516)', () => {
     await expect(page.locator('[data-cy="nav-mobile-trigger"]')).toBeHidden()
   })
 
-  test('le logo est servi en AVIF 1x / 2x, un seul est affiché et il suit le mode', async ({ page }) => {
+  test('le logo est servi en AVIF (fichier 2x pour toutes les densités), un seul est affiché et il suit le mode', async ({ page }) => {
     for (const mode of ['light', 'dark'] as const) {
       await page.context().addCookies([{ name: 'origam-mode', value: mode, url: BASE_URL }])
       await page.goto(`${BASE_URL}/installation`, { waitUntil: 'load' })
@@ -38,8 +38,7 @@ test.describe('chrome du site — desktop (#1516)', () => {
       )
 
       expect(shown, `un seul logo visible en ${mode}`).toHaveLength(1)
-      expect(shown[0].src).toContain(`origam-horizontal-${mode}-1x.avif`)
-      expect(shown[0].srcset).toContain('2x')
+      expect(shown[0].src).toContain(`origam-horizontal-${mode}-2x.avif`)
       expect(shown[0].alt).toBeTruthy()
     }
   })
