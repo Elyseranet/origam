@@ -3,6 +3,8 @@
     class="home-themes home-container home-section"
     aria-labelledby="themes-title"
   >
+    <enso-backdrop :art="ENSO_SECTION_MOUNTAIN" />
+
     <origam-grid
       tag="div"
       columns="repeat(auto-fit, minmax(320px, 1fr))"
@@ -18,14 +20,10 @@
           {{ t('home.themes.eyebrow', 'THEMING') }}
         </p>
 
-        <origam-title
-          id="themes-title"
-          tag="h2"
-          class="home-themes__title"
-        >
+        <enso-section-title id="themes-title">
           <span class="home-themes__title-line">{{ t('home.themes.title_line1', 'One theme object.') }}</span>
           <span class="home-themes__title-line">{{ t('home.themes.title_line2', 'One identity per brand.') }}</span>
-        </origam-title>
+        </enso-section-title>
 
         <p class="home-themes__subtitle">
           {{ t('home.themes.subtitle', 'Eight identities, written with the public theme object, as yours will be. Light or dark, they switch at runtime.') }}
@@ -119,7 +117,7 @@
                       size="small"
                       append-icon="mdi-arrow-right"
                       :href="tile.href"
-                      :aria-label="t('home.themes.preview_open_aria', 'Open the {theme} theme in the Theme Builder', { theme: t(tile.labelKey, tile.labelFallback) })"
+                      :aria-label="t('home.themes.preview_open_aria', 'Customize the {theme} theme in the Theme Builder', { theme: t(tile.labelKey, tile.labelFallback) })"
                       class="home-themes__preview-btn"
                       data-cy="themes-tile-button"
                     >
@@ -138,6 +136,7 @@
 
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
+import { ENSO_SECTION_MOUNTAIN } from '~/consts/enso.const'
 import {
     THEMES_TOOLING_TEXT,
     THEME_PREVIEW_TILES,
@@ -149,6 +148,11 @@ const { t } = useT()
 
 <style scoped lang="scss">
 .home-themes {
+    --enso-backdrop---opacity: 0.15;
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
 
     &__text-col {
         display: flex;
@@ -161,15 +165,8 @@ const { t } = useT()
         margin: 0;
     }
 
-    &__title {
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        font-size: var(--home-fs-h2);
-        font-weight: var(--origam-font__weight---bold, 700);
-        letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-        line-height: 1.15;
-        color: var(--origam-color__text---primary, #0a0a0a);
+    &__title-line {
+        display: block;
     }
 
     &__subtitle {

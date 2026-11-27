@@ -2,40 +2,43 @@
   <origam-theme-provider mode="dark">
     <section
       class="home-cta"
+      :style="brushVars"
       aria-labelledby="cta-title"
     >
-      <svg
-        class="home-cta__brush"
-        viewBox="0 0 1440 360"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-        focusable="false"
-    >
-        <path
-          class="home-cta__stroke home-cta__stroke--violet"
-          d="M0 250 C 240 150 420 330 700 250 S 1180 90 1440 190 L 1440 360 L 0 360 Z"
-        />
-        <path
-          class="home-cta__stroke home-cta__stroke--sun"
-          d="M0 300 C 280 230 480 360 760 300 S 1200 190 1440 262 L 1440 360 L 0 360 Z"
-        />
-      </svg>
+      <div class="home-cta__inner home-container">
+        <div class="home-cta__text">
+          <origam-title
+            id="cta-title"
+            tag="h2"
+            class="home-cta__title"
+          >
+            {{ t('home.cta.title', 'Three steps to begin.') }}
+          </origam-title>
 
-      <div class="home-cta__inner">
-        <origam-title
-          id="cta-title"
-          tag="h2"
-          class="home-cta__title"
-        >
-          {{ t('home.cta.title', 'Three steps to begin.') }}
-        </origam-title>
+          <p
+            class="home-cta__description"
+            data-cy="cta-description"
+          >
+            {{ t('home.cta.description', 'npm i origam, then the plugin and a first component. On Nuxt, one module to add.') }}
+          </p>
 
-        <p
-          class="home-cta__description"
-          data-cy="cta-description"
-        >
-          {{ t('home.cta.description', 'npm i origam, then the plugin and a first component. On Nuxt, one module to add.') }}
-        </p>
+          <p
+            class="home-cta__support"
+            data-cy="cta-support"
+          >
+            {{ t('home.cta.support', 'Origam is free, MIT licensed and maintained by one person.') }}
+            <origam-btn
+              class="home-cta__support-link"
+              variant="text"
+              size="small"
+              append-icon="mdi-arrow-right"
+              :href="CONTACT_SUPPORT_ROUTE"
+              data-cy="cta-support-link"
+            >
+              {{ t('home.cta.support_link', 'Support the project') }}
+            </origam-btn>
+          </p>
+        </div>
 
         <nav
           class="home-cta__actions"
@@ -44,6 +47,7 @@
           <origam-btn
             class="home-cta__btn"
             variant="flat"
+            size="x-large"
             :bg-color="CTA_SUN_COLOR"
             :color="CTA_INK_COLOR"
             :href="CTA_START_HREF"
@@ -55,29 +59,13 @@
           <origam-btn
             class="home-cta__btn"
             variant="outlined"
+            size="x-large"
             :href="CTA_COMPONENTS_HREF"
             data-cy="cta-btn-docs"
           >
             {{ t('home.cta.cta_docs', 'Explore the components') }}
           </origam-btn>
         </nav>
-
-        <p
-          class="home-cta__support"
-          data-cy="cta-support"
-        >
-          {{ t('home.cta.support', 'Origam is free, MIT licensed and maintained by one person.') }}
-          <origam-btn
-            class="home-cta__support-link"
-            variant="text"
-            size="small"
-            append-icon="mdi-arrow-right"
-            :href="CONTACT_SUPPORT_ROUTE"
-            data-cy="cta-support-link"
-          >
-            {{ t('home.cta.support_link', 'Support the project') }}
-          </origam-btn>
-        </p>
       </div>
     </section>
   </origam-theme-provider>
@@ -86,72 +74,105 @@
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
 import { CONTACT_SUPPORT_ROUTE } from '~/consts/contact.const'
-import { CTA_COMPONENTS_HREF, CTA_INK_COLOR, CTA_START_HREF, CTA_SUN_COLOR } from '~/consts/cta.const'
+import { CTA_COMPONENTS_HREF, CTA_INK_COLOR, CTA_START_HREF, CTA_SUN_COLOR, CTA_BRUSH_WIDTH } from '~/consts/cta.const'
+import { ENSO_BRUSH_IVORY } from '~/consts/enso.const'
+import { ensoImageSet } from '~/utils/enso.util'
+
+/*********************************************************
+ * Props, emits & slots
+ *
+ * @description
+ * Bande finale : titre à gauche, boutons à droite (T8 de #1554). Fond uni violet
+ * Origam (token primary 600) dans les deux modes (sous-arbre forcé en sombre :
+ * texte clair) ; le pinceau ivoire du kit chevauche le bord haut et fait la
+ * transition avec la section au-dessus.
+ ********************************************************/
+defineEmits([])
+
+defineSlots<Record<string, never>>()
 
 const { t } = useT()
+
+/*********************************************************
+ * Pinceau
+ *
+ * @description
+ * Pinceau ivoire terminé en doré du kit : identique dans les deux modes.
+ ********************************************************/
+const brushVars = {
+    '--home-cta-brush': ensoImageSet(ENSO_BRUSH_IVORY, CTA_BRUSH_WIDTH),
+    '--home-cta-brush-ratio': `${ENSO_BRUSH_IVORY.width} / ${ENSO_BRUSH_IVORY.height}`
+}
+
+/*********************************************************
+ * Expose
+ *
+ * @description
+ * Rien à piloter depuis l'extérieur.
+ ********************************************************/
+defineExpose({})
 </script>
 
 <style scoped lang="scss">
 .home-cta {
+    --home-cta-art: min(100vw, 62.5rem);
+
     position: relative;
-    overflow: hidden;
     isolation: isolate;
-    padding-block: var(--origam-space---24, 6rem);
-    padding-inline: var(--origam-space---6, 1.5rem);
-    background-color: color-mix(in srgb, var(--origam-color__action--primary---bg) 24%, var(--origam-color__surface---default));
+    container-type: inline-size;
+    margin-block-start: calc(var(--home-cta-art) * 0.07);
+    padding-block-start: calc(var(--home-cta-art) * 0.27 + var(--origam-space---4, 1rem));
+    padding-block-end: var(--origam-space---12, 3rem);
+    background-color: var(--origam-color__primary---600);
     color: var(--origam-color__text---primary);
 
-    &__brush {
+    &::before {
+        content: '';
         position: absolute;
+        inset-block-start: calc(var(--home-cta-art) * -0.07);
         inset-inline: 0;
-        inset-block-end: 0;
-        inline-size: 100%;
-        block-size: 45%;
         z-index: -1;
+        inline-size: var(--home-cta-art);
+        aspect-ratio: var(--home-cta-brush-ratio);
+        margin-inline: auto;
+        background: var(--home-cta-brush) center / 100% 100% no-repeat;
         pointer-events: none;
     }
 
-    &__stroke {
-        &--violet {
-            fill: var(--origam-color__action--primary---bg);
-            opacity: 0.55;
-        }
-
-        &--sun {
-            fill: var(--origam-color__sun---500);
-            opacity: 0.85;
-        }
-    }
-
     &__inner {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
         align-items: center;
         gap: var(--origam-space---8, 2rem);
-        max-inline-size: 48rem;
-        margin-inline: auto;
-        text-align: center;
+    }
+
+    &__text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--origam-space---4, 1rem);
     }
 
     &__title {
         margin: 0;
-        font-size: clamp(2rem, 5vw, 3.25rem);
+        font-size: var(--home-fs-h2);
         font-weight: var(--origam-font__weight---bold, 700);
         letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-        line-height: 1.1;
+        line-height: 1.15;
         color: var(--origam-color__text---primary);
     }
 
     &__description {
         margin: 0;
-        font-size: var(--origam-font__size---lg, 1.125rem);
+        max-inline-size: 34rem;
+        font-size: var(--home-fs-body);
         line-height: 1.6;
         color: var(--origam-color__text---primary);
     }
 
     &__support {
         margin: 0;
-        font-size: var(--origam-font__size---sm, 0.875rem);
+        font-size: var(--home-fs-small);
         color: var(--origam-color__text---primary);
     }
 
@@ -159,8 +180,18 @@ const { t } = useT()
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
         gap: var(--origam-space---3, 0.75rem);
+    }
+}
+
+@container (max-width: 48rem) {
+    .home-cta__inner {
+        grid-template-columns: 1fr;
+    }
+
+    .home-cta__actions {
+        justify-content: flex-start;
     }
 }
 </style>
