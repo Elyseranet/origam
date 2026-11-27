@@ -54,6 +54,19 @@ test.describe('Hero enso — parallaxe', () => {
         await ctx.close()
     })
 
+    for (const height of [900, 640]) {
+        test(`repos : aucun décalage au chargement, fenêtre de ${height} px de haut`, async ({ browser }) => {
+            const ctx = await browser.newContext({ viewport: { width: 1440, height } })
+            const page = await ctx.newPage()
+            await page.goto(BASE, { waitUntil: 'networkidle' })
+            await page.waitForTimeout(600)
+            for (const [key, m] of Object.entries(await read(page))) {
+                expect(m.sy, `${key} au repos`).toBeCloseTo(0, 1)
+            }
+            await ctx.close()
+        })
+    }
+
     test('défilement : chaque plan descend à sa vitesse, sans bouger en x', async ({ browser }) => {
         const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
         const page = await ctx.newPage()
@@ -65,9 +78,7 @@ test.describe('Hero enso — parallaxe', () => {
         const after = await read(page)
         for (const [key, k] of Object.entries(SCROLL)) {
             const slope = (after[key].sy - before[key].sy) / 400
-            // la pente du DS dépend de hero / fenêtre : tolérance 15 % de k
-            expect(slope, `${key} défilement`).toBeGreaterThan(k * 0.85)
-            expect(slope, `${key} défilement`).toBeLessThan(k * 1.15)
+            expect(slope, `${key} défilement`).toBeCloseTo(k, 1)
             expect(after[key].mx, `${key} x au défilement`).toBe(before[key].mx)
         }
         await ctx.close()
@@ -114,9 +125,7 @@ test.describe('Hero enso — parallaxe', () => {
         await ctx.close()
     })
 
-    // Défaut DS (useMediaQuery lit matchMedia à l'initialisation : classe `--reduced-motion`
-    // absente du HTML serveur). Se corrige dans le DS, pas ici : retirer `fixme` à ce moment.
-    test.fixme('aucun écart d\'hydratation sous prefers-reduced-motion', async ({ browser }) => {
+    test('aucun écart d\'hydratation sous prefers-reduced-motion', async ({ browser }) => {
         const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' })
         const page = await ctx.newPage()
         const bad: string[] = []

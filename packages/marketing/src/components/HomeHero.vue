@@ -4,6 +4,7 @@
     tag="section"
     class="home-hero"
     easing="ease-out"
+    origin="page-top"
     data-cy="section-hero"
     aria-labelledby="hero-title"
   >
@@ -117,7 +118,7 @@ import { heroPlaneViews } from '~/utils/enso.util'
  *
  * @description
  * Hero « enso » (#1593, spec v12 § 3) : six plans OrigamParallaxLayer dans un
- * OrigamParallax en `easing="ease-out"`, soit le chemin JS du DS. Le chemin CSS
+ * OrigamParallax en `easing="ease-out"` (chemin JS du DS) et `origin="page-top"` (le défilement part de 0 en haut de page, comme la maquette). Le chemin CSS
  * (`linear`) anime aussi X au défilement, pose `--css-driven` côté client seul
  * (écart d'hydratation) et fige sa timeline sous un ancêtre `overflow` (#1603).
  * Pointeur : `mouse-x` / `mouse-y` (px) par plan ; défilement : `speed`. Les
