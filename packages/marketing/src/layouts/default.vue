@@ -767,7 +767,11 @@
       z-index: -1;
       block-size: var(--site-footer---art-height);
       background: var(--enso-art) center 58% / cover no-repeat;
-      mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 52%, transparent 86%);
+      mask-image:
+        linear-gradient(to bottom, transparent 0%, #000 22%, #000 52%, transparent 86%),
+        linear-gradient(to right, transparent 8%, #000 28%, #000 72%, transparent 92%);
+      mask-composite: intersect;
+      -webkit-mask-composite: source-in;
       pointer-events: none;
     }
 
