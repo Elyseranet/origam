@@ -3,44 +3,45 @@
         class="stability"
         data-cy="page-stability"
     >
-        <section
-            class="stability-hero"
-            aria-labelledby="stability-title"
+        <enso-page-header
+            family="editorial"
+            title-id="stability-title"
         >
-            <origam-container class="stability-hero__inner">
-                <origam-chip
-                    class="stability-hero__badge"
-                    color="primary"
-                    size="small"
-                    border
-                    pill
-                    data-cy="stability-hero-badge"
-                >
-                    {{ t('stability.hero.badge', 'Versioning policy') }}
-                </origam-chip>
+            <template #breadcrumb>
+                <origam-breadcrumb
+                    :items="breadcrumbItems"
+                    divider="/"
+                    :border="0"
+                    data-cy="stability-breadcrumb"
+                />
+            </template>
 
-                <origam-title
-                    id="stability-title"
-                    tag="h1"
-                    class="stability-hero__title"
-                >
-                    {{ t('stability.hero.title', 'Stability and versioning') }}
-                </origam-title>
+            <template #eyebrow>
+                <span data-cy="stability-hero-badge">{{ t('stability.hero.badge', 'Versioning policy') }}</span>
+            </template>
 
-                <p class="stability-hero__lead">
-                    {{ t('stability.hero.lead', 'A high version number and frequent releases do not mean origam breaks often: 143 versions published since July 2025. This page says what the number means and where changes are written down.') }}
-                </p>
-            </origam-container>
-        </section>
+            <template #title>
+                {{ t('stability.hero.title', 'Stability and versioning') }}
+            </template>
+
+            <template #intro>
+                {{ t('stability.hero.lead', 'A high version number and frequent releases do not mean origam breaks often: 143 versions published since July 2025. This page says what the number means and where changes are written down.') }}
+            </template>
+        </enso-page-header>
 
         <section
             v-for="section in sections"
             :key="section.id"
             class="stability-section"
+            :class="section.classes"
             :aria-labelledby="`stability-${ section.id }-title`"
             :data-cy="`stability-section-${ section.id }`"
         >
-            <origam-container class="stability-section__inner">
+            <origam-container class="stability-section__inner home-container">
+                <p class="home-eyebrow">
+                    {{ section.label }}
+                </p>
+
                 <origam-title
                     :id="`stability-${ section.id }-title`"
                     tag="h2"
@@ -69,18 +70,31 @@
                 </origam-btn>
             </origam-container>
         </section>
+
+        <home-cta
+            surface="overlay"
+            data-cy="stability-cta"
+        />
     </article>
 </template>
 
 <script setup lang="ts">
+    import { computed } from 'vue'
     import { useLocaleHref } from '~/composables/useLocaleHref'
     import { useT } from '~/composables/useT'
     import { STABILITY_SECTIONS } from '~/consts/stability.const'
+    import { editorialSectionViews } from '~/utils/editorial.util'
 
     const { t } = useT()
     const { localeHref } = useLocaleHref()
 
-    const sections = STABILITY_SECTIONS
+    const breadcrumbItems = computed(() => [
+        { title: t('nav.home', 'Home'), to: localeHref('/') },
+        { title: t('nav.sections.introduction', 'Introduction') },
+        { title: t('nav.stability', 'Stability') }
+    ])
+
+    const sections = computed(() => editorialSectionViews(STABILITY_SECTIONS, 'stability-section'))
 
     useSeoMeta({
         title: () => t('stability.meta.title', 'Stability and versioning · origam design system'),
@@ -91,33 +105,51 @@
 </script>
 
 <style scoped lang="scss">
-    .stability-hero {
-        padding-block: var(--origam-space---12, 3rem);
-        text-align: center;
+    @use '../assets/scss/editorial';
 
-        &__badge {
-            margin-block-end: var(--origam-space---4, 1rem);
-        }
-
-        &__lead {
-            margin-block-start: var(--origam-space---4, 1rem);
-            margin-inline: auto;
-            max-inline-size: 60ch;
-            color: var(--origam-color__text---secondary);
-        }
+    .stability {
+        @include editorial.editorial-page;
     }
 
     .stability-section {
-        padding-block-end: var(--origam-space---8, 2rem);
+        &--default {
+            @include editorial.editorial-section(default, 40px, 120px);
+        }
+
+        &--overlay {
+            @include editorial.editorial-section(overlay, 40px, 120px);
+        }
+
+        &--flush::before {
+            inset-block-start: -50px;
+            block-size: 51px;
+        }
+
+        &__inner {
+            display: grid;
+            justify-items: start;
+            gap: 12px;
+        }
+
+        &__title {
+            margin: 0;
+            font-size: clamp(1.7rem, 3vw, 2.3rem);
+            font-weight: var(--home-fw-title);
+            line-height: var(--home-lh-title);
+            letter-spacing: var(--home-ls-title);
+            text-wrap: balance;
+            color: var(--origam-color__text---primary);
+        }
 
         &__body {
-            margin-block-start: var(--origam-space---4, 1rem);
+            margin: 0;
             max-inline-size: 70ch;
+            font-size: var(--home-fs-lead);
             color: var(--origam-color__text---secondary);
         }
 
         &__cta {
-            margin-block-start: var(--origam-space---4, 1rem);
+            margin-block-start: var(--origam-space---2, 0.5rem);
         }
     }
 </style>

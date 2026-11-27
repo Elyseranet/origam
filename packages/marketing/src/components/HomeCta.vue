@@ -1,7 +1,8 @@
 <template>
   <section
     class="home-cta"
-    aria-labelledby="cta-title"
+    :style="skyStyle"
+    :aria-labelledby="titleId"
   >
     <origam-parallax
       class="home-cta__scene"
@@ -26,46 +27,40 @@
 
     <div class="home-cta__copy">
       <origam-title
-        id="cta-title"
+        :id="titleId"
         tag="h2"
         class="home-cta__title"
         data-cy="cta-title"
       >
-        {{ t('home.cta.title', 'Ready to build your interfaces?') }}
+        {{ heading }}
       </origam-title>
 
       <p
         class="home-cta__description"
         data-cy="cta-description"
       >
-        {{ t('home.cta.description', 'npm i origam, then the plugin and a first component. On Nuxt, one module to add.') }}
+        {{ body }}
       </p>
 
       <nav
         class="home-cta__actions"
-        :aria-label="t('home.cta.actions_label', 'Get started')"
+        :aria-label="actionsAria"
       >
         <origam-btn
+          v-for="(action, index) in actions"
+          :key="action.key"
           v-bind="CTA_BTN"
           class="home-cta__btn"
-          variant="flat"
-          :bg-color="CTA_SUN_COLOR"
-          :color="CTA_INK_COLOR"
-          :href="localeHref(CTA_COMPONENTS_HREF)"
-          data-cy="cta-btn-components"
+          :class="{ 'home-cta__btn--line': index > 0 }"
+          :variant="index === 0 ? 'flat' : 'outlined'"
+          :bg-color="index === 0 ? CTA_SUN_COLOR : undefined"
+          :color="index === 0 ? CTA_INK_COLOR : CTA_LINE_COLOR"
+          :href="action.localized ? localeHref(action.href) : action.href"
+          :target="action.external ? '_blank' : undefined"
+          :rel="action.external ? 'noopener noreferrer' : undefined"
+          :data-cy="action.dataCy"
         >
-          {{ t('home.cta.cta_docs', 'Explore the components') }}
-        </origam-btn>
-
-        <origam-btn
-          v-bind="CTA_BTN"
-          class="home-cta__btn home-cta__btn--line"
-          variant="outlined"
-          :color="CTA_LINE_COLOR"
-          :href="CTA_DOCS_HREF"
-          data-cy="cta-btn-docs"
-        >
-          {{ t('home.cta.cta_read_docs', 'Read the documentation') }}
+          {{ t(action.labelKey, action.labelFallback) }}
         </origam-btn>
       </nav>
     </div>
@@ -73,9 +68,11 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useLocaleHref } from '~/composables/useLocaleHref'
 import { useT } from '~/composables/useT'
-import { CTA_BTN, CTA_COMPONENTS_HREF, CTA_DOCS_HREF, CTA_INK_COLOR, CTA_LINE_COLOR, CTA_SUN_COLOR } from '~/consts/cta.const'
+import { CTA_BTN, CTA_HOME_ACTIONS, CTA_INK_COLOR, CTA_LINE_COLOR, CTA_SUN_COLOR, CTA_SURFACE_BG } from '~/consts/cta.const'
+import type { ICtaProps } from '~/interfaces/cta.interface'
 import { ctaPlaneViews } from '~/utils/enso.util'
 
 /*********************************************************
@@ -86,7 +83,20 @@ import { ctaPlaneViews } from '~/utils/enso.util'
  * Le ciel descend de la couleur de la thématisation vers le violet profond ;
  * trois plans de paysage montent du bas ; le texte est centré dans le ciel, là
  * où aucun plan ne passe. Elle suit le mode du site (`data-mode`).
+ *
+ * Sans prop, c'est la bande de la home. Une page éditoriale (#1587) la reprend avec
+ * son titre, sa description et ses boutons, et `surface` : le fond de la section qui
+ * la précède, d'où le ciel part. Le premier bouton est l'action principale.
  ********************************************************/
+const props = withDefaults(defineProps<ICtaProps>(), {
+    title: undefined,
+    description: undefined,
+    actionsLabel: undefined,
+    surface: undefined,
+    titleId: 'cta-title',
+    actions: () => CTA_HOME_ACTIONS
+})
+
 defineEmits([])
 
 defineSlots<Record<string, never>>()
@@ -107,6 +117,18 @@ const { localeHref } = useLocaleHref()
 const planes = ctaPlaneViews()
 
 /*********************************************************
+ * Texte & ciel
+ *
+ * @description
+ * Les textes de la home sont le repli des props. `skyStyle` ne pose rien sans `surface`
+ * (le ciel garde alors les fonds de la feuille, clair ET sombre).
+ ********************************************************/
+const heading = computed(() => props.title ?? t('home.cta.title', 'Ready to build your interfaces?'))
+const body = computed(() => props.description ?? t('home.cta.description', 'npm i origam, then the plugin and a first component. On Nuxt, one module to add.'))
+const actionsAria = computed(() => props.actionsLabel ?? t('home.cta.actions_label', 'Get started'))
+const skyStyle = computed(() => (props.surface ? { '--home-cta-bg': CTA_SURFACE_BG[props.surface] } : undefined))
+
+/*********************************************************
  * Expose
  *
  * @description
@@ -123,8 +145,8 @@ defineExpose({})
     --home-cta-sky:
         var(--home-cta-bg) 0,
         var(--home-cta-bg) 24%,
-        color-mix(in srgb, var(--origam-color__surface---sunken) 92%, var(--origam-color__primary---800)) 40%,
-        color-mix(in srgb, var(--origam-color__surface---sunken) 58%, var(--origam-color__primary---700)) 54%,
+        color-mix(in srgb, var(--home-cta-bg) 92%, var(--origam-color__primary---800)) 40%,
+        color-mix(in srgb, var(--home-cta-bg) 58%, var(--origam-color__primary---700)) 54%,
         color-mix(in srgb, var(--origam-color__primary---400) 82%, var(--home-cta-deep-start)) 66%,
         color-mix(in srgb, var(--origam-color__primary---500) 48%, var(--home-cta-deep-start)) 78%,
         var(--home-cta-deep-start) 88%,

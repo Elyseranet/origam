@@ -3,41 +3,42 @@
         class="support"
         data-cy="page-support"
     >
-        <section
-            class="support-hero"
-            aria-labelledby="support-title"
+        <enso-page-header
+            family="editorial"
+            title-id="support-title"
         >
-            <origam-container class="support-hero__inner">
-                <origam-chip
-                    class="support-hero__badge"
-                    color="primary"
-                    size="small"
-                    border
-                    pill
-                    data-cy="support-hero-badge"
-                >
-                    {{ t('support.hero.badge', 'Independent and free') }}
-                </origam-chip>
+            <template #breadcrumb>
+                <origam-breadcrumb
+                    :items="breadcrumbItems"
+                    divider="/"
+                    :border="0"
+                    data-cy="support-breadcrumb"
+                />
+            </template>
 
-                <origam-title
-                    id="support-title"
-                    tag="h1"
-                    class="support-hero__title"
-                >
-                    {{ t('support.hero.title', 'Support origam') }}
-                </origam-title>
+            <template #eyebrow>
+                <span data-cy="support-hero-badge">{{ t('support.hero.badge', 'Independent and free') }}</span>
+            </template>
 
-                <p class="support-hero__lead">
-                    {{ t('support.hero.lead', 'origam is built and maintained by one developer, on his own time. It is free, MIT-licensed, and it will stay that way. If it saves you time, a donation keeps it moving.') }}
-                </p>
-            </origam-container>
-        </section>
+            <template #title>
+                {{ t('support.hero.title', 'Support origam') }}
+            </template>
+
+            <template #intro>
+                {{ t('support.hero.lead', 'origam is built and maintained by one developer, on his own time. It is free, MIT-licensed, and it will stay that way. If it saves you time, a donation keeps it moving.') }}
+            </template>
+        </enso-page-header>
 
         <section
-            class="support-give"
+            class="support-section support-give"
+            :class="give.classes"
             aria-labelledby="support-give-title"
         >
-            <origam-container class="support-give__inner">
+            <origam-container class="support-give__inner home-container">
+                <p class="home-eyebrow">
+                    {{ give.label }}
+                </p>
+
                 <origam-title
                     id="support-give-title"
                     tag="h2"
@@ -67,7 +68,6 @@
                         <origam-btn
                             v-if="hasDonateUrl"
                             :href="donateUrl"
-                            :aria-label="donateAriaLabel"
                             target="_blank"
                             rel="noopener noreferrer"
                             variant="flat"
@@ -84,10 +84,15 @@
         </section>
 
         <section
-            class="support-what"
+            class="support-section support-what"
+            :class="what.classes"
             aria-labelledby="support-what-title"
         >
-            <origam-container class="support-what__inner">
+            <origam-container class="support-what__inner home-container">
+                <p class="home-eyebrow">
+                    {{ what.label }}
+                </p>
+
                 <origam-title
                     id="support-what-title"
                     tag="h2"
@@ -107,22 +112,39 @@
                 </p>
             </origam-container>
         </section>
+
+        <home-cta
+            surface="overlay"
+            data-cy="support-cta"
+        />
     </article>
 </template>
 
 <script setup lang="ts">
     import { computed } from 'vue'
 
+    import { useLocaleHref } from '~/composables/useLocaleHref'
     import { useT } from '~/composables/useT'
+    import { SUPPORT_SECTIONS } from '~/consts/support.const'
+    import { editorialSectionViews } from '~/utils/editorial.util'
 
     const { t } = useT()
+    const { localeHref } = useLocaleHref()
+
+    const breadcrumbItems = computed(() => [
+        { title: t('nav.home', 'Home'), to: localeHref('/') },
+        { title: t('support.hero.title', 'Support origam') }
+    ])
+
+    const sectionViews = editorialSectionViews(SUPPORT_SECTIONS, 'support-section')
+    const give = sectionViews[0]!
+    const what = sectionViews[1]!
     const { public: publicConfig } = useRuntimeConfig()
 
     const donateUrl = computed(() => publicConfig.donateUrl)
     const hasDonateUrl = computed(() => donateUrl.value.length > 0)
 
     const qrAriaLabel = computed(() => t('a11y.donate_qr', 'QR code linking to the donation page'))
-    const donateAriaLabel = computed(() => t('a11y.donate', 'Support origam with a donation'))
 
     useSeoMeta({
         title: () => t('support.meta.title', 'Support origam · Vue 3 design system'),
@@ -133,32 +155,53 @@
 </script>
 
 <style scoped lang="scss">
-    .support-hero {
-        padding-block: var(--origam-space---12, 3rem);
-        text-align: center;
+    @use '../assets/scss/editorial';
 
-        &__badge {
-            margin-block-end: var(--origam-space---4, 1rem);
+    .support {
+        @include editorial.editorial-page;
+    }
+
+    .support-section {
+        &--default {
+            @include editorial.editorial-section(default, 40px, 120px);
         }
 
-        &__lead {
-            margin-block-start: var(--origam-space---4, 1rem);
-            margin-inline: auto;
-            max-inline-size: 60ch;
-            color: var(--origam-color__text---secondary);
+        &--overlay {
+            @include editorial.editorial-section(overlay, 40px, 120px);
+        }
+
+        &--flush::before {
+            inset-block-start: -50px;
+            block-size: 51px;
+        }
+    }
+
+    .support-give,
+    .support-what {
+        &__inner {
+            display: grid;
+            justify-items: start;
+            gap: 12px;
+        }
+
+        &__title {
+            margin: 0;
+            font-size: clamp(1.7rem, 3vw, 2.3rem);
+            font-weight: var(--home-fw-title);
+            line-height: var(--home-lh-title);
+            letter-spacing: var(--home-ls-title);
+            text-wrap: balance;
+            color: var(--origam-color__text---primary);
         }
     }
 
     .support-give {
-        padding-block-end: var(--origam-space---12, 3rem);
-
         &__panel {
             align-items: center;
             display: flex;
             flex-wrap: wrap;
             gap: var(--origam-space---8, 2rem);
-            justify-content: center;
-            margin-block-start: var(--origam-space---6, 1.5rem);
+            margin-block-start: var(--origam-space---4, 1rem);
         }
 
         &__actions {
@@ -170,22 +213,24 @@
         }
 
         &__hint {
+            margin: 0;
             color: var(--origam-color__text---secondary);
         }
     }
 
     .support-what {
-        padding-block-end: var(--origam-space---12, 3rem);
-
         &__body,
         &__alt {
-            margin-block-start: var(--origam-space---4, 1rem);
+            margin: 0;
             max-inline-size: 70ch;
+            font-size: var(--home-fs-lead);
             color: var(--origam-color__text---secondary);
         }
 
         &__rule {
-            margin-block: var(--origam-space---6, 1.5rem);
+            margin-block: var(--origam-space---4, 1rem);
+            inline-size: 100%;
+            max-inline-size: 70ch;
         }
     }
 </style>

@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'vue'
 import type {
     IRoadmapStatusItem,
     IRoadmapWave,
@@ -6,13 +5,6 @@ import type {
     IRoadmapStat
 } from '~/interfaces/roadmap.interface'
 import { BUILD_STATS } from '~/consts/build-stats.const'
-
-/**
- * Hero badge CSS vars — same pattern as why-origam.
- */
-export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
-    '--origam-chip---background-color': 'transparent'
-} as CSSProperties
 
 /**
  * Current status items — measured against the repository on 2026-09-25, not

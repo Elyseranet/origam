@@ -3,41 +3,33 @@
         class="roadmap"
         data-cy="page-roadmap"
     >
-        <section
-            class="roadmap-hero"
-            aria-labelledby="roadmap-title"
+        <enso-page-header
+            family="editorial"
+            title-id="roadmap-title"
         >
-            <origam-container class="roadmap-hero__inner">
-                <origam-chip
-                    class="roadmap-hero__badge"
-                    :style="ROADMAP_HERO_BADGE_VARS"
-                    color="primary"
-                    border
-                    border-color="var(--origam-color__action--primary---bg)"
-                    size="small"
-                    pill
-                    data-cy="roadmap-hero-badge"
-                >
-                    <template #default>
-                        {{ heroBadge }}
-                    </template>
-                </origam-chip>
+            <template #breadcrumb>
+                <origam-breadcrumb
+                    :items="breadcrumbItems"
+                    divider="/"
+                    :border="0"
+                    data-cy="roadmap-breadcrumb"
+                />
+            </template>
 
-                <origam-title
-                    id="roadmap-title"
-                    tag="h1"
-                    class="roadmap-hero__title"
-                >
-                    <template #default>
-                        <span class="roadmap-hero__title-line">{{ t('roadmap.hero.title_line1', 'Roadmap.') }}</span>
-                        <span class="roadmap-hero__title-line roadmap-hero__title-line--accent">{{ t('roadmap.hero.title_line2', 'Honest & public.') }}</span>
-                    </template>
-                </origam-title>
+            <template #eyebrow>
+                <span data-cy="roadmap-hero-badge">{{ heroBadge }}</span>
+            </template>
 
-                <p class="roadmap-hero__subtitle">
-                    {{ t('roadmap.hero.subtitle', 'origam is an early-stage Vue 3 design system. Here is where we stand today, what we have already shipped, and what is on the horizon.') }}
-                </p>
+            <template #title>
+                {{ t('roadmap.hero.title_line1', 'Roadmap.') }}
+                {{ t('roadmap.hero.title_line2', 'Honest & public.') }}
+            </template>
 
+            <template #intro>
+                {{ t('roadmap.hero.subtitle', 'origam is an early-stage Vue 3 design system. Here is where we stand today, what we have already shipped, and what is on the horizon.') }}
+            </template>
+
+            <template #default>
                 <nav
                     class="roadmap-hero__actions"
                     :aria-label="t('roadmap.hero.actions_label', 'Explore the roadmap')"
@@ -66,17 +58,17 @@
                         </template>
                     </origam-btn>
                 </nav>
-            </origam-container>
-        </section>
+            </template>
+        </enso-page-header>
 
         <section
             class="roadmap-status"
             aria-labelledby="roadmap-status-title"
             data-cy="roadmap-status"
         >
-            <origam-container>
+            <origam-container class="home-container">
                 <header class="roadmap-status__header roadmap-section">
-                    <p class="roadmap-section__eyebrow">
+                    <p class="home-eyebrow">
                         {{ t('roadmap.status.eyebrow', 'WHERE WE STAND') }}
                     </p>
 
@@ -86,8 +78,8 @@
                         class="roadmap-section__title"
                     >
                         <template #default>
-                            <span class="roadmap-section__title-line">{{ statusTitleLine1 }}</span>
-                            <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ statusTitleLine2 }}</span>
+                            {{ statusTitleLine1 }}
+                            {{ statusTitleLine2 }}
                         </template>
                     </origam-title>
 
@@ -186,9 +178,9 @@
             aria-labelledby="roadmap-delivered-title"
             data-cy="roadmap-delivered"
         >
-            <origam-container>
+            <origam-container class="home-container">
                 <header class="roadmap-delivered__header roadmap-section">
-                    <p class="roadmap-section__eyebrow">
+                    <p class="home-eyebrow">
                         {{ t('roadmap.delivered.eyebrow', 'ALREADY SHIPPED') }}
                     </p>
 
@@ -198,8 +190,8 @@
                         class="roadmap-section__title"
                     >
                         <template #default>
-                            <span class="roadmap-section__title-line">{{ t('roadmap.delivered.title_line1', 'A full design system.') }}</span>
-                            <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.delivered.title_line2', 'Already in production.') }}</span>
+                            {{ t('roadmap.delivered.title_line1', 'A full design system.') }}
+                            {{ t('roadmap.delivered.title_line2', 'Already in production.') }}
                         </template>
                     </origam-title>
 
@@ -312,16 +304,16 @@
             aria-labelledby="roadmap-phases-title"
             data-cy="roadmap-phases"
         >
-            <origam-container>
+            <origam-container class="home-container">
                 <header class="roadmap-phases__header roadmap-section">
-                    <p class="roadmap-section__eyebrow">
+                    <p class="home-eyebrow">
                         {{ t('roadmap.phases.eyebrow', "WHAT'S NEXT") }}
                     </p>
 
                     <origam-title
                         id="roadmap-phases-title"
                         tag="h2"
-                        class="roadmap-section__title roadmap-section__title--single"
+                        class="roadmap-section__title"
                     >
                         <template #default>
                             {{ t('roadmap.phases.title', 'A phased roadmap.') }}
@@ -435,9 +427,9 @@
             aria-labelledby="roadmap-catalogue-title"
             data-cy="roadmap-catalogue"
         >
-            <origam-container>
+            <origam-container class="home-container">
                 <header class="roadmap-catalogue__header roadmap-section">
-                    <p class="roadmap-section__eyebrow">
+                    <p class="home-eyebrow">
                         {{ t('roadmap.catalogue.eyebrow', 'THE WHOLE CATALOGUE IS SHIPPED') }}
                     </p>
 
@@ -447,8 +439,8 @@
                         class="roadmap-section__title"
                     >
                         <template #default>
-                            <span class="roadmap-section__title-line">{{ catalogueTitleLine1 }}</span>
-                            <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.catalogue.title_line2', 'already shipped.') }}</span>
+                            {{ catalogueTitleLine1 }}
+                            {{ t('roadmap.catalogue.title_line2', 'already shipped.') }}
                         </template>
                     </origam-title>
 
@@ -554,60 +546,15 @@
             </origam-container>
         </section>
 
-        <section
-            class="roadmap-cta"
-            aria-labelledby="roadmap-cta-title"
+        <home-cta
+            surface="overlay"
+            title-id="roadmap-cta-title"
+            :title="t('roadmap.cta.title', 'Follow the progress.')"
+            :description="t('roadmap.cta.description', 'Star the repository on GitHub to stay updated. Contributions and feedback are welcome.')"
+            :actions-label="t('roadmap.cta.actions_label', 'Follow origam')"
+            :actions="ROADMAP_CTA_ACTIONS"
             data-cy="roadmap-cta"
-        >
-            <div class="roadmap-cta__inner">
-                <origam-title
-                    id="roadmap-cta-title"
-                    tag="h2"
-                    class="roadmap-cta__title"
-                >
-                    <template #default>
-                        {{ t('roadmap.cta.title', 'Follow the progress.') }}
-                    </template>
-                </origam-title>
-
-                <p class="roadmap-cta__desc">
-                    {{ t('roadmap.cta.description', 'Star the repository on GitHub to stay updated. Contributions and feedback are welcome.') }}
-                </p>
-
-                <nav
-                    class="roadmap-cta__actions"
-                    :aria-label="t('roadmap.cta.actions_label', 'Follow origam')"
-                >
-                    <origam-btn
-                        class="roadmap-cta__btn roadmap-cta__btn--primary"
-                        variant="text"
-                        prepend-icon="mdi-github"
-                        :href="githubHref"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-cy="roadmap-cta-github"
-                    >
-                        <template #default>
-                            {{ t('roadmap.cta.cta_github', 'Star on GitHub') }}
-                        </template>
-                    </origam-btn>
-
-                    <origam-btn
-                        class="roadmap-cta__btn roadmap-cta__btn--secondary"
-                        variant="text"
-                        prepend-icon="mdi-file-document-outline"
-                        :href="changelogHref"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-cy="roadmap-cta-changelog"
-                    >
-                        <template #default>
-                            {{ t('roadmap.cta.cta_changelog', 'Read CHANGELOG') }}
-                        </template>
-                    </origam-btn>
-                </nav>
-            </div>
-        </section>
+        />
     </article>
 </template>
 
@@ -619,14 +566,14 @@
     import { formatMeasuredOn } from '~/utils/build-stats.util'
     import { useReferenceCatalog, useReferenceCategories } from '~/composables/useApiReference'
     import {
-        ROADMAP_HERO_BADGE_VARS,
         ROADMAP_STATUS_ITEMS,
         ROADMAP_OVERVIEW_STATS,
         ROADMAP_DELIVERED_WAVES,
         ROADMAP_PHASES,
         ROADMAP_CATALOGUE_FALLBACK_CATEGORY
     } from '~/consts/roadmap.const'
-    import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
+    import { ROADMAP_CTA_ACTIONS } from '~/consts/editorial-cta.const'
+    import { useLocaleHref } from '~/composables/useLocaleHref'
     import { groupComponentsByCategory } from '~/utils/components-catalog.util'
     import type { IComponentEntry } from '~/interfaces/components-catalog.interface'
     import type { IRoadmapCatalogueGroup } from '~/interfaces/roadmap.interface'
@@ -643,6 +590,13 @@
      ********************************************************/
     const { t, locale } = useT()
     const { version } = useVersion()
+    const { localeHref } = useLocaleHref()
+
+    const breadcrumbItems = computed(() => [
+        { title: t('nav.home', 'Home'), to: localeHref('/') },
+        { title: t('nav.sections.introduction', 'Introduction') },
+        { title: t('nav.roadmap', 'Roadmap') }
+    ])
 
     useSeoMeta({
         title: () => t('roadmap.meta.title', 'Roadmap · origam design system'),
@@ -771,8 +725,6 @@
     /*********************************************************
      * Outbound links
      ********************************************************/
-    const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
-    const changelogHref = computed(() => `${ MARKETING_DEFAULTS.githubRepo }/blob/main/CHANGELOG.md`)
 
     /*********************************************************
      * Shipped catalogue
@@ -862,10 +814,10 @@
 </script>
 
 <style scoped lang="scss">
-    @use '../assets/scss/why-section' as why;
+    @use '../assets/scss/editorial';
 
     .roadmap-section {
-        @include why.why-section-header;
+        @include editorial.editorial-header;
 
         /*
           The site chrome is a FIXED app bar. Without this, the hero's two
@@ -883,8 +835,7 @@
     }
 
     .roadmap {
-        display: flex;
-        flex-direction: column;
+        @include editorial.editorial-page;
     }
 
     .roadmap-measured {
@@ -915,93 +866,16 @@
     }
 
     .roadmap-hero {
-        position: relative;
-        padding-block: var(--origam-space---20, 5rem) var(--origam-space---10, 2.5rem);
-        overflow: hidden;
-
-        &::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: var(--origam-gradient---hero-grid);
-            background-size: 64px 64px;
-            background-position: center top;
-            -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-            mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        &::after {
-            content: '';
-            position: absolute;
-            inset-inline: 0;
-            inset-block-start: 0;
-            block-size: 260px;
-            background-image: var(--origam-gradient---hero-glow);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        &__inner {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--origam-space---5, 1.25rem);
-            text-align: center;
-        }
-
-        &__badge {
-            --origam-chip---background-color: transparent;
-        }
-
-        &__title {
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: var(--origam-font-size---hero, 5.25rem);
-            font-weight: var(--origam-font-weight---extrabold, 800);
-            line-height: var(--origam-line-height---hero, 0.95);
-            letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-            padding-block-end: 0.1em;
-            color: var(--origam-color__text---ink, #0a0a0a);
-        }
-
-        &__title-line {
-            display: block;
-
-            &--accent {
-                color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-            }
-        }
-
-        &__subtitle {
-            margin: 0;
-            max-inline-size: 40rem;
-            font-size: var(--origam-font-size---lg, 1.125rem);
-            line-height: var(--origam-line-height---relaxed, 1.7);
-            color: var(--origam-color__text---secondary, #525252);
-        }
-
         &__actions {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: center;
             gap: var(--origam-space---3, 0.75rem);
         }
     }
 
     .roadmap-status {
-        padding-block: var(--origam-space---24, 6rem);
-        border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-
-        &__header {
-            margin-block-end: var(--origam-space---10, 2.5rem);
-        }
+        @include editorial.editorial-section(default, 40px, 120px, $wash: false);
 
         /*
           ⛔ The padding goes through the component's OWN vars, not through
@@ -1070,11 +944,7 @@
     }
 
     .roadmap-delivered {
-        padding-block: var(--origam-space---24, 6rem);
-
-        &__header {
-            margin-block-end: var(--origam-space---8, 2rem);
-        }
+        @include editorial.editorial-section(overlay, 40px, 120px);
 
         &__panel {
             display: block;
@@ -1169,12 +1039,7 @@
     }
 
     .roadmap-phases {
-        padding-block: var(--origam-space---24, 6rem);
-        border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-
-        &__header {
-            margin-block-end: var(--origam-space---10, 2.5rem);
-        }
+        @include editorial.editorial-section(default, 40px, 120px);
 
         &__list {
             display: flex;
@@ -1303,11 +1168,7 @@
     }
 
     .roadmap-catalogue {
-        padding-block: var(--origam-space---24, 6rem);
-
-        &__header {
-            margin-block-end: var(--origam-space---6, 1.5rem);
-        }
+        @include editorial.editorial-section(overlay, 40px, 120px);
 
         &__groups {
             list-style: none;
@@ -1381,94 +1242,6 @@
         }
     }
 
-    .roadmap-cta {
-        position: relative;
-        padding-block: var(--origam-space---30, 7.5rem);
-        padding-inline: var(--origam-space---6, 1.5rem);
-        overflow: hidden;
-
-        &::before {
-            content: '';
-            position: absolute;
-            inset-inline: 0;
-            inset-block-start: 0;
-            block-size: 280px;
-            background-image: var(--origam-gradient---cta-glow-top);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        &__inner {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--origam-space---6, 1.5rem);
-            max-inline-size: 48rem;
-            margin-inline: auto;
-            text-align: center;
-        }
-
-        &__title {
-            margin: 0;
-            --origam-title---font-size: var(--origam-font-size---cta, 4rem);
-            font-weight: var(--origam-font-weight---extrabold, 800);
-            letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-            line-height: var(--origam-line-height---hero, 0.95);
-            color: var(--origam-color__text---ink, #0a0a0a);
-        }
-
-        &__desc {
-            margin: 0;
-            font-size: var(--origam-font-size---lg, 1.125rem);
-            color: var(--origam-color__text---secondary, #525252);
-            max-inline-size: 36rem;
-        }
-
-        &__actions {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: var(--origam-space---3, 0.75rem);
-            margin-block-start: var(--origam-space---2, 0.5rem);
-        }
-
-        &__btn {
-            --origam-btn---height: 52px;
-            --origam-btn---density: 0px;
-            --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
-            --origam-btn---font-size: 1rem;
-            --origam-btn---font-weight: 400;
-            --origam-btn---border-radius: var(--origam-radius---btn, 10px);
-
-            &--primary {
-                background-image: var(--origam-gradient---btn-primary);
-                background-color: var(--origam-color---btn-primary-bg, transparent);
-                box-shadow: var(--origam-shadow---btn-primary);
-                --origam-btn---color: var(--origam-color---btn-primary-text);
-            }
-
-            &--secondary {
-                background-image: var(--origam-gradient---btn-secondary);
-                background-color: var(--origam-color---btn-secondary-bg);
-                box-shadow: var(--origam-shadow---btn-secondary);
-                border: 1px solid var(--origam-color---btn-secondary-border);
-                --origam-btn---color: var(--origam-color---btn-secondary-text);
-                --origam-btn---density-padding-x: var(--origam-space---4, 1rem);
-            }
-        }
-    }
-
-    @media (max-width: 1080px) {
-        .roadmap-hero {
-            &__title {
-                font-size: clamp(2.5rem, 9vw, 5.25rem);
-            }
-        }
-    }
-
     @media (max-width: 48rem) {
         .roadmap-status__columns,
         .roadmap-delivered__waves,
@@ -1485,12 +1258,6 @@
         */
         .roadmap-overview {
             grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .roadmap-cta {
-            &__title {
-                --origam-title---font-size: clamp(2rem, 8vw, 4rem);
-            }
         }
 
         .roadmap-phases {
