@@ -1,5 +1,5 @@
 import { ENSO_DEMO_MODES, ENSO_GALLERY, ENSO_PAPER_TILE_WIDTH, ENSO_PAPER_WASHI, ENSO_PETAL_FLIGHTS, ENSO_PETAL_WIDTH } from '~/consts/enso.const'
-import type { IEnsoArt, IEnsoDemoColumn, IEnsoPetalView, IEnsoSrcsetCandidate } from '~/interfaces/enso.interface'
+import type { IEnsoArt, IEnsoDemoColumn, IEnsoPetalView, IEnsoSharedArt, IEnsoSrcsetCandidate } from '~/interfaces/enso.interface'
 import { CTA_PLANES } from '~/consts/cta.const'
 import { HERO_PLANES } from '~/consts/hero.const'
 import type { ICtaPlaneView } from '~/interfaces/cta.interface'
@@ -41,6 +41,11 @@ export function ensoArtVars (art: IEnsoArt, displayWidth: number): TEnsoArtVars 
         '--enso-art-dark': ensoImageSet(art.dark, displayWidth),
         '--enso-art-ratio': `${art.width} / ${art.height}`
     }
+}
+
+/** `url()` d'un masque (même origine, `src` et jamais `srcset` : `image-set()` n'est pas fiable dans `mask-image`). */
+export function ensoMaskUrl (mask: IEnsoSharedArt): string {
+    return `url("${mask.src}")`
 }
 
 /** Texture papier washi : variables d'`ensoArtVars` + taille de la tuile (`--enso-paper---tile`). */

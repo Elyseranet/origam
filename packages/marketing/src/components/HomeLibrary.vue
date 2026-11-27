@@ -1,65 +1,64 @@
 <template>
   <section
     id="library"
-    class="home-library home-container home-section"
+    class="home-library"
     aria-labelledby="library-heading"
   >
-    <enso-backdrop :art="ENSO_SECTION_HILLS" />
+    <div class="home-container">
+      <header class="home-library__intro">
+        <div>
+          <p class="home-eyebrow">
+            {{ t('home.library.eyebrow', 'A complete catalogue') }}
+          </p>
 
-    <header class="home-library__intro">
-      <div>
-        <p class="home-eyebrow">
-          {{ t('home.library.eyebrow', 'A complete catalogue') }}
+          <enso-section-title id="library-heading">
+            {{ t('home.library.title', 'From form to chart.') }}
+          </enso-section-title>
+        </div>
+
+        <p class="home-library__text">
+          {{ t('home.library.text', '97 component families in one package, charts included: no separate library to wire in.') }}
         </p>
+      </header>
 
-        <enso-section-title id="library-heading">
-          {{ t('home.library.title', 'From form to chart.') }}
-        </enso-section-title>
-      </div>
-
-      <p class="home-library__text">
-        {{ t('home.library.text', '97 component families in one package, charts included: no separate library to wire in.') }}
-      </p>
-    </header>
-
-    <origam-grid
-      tag="ul"
-      class="home-library__grid"
-    >
-      <origam-grid-item
-        v-for="category in categories"
-        :key="category.key"
-        tag="li"
+      <origam-grid
+        tag="ul"
+        class="home-library__grid"
       >
-        <origam-card
-          :to="categoryLink(category)"
-          rounded="xl"
-          border
-          class="home-library__card"
-          :data-cy="`library-card-${category.key}`"
+        <origam-grid-item
+          v-for="category in categories"
+          :key="category.key"
+          tag="li"
         >
-          <span class="home-library__tile">
-            <origam-icon
-              :icon="category.icon"
-              :size="40"
-              color="primary"
-              aria-hidden="true"
-            />
-            <span class="home-library__label">{{ t(category.labelKey, category.labelFallback) }}</span>
-            <span
-              v-if="category.hintKey"
-              class="home-library__hint"
-            >{{ t(category.hintKey, category.hintFallback, category.hintParams) }}</span>
-          </span>
-        </origam-card>
-      </origam-grid-item>
-    </origam-grid>
+          <origam-card
+            :to="categoryLink(category)"
+            rounded="xl"
+            border
+            class="home-library__card"
+            :data-cy="`library-card-${category.key}`"
+          >
+            <span class="home-library__tile">
+              <origam-icon
+                :icon="category.icon"
+                :size="40"
+                color="primary"
+                aria-hidden="true"
+              />
+              <span class="home-library__label">{{ t(category.labelKey, category.labelFallback) }}</span>
+              <span
+                v-if="category.hintKey"
+                class="home-library__hint"
+              >{{ t(category.hintKey, category.hintFallback, category.hintParams) }}</span>
+            </span>
+          </origam-card>
+        </origam-grid-item>
+      </origam-grid>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
-import { ENSO_SECTION_HILLS } from '~/consts/enso.const'
 import { HOME_LIBRARY_CATEGORIES } from '~/consts/home-library.const'
 import type { IHomeLibraryCategory } from '~/interfaces/home-library.interface'
 import { categoryAnchor } from '~/utils/components-catalog.util'
@@ -80,10 +79,8 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-library {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    padding-block-end: calc(var(--home-section-gap) * 4);
+    padding-block: 130px 150px;
+    background-color: var(--origam-color__surface---default);
 
     &__intro {
         display: grid;

@@ -1,41 +1,43 @@
 <template>
   <section
-    class="home-benefits home-container home-section"
+    class="home-benefits"
     :aria-label="t('home.benefits.label', 'Why Origam')"
   >
-    <origam-row
-      tag="ul"
-      class="home-benefits__grid"
-    >
-      <origam-col
-        v-for="benefit in BENEFITS"
-        :key="benefit.titleKey"
-        tag="li"
-        cols="12"
-        sm="6"
-        md="3"
-        class="home-benefits__item"
-        data-cy="benefit-item"
+    <div class="home-container">
+      <origam-row
+        tag="ul"
+        class="home-benefits__grid"
       >
-        <origam-icon
-          :icon="benefit.icon"
-          color="primary"
-          :size="48"
-          aria-hidden="true"
-        />
-
-        <origam-title
-          tag="h2"
-          class="home-benefits__title"
+        <origam-col
+          v-for="benefit in BENEFITS"
+          :key="benefit.titleKey"
+          tag="li"
+          cols="12"
+          sm="6"
+          md="3"
+          class="home-benefits__item"
+          data-cy="benefit-item"
         >
-          {{ t(benefit.titleKey, benefit.titleKey) }}
-        </origam-title>
+          <origam-icon
+            :icon="benefit.icon"
+            color="primary"
+            :size="48"
+            aria-hidden="true"
+          />
 
-        <p class="home-benefits__description">
-          {{ t(benefit.descriptionKey, benefit.descriptionKey) }}
-        </p>
-      </origam-col>
-    </origam-row>
+          <origam-title
+            tag="h2"
+            class="home-benefits__title"
+          >
+            {{ t(benefit.titleKey, benefit.titleKey) }}
+          </origam-title>
+
+          <p class="home-benefits__description">
+            {{ t(benefit.descriptionKey, benefit.descriptionKey) }}
+          </p>
+        </origam-col>
+      </origam-row>
+    </div>
   </section>
 </template>
 
@@ -66,6 +68,28 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-benefits {
+    position: relative;
+    isolation: isolate;
+    overflow-x: clip;
+    padding-block: 40px 0;
+    background-color: var(--origam-color__surface---overlay);
+
+    // T1 (chiffres -> benefices) : lavis CSS seul, trois efflorescences inegales qui finissent pleines.
+    &::before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        inset-inline: 0;
+        inset-block-start: -200px;
+        block-size: 201px;
+        pointer-events: none;
+        background:
+            radial-gradient(ellipse 34% 75% at 14% 100%, var(--origam-color__surface---overlay) 35%, transparent 72%),
+            radial-gradient(ellipse 44% 95% at 62% 100%, var(--origam-color__surface---overlay) 30%, transparent 75%),
+            radial-gradient(ellipse 26% 60% at 93% 100%, var(--origam-color__surface---overlay) 35%, transparent 72%),
+            linear-gradient(to bottom, transparent 20%, var(--origam-color__surface---overlay));
+    }
+
     &__grid {
         list-style: none;
         margin: 0;
@@ -97,6 +121,13 @@ defineExpose({})
         font-size: var(--home-fs-small);
         line-height: 1.5;
         color: var(--origam-color__text---secondary);
+    }
+}
+
+@media (max-width: 768px) {
+    .home-benefits::before {
+        inset-block-start: -140px;
+        block-size: 141px;
     }
 }
 </style>
