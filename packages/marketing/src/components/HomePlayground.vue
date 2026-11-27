@@ -45,7 +45,7 @@
             <origam-icon
               icon="mdi-vuejs"
               color="success"
-              :size="44"
+              :size="28"
               class="home-playground__logo"
               aria-hidden="true"
             />
@@ -137,14 +137,7 @@ defineExpose({})
     }
 
     &__code {
-        position: relative;
-        overflow: visible;
-    }
-
-    /* The code stays overflow: visible for the logo, so the header paints the window's top corners itself. */
-    &__code :deep(.origam-code__header) {
-        border-start-start-radius: inherit;
-        border-start-end-radius: inherit;
+        overflow: hidden;
     }
 
     &__dots {
@@ -152,12 +145,9 @@ defineExpose({})
         gap: var(--origam-space---2, 0.5rem);
     }
 
-    /* The Vue logo overflows the window's top-right corner, as in the mockup. */
+    /* The Vue logo sits in the window bar, right-aligned, level with the dots. */
     &__logo {
-        position: absolute;
-        inset-block-start: 0;
-        transform: translateY(-50%);
-        inset-inline-end: var(--origam-space---4, 1rem);
+        margin-inline-start: auto;
     }
 
     &__window :deep(.origam-code__code span) {

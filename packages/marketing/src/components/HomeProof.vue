@@ -8,13 +8,9 @@
       max-width="none"
     >
       <header class="home-proof__header">
-        <origam-title
-          id="proof-title"
-          tag="h2"
-          class="home-proof__title"
-        >
+        <enso-section-title id="proof-title">
           {{ t('home.proof.title', 'What the repository lets you verify') }}
-        </origam-title>
+        </enso-section-title>
 
         <p class="home-proof__intro">
           {{ t('home.proof.intro', 'Figures measured in the code, at every release.') }}
@@ -84,13 +80,6 @@ defineExpose({})
         flex-direction: column;
         gap: var(--origam-space---2, 0.5rem);
         margin-block-end: var(--origam-space---8, 2rem);
-    }
-
-    &__title {
-        margin: 0;
-        font-size: var(--home-fs-h2);
-        font-weight: var(--origam-font__weight---bold, 700);
-        color: var(--origam-color__text---primary);
     }
 
     &__intro {

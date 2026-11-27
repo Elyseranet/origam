@@ -3,6 +3,8 @@
     class="home-benefits home-container home-section"
     :aria-label="t('home.benefits.label', 'Why Origam')"
   >
+    <enso-divider class="home-benefits__divider" />
+
     <origam-row
       tag="ul"
       class="home-benefits__grid"
@@ -66,6 +68,12 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-benefits {
+    &__divider {
+        --enso-divider---max-width: 16rem;
+
+        margin-block-end: var(--origam-space---8, 2rem);
+    }
+
     &__grid {
         list-style: none;
         margin: 0;
