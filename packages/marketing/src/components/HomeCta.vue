@@ -204,10 +204,7 @@ defineExpose({})
     &__title {
         margin: 0;
         max-inline-size: 18ch;
-        font-size: clamp(1.9rem, 3.6vw, 2.9rem);
-        font-weight: var(--origam-font__weight---bold, 700);
-        letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-        line-height: 1.1;
+        font-size: var(--home-fs-h2-cta);
         text-wrap: balance;
         color: var(--origam-color__text---primary);
     }
