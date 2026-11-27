@@ -34,6 +34,13 @@
             <div class="enso-demo__stage">
               <enso-petals :count="petalCount" />
 
+              <p
+                class="home-eyebrow"
+                data-cy="enso-demo-eyebrow"
+              >
+                {{ t('enso_demo.stage_eyebrow', 'Gold eyebrow mark') }}
+              </p>
+
               <enso-section-title
                 :id="column.headingId"
                 tag="h2"
@@ -42,11 +49,9 @@
               </enso-section-title>
 
               <p class="enso-demo__text">
-                {{ t('enso_demo.stage_text', 'Washi paper, brush-underlined title, falling petals and the brush divider below.') }}
+                {{ t('enso_demo.stage_text', 'Washi paper, title, falling petals and the new assets below.') }}
               </p>
             </div>
-
-            <enso-divider />
 
             <ul
               class="enso-demo__gallery"

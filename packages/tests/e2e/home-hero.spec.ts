@@ -157,17 +157,17 @@ test.describe('HomeHero — maquette A', () => {
         expect(m.start.border).toBe('0px')
     })
 
-    test('T3 — H1 à 56 px, description à 18 px, eyebrow avec trait jaune incliné', async ({ page }) => {
+    test('T3 — H1 à 56 px, description à 18 px, eyebrow avec marque dorée inclinée', async ({ page }) => {
         await page.setViewportSize({ width: 1440, height: 900 })
         await page.goto('/')
         const m = await page.evaluate(() => {
             const fs = (sel: string) => getComputedStyle(document.querySelector(sel)!).fontSize
             const mark = getComputedStyle(document.querySelector('#hero .home-hero__eyebrow')!, '::before')
-            return { h1: fs('#hero h1'), description: fs('#hero .home-hero__description'), bg: mark.backgroundColor, transform: mark.transform }
+            return { h1: fs('#hero h1'), description: fs('#hero .home-hero__description'), bg: mark.backgroundImage, transform: mark.transform }
         })
         expect(m.h1).toBe('56px')
         expect(m.description).toBe('18px')
-        expect(m.bg).not.toBe('rgba(0, 0, 0, 0)')
+        expect(m.bg).toContain('/brand/enso/shared/gold-tick-')
         expect(m.transform).not.toBe('none')
     })
 

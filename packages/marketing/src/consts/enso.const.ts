@@ -297,6 +297,108 @@ export const ENSO_BRUSH_IVORY: IEnsoSharedArt = {
 }
 
 
+/*
+ * Home enso v12 (#1592, lot I0). Fichiers produits par `scripts/generate-enso-assets.mjs`.
+ * Les `IEnsoSharedArt` ci-dessous valent pour les deux modes ; ceux qui servent de
+ * `mask-image` (MASK) ne comptent que par leur alpha : poser `src` (même origine,
+ * sinon CORS) et jamais `srcset`, `image-set()` n'étant pas fiable dans `mask-image`.
+ */
+
+export const ENSO_GOLD_TICK: IEnsoSharedArt = {
+    width: 60,
+    height: 79,
+    src: '/brand/enso/shared/gold-tick-120.avif',
+    srcset: '/brand/enso/shared/gold-tick-60.avif 60w, /brand/enso/shared/gold-tick-120.avif 120w'
+}
+
+export const ENSO_SUN_DISC: IEnsoSharedArt = {
+    width: 540,
+    height: 495,
+    src: '/brand/enso/shared/sun-disc-540.avif',
+    srcset: '/brand/enso/shared/sun-disc-270.avif 270w, /brand/enso/shared/sun-disc-540.avif 540w'
+}
+
+export const ENSO_SEAL: IEnsoSharedArt = {
+    width: 680,
+    height: 661,
+    src: '/brand/enso/shared/enso-seal-680.avif',
+    srcset: '/brand/enso/shared/enso-seal-340.avif 340w, /brand/enso/shared/enso-seal-680.avif 680w'
+}
+
+export const ENSO_MASK_BRUSH_DRY: IEnsoSharedArt = {
+    width: 2133,
+    height: 707,
+    src: '/brand/enso/shared/brush-dry-2133.avif',
+    srcset: '/brand/enso/shared/brush-dry-1200.avif 1200w, /brand/enso/shared/brush-dry-2133.avif 2133w'
+}
+
+export const ENSO_MASK_BRUSH_VIOLET_04: IEnsoSharedArt = {
+    width: 1200,
+    height: 398,
+    src: '/brand/enso/shared/brush-violet-04-1200.avif',
+    srcset: '/brand/enso/shared/brush-violet-04-1200.avif 1200w'
+}
+
+export const ENSO_MASK_BRUSH_VIOLET_07: IEnsoSharedArt = {
+    width: 1200,
+    height: 407,
+    src: '/brand/enso/shared/brush-violet-07-1200.avif',
+    srcset: '/brand/enso/shared/brush-violet-07-1200.avif 1200w'
+}
+
+export const ENSO_MASK_DRY_02: IEnsoSharedArt = {
+    width: 1200,
+    height: 407,
+    src: '/brand/enso/shared/dry-02-1200.avif',
+    srcset: '/brand/enso/shared/dry-02-1200.avif 1200w'
+}
+
+export const ENSO_MASK_DRY_05: IEnsoSharedArt = {
+    width: 1200,
+    height: 407,
+    src: '/brand/enso/shared/dry-05-1200.avif',
+    srcset: '/brand/enso/shared/dry-05-1200.avif 1200w'
+}
+
+export const ENSO_CTA_MOUNTAINS: IEnsoArt = {
+    width: 2136,
+    height: 535,
+    light: {
+        src: '/brand/enso/light/cta-mountains-2136.avif',
+        srcset: '/brand/enso/light/cta-mountains-800.avif 800w, /brand/enso/light/cta-mountains-1600.avif 1600w, /brand/enso/light/cta-mountains-2136.avif 2136w'
+    },
+    dark: {
+        src: '/brand/enso/dark/cta-mountains-2136.avif',
+        srcset: '/brand/enso/dark/cta-mountains-800.avif 800w, /brand/enso/dark/cta-mountains-1600.avif 1600w, /brand/enso/dark/cta-mountains-2136.avif 2136w'
+    }
+}
+
+export const ENSO_CTA_RIDGE: IEnsoArt = {
+    width: 1983,
+    height: 382,
+    light: {
+        src: '/brand/enso/light/cta-ridge-1983.avif',
+        srcset: '/brand/enso/light/cta-ridge-800.avif 800w, /brand/enso/light/cta-ridge-1600.avif 1600w, /brand/enso/light/cta-ridge-1983.avif 1983w'
+    },
+    dark: {
+        src: '/brand/enso/dark/cta-ridge-1983.avif',
+        srcset: '/brand/enso/dark/cta-ridge-800.avif 800w, /brand/enso/dark/cta-ridge-1600.avif 1600w, /brand/enso/dark/cta-ridge-1983.avif 1983w'
+    }
+}
+
+export const ENSO_CTA_FOREGROUND: IEnsoArt = {
+    width: 1983,
+    height: 793,
+    light: {
+        src: '/brand/enso/light/cta-foreground-1983.avif',
+        srcset: '/brand/enso/light/cta-foreground-800.avif 800w, /brand/enso/light/cta-foreground-1600.avif 1600w, /brand/enso/light/cta-foreground-1983.avif 1983w'
+    },
+    dark: {
+        src: '/brand/enso/dark/cta-foreground-1983.avif',
+        srcset: '/brand/enso/dark/cta-foreground-800.avif 800w, /brand/enso/dark/cta-foreground-1600.avif 1600w, /brand/enso/dark/cta-foreground-1983.avif 1983w'
+    }
+}
+
 /** Trait qui suit le mode : violet terminé en doré sur papier, ivoire terminé en doré sur encre. */
 export const ENSO_BRUSH: IEnsoArt = {
     width: ENSO_BRUSH_VIOLET.width,
@@ -305,9 +407,7 @@ export const ENSO_BRUSH: IEnsoArt = {
     dark: ENSO_BRUSH_IVORY
 }
 
-/** Largeurs d'affichage (px CSS) qui choisissent le fichier 1x / 2x des fonds CSS. */
-export const ENSO_TITLE_BRUSH_WIDTH = 240
-export const ENSO_DIVIDER_BRUSH_WIDTH = 960
+/** Largeur d'affichage (px CSS) qui choisit le fichier 1x / 2x des fonds CSS. */
 export const ENSO_PAPER_TILE_WIDTH = 512
 
 /** Largeurs d'affichage (px) qui choisissent le fichier du trait : lien actif, bord bas du header, panorama du footer. */
@@ -360,5 +460,16 @@ export const ENSO_GALLERY: readonly IEnsoGalleryItem[] = [
     { name: 'ENSO_FOOTER', art: ENSO_FOOTER },
     { name: 'ENSO_CIRCLE_OPEN', art: ENSO_CIRCLE_OPEN },
     { name: 'ENSO_CIRCLE_WIDE', art: ENSO_CIRCLE_WIDE },
-    { name: 'ENSO_BRUSH', art: ENSO_BRUSH }
+    { name: 'ENSO_BRUSH', art: ENSO_BRUSH },
+    { name: 'ENSO_GOLD_TICK', art: ENSO_GOLD_TICK },
+    { name: 'ENSO_SUN_DISC', art: ENSO_SUN_DISC },
+    { name: 'ENSO_SEAL', art: ENSO_SEAL },
+    { name: 'ENSO_MASK_BRUSH_DRY', art: ENSO_MASK_BRUSH_DRY },
+    { name: 'ENSO_MASK_BRUSH_VIOLET_04', art: ENSO_MASK_BRUSH_VIOLET_04 },
+    { name: 'ENSO_MASK_BRUSH_VIOLET_07', art: ENSO_MASK_BRUSH_VIOLET_07 },
+    { name: 'ENSO_MASK_DRY_02', art: ENSO_MASK_DRY_02 },
+    { name: 'ENSO_MASK_DRY_05', art: ENSO_MASK_DRY_05 },
+    { name: 'ENSO_CTA_MOUNTAINS', art: ENSO_CTA_MOUNTAINS },
+    { name: 'ENSO_CTA_RIDGE', art: ENSO_CTA_RIDGE },
+    { name: 'ENSO_CTA_FOREGROUND', art: ENSO_CTA_FOREGROUND }
 ]

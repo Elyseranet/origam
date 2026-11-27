@@ -44,6 +44,13 @@
     --origam-radius---btn: 10px;
     --origam-radius---pill: 9999px;
 
+    /* ── Home enso (#1592) : violet profond du crépuscule du CTA et du pied de page.
+       Marketing-only, identiques dans les deux modes ; `---ink` est l'encre du
+       niveau 2 du pied de page (redéclarée en sombre plus bas). */
+    --origam-color__brand-deep---start: #3d1a7f;
+    --origam-color__brand-deep---end: #2a1063;
+    --origam-color__brand-deep---ink: #1b1127;
+
     /* ── Header height — 72px, source unique (layouts/default.vue `:height="72"`, #1554 T10) ── */
     --marketing-header-height: 4.5rem;
 
@@ -133,4 +140,9 @@
     --origam-code__compact---gap: 0.5rem;
     padding: 0.75rem 1.125rem !important;
     column-gap: 0.5rem;
+}
+
+/* Encre du pied de page en sombre : plus profonde que `surface---default` (#1b1127). */
+:root:root[data-mode='dark'] {
+    --origam-color__brand-deep---ink: #0e0915;
 }
