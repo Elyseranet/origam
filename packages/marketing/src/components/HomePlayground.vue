@@ -66,7 +66,6 @@
           v-for="button in buttons"
           :key="button.key"
           v-bind="button.props"
-          :size="buttonSize"
           :data-cy="`playground-btn-${button.key}`"
         >
           {{ labels[button.key] }}
@@ -79,7 +78,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useT } from '~/composables/useT'
-import { HOME_DEMO_BUTTONS, HOME_DEMO_BUTTON_SIZE, HOME_DEMO_CODE_BUTTON, HOME_DEMO_DOTS } from '~/consts/playground.const'
+import { HOME_DEMO_BUTTONS, HOME_DEMO_CODE_BUTTON, HOME_DEMO_DOTS } from '~/consts/playground.const'
 import { buildHomeDemoSnippet } from '~/utils/home-demo.util'
 
 const { t } = useT()
@@ -97,7 +96,6 @@ const { t } = useT()
 const buttons = HOME_DEMO_BUTTONS
 
 const dots = HOME_DEMO_DOTS
-const buttonSize = HOME_DEMO_BUTTON_SIZE
 
 const labels = computed(() =>
     Object.fromEntries(buttons.map(({ key, labelKey, labelFallback }) => [key, t(labelKey, labelFallback)]))

@@ -54,11 +54,11 @@ test.describe('HomePlayground section', () => {
         }
     })
 
-    // #1517 — owner decision: like the mockup, the code shows the Primary button alone, on three lines.
+    // #1517 — owner decision: like the mockup, the code shows the Primary button alone, one prop per line.
     test('the code shows the rendered Primary button only', async ({ page }) => {
         const code = page.locator('[data-cy="playground-code"] pre')
         await expect.poll(async () => (await code.innerText()).trim())
-            .toBe('<OrigamBtn variant="flat" bg-color="primary">\n  Primary\n</OrigamBtn>')
+            .toBe('<OrigamBtn\n  variant="flat"\n  bg-color="primary"\n  size="x-large"\n>Primary</OrigamBtn>')
         await expect(page.locator('[data-cy="playground-btn-primary"]')).toHaveClass(/origam--bg-primary/)
     })
 
