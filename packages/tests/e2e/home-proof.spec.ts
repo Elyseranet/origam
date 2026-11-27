@@ -1,7 +1,9 @@
 /**
  * HomeProof — section « preuves » sous le hero (#1545).
  *
- * Contrat : six chiffres, chacun avec son libellé et sa définition écrite ;
+ * Contrat (piste A, #1594) : le chiffre des familles est tenu dans le vide de
+ * l'enso (jamais sur le trait), les cinq autres forment un registre `ol`-like ;
+ * six chiffres, chacun avec son libellé et sa définition écrite ;
  * chaque valeur est celle que le script de build mesure dans le dépôt
  * (`generate-build-stats.mjs`), jamais un littéral ; aucun compteur
  * d'adoption (étoiles, téléchargements) ni « WCAG ».
@@ -52,13 +54,27 @@ test.describe('HomeProof — section « preuves »', () => {
     })
 
     test('chaque chiffre vaut la mesure du dépôt et porte libellé + définition', async ({ page }) => {
-        await expect(page.locator('section.home-proof li')).toHaveCount(EXPECTED.length)
+        await expect(page.locator('section.home-proof [role="listitem"]')).toHaveCount(EXPECTED.length - 1)
+        await expect(page.locator('section.home-proof [data-cy="proof-value"]')).toHaveCount(EXPECTED.length)
         for (const [key, value] of EXPECTED) {
             const item = page.locator(`[data-cy="proof-${ key }"]`)
             await expect(item.locator('[data-cy="proof-value"]')).toHaveText(value)
             await expect(item.locator('.home-proof__label')).not.toBeEmpty()
             await expect(item.locator('.home-proof__definition')).not.toBeEmpty()
         }
+    })
+
+    test('le chiffre des familles reste dans le vide de l\'enso, sans toucher le trait', async ({ page }) => {
+        const geometry = await page.evaluate(() => {
+            const ring = document.querySelector('.home-proof__ring')!.getBoundingClientRect()
+            const value = document.querySelector('.home-proof__seal-value')!.getBoundingClientRect()
+            const cx = ring.x + ring.width / 2
+            const cy = ring.y + ring.height / 2
+            const corners = [[value.left, value.top], [value.right, value.top], [value.left, value.bottom], [value.right, value.bottom]]
+            return Math.max(...corners.map(([x, y]) => Math.hypot(x - cx, y - cy))) / (ring.width / 2)
+        })
+        // le vide de l'enso mesure ~52 % du diametre : le coin le plus eloigne du nombre reste sous 0.52 du rayon
+        expect(geometry).toBeLessThan(0.52)
     })
 
     test('aucun compteur d\'adoption ni promesse WCAG', async ({ page }) => {

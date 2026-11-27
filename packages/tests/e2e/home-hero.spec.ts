@@ -116,7 +116,7 @@ test.describe('HomeHero — maquette A', () => {
         expect(m.behind).toBe(true)
     })
 
-    test('le texte du hero s\'aligne sur le bord commun de la home (80 px en 1440)', async ({ page }) => {
+    test('le texte du hero s\'aligne sur le bord commun de la home (178 px en 1440, maquette v12)', async ({ page }) => {
         await page.setViewportSize({ width: 1440, height: 900 })
         await page.goto('/')
         const lefts = await page.evaluate(() => {
@@ -126,8 +126,8 @@ test.describe('HomeHero — maquette A', () => {
                 playground: Math.round(playground.getBoundingClientRect().left + parseFloat(getComputedStyle(playground).paddingLeft))
             }
         })
-        // (1440 - 1280) / 2 = 80
-        expect(lefts.hero).toBe(80)
+        // maquette v12 : (1440 - 1200) / 2 + 4vw = 177,6
+        expect(lefts.hero).toBe(178)
         expect(lefts.hero).toBe(lefts.playground)
     })
 
@@ -157,7 +157,7 @@ test.describe('HomeHero — maquette A', () => {
         expect(m.start.border).toBe('0px')
     })
 
-    test('T3 — H1 à 56 px, description à 18 px, eyebrow avec marque dorée inclinée', async ({ page }) => {
+    test('T3 — H1 à 59,2 px (3,7rem, maquette v12), description à 15 px, eyebrow avec marque dorée inclinée', async ({ page }) => {
         await page.setViewportSize({ width: 1440, height: 900 })
         await page.goto('/')
         const m = await page.evaluate(() => {
@@ -165,8 +165,8 @@ test.describe('HomeHero — maquette A', () => {
             const mark = getComputedStyle(document.querySelector('#hero .home-hero__eyebrow')!, '::before')
             return { h1: fs('#hero h1'), description: fs('#hero .home-hero__description'), bg: mark.backgroundImage, transform: mark.transform }
         })
-        expect(m.h1).toBe('56px')
-        expect(m.description).toBe('18px')
+        expect(m.h1).toBe('59.2px')
+        expect(m.description).toBe('15px')
         expect(m.bg).toContain('/brand/enso/shared/gold-tick-')
         expect(m.transform).not.toBe('none')
     })

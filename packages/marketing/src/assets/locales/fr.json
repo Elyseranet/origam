@@ -1071,6 +1071,7 @@
             "support_link": "Soutenir le projet"
         },
         "proof": {
+            "eyebrow": "Mesuré dans le code",
             "title": "Ce que le dépôt permet de vérifier",
             "intro": "Des chiffres mesurés dans le code, à chaque publication.",
             "families_label": "familles de composants",

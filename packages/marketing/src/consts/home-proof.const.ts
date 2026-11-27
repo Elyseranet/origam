@@ -15,3 +15,13 @@ export const HOME_PROOF_ITEMS: IHomeProofItem[] = [
     { key: 'e2e', value: String(BUILD_STATS.e2eTestFiles), labelKey: 'home.proof.e2e_label', labelFallback: 'e2e test files', definitionKey: 'home.proof.e2e_definition', definitionFallback: 'A *.spec.ts file under packages/tests/e2e: files, not a number of tests.' },
     { key: 'license', value: BUILD_STATS.license, labelKey: 'home.proof.license_label', labelFallback: 'open source licence', definitionKey: 'home.proof.license_definition', definitionFallback: 'The license field of the published package.' }
 ]
+
+/** Clé du chiffre tenu dans le vide de l'enso (#1594) : les autres forment le registre. */
+export const HOME_PROOF_SEAL_KEY = 'families'
+
+/** Largeur d'affichage maximale du sceau, en px (`image-set` 1x/2x). */
+export const HOME_PROOF_SEAL_WIDTH = 340
+
+export const HOME_PROOF_SEAL_ITEM: IHomeProofItem = HOME_PROOF_ITEMS.find(item => item.key === HOME_PROOF_SEAL_KEY) as IHomeProofItem
+
+export const HOME_PROOF_LEDGER_ITEMS: IHomeProofItem[] = HOME_PROOF_ITEMS.filter(item => item.key !== HOME_PROOF_SEAL_KEY)

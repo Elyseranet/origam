@@ -3,26 +3,53 @@
  *
  * Les sections Home* consomment ces variables et ces classes ; elles ne
  * redéclarent ni largeur, ni gouttière, ni écart de section, ni taille de titre.
- * Échelle ×1,8 (cran DS `x-large`). Écart de section : l'image de la maquette
+ * Échelle typographique et largeur de la maquette v12 (#1594, décision du
+ * propriétaire : la maquette fait foi, contre l'échelle ×1,8 de #1554). Écart de section : l'image de la maquette
  * (≈ 48 px entre deux contenus), pas les 96 px du kit JSON.
  */
 :root {
-  /* Largeur du contenu ; la gouttière reste `--site-gutter` (layouts/default.vue). */
-  --home-container-max: 1280px;
+  /* Maquette v12 : contenu 1200 px au total (gouttière comprise), gouttière max(20px, 4vw). */
+  --home-gutter: max(20px, 4vw);
+  --home-container-max: calc(1200px - 2 * var(--home-gutter));
   /* Padding vertical d'UNE section : deux sections voisines laissent 2 × 24 = 48 px. */
   --home-section-gap: var(--origam-space---6, 1.5rem);
 
-  /* Échelle typographique. H2 / H1 ≈ 0,38 (maquette) ; texte courant 18 px. */
-  --home-fs-h1: clamp(2.25rem, 0.5rem + 6.1vw, 6rem);
-  --home-fs-h1-sentence: clamp(2rem, 1.2rem + 3.2vw, 3.5rem); /* H1 en phrase (3 lignes) */
-  --home-fs-h2: clamp(1.75rem, 1.25rem + 1.2vw, 2.25rem);
-  --home-fs-h3: clamp(1.25rem, 1rem + 0.7vw, 1.5rem);
-  --home-fs-body: clamp(1rem, 0.9rem + 0.35vw, 1.125rem);
-  --home-fs-small: clamp(0.875rem, 0.8rem + 0.2vw, 1rem);
+  /* Échelle typographique de la maquette v12 (corps Sora 15 px / 1,6). */
+  --home-fs-h1: clamp(2.4rem, 4.6vw, 3.7rem);
+  --home-fs-h1-sentence: var(--home-fs-h1);
+  --home-fs-h2: clamp(1.8rem, 3.4vw, 2.6rem);
+  --home-fs-h2-cta: clamp(1.9rem, 3.6vw, 2.9rem);
+  --home-fs-h3: 1.125rem;
+  --home-fs-sub: 1.25rem;
+  --home-fs-lead: 1rem;
+  --home-fs-body: 0.9375rem;
+  --home-fs-small: 0.875rem;
   --home-fs-eyebrow: 0.8125rem;
+  --home-fw-title: 700;
+  --home-lh-body: 1.6;
+  --home-lh-title: 1.1;
+  --home-ls-title: -0.03em;
 }
 
-/* Un seul bord gauche pour toutes les sections : 1280 px de contenu + gouttière. */
+/* Les sections de la home partagent la gouttière et la largeur de la maquette. */
+.home {
+  --site-gutter: var(--home-gutter);
+  --origam-title---font-weight: var(--home-fw-title);
+  --origam-title---letter-spacing: var(--home-ls-title);
+  --origam-title---line-height: var(--home-lh-title);
+
+  font-size: var(--home-fs-body);
+  line-height: var(--home-lh-body);
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+}
+
+/* Titres équilibrés comme la maquette. */
+.home :is(h1, h2) {
+  text-wrap: balance;
+}
+
+/* Un seul bord gauche pour toutes les sections : 1200 px au total, gouttière comprise. */
 .home-container {
   --origam-container---padding-inline-start: var(--site-gutter);
   --origam-container---padding-inline-end: var(--site-gutter);

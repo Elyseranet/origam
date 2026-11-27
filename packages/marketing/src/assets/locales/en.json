@@ -1071,6 +1071,7 @@
             "support_link": "Support the project"
         },
         "proof": {
+            "eyebrow": "Measured in the code",
             "title": "What the repository lets you verify",
             "intro": "Figures measured in the code, at every release.",
             "families_label": "component families",
