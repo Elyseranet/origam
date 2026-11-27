@@ -3,48 +3,43 @@
         class="privacy"
         data-cy="page-privacy"
     >
-        <section
-            class="privacy-hero"
-            aria-labelledby="privacy-title"
+        <enso-page-header
+            family="legal"
+            title-id="privacy-title"
         >
-            <origam-container class="privacy-hero__inner">
-                <origam-chip
-                    class="privacy-hero__badge"
-                    color="primary"
-                    size="small"
-                    border
-                    pill
-                    data-cy="privacy-hero-badge"
-                >
-                    {{ t('privacy.hero.badge', 'Measured, not drafted') }}
-                </origam-chip>
+            <template #breadcrumb>
+                <origam-breadcrumb
+                    :items="breadcrumbItems"
+                    divider="/"
+                    :border="0"
+                    data-cy="privacy-breadcrumb"
+                />
+            </template>
 
-                <origam-title
-                    id="privacy-title"
-                    tag="h1"
-                    class="privacy-hero__title"
-                >
-                    {{ t('privacy.hero.title', 'Privacy') }}
-                </origam-title>
+            <template #eyebrow>
+                <span data-cy="privacy-hero-badge">{{ t('privacy.hero.badge', 'Measured, not drafted') }}</span>
+            </template>
 
-                <p class="privacy-hero__lead">
-                    {{ t('privacy.hero.lead', 'This page lists only what was verified in the source code of this site, and by loading a page with the network log open. It is deliberately short — there is very little to report. Each statement names the thing it describes, so you can check it yourself in your browser.') }}
-                </p>
-            </origam-container>
-        </section>
+            <template #title>
+                {{ t('privacy.hero.title', 'Privacy') }}
+            </template>
+
+            <template #intro>
+                {{ t('privacy.hero.lead', 'This page lists only what was verified in the source code of this site, and by loading a page with the network log open. It is deliberately short — there is very little to report. Each statement names the thing it describes, so you can check it yourself in your browser.') }}
+            </template>
+        </enso-page-header>
 
         <section
             class="privacy-block"
             aria-labelledby="privacy-collect-title"
         >
-            <origam-container class="privacy-block__inner">
-                <origam-title
+            <origam-container class="privacy-block__inner home-container">
+                <enso-section-title
                     id="privacy-collect-title"
                     tag="h2"
-                    class="privacy-block__title"
                 >
                     {{ t('privacy.collect.title', 'What is not collected') }}
-                </origam-title>
+                </enso-section-title>
 
                 <p class="privacy-block__body">
                     {{ t('privacy.collect.body', 'There is no analytics, no tracking pixel and no third-party measurement script anywhere on this site. Nothing records which pages you visit, how long you stay, or where you arrived from. No visitor account exists, so nothing is attached to an identity.') }}
@@ -56,14 +51,13 @@
             class="privacy-block"
             aria-labelledby="privacy-cookies-title"
         >
-            <origam-container class="privacy-block__inner">
-                <origam-title
+            <origam-container class="privacy-block__inner home-container">
+                <enso-section-title
                     id="privacy-cookies-title"
                     tag="h2"
-                    class="privacy-block__title"
                 >
                     {{ t('privacy.cookies.title', 'Cookies') }}
-                </origam-title>
+                </enso-section-title>
 
                 <p class="privacy-block__body">
                     {{ t('privacy.cookies.intro', 'Browsing this site sets cookies for two things only, both of them preferences you chose yourself:') }}
@@ -88,14 +82,13 @@
             class="privacy-block"
             aria-labelledby="privacy-storage-title"
         >
-            <origam-container class="privacy-block__inner">
-                <origam-title
+            <origam-container class="privacy-block__inner home-container">
+                <enso-section-title
                     id="privacy-storage-title"
                     tag="h2"
-                    class="privacy-block__title"
                 >
                     {{ t('privacy.storage.title', 'Local storage') }}
-                </origam-title>
+                </enso-section-title>
 
                 <p class="privacy-block__body">
                     {{ t('privacy.storage.body', 'The theme builder saves your work in progress in your browser, under the key origam_theme_builder_state, alongside origam-theme and origam-mode for your appearance choice. These entries never leave the browser: they are not sent to any server, and clearing the site data removes them.') }}
@@ -107,14 +100,13 @@
             class="privacy-block"
             aria-labelledby="privacy-forms-title"
         >
-            <origam-container class="privacy-block__inner">
-                <origam-title
+            <origam-container class="privacy-block__inner home-container">
+                <enso-section-title
                     id="privacy-forms-title"
                     tag="h2"
-                    class="privacy-block__title"
                 >
                     {{ t('privacy.forms.title', 'Forms and search') }}
-                </origam-title>
+                </enso-section-title>
 
                 <p class="privacy-block__body">
                     {{ t('privacy.forms.body', 'This site carries a single form — the property panel of the theme builder — and it submits nothing: it edits a preview inside the page. The search field filters a catalogue your browser has already downloaded, so what you type into it is never sent anywhere.') }}
@@ -126,14 +118,13 @@
             class="privacy-block"
             aria-labelledby="privacy-third-party-title"
         >
-            <origam-container class="privacy-block__inner">
-                <origam-title
+            <origam-container class="privacy-block__inner home-container">
+                <enso-section-title
                     id="privacy-third-party-title"
                     tag="h2"
-                    class="privacy-block__title"
                 >
                     {{ t('privacy.third_party.title', 'No third party') }}
-                </origam-title>
+                </enso-section-title>
 
                 <p class="privacy-block__body">
                     {{ t('privacy.third_party.body', 'Nothing on the pages of this site is fetched from another company\'s server. The typefaces — Sora, Inter, Fraunces and JetBrains Mono — are served by this site itself, from its own /fonts folder. They used to be requested from Google Fonts, which revealed your IP address and browser to Google on every page; that request no longer exists. The nineteen public pages were each loaded with the network log open, and none of them contacted any host other than this one.') }}
@@ -155,14 +146,13 @@
             class="privacy-block"
             aria-labelledby="privacy-method-title"
         >
-            <origam-container class="privacy-block__inner">
-                <origam-title
+            <origam-container class="privacy-block__inner home-container">
+                <enso-section-title
                     id="privacy-method-title"
                     tag="h2"
-                    class="privacy-block__title"
                 >
                     {{ t('privacy.method.title', 'How this page was established') }}
-                </origam-title>
+                </enso-section-title>
 
                 <p class="privacy-block__body">
                     {{ t('privacy.method.body', 'Every statement above comes from reading the source code of this site and from loading a page in a browser with the network log open — not from a template. Nothing here was assumed.') }}
@@ -194,6 +184,12 @@
      * of which have to go through `t()` rather than being inlined.
      ********************************************************/
     const { t } = useT()
+    const { localeHref } = useLocaleHref()
+
+    const breadcrumbItems = computed(() => [
+        { title: t('nav.home', 'Home'), to: localeHref('/') },
+        { title: t('privacy.hero.title', 'Privacy') }
+    ])
 
     const reviewedLine = computed(() => t('privacy.method.reviewed', 'Last verified against the source code on 17 September 2026.'))
 
@@ -222,24 +218,16 @@
 </script>
 
 <style scoped lang="scss">
-    .privacy-hero {
-        padding-block: var(--origam-space---12, 3rem);
-        text-align: center;
-
-        &__badge {
-            margin-block-end: var(--origam-space---4, 1rem);
-        }
-
-        &__lead {
-            margin-block-start: var(--origam-space---4, 1rem);
-            margin-inline: auto;
-            max-inline-size: 60ch;
-            color: var(--origam-color__text---secondary);
-        }
+    .privacy {
+        --site-gutter: var(--home-gutter);
     }
 
     .privacy-block {
         padding-block-end: var(--origam-space---12, 3rem);
+
+        &__inner {
+            --origam-container---max-width: calc(var(--home-container-max) + 2 * var(--site-gutter));
+        }
 
         &__body {
             margin-block-start: var(--origam-space---4, 1rem);

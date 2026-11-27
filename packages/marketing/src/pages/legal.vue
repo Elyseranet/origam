@@ -3,31 +3,43 @@
         class="legal-notice"
         data-cy="page-legal"
     >
-        <header class="legal-notice__hero">
-            <origam-container>
-                <origam-title
-                    tag="h1"
-                    class="legal-notice__title"
-                >
-                    {{ t('legal_notice.title', 'Legal notice') }}
-                </origam-title>
-                <p class="legal-notice__lead">
-                    {{ t('legal_notice.intro', 'Information about the publisher and the hosting provider of this website.') }}
-                </p>
-            </origam-container>
-        </header>
+        <enso-page-header
+            family="legal"
+            title-id="legal-title"
+        >
+            <template #breadcrumb>
+                <origam-breadcrumb
+                    :items="breadcrumbItems"
+                    divider="/"
+                    :border="0"
+                    data-cy="legal-breadcrumb"
+                />
+            </template>
+
+            <template #eyebrow>
+                <span data-cy="legal-hero-badge">{{ t('legal_notice.eyebrow', 'Legal information') }}</span>
+            </template>
+
+            <template #title>
+                {{ t('legal_notice.title', 'Legal notice') }}
+            </template>
+
+            <template #intro>
+                {{ t('legal_notice.intro', 'Information about the publisher and the hosting provider of this website.') }}
+            </template>
+        </enso-page-header>
 
         <section
             class="legal-notice__section"
             aria-labelledby="legal-publisher-title"
         >
-            <origam-container>
-                <origam-title
+            <origam-container class="legal-notice__inner home-container">
+                <enso-section-title
                     id="legal-publisher-title"
                     tag="h2"
                 >
                     {{ t('legal_notice.publisher_title', 'Publisher') }}
-                </origam-title>
+                </enso-section-title>
                 <dl
                     class="legal-notice__list"
                     data-cy="legal-publisher"
@@ -48,13 +60,13 @@
             class="legal-notice__section"
             aria-labelledby="legal-host-title"
         >
-            <origam-container>
-                <origam-title
+            <origam-container class="legal-notice__inner home-container">
+                <enso-section-title
                     id="legal-host-title"
                     tag="h2"
                 >
                     {{ t('legal_notice.host_title', 'Hosting provider') }}
-                </origam-title>
+                </enso-section-title>
                 <dl
                     class="legal-notice__list"
                     data-cy="legal-host"
@@ -75,13 +87,13 @@
             class="legal-notice__section"
             aria-labelledby="legal-content-title"
         >
-            <origam-container>
-                <origam-title
+            <origam-container class="legal-notice__inner home-container">
+                <enso-section-title
                     id="legal-content-title"
                     tag="h2"
                 >
                     {{ t('legal_notice.content_title', 'Website content') }}
-                </origam-title>
+                </enso-section-title>
                 <p>
                     {{ t('legal_notice.content_body', 'origam is a public Vue design system. The source repository is published under the MIT License.') }}
                     <nuxt-link :to="localeHref('/privacy')">
@@ -105,6 +117,11 @@
     const { localeHref } = useLocaleHref()
     const { publisherRows, hostRows } = useLegal()
 
+    const breadcrumbItems = computed(() => [
+        { title: t('nav.home', 'Home'), to: localeHref('/') },
+        { title: t('legal_notice.title', 'Legal notice') }
+    ])
+
     useSeoMeta({
         title: () => t('legal_notice.meta_title', 'Legal notice'),
         description: () => t('legal_notice.meta_description', 'Publisher and hosting information for the origam website.')
@@ -115,20 +132,16 @@
 
 <style scoped lang="scss">
     .legal-notice {
+        --site-gutter: var(--home-gutter);
+
         padding-block-end: var(--origam-space---12, 3rem);
 
-        &__hero,
+        &__inner {
+            --origam-container---max-width: calc(var(--home-container-max) + 2 * var(--site-gutter));
+        }
+
         &__section {
             padding-block: var(--origam-space---8, 2rem);
-        }
-
-        &__title {
-            margin-block-end: var(--origam-space---4, 1rem);
-        }
-
-        &__lead {
-            max-inline-size: 70ch;
-            color: var(--origam-color__text---secondary);
         }
 
         &__list {
