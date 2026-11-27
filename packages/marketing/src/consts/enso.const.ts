@@ -214,12 +214,12 @@ export const ENSO_FOOTER: IEnsoArt = {
     width: 2880,
     height: 960,
     light: {
-        src: '/brand/enso/light/footer-2880.avif',
-        srcset: '/brand/enso/light/footer-960.avif 960w, /brand/enso/light/footer-1920.avif 1920w, /brand/enso/light/footer-2880.avif 2880w'
+        src: '/brand/enso/light/footer-04-2880.avif',
+        srcset: '/brand/enso/light/footer-04-960.avif 960w, /brand/enso/light/footer-04-1920.avif 1920w, /brand/enso/light/footer-04-2880.avif 2880w'
     },
     dark: {
-        src: '/brand/enso/dark/footer-2880.avif',
-        srcset: '/brand/enso/dark/footer-960.avif 960w, /brand/enso/dark/footer-1920.avif 1920w, /brand/enso/dark/footer-2880.avif 2880w'
+        src: '/brand/enso/dark/footer-04-2880.avif',
+        srcset: '/brand/enso/dark/footer-04-960.avif 960w, /brand/enso/dark/footer-04-1920.avif 1920w, /brand/enso/dark/footer-04-2880.avif 2880w'
     }
 }
 

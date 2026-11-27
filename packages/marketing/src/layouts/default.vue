@@ -235,7 +235,6 @@
           <button
             class="search-trigger"
             type="button"
-            :aria-label="searchAriaLabel"
             data-cy="search-trigger"
             @click="openPalette"
           >
@@ -751,7 +750,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--origam-space---4, 1rem);
-    --site-footer---art-height: clamp(9rem, 20vw, 16rem);
+    --site-footer---art-height: clamp(10rem, 26vw, 24rem);
     position: relative;
     isolation: isolate;
     padding: calc(var(--site-footer---art-height) * 0.92) var(--site-gutter) var(--origam-space---5, 1.25rem);
@@ -767,7 +766,7 @@
       inset-inline: 0;
       z-index: -1;
       block-size: var(--site-footer---art-height);
-      background: var(--enso-art) center 66% / cover no-repeat;
+      background: var(--enso-art) center 58% / cover no-repeat;
       mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 52%, transparent 86%);
       pointer-events: none;
     }
