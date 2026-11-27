@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.48.1] - 2026-11-27
+
+### Fixed — `OrigamParallaxLayer` : souris sur les deux axes, amplitudes par plan, défilement par défaut (#1591)
+
+- **Nouvelles props additives** `mouseX` / `mouseY` sur `OrigamParallaxLayer` : déplacement en px atteint quand le pointeur touche le bord de l'hôte, indépendant de `speed` (qui reste le ratio de défilement). Sans ces props, le comportement est inchangé.
+- **Souris en Y** : en `direction="both"`, la position verticale du pointeur était calculée puis jamais appliquée. Corrigé.
+- **Souris ignorée en `easing="linear"`** quand `animation-timeline` est supporté (aucun `mousemove` posé). La souris écrit désormais la propriété CSS `translate`, qui se compose avec `transform` : elle marche sur le chemin CSS comme sur le chemin JS, lissée par `transition: translate 400ms`.
+- **Défilement figé en configuration par défaut** : `overflow: hidden` sur l'hôte en faisait le scroller de la `view()` timeline des plans (progression bloquée à 0,5). Remplacé par `overflow: clip`.
+- **Tactile / accessibilité** : l'écouteur de souris n'est posé qu'avec `(hover: hover) and (pointer: fine)`, et jamais sous `prefers-reduced-motion: reduce` ni `disabled`.
+- Vérifié : spec e2e `parallax-axes.spec.ts`, 3 tests rouges sur la version précédente, 5/5 (×3) après le correctif.
+
 ## [2.48.0] - 2026-11-26
 
 ### Changed — BREAKING visuel (dérogation assumée) : boutons en rectangles arrondis de 12 px au lieu de pilules (#1555)

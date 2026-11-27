@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.48.1',
+        date: '2026-11-27',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2481.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2481.h1', textFallback: 'OrigamParallaxLayer : souris sur les deux axes, amplitudes par plan, défilement par défaut (#1591)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.48.0',
         date: '2026-11-26',
         type: 'minor',
