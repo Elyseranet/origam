@@ -84,6 +84,9 @@ defineExpose({})
         --origam-title---line-height: 1.6;
 
         margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         color: var(--origam-color__text---primary);
     }
 

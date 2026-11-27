@@ -127,7 +127,8 @@
         "tagline": "The Vue 3 design system that just works."
     },
     "catalog_index": {
-        "jump_label": "Categories"
+        "jump_label": "Categories",
+        "jump_select_label": "Jump to…"
     },
     "changelog": {
         "meta": {

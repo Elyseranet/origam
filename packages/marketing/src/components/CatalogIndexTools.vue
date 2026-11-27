@@ -25,8 +25,22 @@
       {{ count }}
     </p>
 
+    <origam-select
+      v-if="hasSelect"
+      class="catalog-tools__jump-select"
+      :model-value="null"
+      :items="selectItems"
+      :label="selectLabel"
+      rounded="lg"
+      variant="outlined"
+      density="comfortable"
+      hide-details
+      :data-cy="`${dataCy}-jump-select`"
+      @update:model-value="handleJump"
+    />
+
     <nav
-      v-if="hasAnchors"
+      v-if="hasChips"
       :aria-label="jumpLabel"
     >
       <ul class="catalog-tools__jump">
@@ -54,6 +68,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useT } from '~/composables/useT'
 import { CATALOG_INDEX_MAX_ANCHORS } from '~/consts/catalog-index.const'
 import type {
     ICatalogIndexToolsEmits,
@@ -67,8 +82,8 @@ import type {
  * @description
  * Recherche, ligne de compte et puces d'ancrage par catégorie (maquette
  * `catalogue.html`). Les puces ne s'affichent que si la page a des groupes, et
- * pas plus de `CATALOG_INDEX_MAX_ANCHORS` : au-delà (jusqu'à 155 groupes sur
- * /interfaces) la maquette n'a rien prévu et ce serait un mur de puces.
+ * pas plus de `CATALOG_INDEX_MAX_ANCHORS` ; au-delà (jusqu'à 155 groupes sur
+ * /interfaces) un menu « Aller à… » prend le relais (décision du propriétaire).
  ********************************************************/
 const props = defineProps<ICatalogIndexToolsProps>()
 
@@ -87,7 +102,26 @@ const query = computed({
     set: (value: string | null) => emits('update:modelValue', value ?? '')
 })
 
-const hasAnchors = computed(() => props.anchors.length > 0 && props.anchors.length <= CATALOG_INDEX_MAX_ANCHORS)
+const hasChips = computed(() => props.anchors.length > 0 && props.anchors.length <= CATALOG_INDEX_MAX_ANCHORS)
+const hasSelect = computed(() => props.anchors.length > CATALOG_INDEX_MAX_ANCHORS)
+
+/*********************************************************
+ * Menu « Aller à… »
+ *
+ * @description
+ * Au-delà de `CATALOG_INDEX_MAX_ANCHORS` groupes, les puces feraient un mur :
+ * un `origam-select` (clavier, thème et mode du DS) les remplace. Choisir un
+ * groupe pose le `hash` : le navigateur défile (sans animation JS), respecte
+ * `scroll-margin` du groupe et l'URL reste partageable.
+ ********************************************************/
+const { t } = useT()
+
+const selectLabel = computed(() => t('catalog_index.jump_select_label', 'Jump to…'))
+const selectItems = computed(() => props.anchors.map(anchor => ({ title: anchor.label, value: anchor.id })))
+
+const handleJump = (id: string | null) => {
+    if (id) window.location.hash = id
+}
 
 /*********************************************************
  * Expose
@@ -103,7 +137,8 @@ defineExpose({})
     display: grid;
     gap: 14px;
 
-    &__search {
+    &__search,
+    &__jump-select {
         --origam-input---density-comfortable-density: 12px;
         --origam-field---font-size: 15px;
         --origam-field---border-radius: 12px;

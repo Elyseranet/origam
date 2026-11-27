@@ -127,7 +127,8 @@
         "tagline": "Le design system Vue 3 qui marche, tout simplement."
     },
     "catalog_index": {
-        "jump_label": "Catégories"
+        "jump_label": "Catégories",
+        "jump_select_label": "Aller à…"
     },
     "changelog": {
         "meta": {

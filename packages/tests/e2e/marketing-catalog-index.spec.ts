@@ -112,21 +112,49 @@ for (const { route, grouped } of PAGES) {
         })
 
         if (grouped) {
-            test('puces d\'ancrage : une par groupe jusqu\'à 12 groupes, aucune au-delà (mur de puces)', async ({ page }) => {
+            test('navigation par groupe : puces jusqu\'à 12 groupes, sinon menu « Aller à… » qui défile jusqu\'au groupe', async ({ page }) => {
                 await openIndex(page, route, 'light')
                 const jumps = page.locator(`[data-cy="${ route }-tools"] nav a`)
+                const select = page.locator(`[data-cy="${ route }-jump-select"]`)
                 const groupCount = await page.locator('.catalog-group').count()
+
                 if (groupCount > 12) {
                     await expect(jumps).toHaveCount(0)
+                    await expect(select).toBeVisible()
+                    await select.click()
+                    const options = page.locator('[role="option"]')
+                    await options.last().waitFor({ state: 'visible' })
+                    const lastLabel = (await options.last().innerText()).trim()
+                    await options.last().click()
+                    // Le menu est virtualisé : la dernière option rendue n'est pas forcément le dernier groupe.
+                    await expect(page).toHaveURL(/#[a-z0-9-]+$/)
+                    const target = page.locator(`#${ new URL(page.url()).hash.slice(1) }`)
+                    await expect(target).toBeInViewport()
+                    await expect(target.locator('.catalog-group__title')).toHaveText(lastLabel)
                     return
                 }
-                await expect(jumps).toHaveCount(groupCount)
 
+                await expect(select).toHaveCount(0)
+                await expect(jumps).toHaveCount(groupCount)
                 const last = jumps.last()
                 const target = (await last.getAttribute('href'))!.slice(1)
                 await last.click()
                 await expect(page).toHaveURL(new RegExp(`#${ target }$`))
                 await expect(page.locator(`#${ target }`)).toBeInViewport()
+            })
+
+            test('menu « Aller à… » : utilisable au clavier', async ({ page }) => {
+                await openIndex(page, route, 'light')
+                const select = page.locator(`[data-cy="${ route }-jump-select"]`)
+                test.skip(await select.count() === 0, 'moins de 13 groupes : puces, pas de menu')
+                await select.locator('input').focus()
+                await page.keyboard.press('ArrowDown')
+                await page.locator('[role="option"]').first().waitFor({ state: 'visible' })
+                await page.keyboard.press('ArrowDown')
+                await page.keyboard.press('Enter')
+                await expect(page).toHaveURL(/#[a-z0-9-]+$/)
+                const id = new URL(page.url()).hash.slice(1)
+                await expect(page.locator(`#${ id }`)).toBeInViewport()
             })
         }
 
