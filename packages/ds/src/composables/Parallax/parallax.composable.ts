@@ -15,7 +15,7 @@ import {
     PARALLAX_LAYER_VAR_SPEED
 } from '../../consts/Parallax/parallax-layer.const'
 
-import { PARALLAX_DIRECTION, PARALLAX_EASING } from '../../enums/Parallax/parallax.enum'
+import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_ORIGIN } from '../../enums/Parallax/parallax.enum'
 
 import type { IParallaxLayerRegistry } from '../../interfaces/Parallax/parallax-layer.interface'
 import type { IUseParallaxRuntimeOptions } from '../../interfaces/Parallax/parallax.interface'
@@ -23,28 +23,53 @@ import type { TParallaxDirection } from '../../types/Parallax/parallax.type'
 
 export type { IUseParallaxRuntimeOptions } from '../../interfaces/Parallax/parallax.interface'
 
-/**
- * Track a media query. We watch it so the runtime honours OS-level changes
- * (reduced motion, pointer capabilities) without a page reload. Returns a
- * SSR-safe ref (defaults to `false` server-side).
- */
+/*********************************************************
+ * useMediaQuery
+ *
+ * @description
+ * Tracks a media query so the runtime honours OS-level changes (reduced
+ * motion, pointer capabilities) without a page reload.
+ * @description
+ * #1603 — the query is read AFTER mount, never at setup: a server render has
+ * no `matchMedia`, so reading it during the client's first render produced a
+ * tree (`--reduced-motion` classes) the server HTML did not contain — a
+ * hydration mismatch. `false` until mounted keeps both renders identical.
+ ********************************************************/
 function useMediaQuery (query: string): Ref<boolean> {
     const flag = ref(false)
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-        return flag
-    }
-
-    const mql = window.matchMedia(query)
-    flag.value = mql.matches
-
+    let mql: MediaQueryList | null = null
     const onChange = (ev: MediaQueryListEvent) => { flag.value = ev.matches }
-    mql.addEventListener('change', onChange)
+
+    onMounted(() => {
+        if (typeof window.matchMedia !== 'function') return
+        mql = window.matchMedia(query)
+        flag.value = mql.matches
+        mql.addEventListener('change', onChange)
+    })
 
     onBeforeUnmount(() => {
-        mql.removeEventListener('change', onChange)
+        mql?.removeEventListener('change', onChange)
     })
 
     return flag
+}
+
+/*********************************************************
+ * hasScrollContainerAncestor (#1603)
+ *
+ * @description
+ * Does an ancestor of `host` act as a scroll container? A `view()` timeline
+ * binds to the NEAREST one (CSS offers no way to pick another), so an
+ * `overflow: hidden | auto | scroll` ancestor freezes the progress. The host
+ * itself is `overflow: clip` (not a scroller). `html` / `body` are skipped:
+ * their overflow propagates to the viewport.
+ ********************************************************/
+function hasScrollContainerAncestor (host: HTMLElement): boolean {
+    for (let el = host.parentElement; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
+        const { overflowX, overflowY } = getComputedStyle(el)
+        if (/hidden|auto|scroll/.test(overflowX + overflowY)) return true
+    }
+    return false
 }
 
 /**
@@ -100,12 +125,31 @@ function composeLayerTransform (
 export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
     const { supports } = useCssSupport()
 
+    /*********************************************************
+     * cssEligible / cssScrollDriven (#1603)
+     *
+     * @description
+     * The CSS scroll-driven path needs a linear easing (the only timing function
+     * that maps cleanly to the timeline), the viewport origin (the `view()`
+     * timeline has no "page top" geometry) and no scroll-container ancestor.
+     * @description
+     * `cssEligible` is the SSR-SAFE half of that decision: it depends on props
+     * only, so the `--css-driven` classes are identical on the server and on the
+     * first client render, and the stylesheet's `@supports (animation-timeline)`
+     * does the feature test (no hydration mismatch, and the animation runs before
+     * hydration). `cssScrollDriven` adds the client-only check and drives the JS
+     * fallback.
+     ********************************************************/
+    const scrollAncestor = ref(false)
+    const cssEligible = computed(() =>
+        options.easing.value === PARALLAX_EASING.LINEAR
+        && (options.origin?.value ?? PARALLAX_ORIGIN.VIEWPORT) === PARALLAX_ORIGIN.VIEWPORT
+        && !scrollAncestor.value
+    )
     // `animation-timeline: scroll()` — Chromium-first feature (Chrome 115+,
-    // Edge 115+, Safari TP). We branch to CSS when supported AND the easing
-    // is "linear" (the only timing function that maps cleanly to the
-    // scroll-driven animation timeline without a JS interpolation step).
+    // Edge 115+, Safari TP).
     const cssScrollDriven = computed(() =>
-        supports('animation-timeline: scroll()') && options.easing.value === PARALLAX_EASING.LINEAR
+        cssEligible.value && supports('animation-timeline: scroll()')
     )
 
     const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
@@ -183,17 +227,15 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         }
     }
 
-    const updateProgress = () => {
-        const host = options.target.value
-        if (!host) return
-        const rect = host.getBoundingClientRect()
-        const vh = window.innerHeight || document.documentElement.clientHeight
-        // Raw progress: 0 = host top reached viewport bottom, 1 = host
-        // bottom passed viewport top. Cleaner than scrollY math for nested
-        // scroll containers.
-        const total = rect.height + vh
-        const distanceFromTop = vh - rect.top
-        let p = distanceFromTop / total
+    /*********************************************************
+     * progressAt
+     *
+     * @description
+     * Raw progress: 0 = host top reached viewport bottom, 1 = host bottom passed
+     * viewport top. Cleaner than scrollY math for nested scroll containers.
+     ********************************************************/
+    const progressAt = (top: number, height: number, vh: number) => {
+        let p = (vh - top) / (height + vh)
         if (p < 0) p = 0
         if (p > 1) p = 1
 
@@ -206,9 +248,17 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
             // Re-normalise the remaining range to [0, 1].
             p = (p - t) / (1 - t)
         }
+        return p
+    }
 
-        progress.value = p
-        options.onProgress?.(p)
+    const viewportHeight = () => window.innerHeight || document.documentElement.clientHeight
+
+    const updateProgress = () => {
+        const host = options.target.value
+        if (!host) return
+        const rect = host.getBoundingClientRect()
+        progress.value = progressAt(rect.top, rect.height, viewportHeight())
+        options.onProgress?.(progress.value)
     }
 
     const applyLayerTransforms = () => {
@@ -219,6 +269,19 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         const easing = options.easing.value
         const isSpring = easing === PARALLAX_EASING.SPRING
 
+        /*********************************************************
+         * page-top origin (#1603)
+         *
+         * @description
+         * Measures from the host's position at `scrollY = 0`, so the offset is zero
+         * at rest whatever the window height, and identical to the server render (no
+         * offset, no jump).
+         ********************************************************/
+        const pageTop = options.origin?.value === PARALLAX_ORIGIN.PAGE_TOP
+        const effective = pageTop
+            ? progress.value - progressAt(rect.top + window.scrollY, rect.height, viewportHeight()) + 0.5
+            : progress.value
+
         for (const layer of layers.value) {
             // Disabled / reduced-motion → snap to offset only, no movement.
             if (options.disabled.value || reducedMotion.value) {
@@ -227,7 +290,7 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
             }
 
             const target = composeLayerTransform(
-                progress.value,
+                effective,
                 dir,
                 layer,
                 rect.height,
@@ -386,6 +449,22 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         }
     }
 
+    /*********************************************************
+     * syncScroll (#1603)
+     *
+     * @description
+     * Under `prefers-reduced-motion` the layers never move, so the `scroll` /
+     * `resize` listeners only matter when someone listens to `@scroll-progress`
+     * (the progress is still reported).
+     ********************************************************/
+    const syncScroll = () => {
+        window.removeEventListener('scroll', onScroll)
+        window.removeEventListener('resize', onScroll)
+        if (reducedMotion.value && !options.wantsProgress?.()) return
+        window.addEventListener('scroll', onScroll, { passive: true })
+        window.addEventListener('resize', onScroll, { passive: true })
+    }
+
     const startCss = () => {
         // CSS scroll-driven path: layers carry their own animation, the
         // runtime only needs to publish the per-layer custom properties.
@@ -399,6 +478,8 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
     onMounted(() => {
         const host = options.target.value
         if (!host) return
+
+        scrollAncestor.value = hasScrollContainerAncestor(host)
 
         // Intersection observer — fires enter / leave + toggles the rAF loop.
         observer = new IntersectionObserver((entries) => {
@@ -419,8 +500,7 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         }, { threshold: 0 })
         observer.observe(host)
 
-        window.addEventListener('scroll', onScroll, { passive: true })
-        window.addEventListener('resize', onScroll, { passive: true })
+        syncScroll()
         syncMouse()
 
         if (!cssScrollDriven.value) {
@@ -459,6 +539,7 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
     })
 
     watch([mouseEnabled, () => layers.value.length], syncMouse)
+    watch(reducedMotion, syncScroll)
 
     // Watch the direction / easing — if the CSS branch flips at runtime
     // (very unlikely but possible if a layer is added late), re-publish the
@@ -480,6 +561,7 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         progress,
         mouseRatio,
         cssScrollDriven,
+        cssEligible,
         reducedMotion,
         register,
         unregister,

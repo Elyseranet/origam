@@ -77,6 +77,7 @@
 						:easing="state.easing"
 						:perspective="state.perspective"
 						:direction="state.direction"
+						:origin="state.origin"
 						:speed="state.speed"
 						:threshold="state.threshold"
 						:style="hostStyle"
@@ -97,6 +98,7 @@
 				<StoryGroup title="Event">
 					<HstSelect v-model="state.event"     title="Event"     :options="PARALLAX_EVENT_OPTIONS"/>
 					<HstSelect v-model="state.direction" title="Direction" :options="PARALLAX_DIRECTION_OPTIONS"/>
+					<HstSelect v-model="state.origin"    title="Origin"    :options="PARALLAX_ORIGIN_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Animation">
 					<HstSelect v-model="state.easing"      title="Easing"           :options="PARALLAX_EASING_OPTIONS"/>
@@ -251,6 +253,7 @@
 				<StoryGroup title="Functional">
 					<HstSelect   v-model="state.event"       title="Event"            :options="PARALLAX_EVENT_OPTIONS"/>
 					<HstSelect   v-model="state.direction"   title="Direction"        :options="PARALLAX_DIRECTION_OPTIONS"/>
+					<HstSelect   v-model="state.origin"      title="Origin"           :options="PARALLAX_ORIGIN_OPTIONS"/>
 					<HstSelect   v-model="state.easing"      title="Easing"           :options="PARALLAX_EASING_OPTIONS"/>
 					<HstCheckbox v-model="state.active"      title="Active"/>
 					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
@@ -272,9 +275,9 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamParallax, OrigamParallaxElement, OrigamParallaxLayer } from '@origam/components'
-	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT } from '@origam/enums'
+	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT, PARALLAX_ORIGIN } from '@origam/enums'
 	import type { IOptions, IParallaxProps } from '@origam/interfaces'
-	import type { TParallaxDirection, TParallaxEasing, TParallaxEvent } from '@origam/types'
+	import type { TParallaxDirection, TParallaxEasing, TParallaxEvent, TParallaxOrigin } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -294,6 +297,11 @@
 		{ label: 'Move (mouse / device-orientation on touch)', value: PARALLAX_EVENT.MOVE },
 		{ label: 'Scroll (window scroll)', value: PARALLAX_EVENT.SCROLL },
 		{ label: 'Orientation (device-orientation only)', value: PARALLAX_EVENT.ORIENTATION }
+	]
+
+	const PARALLAX_ORIGIN_OPTIONS: Array<IOptions<TParallaxOrigin>> = [
+		{ label: 'Viewport (default)', value: PARALLAX_ORIGIN.VIEWPORT },
+		{ label: 'Page top (rest = zero offset)', value: PARALLAX_ORIGIN.PAGE_TOP }
 	]
 
 	const PARALLAX_DIRECTION_OPTIONS: Array<IOptions<TParallaxDirection>> = [

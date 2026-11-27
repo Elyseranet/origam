@@ -101,6 +101,7 @@ const GREEN_SPECS = [
     'kbd.spec.ts',
     // #1591 — souris x/y par plan, linear, tactile, reduced-motion ; rouge sur develop (3/5), verte 15/15 sous `--repeat-each=3`, E2E_STATIC=1, chromium, port isole.
     'parallax-axes.spec.ts',
+    'parallax-origin.spec.ts',
     'title.spec.ts',
     'breadcrumb.spec.ts',
     'text-field.spec.ts',

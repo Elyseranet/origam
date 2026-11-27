@@ -93,6 +93,22 @@
       "source": "types"
     },
     {
+      "name": "origin",
+      "label": "origin",
+      "tsType": "\"viewport\" | \"page-top\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "viewport",
+      "hasFactoryDefault": false,
+      "options": [
+        "viewport",
+        "page-top"
+      ],
+      "control": "select",
+      "description": "*******************************************************\norigin (#1603)",
+      "source": "types"
+    },
+    {
       "name": "speed",
       "label": "speed",
       "tsType": "number | undefined",

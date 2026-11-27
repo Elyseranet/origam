@@ -25,7 +25,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, onBeforeUnmount, onMounted, provide, ref, StyleValue, toRef, watch } from 'vue'
+	import { computed, getCurrentInstance, onBeforeUnmount, onMounted, provide, ref, StyleValue, toRef, watch } from 'vue'
 	import type { Ref } from 'vue'
 	import { useAudio } from '../../composables/Commons/audio.composable'
 	import { useBorder } from '../../composables/Commons/border.composable'
@@ -44,12 +44,12 @@
 	import { ORIGAM_PARALLAX_KEY } from '../../consts/Parallax/parallax.const'
 	import { ORIGAM_PARALLAX_LAYER_KEY } from '../../consts/Parallax/parallax-layer.const'
 
-	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT } from '../../enums/Parallax/parallax.enum'
+	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT, PARALLAX_ORIGIN } from '../../enums/Parallax/parallax.enum'
 
 	import type { IBox } from '../../interfaces/Commons/box.interface'
 	import type { IParallaxEmits, IParallaxProps, IParallaxSlots } from '../../interfaces/Parallax/parallax.interface'
 
-	import type { TParallaxDirection, TParallaxEasing } from '../../types/Parallax/parallax.type'
+	import type { TParallaxDirection, TParallaxEasing, TParallaxOrigin } from '../../types/Parallax/parallax.type'
 
 	import { getCenter, inViewport } from '../../utils/Commons/point.util'
 	import { getTargetBox } from '../../utils/Commons/box.util'
@@ -72,6 +72,7 @@
 		event: PARALLAX_EVENT.MOVE,
 		active: true,
 		direction: PARALLAX_DIRECTION.VERTICAL,
+		origin: PARALLAX_ORIGIN.VIEWPORT,
 		speed: 0.5,
 		disabled: false,
 		threshold: 0
@@ -80,6 +81,8 @@
 	const emit = defineEmits<IParallaxEmits>()
 
 	const {filterProps} = useProps<IParallaxProps>(props)
+
+	const instance = getCurrentInstance()
 
 	defineSlots<IParallaxSlots>()
 
@@ -108,6 +111,8 @@
 	const shape = ref<IBox | DOMRect | null>(null)
 	const movement = ref({ x: 0, y: 0 })
 	const data = ref()
+
+	let legacyConsumers = 0
 
 	const isTouch = computed(() => platform.value.touch)
 
@@ -191,6 +196,17 @@
 		// Keep it, but don't mistake it for the fix.
 		if (props.disabled) return
 
+		/*********************************************************
+		 * Legacy consumers only (#1603)
+		 *
+		 * @description
+		 * Only a legacy <OrigamParallaxElement> reads `movement` / `shape` /
+		 * `eventData`. A host with <OrigamParallaxLayer> children only has the
+		 * runtime's own pointer handler, so this one would measure the host
+		 * (`getBoundingClientRect`, every 100 ms) for nobody.
+		 ********************************************************/
+		if (!legacyConsumers) return
+
 		if (!props.active && !root.value) return
 
 		if (!isMoving.value && !leftOnce.value) {
@@ -267,6 +283,10 @@
 
 	provide(ORIGAM_PARALLAX_KEY, {
 		audioData,
+		attach: () => {
+			legacyConsumers++
+			return () => { legacyConsumers-- }
+		},
 		event: toRef(props, 'event'),
 		eventData: data,
 		// ⛔ THIS is the `disabled` kill-switch for the legacy
@@ -304,6 +324,7 @@
 		progress,
 		mouseRatio,
 		cssScrollDriven,
+		cssEligible,
 		reducedMotion,
 		register,
 		unregister,
@@ -314,6 +335,8 @@
 		easing: toRef(props, 'easing') as Ref<TParallaxEasing | string>,
 		threshold: toRef(props, 'threshold') as Ref<number>,
 		disabled: toRef(props, 'disabled') as Ref<boolean>,
+		origin: toRef(props, 'origin') as Ref<TParallaxOrigin>,
+		wantsProgress: () => !!instance?.vnode.props?.onScrollProgress,
 		speed: toRef(props, 'speed') as Ref<number>,
 		onEnter: () => emit('enter'),
 		onLeave: () => emit('leave'),
@@ -327,6 +350,7 @@
 		progress,
 		mouseRatio,
 		cssScrollDriven,
+		cssEligible,
 		reducedMotion,
 		register,
 		unregister,
@@ -357,7 +381,7 @@
 			{
 				'origam-parallax--disabled': props.disabled,
 				'origam-parallax--reduced-motion': reducedMotion.value,
-				'origam-parallax--css-driven': cssScrollDriven.value,
+				'origam-parallax--css-driven': cssEligible.value,
 				[`origam-parallax--${props.direction}`]: !!props.direction
 			},
 			colorClasses.value,

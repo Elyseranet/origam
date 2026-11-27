@@ -142,7 +142,8 @@
 		return [
 			'origam-parallax__layer',
 			{
-				'origam-parallax__layer--css-driven': parallax.cssScrollDriven.value,
+				'origam-parallax__layer--css-driven': parallax.cssEligible.value,
+				[`origam-parallax__layer--${parallax.direction.value}`]: true,
 				'origam-parallax__layer--reduced-motion': parallax.reducedMotion.value
 			},
 			props.class
@@ -172,25 +173,53 @@
 		) !important;
 	}
 
+	/*
+	 * #1603 — the `--css-driven` class only says the layer is ELIGIBLE
+	 * (props-only: identical on the server and on the first client render);
+	 * this `@supports` is the browser feature test, and the animation runs
+	 * before hydration. The axis follows `direction`, like the JS path
+	 * (`composeLayerTransform`): vertical and both scroll on Y, horizontal on X.
+	 */
 	@supports (animation-timeline: scroll()) {
 		.origam-parallax__layer--css-driven {
-			animation: origam-parallax-layer linear both;
+			animation: origam-parallax-layer-y linear both;
 			animation-timeline: view();
 			animation-range: cover 0% cover 100%;
 		}
 
-		@keyframes origam-parallax-layer {
+		.origam-parallax__layer--css-driven.origam-parallax__layer--horizontal {
+			animation-name: origam-parallax-layer-x;
+		}
+
+		@keyframes origam-parallax-layer-y {
 			from {
 				transform: translate3d(
-					calc(var(--origam-parallax__layer---offset-x, 0px) + var(--origam-parallax__layer---speed, 1) * -50%),
+					var(--origam-parallax__layer---offset-x, 0px),
 					calc(var(--origam-parallax__layer---offset-y, 0px) + var(--origam-parallax__layer---speed, 1) * -50%),
 					0
 				);
 			}
 			to {
 				transform: translate3d(
-					calc(var(--origam-parallax__layer---offset-x, 0px) + var(--origam-parallax__layer---speed, 1) * 50%),
+					var(--origam-parallax__layer---offset-x, 0px),
 					calc(var(--origam-parallax__layer---offset-y, 0px) + var(--origam-parallax__layer---speed, 1) * 50%),
+					0
+				);
+			}
+		}
+
+		@keyframes origam-parallax-layer-x {
+			from {
+				transform: translate3d(
+					calc(var(--origam-parallax__layer---offset-x, 0px) + var(--origam-parallax__layer---speed, 1) * -50%),
+					var(--origam-parallax__layer---offset-y, 0px),
+					0
+				);
+			}
+			to {
+				transform: translate3d(
+					calc(var(--origam-parallax__layer---offset-x, 0px) + var(--origam-parallax__layer---speed, 1) * 50%),
+					var(--origam-parallax__layer---offset-y, 0px),
 					0
 				);
 			}
