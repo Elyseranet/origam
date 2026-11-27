@@ -1,125 +1,111 @@
 <template>
-  <origam-theme-provider mode="light">
-    <section
-      id="hero"
-      class="home-hero"
-      data-cy="section-hero"
-      aria-labelledby="hero-title"
+  <section
+    id="hero"
+    class="home-hero"
+    data-cy="section-hero"
+    aria-labelledby="hero-title"
+  >
+    <div
+      class="home-hero__visual"
+      aria-hidden="true"
+      data-cy="hero-planes"
     >
       <div
-        class="home-hero__visual"
-        aria-hidden="true"
-      >
-        <origam-img
-          class="home-hero__img"
-          :src="HERO_WATERCOLOR.src"
-          :srcset="HERO_WATERCOLOR.srcset"
-          :sizes="HERO_WATERCOLOR_SIZES"
-          alt=""
-          width="100%"
-          height="100%"
-          cover
-          position="center bottom"
-          eager
-          data-cy="hero-watercolor"
-        />
-        <origam-img
-          class="home-hero__img home-hero__img--symbol"
-          :src="HERO_SYMBOL_DAY.src"
-          :srcset="HERO_SYMBOL_DAY.srcset"
-          :sizes="HERO_SYMBOL_SIZES"
-          alt=""
-          width="36%"
-          max-width="34rem"
-          height="74%"
-          position="center"
-          eager
-          data-cy="hero-symbol"
-        />
-      </div>
-  
-      <origam-container
-        class="home-hero__inner home-container"
-      >
-        <header class="home-hero__header">
-          <p
-            class="home-hero__eyebrow home-eyebrow"
-            data-cy="hero-eyebrow"
-          >
-            {{ t('home.hero.eyebrow', 'VUE 3 DESIGN SYSTEM') }}
-          </p>
-  
-          <origam-title
-            id="hero-title"
-            tag="h1"
-            class="home-hero__title"
-          >
-            {{ t('home.hero.title', 'The Vue 3 design system that folds to your brand') }}
-          </origam-title>
-  
-          <p class="home-hero__tagline">
-            {{ t('home.hero.tagline', 'Props first, CSS second.') }}
-          </p>
-  
-          <p class="home-hero__description">
-            {{ t('home.hero.description', '97 component families, from forms to charts, and a Nuxt module in the same package. A theme is one object: written once, applied to the whole catalogue.') }}
-          </p>
-        </header>
-  
-        <nav
-          class="home-hero__ctas"
-          :aria-label="t('home.hero.ctas_label', 'Hero calls to action')"
-        >
-          <origam-btn
-            class="home-hero__btn"
-            v-bind="HERO_BTN"
-            variant="flat"
-            :bg-color="HERO_CTA_BG"
-            :color="HERO_CTA_FG"
-            append-icon="mdi-arrow-right"
-            :href="CTA_START_HREF"
-            data-cy="hero-cta-start"
-          >
-            {{ t('home.hero.cta_start', 'Install') }}
-          </origam-btn>
-  
-          <origam-btn
-            class="home-hero__btn"
-            v-bind="HERO_BTN"
-            variant="flat"
-            color="primary"
-            :bg-color="HERO_CTA_OUTLINE_BG"
-            border="thin"
-            border-color="currentColor"
-            prepend-icon="mdi-github"
-            :href="githubRepo"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-cy="hero-cta-github"
-          >
-            {{ t('home.hero.cta_github', 'View on GitHub') }}
-          </origam-btn>
-        </nav>
+        v-for="plane in planes"
+        :key="plane.key"
+        class="home-hero__plane"
+        :class="plane.classes"
+        :style="plane.style"
+        :data-cy="plane.cy"
+      />
+    </div>
 
-        <origam-code
-          :code="installCommand"
-          :prompt="HERO_INSTALL_PROMPT"
-          lang="plaintext"
-          compact
-          copyable
-          class="home-hero__install"
-          data-cy="hero-install-command"
-        />
+    <enso-petals
+      class="home-hero__petals"
+      :count="HERO_PETAL_COUNT"
+    />
 
+    <origam-container
+      class="home-hero__inner home-container"
+    >
+      <header class="home-hero__header">
         <p
-          class="home-hero__proof"
-          data-cy="hero-proof"
+          class="home-hero__eyebrow home-eyebrow"
+          data-cy="hero-eyebrow"
         >
-          {{ t('home.hero.proof', 'MIT license · Vue 3.5+ · Nuxt module included') }}
+          {{ t('home.hero.eyebrow', 'VUE 3 DESIGN SYSTEM') }}
         </p>
-      </origam-container>
-    </section>
-  </origam-theme-provider>
+
+        <origam-title
+          id="hero-title"
+          tag="h1"
+          class="home-hero__title"
+        >
+          {{ t('home.hero.title', 'The Vue 3 design system that folds to your brand') }}
+        </origam-title>
+
+        <p class="home-hero__tagline">
+          {{ t('home.hero.tagline', 'Props first, CSS second.') }}
+        </p>
+
+        <p class="home-hero__description">
+          {{ t('home.hero.description', '97 component families, from forms to charts, and a Nuxt module in the same package. A theme is one object: written once, applied to the whole catalogue.') }}
+        </p>
+      </header>
+
+      <nav
+        class="home-hero__ctas"
+        :aria-label="t('home.hero.ctas_label', 'Hero calls to action')"
+      >
+        <origam-btn
+          class="home-hero__btn"
+          v-bind="HERO_BTN"
+          variant="flat"
+          :bg-color="HERO_CTA_BG"
+          :color="HERO_CTA_FG"
+          append-icon="mdi-arrow-right"
+          :href="CTA_START_HREF"
+          data-cy="hero-cta-start"
+        >
+          {{ t('home.hero.cta_start', 'Install') }}
+        </origam-btn>
+
+        <origam-btn
+          class="home-hero__btn"
+          v-bind="HERO_BTN"
+          variant="flat"
+          color="primary"
+          :bg-color="HERO_CTA_OUTLINE_BG"
+          border="thin"
+          border-color="currentColor"
+          prepend-icon="mdi-github"
+          :href="githubRepo"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cy="hero-cta-github"
+        >
+          {{ t('home.hero.cta_github', 'View on GitHub') }}
+        </origam-btn>
+      </nav>
+
+      <origam-code
+        :code="installCommand"
+        :prompt="HERO_INSTALL_PROMPT"
+        lang="plaintext"
+        compact
+        copyable
+        class="home-hero__install"
+        data-cy="hero-install-command"
+      />
+
+      <p
+        class="home-hero__proof"
+        data-cy="hero-proof"
+      >
+        {{ t('home.hero.proof', 'MIT license · Vue 3.5+ · Nuxt module included') }}
+      </p>
+    </origam-container>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -132,25 +118,36 @@ import {
     HERO_CTA_OUTLINE_BG,
     HERO_CTA_FG,
     HERO_INSTALL_PROMPT,
-    HERO_SYMBOL_DAY,
-    HERO_SYMBOL_SIZES,
-    HERO_WATERCOLOR,
-    HERO_WATERCOLOR_SIZES
+    HERO_PETAL_COUNT
 } from '~/consts/hero.const'
 import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
+import { heroPlaneViews } from '~/utils/enso.util'
 
 /*********************************************************
  * Global
  *
  * @description
- * Hero de la maquette A, rendu en mode clair quel que soit le mode du site
- * (le texte encre doit rester lisible sur l'aquarelle) : l'aquarelle et le symbole A1 sont décoratifs et sort du flux de lecture (aria-hidden, alt vide).
+ * Hero en parallaxe à plans séparés (#1572). Il suit le mode du site (clair ou
+ * sombre) : chaque plan prend sa variante via `.enso-art`. Les plans et les
+ * pétales sont décoratifs (aria-hidden, aucun événement pointeur) et restent
+ * derrière le texte. Animation en CSS seul : `animation-timeline: scroll()`
+ * déplace chaque plan à sa vitesse, sans JavaScript ; sans cette feature ou
+ * sous `prefers-reduced-motion`, la composition reste statique.
  ********************************************************/
 const { t } = useT()
 
 const githubRepo = MARKETING_DEFAULTS.githubRepo
 
 const installCommand = computed(() => t('home.hero.install', 'npm i origam'))
+
+/*********************************************************
+ * Plans
+ *
+ * @description
+ * Les plans de `HERO_PLANES` avec leurs variables CSS (`--enso-art-*`,
+ * `--plane-shift`), statiques : rien à recalculer côté client.
+ ********************************************************/
+const planes = heroPlaneViews()
 
 defineEmits([])
 
@@ -189,22 +186,57 @@ defineExpose({})
         pointer-events: none;
     }
 
-    &__img {
-        position: absolute;
-        inset: 0;
-    }
-
-    &__img--symbol {
-        inset: 4% 12% auto auto;
-    }
-
-    /* Voile limité à la zone du texte : le paysage et le cerisier restent lisibles sous les boutons. */
     &__visual::after {
         content: '';
         position: absolute;
         inset: 0;
         background: color-mix(in srgb, var(--origam-color__surface---default) 70%, transparent);
         mask-image: linear-gradient(to bottom, var(--origam-color__neutral---950) 88%, transparent);
+    }
+
+    &__petals {
+        z-index: -1;
+    }
+
+    &__plane {
+        position: absolute;
+        aspect-ratio: var(--enso-art-ratio);
+        background: var(--enso-art) center / contain no-repeat;
+        will-change: transform;
+    }
+
+    &__plane--desktop-only {
+        display: none;
+    }
+
+    &__plane--sky {
+        inset-block-start: 0;
+        inset-inline: 0;
+        inline-size: 100%;
+    }
+
+    &__plane--sun {
+        inset-block-end: 16%;
+        inset-inline-end: 18%;
+        inline-size: 5rem;
+    }
+
+    &__plane--mountains {
+        inset-block-end: 10%;
+        inset-inline-end: -15%;
+        inline-size: 130%;
+    }
+
+    &__plane--landscape {
+        inset-block-end: 0;
+        inset-inline-start: -30%;
+        inline-size: 160%;
+    }
+
+    &__plane--sakura {
+        inset-block-end: -2%;
+        inset-inline-end: -12%;
+        inline-size: 70%;
     }
 
     &__inner {
@@ -276,6 +308,52 @@ defineExpose({})
     }
 }
 
+@media (min-width: 48rem) {
+    .home-hero__plane--desktop-only {
+        display: block;
+    }
+
+    .home-hero__plane--sky {
+        inset-block-start: 4rem;
+        mask-image: linear-gradient(to bottom, transparent, var(--origam-color__neutral---950) 3rem);
+    }
+
+    .home-hero__plane--enso {
+        inset-block-start: 0;
+        inset-inline-end: 3%;
+        inline-size: clamp(14rem, 31vw, 30rem);
+    }
+
+    .home-hero__plane--sun {
+        inset-block-end: 14%;
+        inset-inline-end: 34%;
+        inline-size: clamp(8rem, 13vw, 13rem);
+    }
+
+    .home-hero__plane--mountains {
+        inset-block-end: 12%;
+        inset-inline-end: -4%;
+        inline-size: 66%;
+    }
+
+    .home-hero__plane--landscape {
+        inset-inline-start: 0;
+        inline-size: 100%;
+    }
+
+    .home-hero__plane--pagoda {
+        inset-block-end: 4%;
+        inset-inline-end: 12%;
+        inline-size: clamp(8rem, 16vw, 15rem);
+    }
+
+    .home-hero__plane--sakura {
+        inset-block-end: -3%;
+        inset-inline-end: -3%;
+        inline-size: 34%;
+    }
+}
+
 @media (min-width: 64rem) {
     .home-hero__visual::after {
         background: linear-gradient(
@@ -289,16 +367,20 @@ defineExpose({})
         max-inline-size: 42%;
     }
 }
-</style>
 
-<style lang="scss">
-section.home-hero .home-hero__img--symbol {
-    display: none;
+@supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+        .home-hero__plane {
+            animation: home-hero-drift linear both;
+            animation-timeline: scroll(root block);
+            animation-range: 0px 480px;
+        }
+    }
 }
 
-@media (min-width: 64rem) {
-    section.home-hero .home-hero__img--symbol {
-        display: block;
+@keyframes home-hero-drift {
+    to {
+        transform: translate3d(0, var(--plane-shift, 0px), 0);
     }
 }
 </style>

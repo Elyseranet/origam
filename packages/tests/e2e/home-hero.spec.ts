@@ -70,23 +70,50 @@ test.describe('HomeHero — maquette A', () => {
         expect(await nav.locator('a, button').count()).toBeGreaterThanOrEqual(2)
     })
 
-    test('illustrations : décoratives (alt vide) et hors du flux de lecture', async ({ page }) => {
-        const visual = page.locator('#hero .home-hero__visual')
-        await expect(visual).toHaveAttribute('aria-hidden', 'true')
-        for (const cy of ['hero-watercolor', 'hero-symbol']) {
-            await expect(page.locator(`#hero [data-cy="${cy}"] img`)).toHaveAttribute('alt', '')
-        }
+    test('illustrations : plans décoratifs hors du flux de lecture, sans image dans l\'arbre', async ({ page }) => {
+        await expect(page.locator('#hero .home-hero__visual')).toHaveAttribute('aria-hidden', 'true')
+        await expect(page.locator('#hero [data-cy="enso-petals"]')).toHaveAttribute('aria-hidden', 'true')
+        await expect(page.locator('#hero img')).toHaveCount(0)
     })
 
-    test('clair : aquarelle AVIF avec srcset et symbole A1 en couleurs', async ({ browser }) => {
+    test('clair : six plans sur grand écran, chacun avec sa variante claire en AVIF', async ({ browser }) => {
         const ctx = await browser.newContext({ colorScheme: 'light', viewport: { width: 1440, height: 900 } })
         const page = await ctx.newPage()
         await page.goto('/')
-        const day = page.locator('#hero [data-cy="hero-watercolor"]')
-        await expect(day).toBeVisible()
-        expect(await day.locator('img').getAttribute('srcset')).toMatch(/hero-watercolor-836\.avif 836w.*1672w/)
-        await expect(page.locator('#hero [data-cy="hero-symbol"]')).toBeVisible()
+        for (const key of ['sky', 'enso', 'mountains', 'landscape', 'pagoda', 'sakura']) {
+            await expect(page.locator(`#hero [data-cy="hero-plane-${key}"]`)).toBeVisible()
+        }
+        const bg = await page.locator('#hero [data-cy="hero-plane-mountains"]').evaluate(el => getComputedStyle(el).backgroundImage)
+        expect(bg).toMatch(/brand\/enso\/light\/hero-mountains-.*\.avif/)
         await ctx.close()
+    })
+
+    test('mobile : moins de plans (pas de pagode)', async ({ browser }) => {
+        const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } })
+        const page = await ctx.newPage()
+        await page.goto('/')
+        for (const key of ['pagoda']) {
+            await expect(page.locator(`#hero [data-cy="hero-plane-${key}"]`)).toBeHidden()
+        }
+        for (const key of ['sky', 'mountains', 'landscape', 'sakura']) {
+            await expect(page.locator(`#hero [data-cy="hero-plane-${key}"]`)).toBeVisible()
+        }
+        await ctx.close()
+    })
+
+    test('pétales : derrière le texte et les boutons, jamais cliquables', async ({ page }) => {
+        const m = await page.evaluate(() => {
+            const petals = document.querySelector('#hero [data-cy="enso-petals"]') as HTMLElement
+            const inner = document.querySelector('#hero .home-hero__inner') as HTMLElement
+            return {
+                z: Number(getComputedStyle(petals).zIndex),
+                pointer: getComputedStyle(petals).pointerEvents,
+                behind: !!(petals.compareDocumentPosition(inner) & Node.DOCUMENT_POSITION_FOLLOWING)
+            }
+        })
+        expect(m.z).toBeLessThan(0)
+        expect(m.pointer).toBe('none')
+        expect(m.behind).toBe(true)
     })
 
     test('le texte du hero s\'aligne sur le bord commun de la home (80 px en 1440)', async ({ page }) => {
@@ -144,27 +171,15 @@ test.describe('HomeHero — maquette A', () => {
         expect(m.transform).not.toBe('none')
     })
 
-    test('T3 — symbole A1 : 36 % de la largeur, 74 % de la hauteur du hero, en haut', async ({ page }) => {
-        await page.setViewportSize({ width: 1440, height: 900 })
-        await page.goto('/')
-        // l'image arrive avec une animation d'entrée : on attend qu'elle se pose.
-        await expect.poll(async () => page.evaluate(() => {
-            const hero = document.querySelector('#hero')!.getBoundingClientRect()
-            const sy = document.querySelector('#hero [data-cy="hero-symbol"]')!.getBoundingClientRect()
-            return {
-                w: Math.round(sy.width / hero.width * 100) / 100,
-                h: Math.round(sy.height / hero.height * 100) / 100,
-                top: Math.round((sy.top - hero.top) / hero.height * 100) / 100
-            }
-        })).toEqual({ w: 0.36, h: 0.74, top: 0.04 })
-    })
-
-    test('sombre : le hero reste en clair (aquarelle, symbole, texte encre lisible) sur une page sombre', async ({ browser }) => {
+    test('sombre : variantes sombres des plans (sans ciel), texte lisible', async ({ browser }) => {
         const ctx = await browser.newContext({ colorScheme: 'dark', viewport: { width: 1440, height: 900 } })
         const page = await ctx.newPage()
         await page.goto('/')
-        await expect(page.locator('#hero [data-cy="hero-watercolor"]')).toBeVisible()
-        await expect(page.locator('#hero [data-cy="hero-symbol"]')).toBeVisible()
+        const bg = (key: string) => page.locator(`#hero [data-cy="hero-plane-${key}"]`).evaluate(el => getComputedStyle(el).backgroundImage)
+        expect(await bg('mountains')).toMatch(/brand\/enso\/dark\/hero-mountains-.*\.avif/)
+        expect(await bg('sky')).toBe('none')
+        expect(await bg('enso')).toMatch(/brand\/enso\/dark\/enso-wide-.*\.avif/)
+        expect(await bg('sun')).toMatch(/brand\/enso\/dark\/hero-sun-.*\.avif/)
         const m = await page.evaluate(() => {
             const lum = (c: string) => {
                 const [r, g, b] = (c.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number).map(v => {
@@ -187,11 +202,25 @@ test.describe('HomeHero — maquette A', () => {
                 cta: ratio(cta.color, cta.backgroundColor)
             }
         })
-        expect(m.mode).toBe('light')
         expect(m.title).toBeGreaterThanOrEqual(4.5)
         expect(m.description).toBeGreaterThanOrEqual(4.5)
         expect(m.cta).toBeGreaterThanOrEqual(4.5)
         await ctx.close()
+    })
+
+    test('a11y — aucune violation axe-core (WCAG 2.0 A/AA, 2.1 A/AA) sur la section hero, clair et sombre', async ({ browser }) => {
+        for (const colorScheme of ['light', 'dark'] as const) {
+            const ctx = await browser.newContext({ colorScheme, viewport: { width: 1440, height: 900 } })
+            const page = await ctx.newPage()
+            await page.goto('/')
+            await page.waitForLoadState('load')
+            const results = await new AxeBuilder({ page }).include('#hero').withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
+            expect(
+                results.violations,
+                `${colorScheme} : ` + results.violations.map(v => `[${v.impact}] ${v.id}`).join(', ')
+            ).toHaveLength(0)
+            await ctx.close()
+        }
     })
 
     test('a11y — pas de violation axe-core critique ou sérieuse sur la section hero', async ({ page }) => {
