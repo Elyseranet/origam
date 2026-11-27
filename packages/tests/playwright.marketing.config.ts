@@ -35,7 +35,7 @@ const MARKETING_GREEN_SPECS = [
     'home-rhythm.spec.ts',
 
     // #1593 — parallaxe du hero enso : pointeur x/y, defilement, tactile, reduced-motion.
-    // Admise : 25 passed (5 fixme) en `--repeat-each=5 --retries=0`, serveur de dev isole.
+    // Admise : 40 passed en `--repeat-each=5 --retries=0`, serveur de dev isole.
     'home-hero-parallax.spec.ts',
 
     // #1517 — la vitrine des themes ouvre le Theme Builder avec le theme precharge.
