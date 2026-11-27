@@ -14,7 +14,7 @@ export const HERO_PLANES: readonly IHeroPlane[] = [
     { key: 'landscape', art: ENSO_HERO_LANDSCAPE, displayWidth: 1440, speed: 0.16, mouseX: 20, mouseY: 8 },
     { key: 'pagoda', art: ENSO_HERO_ARCHITECTURE, displayWidth: 210, speed: 0.12, mouseX: 26, mouseY: 10 },
     { key: 'sakura', art: ENSO_HERO_SAKURA, displayWidth: 430, speed: 0.05, mouseX: 40, mouseY: 14 },
-    { key: 'enso', art: ENSO_CIRCLE_OPEN, displayWidth: 400, speed: 0.2, mouseX: 28, mouseY: 18, wideOnly: true }
+    { key: 'enso', art: ENSO_CIRCLE_OPEN, displayWidth: 340, speed: 0.2, mouseX: 28, mouseY: 18, wideOnly: true }
 ]
 
 /**

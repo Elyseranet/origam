@@ -154,9 +154,6 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-hero {
-    --home-hero-appbar: 72px;
-    --home-hero-enso-top: calc(36px - var(--home-hero-appbar));
-
     position: relative;
     background: var(--origam-color__surface---default);
 
@@ -217,8 +214,8 @@ defineExpose({})
 
     &__plane--enso {
         inset-inline-end: 5%;
-        inset-block-start: var(--home-hero-enso-top);
-        inline-size: min(28vw, 400px);
+        inset-block-start: 28px;
+        inline-size: min(24vw, 340px);
     }
 
     &__inner {
