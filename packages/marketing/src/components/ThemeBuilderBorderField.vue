@@ -267,36 +267,36 @@ const sideColorValue = (side: TThemeBuilderBorderSide): unknown => {
 .tbc-border {
     display: flex;
     flex-direction: column;
-    gap: var(--origam-spacing-2, 0.5rem);
+    gap: var(--origam-space---2);
     inline-size: 100%;
 
     &__fieldset {
         display: flex;
         flex-direction: column;
-        gap: var(--origam-spacing-2, 0.5rem);
+        gap: var(--origam-space---2);
         padding: 0;
         margin: 0;
         border: none;
 
         & + & {
-            padding-block-start: var(--origam-spacing-2, 0.5rem);
-            border-block-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+            padding-block-start: var(--origam-space---2);
+            border-block-start: 1px solid var(--origam-color__border---subtle);
         }
     }
 
     &__legend {
         padding: 0;
         font-size: 0.625rem;
-        font-weight: var(--origam-font-weight-bold, 700);
+        font-weight: var(--origam-font__weight---bold);
         text-transform: uppercase;
         letter-spacing: 0.04em;
-        color: var(--origam-color-text-subtle);
+        color: var(--origam-color__text---secondary);
     }
 
     &__side-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: var(--origam-spacing-2, 0.5rem);
+        gap: var(--origam-space---2);
         align-items: end;
     }
 
@@ -316,7 +316,7 @@ const sideColorValue = (side: TThemeBuilderBorderSide): unknown => {
     &__side-color-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: var(--origam-spacing-2, 0.5rem);
+        gap: var(--origam-space---2);
     }
 
     &__side-color {
@@ -327,7 +327,7 @@ const sideColorValue = (side: TThemeBuilderBorderSide): unknown => {
 
     &__side-color-label {
         font-size: 0.625rem;
-        color: var(--origam-color-text-subtle);
+        color: var(--origam-color__text---secondary);
     }
 }
 </style>

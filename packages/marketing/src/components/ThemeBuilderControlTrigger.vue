@@ -133,7 +133,7 @@ const handleMousedownControl = (): void => {
     &--hint {
         :deep(input) {
             font-style: italic;
-            color: var(--origam-color-text-subtle);
+            color: var(--origam-color__text---secondary);
         }
     }
 
@@ -141,8 +141,8 @@ const handleMousedownControl = (): void => {
         flex: 0 0 auto;
         inline-size: 0.875rem;
         block-size: 0.875rem;
-        border-radius: var(--origam-radius-sm, 0.25rem);
-        border: 1px solid var(--origam-color-border-default);
+        border-radius: var(--origam-radius---sm);
+        border: 1px solid var(--origam-color__border---default);
     }
 
     &__menu-icon {
@@ -153,8 +153,8 @@ const handleMousedownControl = (): void => {
 .tbc-popover {
     display: flex;
     flex-direction: column;
-    gap: var(--origam-spacing-3, 0.75rem);
-    padding: var(--origam-spacing-3, 0.75rem);
+    gap: var(--origam-space---3);
+    padding: var(--origam-space---3);
     inline-size: 16rem;
 }
 </style>

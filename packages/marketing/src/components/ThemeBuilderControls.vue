@@ -534,8 +534,8 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
-    background-color: var(--origam-color-surface-default);
-    border-inline-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+    background-color: var(--origam-color__surface---default);
+    border-inline-start: 1px solid var(--origam-color__border---subtle);
     --origam-field---font-size: 0.6875rem;
     --origam-field---padding-top: 0px;
     --origam-field---padding-bottom: 0px;
@@ -576,11 +576,11 @@
     &__head {
       display: flex;
       align-items: center;
-      gap: var(--origam-spacing-2, 0.5rem);
+      gap: var(--origam-space---2);
       flex: 0 0 auto;
-      padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-4, 1rem);
+      padding: var(--origam-space---2) var(--origam-space---4);
       min-height: 2.75rem;
-      border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+      border-block-end: 1px solid var(--origam-color__border---subtle);
     }
 
     &__head-icon {
@@ -590,9 +590,9 @@
 
     &__head-title {
       flex: 1 1 auto;
-      font-size: var(--origam-font-size-sm, 0.8125rem);
-      font-weight: var(--origam-font-weight-bold, 700);
-      color: var(--origam-color-text-default);
+      font-size: var(--origam-font__size---sm);
+      font-weight: var(--origam-font__weight---bold);
+      color: var(--origam-color__text---primary);
     }
 
     &__head-reset {
@@ -603,34 +603,34 @@
       display: flex;
       flex: 0 0 auto;
       gap: 0;
-      padding-inline: var(--origam-spacing-4, 1rem);
-      border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+      padding-inline: var(--origam-space---4);
+      border-block-end: 1px solid var(--origam-color__border---subtle);
     }
 
     &__tab {
       display: flex;
       align-items: center;
-      gap: var(--origam-spacing-2, 0.5rem);
-      padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-3, 0.75rem);
+      gap: var(--origam-space---2);
+      padding: var(--origam-space---2) var(--origam-space---3);
       min-height: 2.25rem;
       margin-block-end: -1px;
       background: transparent;
       border: none;
       border-block-end: 2px solid transparent;
       cursor: pointer;
-      font-size: var(--origam-font-size-sm, 0.8125rem);
-      font-weight: var(--origam-font-weight-medium, 500);
-      color: var(--origam-color-text-subtle);
+      font-size: var(--origam-font__size---sm);
+      font-weight: var(--origam-font__weight---medium);
+      color: var(--origam-color__text---secondary);
       transition: color 0.15s ease, border-color 0.15s ease;
 
       &:hover {
-        color: var(--origam-color-text-default);
+        color: var(--origam-color__text---primary);
       }
 
       &--active {
-        color: var(--origam-color-text-default);
+        color: var(--origam-color__text---primary);
         border-block-end-color: var(--origam-color__action--primary---bg, #7c3aed);
-        font-weight: var(--origam-font-weight-bold, 700);
+        font-weight: var(--origam-font__weight---bold);
       }
     }
 
@@ -642,18 +642,18 @@
       block-size: 1.0625rem;
       padding-inline: 4px;
       font-size: 0.5625rem;
-      font-weight: var(--origam-font-weight-bold, 700);
-      border-radius: var(--origam-radius-pill, 9999px);
-      background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
-      border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-      color: var(--origam-color-text-subtle);
+      font-weight: var(--origam-font__weight---bold);
+      border-radius: var(--origam-radius---full);
+      background-color: var(--origam-color__surface---raised);
+      border: 1px solid var(--origam-color__border---subtle);
+      color: var(--origam-color__text---secondary);
       font-variant-numeric: tabular-nums;
     }
 
     &__tab--active &__tab-badge {
       background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 12%, transparent);
       border-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 20%, transparent);
-      color: var(--origam-color__action--primary---bg, #7c3aed);
+      color: var(--origam-color__text---primary);
     }
 
     &__scroll {
@@ -668,20 +668,20 @@
 
     &__empty {
       margin: 0;
-      padding: var(--origam-spacing-4, 1rem);
-      font-size: var(--origam-font-size-xs, 0.75rem);
-      color: var(--origam-color-text-subtle);
+      padding: var(--origam-space---4);
+      font-size: var(--origam-font__size---xs);
+      color: var(--origam-color__text---secondary);
     }
   }
 
   .tb-group {
-    border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+    border-block-end: 1px solid var(--origam-color__border---subtle);
 
     &__summary {
       display: flex;
       align-items: center;
-      gap: var(--origam-spacing-2, 0.5rem);
-      padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-4, 1rem);
+      gap: var(--origam-space---2);
+      padding: var(--origam-space---2) var(--origam-space---4);
       min-height: 2.25rem;
       cursor: pointer;
       list-style: none;
@@ -692,17 +692,17 @@
       }
 
       &:hover {
-        background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
+        background-color: var(--origam-color__surface---raised);
       }
     }
 
     &__label {
       flex: 1 1 auto;
       font-size: 0.625rem;
-      font-weight: var(--origam-font-weight-bold, 700);
-      letter-spacing: 0.08em;
+      font-weight: var(--origam-font__weight---semibold);
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--origam-color-text-subtle);
+      color: var(--origam-color__text---secondary);
     }
 
     &__dot {
@@ -718,18 +718,18 @@
       min-inline-size: 1.125rem;
       padding: 1px 5px;
       font-size: 0.5625rem;
-      font-weight: var(--origam-font-weight-bold, 700);
+      font-weight: var(--origam-font__weight---bold);
       text-align: center;
-      border-radius: var(--origam-radius-pill, 9999px);
-      background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
-      border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-      color: var(--origam-color-text-subtle);
+      border-radius: var(--origam-radius---full);
+      background-color: var(--origam-color__surface---raised);
+      border: 1px solid var(--origam-color__border---subtle);
+      color: var(--origam-color__text---secondary);
       font-variant-numeric: tabular-nums;
     }
 
     &__chevron {
       flex: 0 0 auto;
-      color: var(--origam-color-text-subtle);
+      color: var(--origam-color__text---secondary);
       transition: transform 0.15s ease;
     }
 
@@ -738,7 +738,7 @@
     }
 
     &__body {
-      padding: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-4, 1rem) var(--origam-spacing-3, 0.75rem);
+      padding: var(--origam-space---1) var(--origam-space---4) var(--origam-space---3);
     }
   }
 
@@ -746,8 +746,8 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: var(--origam-spacing-2, 0.5rem);
-    padding-block: var(--origam-spacing-1, 0.25rem);
+    gap: var(--origam-space---2);
+    padding-block: var(--origam-space---1);
     // Reserved left gutter for the per-row reset button (absolutely placed
     // inside it). Present on EVERY row so prop labels stay left-aligned
     // whether the row is edited (reset shown) or not.
@@ -755,7 +755,7 @@
     min-height: 1.875rem;
 
     & + & {
-      border-block-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+      border-block-start: 1px solid var(--origam-color__border---subtle);
     }
 
     // When a rich control reveals its "Autre…" custom editor inline, the
@@ -777,9 +777,9 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-family: var(--origam-font-family-mono, monospace);
+      font-family: var(--origam-font__family---mono);
       font-size: 0.625rem;
-      color: var(--origam-color-text-subtle);
+      color: var(--origam-color__text---secondary);
     }
 
     &--edited &__code,
@@ -793,7 +793,7 @@
       min-inline-size: 0;
       display: flex;
       align-items: flex-start;
-      gap: var(--origam-spacing-1, 0.25rem);
+      gap: var(--origam-space---1);
 
       // Uniform control width: every control type (select trigger,
       // color-picker, input, rich control) fills this fixed cell so all rows
@@ -856,15 +856,15 @@
     &__color {
       display: flex;
       align-items: center;
-      gap: var(--origam-spacing-1, 0.25rem);
+      gap: var(--origam-space---1);
     }
 
     &__swatch {
       inline-size: 1.25rem;
       block-size: 1.25rem;
       padding: 0;
-      border: 1px solid var(--origam-color-border-default);
-      border-radius: var(--origam-radius-sm, 0.25rem);
+      border: 1px solid var(--origam-color__border---default);
+      border-radius: var(--origam-radius---sm);
       background: none;
       cursor: pointer;
     }
@@ -872,13 +872,13 @@
     &__color-hex,
     &__token-text {
       inline-size: 4.5rem;
-      padding: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-2, 0.5rem);
-      font-family: var(--origam-font-family-mono, monospace);
+      padding: var(--origam-space---1) var(--origam-space---2);
+      font-family: var(--origam-font__family---mono);
       font-size: 0.625rem;
-      color: var(--origam-color-text-default);
-      background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
-      border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-      border-radius: var(--origam-radius-sm, 0.25rem);
+      color: var(--origam-color__text---primary);
+      background-color: var(--origam-color__surface---raised);
+      border: 1px solid var(--origam-color__border---subtle);
+      border-radius: var(--origam-radius---sm);
 
       &:focus {
         outline: none;

@@ -3,6 +3,32 @@
     class="theming"
     data-cy="page-theming"
   >
+    <enso-page-header
+      family="tool"
+      title-id="theming-title"
+    >
+      <template #breadcrumb>
+        <origam-breadcrumb
+          :items="breadcrumbItems"
+          divider="/"
+          :border="0"
+          data-cy="theming-breadcrumb"
+        />
+      </template>
+
+      <template #eyebrow>
+        {{ t('nav.theming', 'Theming') }}
+      </template>
+
+      <template #title>
+        {{ t('theming.title', 'Theme Builder') }}
+      </template>
+
+      <template #intro>
+        {{ t('theming.lead', 'Pick a component, tune its props and CSS tokens, watch the preview update, then export a ready-to-register theme module.') }}
+      </template>
+    </enso-page-header>
+
     <origam-alert
       status="warning"
       border
@@ -14,29 +40,11 @@
       :text="t('theming.dev_banner.text', 'The Theme Builder is under active development — some features may be incomplete or change.')"
     />
 
-    <header
+    <section
       class="theming__topbar"
       :aria-label="t('theming.topbar.label', 'Theme builder toolbar')"
       data-cy="theming-topbar"
     >
-      <div class="theming__brand">
-                <span
-                  class="theming__brand-badge"
-                  aria-hidden="true"
-                >{{ t('theming.topbar.badge', 'TB') }}</span>
-        <origam-title
-          tag="h1"
-          class="theming__brand-title"
-        >
-          {{ t('theming.title', 'Theme Builder') }}
-        </origam-title>
-      </div>
-
-      <span
-        class="theming__divider"
-        aria-hidden="true"
-      />
-
       <origam-text-field
         v-model="state.name"
         :label="t('theming.name.label', 'Name')"
@@ -132,7 +140,7 @@
           {{ t('theming.export_ts', 'Export .ts') }}
         </origam-btn>
       </div>
-    </header>
+    </section>
 
     <origam-dialog
       v-model="importOpen"
@@ -252,6 +260,7 @@
 <script setup lang="ts">
   import { computed, onMounted, ref, watch } from 'vue'
 
+  import { useLocaleHref } from '~/composables/useLocaleHref'
   import { useT } from '~/composables/useT'
   import { useThemeBuilder } from '~/composables/useThemeBuilder'
   import type { TEditMode } from '~/interfaces/theme-builder.interface'
@@ -262,6 +271,13 @@
 
   const { t } = useT()
   const route = useRoute()
+  const { localeHref } = useLocaleHref()
+
+  const breadcrumbItems = computed(() => [
+    { title: t('nav.home', 'Home'), to: localeHref('/') },
+    { title: t('nav.theming', 'Theming') },
+    { title: t('theming.title', 'Theme Builder') }
+  ])
 
   const {
     entries,
@@ -419,7 +435,7 @@
       min-height: 4rem;
       background-color: var(--origam-color__surface---default);
       border-block-end: 1px solid var(--origam-color__border---default);
-      overflow-x: auto;
+      flex-wrap: wrap;
       --origam-field---font-size: 0.75rem;
       --origam-field---padding-top: 0px;
       --origam-field---padding-bottom: 0px;
@@ -446,38 +462,15 @@
       }
     }
 
-    &__brand {
-      display: flex;
-      align-items: center;
-      gap: var(--origam-space---2);
-      flex: 0 0 auto;
-    }
-
-    &__brand-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      inline-size: 1.375rem;
-      block-size: 1.375rem;
-      border-radius: var(--origam-radius---sm);
-      background-color: var(--origam-color__action--primary---bg);
-      color: var(--origam-color__action--primary---fg);
-      font-size: 0.625rem;
-      font-weight: var(--origam-font__weight---bold);
-    }
-
-    &__brand-title {
-      margin: 0;
-      font-size: var(--origam-font__size---sm);
-      font-weight: var(--origam-font__weight---bold);
-      white-space: nowrap;
-    }
-
     &__divider {
       flex: 0 0 auto;
       inline-size: 1px;
       block-size: 1.375rem;
       background-color: var(--origam-color__border---default);
+
+      @media (max-width: 48rem) {
+        display: none;
+      }
     }
 
     &__field {
@@ -526,8 +519,10 @@
     &__actions {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: var(--origam-space---1);
-      flex: 0 0 auto;
+      flex: 0 1 auto;
+      max-inline-size: 100%;
     }
 
     &__import-dialog {

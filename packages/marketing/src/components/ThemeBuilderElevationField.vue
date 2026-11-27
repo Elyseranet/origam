@@ -182,31 +182,31 @@ const onOpacity = (value: unknown): void => {
 .tbc-elevation {
     display: flex;
     flex-direction: column;
-    gap: var(--origam-spacing-2, 0.5rem);
+    gap: var(--origam-space---2);
     inline-size: 100%;
 
     &__custom {
         display: flex;
         flex-direction: column;
-        gap: var(--origam-spacing-2, 0.5rem);
+        gap: var(--origam-space---2);
     }
 
     &__modes {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--origam-spacing-2, 0.5rem);
+        gap: var(--origam-space---2);
     }
 
     &__shadow-grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: var(--origam-spacing-2, 0.5rem);
+        gap: var(--origam-space---2);
     }
 
     &__opacity-value {
         font-size: 0.6875rem;
         font-variant-numeric: tabular-nums;
-        color: var(--origam-color-text-subtle);
+        color: var(--origam-color__text---secondary);
         min-inline-size: 2.5rem;
         text-align: end;
     }

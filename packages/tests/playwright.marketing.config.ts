@@ -34,6 +34,9 @@ const MARKETING_GREEN_SPECS = [
     // #1588 — pages legal, privacy, contact, wireframe : en-tête commun, aucun reste de l'ancien hero, axe, alignement du corps.
     'enso-legal-pages.spec.ts',
 
+    // #1589 — 5/5 puis 25/25 sous `--repeat-each=5`, build de production servi, chromium, port isole.
+    'marketing-theming-enso-header.spec.ts',
+
     // #1554 (T2) — bord gauche, ecart de section et trait d'eyebrow communs a la home.
     'home-foundations.spec.ts',
 

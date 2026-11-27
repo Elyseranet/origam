@@ -170,13 +170,13 @@ const navLabel = computed(() => t('theming.nav.label', 'Components'))
     display: flex;
     flex-direction: column;
     min-height: 0;
-    background-color: var(--origam-color-surface-default);
-    border-inline-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+    background-color: var(--origam-color__surface---default);
+    border-inline-end: 1px solid var(--origam-color__border---subtle);
 
     &__search-wrap {
         flex: 0 0 auto;
-        padding: var(--origam-spacing-2, 0.5rem);
-        border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+        padding: var(--origam-space---2);
+        border-block-end: 1px solid var(--origam-color__border---subtle);
         --origam-field---font-size: 0.75rem;
         --origam-field---padding-top: 0px;
         --origam-field---padding-bottom: 0px;
@@ -202,14 +202,14 @@ const navLabel = computed(() => t('theming.nav.label', 'Components'))
         flex: 1 1 auto;
         min-height: 14rem;
         overflow-y: visible;
-        padding-block: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-3, 0.75rem);
+        padding-block: var(--origam-space---1) var(--origam-space---3);
     }
 
     &__empty {
         margin: 0;
-        padding: var(--origam-spacing-4, 1rem);
-        font-size: var(--origam-font-size-xs, 0.75rem);
-        color: var(--origam-color-text-subtle);
+        padding: var(--origam-space---4);
+        font-size: var(--origam-font__size---xs);
+        color: var(--origam-color__text---secondary);
     }
 
     &__cat {
@@ -219,25 +219,25 @@ const navLabel = computed(() => t('theming.nav.label', 'Components'))
     &__cat-toggle {
         display: flex;
         align-items: center;
-        gap: var(--origam-spacing-2, 0.5rem);
+        gap: var(--origam-space---2);
         inline-size: 100%;
-        padding: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-3, 0.75rem);
+        padding: var(--origam-space---1) var(--origam-space---3);
         min-height: 1.75rem;
         background: transparent;
         border: none;
         cursor: pointer;
         text-align: start;
         font-size: 0.625rem;
-        font-weight: var(--origam-font-weight-bold, 700);
-        letter-spacing: 0.08em;
+        font-weight: var(--origam-font__weight---semibold);
+        letter-spacing: 0.14em;
         text-transform: uppercase;
-        color: var(--origam-color-text-subtle);
-        border-radius: var(--origam-radius-sm, 0.25rem);
+        color: var(--origam-color__text---secondary);
+        border-radius: var(--origam-radius---sm);
         transition: background-color 0.15s ease, color 0.15s ease;
 
         &:hover {
-            background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
-            color: var(--origam-color-text-default);
+            background-color: var(--origam-color__surface---raised);
+            color: var(--origam-color__text---primary);
         }
     }
 
@@ -246,12 +246,12 @@ const navLabel = computed(() => t('theming.nav.label', 'Components'))
         min-inline-size: 1.25rem;
         padding: 1px 5px;
         font-size: 0.5625rem;
-        font-weight: var(--origam-font-weight-bold, 700);
+        font-weight: var(--origam-font__weight---bold);
         text-align: center;
-        border-radius: var(--origam-radius-pill, 9999px);
-        background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
-        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-        color: var(--origam-color-text-subtle);
+        border-radius: var(--origam-radius---full);
+        background-color: var(--origam-color__surface---raised);
+        border: 1px solid var(--origam-color__border---subtle);
+        color: var(--origam-color__text---secondary);
         font-variant-numeric: tabular-nums;
     }
 
@@ -263,7 +263,7 @@ const navLabel = computed(() => t('theming.nav.label', 'Components'))
     &__cat-chevron {
         flex: 0 0 auto;
         transition: transform 0.15s ease;
-        color: var(--origam-color-text-subtle);
+        color: var(--origam-color__text---secondary);
     }
 
     &__cat--open &__cat-chevron {
@@ -272,35 +272,35 @@ const navLabel = computed(() => t('theming.nav.label', 'Components'))
 
     &__items {
         margin: 0;
-        padding: 2px var(--origam-spacing-2, 0.5rem) var(--origam-spacing-1, 0.25rem);
+        padding: 2px var(--origam-space---2) var(--origam-space---1);
         list-style: none;
     }
 
     &__item {
         display: flex;
         align-items: center;
-        gap: var(--origam-spacing-2, 0.5rem);
+        gap: var(--origam-space---2);
         inline-size: 100%;
-        padding: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-2, 0.5rem);
+        padding: var(--origam-space---1) var(--origam-space---2);
         min-height: 1.75rem;
         background: transparent;
         border: none;
         cursor: pointer;
         text-align: start;
-        font-size: var(--origam-font-size-sm, 0.8125rem);
-        color: var(--origam-color-text-subtle);
-        border-radius: var(--origam-radius-md, 0.375rem);
+        font-size: var(--origam-font__size---sm);
+        color: var(--origam-color__text---secondary);
+        border-radius: var(--origam-radius---md);
         transition: background-color 0.15s ease, color 0.15s ease;
 
         &:hover {
-            background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
-            color: var(--origam-color-text-default);
+            background-color: var(--origam-color__surface---raised);
+            color: var(--origam-color__text---primary);
         }
 
         &--active {
-            background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 14%, var(--origam-color-surface-default));
-            color: var(--origam-color__action--primary---bgHover, #6d28d9);
-            font-weight: var(--origam-font-weight-bold, 700);
+            background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 14%, var(--origam-color__surface---default));
+            color: var(--origam-color__text---primary);
+            font-weight: var(--origam-font__weight---bold);
         }
     }
 
@@ -321,10 +321,10 @@ const navLabel = computed(() => t('theming.nav.label', 'Components'))
     &__footer {
         flex: 0 0 auto;
         margin: 0;
-        padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-3, 0.75rem);
-        border-block-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+        padding: var(--origam-space---2) var(--origam-space---3);
+        border-block-start: 1px solid var(--origam-color__border---subtle);
         font-size: 0.625rem;
-        color: var(--origam-color-text-subtle);
+        color: var(--origam-color__text---secondary);
         font-variant-numeric: tabular-nums;
     }
 }

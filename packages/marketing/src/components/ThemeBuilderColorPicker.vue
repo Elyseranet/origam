@@ -144,7 +144,7 @@ const selectedIntent = computed(() => state.value.mode === 'intent' ? state.valu
 .tbc-color {
     display: flex;
     flex-direction: column;
-    gap: var(--origam-spacing-2, 0.5rem);
+    gap: var(--origam-space---2);
 
     &__inherit,
     &__custom-trigger {
@@ -182,7 +182,7 @@ const selectedIntent = computed(() => state.value.mode === 'intent' ? state.valu
     &__grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: var(--origam-spacing-2, 0.5rem);
+        gap: var(--origam-space---2);
     }
 
     &__option {
@@ -191,11 +191,11 @@ const selectedIntent = computed(() => state.value.mode === 'intent' ? state.valu
         align-items: center;
         gap: 2px;
         cursor: pointer;
-        border-radius: var(--origam-radius-sm, 0.25rem);
-        padding: var(--origam-spacing-1, 0.25rem);
+        border-radius: var(--origam-radius---sm);
+        padding: var(--origam-space---1);
 
         &:hover {
-            background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
+            background-color: var(--origam-color__surface---raised);
         }
 
         &:has(.tbc-color__radio:focus-visible) {
@@ -238,8 +238,8 @@ const selectedIntent = computed(() => state.value.mode === 'intent' ? state.valu
     &__swatch {
         inline-size: 1.5rem;
         block-size: 1.5rem;
-        border-radius: var(--origam-radius-sm, 0.25rem);
-        border: 1px solid var(--origam-color-border-default);
+        border-radius: var(--origam-radius---sm);
+        border: 1px solid var(--origam-color__border---default);
 
         /*
          * `aria-hidden="true"` decorative swatch (see template) paints
@@ -256,8 +256,8 @@ const selectedIntent = computed(() => state.value.mode === 'intent' ? state.valu
         &--ghost {
             background: repeating-linear-gradient(
                 45deg,
-                var(--origam-color-surface-subtle, #eee),
-                var(--origam-color-surface-subtle, #eee) 3px,
+                var(--origam-color__surface---raised),
+                var(--origam-color__surface---raised) 3px,
                 transparent 3px,
                 transparent 6px
             );
@@ -271,7 +271,7 @@ const selectedIntent = computed(() => state.value.mode === 'intent' ? state.valu
 
     &__option-label {
         font-size: 0.625rem;
-        color: var(--origam-color-text-subtle);
+        color: var(--origam-color__text---secondary);
         text-align: center;
     }
 }

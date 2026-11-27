@@ -243,41 +243,41 @@
     overflow: hidden;
     border-width: 1px;
     border-style: solid;
-    border-color: var(--origam-color-border-default);
-    border-radius: var(--origam-radius-lg, 0.5rem);
-    background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
+    border-color: var(--origam-color__border---default);
+    border-radius: var(--origam-radius---lg);
+    background-color: var(--origam-color__surface---raised);
 
     &__bar {
       display: flex;
       align-items: center;
-      gap: var(--origam-spacing-3, 0.75rem);
+      gap: var(--origam-space---3);
       flex: 0 0 auto;
-      padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-4, 1rem);
+      padding: var(--origam-space---2) var(--origam-space---4);
       min-height: 2.75rem;
-      background-color: var(--origam-color-surface-default);
-      border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+      background-color: var(--origam-color__surface---default);
+      border-block-end: 1px solid var(--origam-color__border---subtle);
     }
 
     &__info {
       display: flex;
       align-items: center;
-      gap: var(--origam-spacing-2, 0.5rem);
+      gap: var(--origam-space---2);
       min-inline-size: 0;
     }
 
     &__name {
-      font-weight: var(--origam-font-weight-bold, 700);
-      font-size: var(--origam-font-size-sm, 0.8125rem);
-      color: var(--origam-color-text-default);
+      font-weight: var(--origam-font__weight---bold);
+      font-size: var(--origam-font__size---sm);
+      color: var(--origam-color__text---primary);
     }
 
     &__sep {
-      color: var(--origam-color-border-default);
+      color: var(--origam-color__border---default);
     }
 
     &__cat {
-      font-size: var(--origam-font-size-xs, 0.75rem);
-      color: var(--origam-color-text-subtle);
+      font-size: var(--origam-font__size---xs);
+      color: var(--origam-color__text---secondary);
     }
 
     &__spacer {
@@ -314,7 +314,7 @@
       display: grid;
       place-items: center;
       min-height: 14rem;
-      padding: var(--origam-spacing-8, 2rem);
+      padding: var(--origam-space---8);
       background-color: var(--origam-color-neutral-0, #ffffff);
       background-image: radial-gradient(circle at 1px 1px, var(--origam-color-neutral-300, #d4d4d4) 1px, transparent 0);
       background-size: 20px 20px;
@@ -326,23 +326,24 @@
       }
 
       & + & {
-        border-inline-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+        border-inline-start: 1px solid var(--origam-color__border---subtle);
       }
     }
 
     &__pane-label {
       position: absolute;
-      inset-block-start: var(--origam-spacing-3, 0.75rem);
-      inset-inline-start: var(--origam-spacing-4, 1rem);
+      inset-block-start: var(--origam-space---3);
+      inset-inline-start: var(--origam-space---4);
       font-size: 0.625rem;
-      font-weight: var(--origam-font-weight-bold, 700);
+      font-weight: var(--origam-font__weight---bold);
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--origam-color-text-subtle);
+      /* La toile claire reste blanche dans les deux modes de la page : une couleur de texte themee ici devient blanche sur blanc en page sombre (#1535). */
+      color: var(--origam-color__neutral---600);
     }
 
     &__pane--dark &__pane-label {
-      color: var(--origam-color-neutral-400, #a3a3a3);
+      color: var(--origam-color__neutral---400);
     }
 
     &__provider {
@@ -353,10 +354,10 @@
     &__canvas {
       display: grid;
       place-items: center;
-      gap: var(--origam-spacing-3, 0.75rem);
+      gap: var(--origam-space---3);
       min-inline-size: 16rem;
       min-block-size: 9rem;
-      padding: var(--origam-spacing-8, 2rem) var(--origam-spacing-10, 3rem);
+      padding: var(--origam-space---8) calc(var(--origam-space---10) + var(--origam-space---2));
       background-color: transparent;
 
       &--fill-width > :deep(*) {
@@ -368,8 +369,8 @@
       margin: 0;
       max-inline-size: 22ch;
       text-align: center;
-      font-size: var(--origam-font-size-sm, 0.8125rem);
-      color: var(--origam-color-text-subtle);
+      font-size: var(--origam-font__size---sm);
+      color: var(--origam-color__text---secondary);
     }
   }
 </style>
