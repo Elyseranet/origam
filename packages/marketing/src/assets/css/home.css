@@ -19,12 +19,7 @@
   --home-fs-h3: clamp(1.25rem, 1rem + 0.7vw, 1.5rem);
   --home-fs-body: clamp(1rem, 0.9rem + 0.35vw, 1.125rem);
   --home-fs-small: clamp(0.875rem, 0.8rem + 0.2vw, 1rem);
-  --home-fs-eyebrow: clamp(1rem, 0.8rem + 0.5vw, 1.25rem);
-
-  /* Trait de pinceau jaune des eyebrows. */
-  --home-eyebrow-mark-w: 1.2em;
-  --home-eyebrow-mark-h: 0.8em;
-  --home-eyebrow-gap: 0.6em;
+  --home-fs-eyebrow: 0.8125rem;
 }
 
 /* Un seul bord gauche pour toutes les sections : 1280 px de contenu + gouttière. */
@@ -43,21 +38,23 @@
   padding-block: var(--home-section-gap);
 }
 
-/* À poser sur un origam-text / origam-title : le trait est décoratif (CSS seul). */
+/* À poser sur un origam-text / origam-title : la marque dorée est décorative (CSS seul). */
 .home-eyebrow {
   display: flex;
   align-items: center;
-  gap: var(--home-eyebrow-gap);
+  gap: 12px;
   font-size: var(--home-fs-eyebrow);
   font-weight: var(--origam-font__weight---semibold, 600);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--origam-color__text---primary);
 }
 
 .home-eyebrow::before {
   content: '';
   flex: none;
-  inline-size: var(--home-eyebrow-mark-w);
-  block-size: var(--home-eyebrow-mark-h);
-  background-color: var(--origam-color__sun---500);
-  transform: skewX(-28deg);
+  inline-size: 18px;
+  block-size: 24px;
+  background: image-set(url('/brand/enso/shared/gold-tick-60.avif') 1x, url('/brand/enso/shared/gold-tick-120.avif') 2x) center / contain no-repeat;
+  transform: rotate(28deg);
 }

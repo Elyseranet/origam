@@ -259,10 +259,6 @@ defineExpose({})
     }
 
     &__eyebrow {
-        --home-eyebrow-mark-w: 0.9em;
-        --home-eyebrow-mark-h: 0.65em;
-        --home-eyebrow-gap: 0.75em;
-
         margin: 0;
         font-size: var(--home-fs-small);
         letter-spacing: 0.3em;

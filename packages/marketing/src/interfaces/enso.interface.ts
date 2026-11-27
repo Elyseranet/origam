@@ -61,7 +61,7 @@ export interface IEnsoPetalsProps {
 /** Page de contrôle `/enso` : une illustration du catalogue et le nom de sa constante. */
 export interface IEnsoGalleryItem {
     name: string
-    art: IEnsoArt
+    art: IEnsoArt | IEnsoSharedArt
 }
 
 export interface IEnsoDemoMode {

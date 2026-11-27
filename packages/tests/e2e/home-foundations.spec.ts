@@ -1,7 +1,7 @@
 /**
  * Fondations partagées de la home (#1554, T2) — un seul bord gauche, un seul
- * écart de section, une seule échelle typographique, et le trait jaune des
- * eyebrows. Mesuré en navigateur : un test jsdom ne résout pas `var()`.
+ * écart de section, une seule échelle typographique, et la marque dorée des
+ * eyebrows (#1592). Mesuré en navigateur : un test jsdom ne résout pas `var()`.
  *
  *   pnpm -F @origam/tests playwright test \
  *     --config=playwright.marketing.config.ts home-foundations.spec.ts
@@ -48,7 +48,7 @@ test.describe('Home foundations', () => {
         expect(paddings).toEqual([gap, gap, gap, gap])
     })
 
-    test('.home-eyebrow draws a yellow skewed mark', async ({ page }) => {
+    test('.home-eyebrow draws the gold-tick mark, 18x24, rotated 28deg', async ({ page }) => {
         await page.goto(BASE, { waitUntil: 'domcontentloaded' })
 
         const mark = await page.evaluate(() => {
@@ -57,13 +57,17 @@ test.describe('Home foundations', () => {
             el.textContent = 'x'
             document.body.appendChild(el)
             const s = getComputedStyle(el, '::before')
-            const out = { bg: s.backgroundColor, transform: s.transform, w: s.width }
+            const out = { bg: s.backgroundImage, transform: s.transform, w: s.width, h: s.height }
             el.remove()
             return out
         })
 
-        expect(mark.bg).toBe('rgb(255, 197, 41)') // --origam-color__sun---500
-        expect(mark.transform).not.toBe('none')
-        expect(parseFloat(mark.w)).toBeGreaterThan(0)
+        expect(mark.bg).toContain('/brand/enso/shared/gold-tick-')
+        expect(mark.w).toBe('18px')
+        expect(mark.h).toBe('24px')
+        // rotate(28deg) = matrix(cos, sin, -sin, cos, 0, 0)
+        const [cos, sin] = mark.transform.replace(/^matrix\(|\)$/g, '').split(',').map(Number)
+        expect(cos).toBeCloseTo(Math.cos((28 * Math.PI) / 180), 3)
+        expect(sin).toBeCloseTo(Math.sin((28 * Math.PI) / 180), 3)
     })
 })

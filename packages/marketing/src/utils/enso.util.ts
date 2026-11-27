@@ -53,12 +53,11 @@ export function ensoPaperVars (): TEnsoArtVars {
 export function ensoDemoColumns (): IEnsoDemoColumn[] {
     return ENSO_DEMO_MODES.map(demo => ({
         ...demo,
-        items: ENSO_GALLERY.map(({ name, art }) => ({
-            name,
-            ratio: art.width / art.height,
-            src: art[demo.mode].src,
-            srcset: art[demo.mode].srcset
-        }))
+        items: ENSO_GALLERY.map(({ name, art }) => {
+            const { src, srcset } = 'light' in art ? art[demo.mode] : art
+
+            return { name, ratio: art.width / art.height, src, srcset }
+        })
     }))
 }
 

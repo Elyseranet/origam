@@ -57,4 +57,14 @@ describe('ensoDemoColumns', () => {
         expect(columns[0].items[0].src).toBe(ENSO_GALLERY[0].art.light.src)
         expect(columns[1].items[0].src).toBe(ENSO_GALLERY[0].art.dark.src)
     })
+
+    it('sert un asset partagé tel quel dans les deux modes, et un asset par mode depuis son dossier', () => {
+        const [light, dark] = ensoDemoColumns()
+        const find = (col: typeof light, name: string) => col.items.find(item => item.name === name)
+
+        expect(find(light, 'ENSO_SUN_DISC')?.src).toBe('/brand/enso/shared/sun-disc-540.avif')
+        expect(find(dark, 'ENSO_SUN_DISC')?.src).toBe('/brand/enso/shared/sun-disc-540.avif')
+        expect(find(light, 'ENSO_CTA_RIDGE')?.src).toBe('/brand/enso/light/cta-ridge-1983.avif')
+        expect(find(dark, 'ENSO_CTA_RIDGE')?.src).toBe('/brand/enso/dark/cta-ridge-1983.avif')
+    })
 })
