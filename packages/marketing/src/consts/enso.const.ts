@@ -309,6 +309,11 @@ export const ENSO_BRUSH: IEnsoArt = {
 export const ENSO_TITLE_BRUSH_WIDTH = 240
 export const ENSO_DIVIDER_BRUSH_WIDTH = 960
 export const ENSO_PAPER_TILE_WIDTH = 512
+
+/** Largeurs d'affichage (px) qui choisissent le fichier du trait : lien actif, bord bas du header, panorama du footer. */
+export const ENSO_NAV_BRUSH_WIDTH = 240
+export const ENSO_BAR_BRUSH_WIDTH = 1920
+export const ENSO_FOOTER_ART_WIDTH = 1920
 export const ENSO_PETAL_WIDTH = 40
 
 /**

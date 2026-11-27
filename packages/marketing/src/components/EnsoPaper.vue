@@ -13,9 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import { ENSO_PAPER_TILE_WIDTH, ENSO_PAPER_WASHI } from '~/consts/enso.const'
 import type { IEnsoPaperProps, IEnsoPaperSlots } from '~/interfaces/enso.interface'
-import { ensoArtVars } from '~/utils/enso.util'
+import { ensoPaperVars } from '~/utils/enso.util'
 
 /*********************************************************
  * Props, emits & slots
@@ -41,10 +40,7 @@ defineSlots<IEnsoPaperSlots>()
  * @description
  * Variables CSS des deux variantes de la texture ; une tuile de 512 px CSS.
  ********************************************************/
-const paperVars = {
-    ...ensoArtVars(ENSO_PAPER_WASHI, ENSO_PAPER_TILE_WIDTH),
-    '--enso-paper---tile': `${ENSO_PAPER_TILE_WIDTH}px`
-}
+const paperVars = ensoPaperVars()
 
 /*********************************************************
  * Expose
