@@ -1,6 +1,6 @@
 <template>
   <article
-    class="enum-detail"
+    class="enum-detail home"
     :data-cy="`page-enum-${slug}`"
   >
     <div
@@ -46,78 +46,81 @@
     </div>
 
     <template v-else>
-      <div
-        class="enum-hero"
-        aria-labelledby="enum-title"
+      <enso-page-header
+        family="catalog"
+        title-id="enum-title"
       >
-        <origam-container class="enum-hero__container">
+        <template #breadcrumb>
           <catalog-breadcrumb
             kind="enum"
             :name="enumName"
           />
+        </template>
 
-          <div class="enum-hero__identity">
-            <div class="enum-hero__title-row">
-              <origam-title
-                id="enum-title"
-                tag="h1"
-                class="enum-hero__title"
-              >
-                {{ enumName }}
-              </origam-title>
+        <template #eyebrow>
+          {{ t('nav.enums', 'Enums') }}
+        </template>
 
-              <origam-chip
-                color="secondary"
-                size="small"
-                variant="outlined"
-                class="enum-hero__kind-chip"
-              >
-                {{ t('enums.kind.enum', 'enum') }}
-              </origam-chip>
+        <template #title>
+          {{ enumName }}
+        </template>
 
-              <origam-chip
-                v-if="enumCategory"
-                size="small"
-                variant="tonal"
-                class="enum-hero__category-chip"
-              >
-                {{ enumCategory }}
-              </origam-chip>
-            </div>
+        <template
+          v-if="enumDescKey || enumDescFallback"
+          #intro
+        >
+          {{ t(enumDescKey, enumDescFallback) }}
+        </template>
 
-            <p class="enum-hero__desc">
-              {{ t(enumDescKey, enumDescFallback) }}
-            </p>
+        <template #default>
+          <div class="enum-hero__chips">
+            <origam-chip
+              color="secondary"
+              size="small"
+              variant="outlined"
+              class="enum-hero__kind-chip"
+            >
+              {{ t('enums.kind.enum', 'enum') }}
+            </origam-chip>
 
-            <div class="enum-hero__bottom">
-              <nav
-                v-if="displayDoc?.sourceFile"
-                class="enum-hero__actions"
-                :aria-label="t('enums.detail.external_links_label', 'External resources')"
-              >
-                <origam-btn
-                  :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="text"
-                  size="small"
-                  prepend-icon="mdi-github"
-                  data-cy="enum-source-link"
-                >
-                  {{ t('enums.detail.hero.source_label', 'Source') }}
-                </origam-btn>
-              </nav>
-            </div>
+            <origam-chip
+              v-if="enumCategory"
+              size="small"
+              variant="tonal"
+              class="enum-hero__category-chip"
+            >
+              {{ enumCategory }}
+            </origam-chip>
           </div>
-        </origam-container>
-      </div>
+
+          <div class="enum-hero__bottom">
+            <nav
+              v-if="displayDoc?.sourceFile"
+              class="enum-hero__actions"
+              :aria-label="t('enums.detail.external_links_label', 'External resources')"
+            >
+              <origam-btn
+                :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="text"
+                size="small"
+                prepend-icon="mdi-github"
+                data-cy="enum-source-link"
+              >
+                {{ t('enums.detail.hero.source_label', 'Source') }}
+              </origam-btn>
+            </nav>
+          </div>
+        </template>
+      </enso-page-header>
 
       <catalog-related-families
         kind="enum"
         :slug="slug"
       />
 
-      <origam-container>
+      <origam-container class="home-container">
         <div class="enum-detail__layout">
           <aside
             v-if="tocSections.length > 0"
@@ -162,7 +165,7 @@
               data-cy="enum-definition"
             >
               <header class="enum-section__header">
-                <p class="enum-section__eyebrow">
+                <p class="enum-section__eyebrow home-eyebrow">
                   {{ t('enums.detail.definition.eyebrow', 'TypeScript') }}
                 </p>
                 <origam-title
@@ -227,7 +230,7 @@
               data-cy="enum-values"
             >
               <header class="enum-section__header">
-                <p class="enum-section__eyebrow">
+                <p class="enum-section__eyebrow home-eyebrow">
                   {{ t('enums.detail.values.eyebrow', 'Members') }}
                 </p>
                 <origam-title
@@ -257,7 +260,7 @@
               data-cy="enum-used-by"
             >
               <header class="enum-section__header">
-                <p class="enum-section__eyebrow">
+                <p class="enum-section__eyebrow home-eyebrow">
                   {{ t('enums.detail.used_by.eyebrow', 'Ecosystem') }}
                 </p>
                 <origam-title
@@ -335,7 +338,7 @@
               data-cy="enum-examples"
             >
               <header class="enum-section__header">
-                <p class="enum-section__eyebrow">
+                <p class="enum-section__eyebrow home-eyebrow">
                   {{ t('enums.detail.examples.eyebrow', 'Usage') }}
                 </p>
                 <origam-title
@@ -378,7 +381,7 @@
         </div>
       </origam-container>
 
-      <origam-container>
+      <origam-container class="home-container">
         <catalog-prev-next
           kind="enum"
           :slug="slug"
@@ -521,61 +524,11 @@ useSeoMeta({
 }
 
 .enum-hero {
-    position: relative;
-    background: color-mix(in srgb, var(--origam-color__surface---raised) 62%, transparent);
-    border-block-end: 1px solid var(--origam-color__border---default);
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: var(--origam-gradient---hero-grid);
-        background-size: 32px 32px;
-        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
-        pointer-events: none;
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        inset-inline: 0;
-        inset-block-start: 0;
-        block-size: 100%;
-        background: var(--origam-gradient---hero-glow);
-        opacity: 0.45;
-        pointer-events: none;
-    }
-
-    &__container {
-        position: relative;
-        z-index: 1;
-        padding-block: var(--origam-space---5, 1.25rem) var(--origam-space---8, 2rem);
-    }
-
-    &__identity {
-        padding-block: var(--origam-space---8, 2rem) var(--origam-space---6, 1.5rem);
-        display: flex;
-        flex-direction: column;
-        gap: var(--origam-space---4, 1rem);
-    }
-
-    &__title-row {
+    &__chips {
         display: flex;
         align-items: center;
-        gap: var(--origam-space---3, 0.75rem);
+        gap: var(--origam-space---2, 0.5rem);
         flex-wrap: wrap;
-    }
-
-    &__title {
-        margin: 0;
-        font-size: clamp(2.25rem, 5vw, 2.75rem);
-        font-weight: 800;
-        letter-spacing: -0.045em;
-        line-height: 1;
-        color: var(--origam-color__text---ink);
-        display: block;
-        font-family: var(--origam-font__family---mono, monospace);
     }
 
     &__kind-chip {
@@ -587,14 +540,6 @@ useSeoMeta({
 
     &__category-chip {
         font-size: var(--origam-font__size---sm, 0.75rem);
-    }
-
-    &__desc {
-        margin: 0;
-        max-inline-size: 52ch;
-        font-size: var(--origam-font__size---lg, 1rem);
-        line-height: 1.65;
-        color: var(--origam-color__text---secondary);
     }
 
     &__bottom {
@@ -698,20 +643,15 @@ useSeoMeta({
     }
 
     &__eyebrow {
-        margin: 0 0 var(--origam-space---1, 0.25rem);
-        font-size: var(--origam-font__size---sm, 0.75rem);
-        font-weight: 700;
-        letter-spacing: 0.09em;
-        text-transform: uppercase;
-        color: var(--origam-color__action--primary---fgSubtle);
+        margin: 0 0 var(--origam-space---2, 0.5rem);
     }
 
     &__title {
         display: block;
-        font-size: var(--origam-font__size---2xl, 1.25rem);
+        font-size: clamp(1.35rem, 2.4vw, 1.75rem);
         font-weight: 700;
         color: var(--origam-color__text---ink);
-        letter-spacing: -0.02em;
+        letter-spacing: var(--home-ls-title);
         margin: 0 0 var(--origam-space---2, 0.5rem);
     }
 

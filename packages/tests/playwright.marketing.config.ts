@@ -37,6 +37,9 @@ const MARKETING_GREEN_SPECS = [
     // #1589 — 5/5 puis 25/25 sous `--repeat-each=5`, build de production servi, chromium, port isole.
     'marketing-theming-enso-header.spec.ts',
 
+    // #1586 — fiches du catalogue [slug] (8 familles) : en-tête Vallée, un seul bord gauche, pas de décor dans le corps, 390 px, axe.
+    'catalog-detail-enso.spec.ts',
+
     // #1554 (T2) — bord gauche, ecart de section et trait d'eyebrow communs a la home.
     'home-foundations.spec.ts',
 

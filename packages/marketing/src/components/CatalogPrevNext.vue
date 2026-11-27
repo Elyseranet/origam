@@ -110,6 +110,10 @@ const hasNeighbours = computed(() => prev.value !== null || next.value !== null)
         max-inline-size: 100%;
         block-size: auto;
         min-block-size: 44px;
+
+        :deep(.origam-btn__content) {
+            min-inline-size: 0;
+        }
     }
 
     &__text {

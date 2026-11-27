@@ -1,6 +1,6 @@
 <template>
   <article
-    class="directive-detail"
+    class="directive-detail home"
     :data-cy="`page-directive-${slug}`"
   >
     <div
@@ -47,98 +47,101 @@
     </div>
 
     <template v-else>
-      <div
-        class="directive-hero"
-        aria-labelledby="directive-title"
+      <enso-page-header
+        family="catalog"
+        title-id="directive-title"
       >
-        <origam-container class="directive-hero__container">
+        <template #breadcrumb>
           <catalog-breadcrumb
             kind="directive"
             :name="directiveName"
           />
+        </template>
 
-          <div class="directive-hero__identity">
-            <div class="directive-hero__title-row">
-              <origam-title
-                id="directive-title"
-                tag="h1"
-                class="directive-hero__title"
-              >
-                {{ directiveName }}
-              </origam-title>
+        <template #eyebrow>
+          {{ t('nav.directives', 'Directives') }}
+        </template>
 
-              <origam-chip
-                color="secondary"
-                size="small"
+        <template #title>
+          {{ directiveName }}
+        </template>
+
+        <template
+          v-if="directiveDescKey || directiveDescFallback"
+          #intro
+        >
+          {{ t(directiveDescKey, directiveDescFallback) }}
+        </template>
+
+        <template #default>
+          <div class="directive-hero__chips">
+            <origam-chip
+              color="secondary"
+              size="small"
+              variant="outlined"
+              class="directive-hero__category-chip"
+            >
+              {{ t('directives.detail.category', 'Directive') }}
+            </origam-chip>
+          </div>
+
+          <div class="directive-hero__bottom">
+            <nav
+              v-if="displayDoc?.storyUrl"
+              class="directive-hero__actions"
+              :aria-label="t('directives.detail.external_links_label', 'External resources')"
+            >
+              <origam-btn
+                :href="displayDoc.storyUrl"
+                target="_blank"
+                rel="noopener noreferrer"
                 variant="outlined"
-                class="directive-hero__category-chip"
+                size="small"
+                prepend-icon="mdi-play-circle-outline"
+                data-cy="directive-story-link"
               >
-                {{ t('directives.detail.category', 'Directive') }}
-              </origam-chip>
-            </div>
-
-            <p class="directive-hero__desc">
-              {{ t(directiveDescKey, directiveDescFallback) }}
-            </p>
-
-            <div class="directive-hero__bottom">
-              <nav
-                v-if="displayDoc?.storyUrl"
-                class="directive-hero__actions"
-                :aria-label="t('directives.detail.external_links_label', 'External resources')"
-              >
-                <origam-btn
-                  :href="displayDoc.storyUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="outlined"
-                  size="small"
-                  prepend-icon="mdi-play-circle-outline"
-                  data-cy="directive-story-link"
-                >
-                  {{ t('directives.detail.hero.story_label', 'Story') }}
-                </origam-btn>
-
-                <origam-btn
-                  :href="`https://github.com/origam-io/origam/blob/main/packages/ds/src/directives/${directiveName}/origam-${slug}.directive.ts`"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="text"
-                  size="small"
-                  prepend-icon="mdi-github"
-                  data-cy="directive-source-link"
-                >
-                  {{ t('directives.detail.hero.source_label', 'Source') }}
-                </origam-btn>
-              </nav>
+                {{ t('directives.detail.hero.story_label', 'Story') }}
+              </origam-btn>
 
               <origam-btn
-                v-if="displayDoc?.signatureSummary"
-                class="directive-hero__signature-btn"
+                :href="`https://github.com/origam-io/origam/blob/main/packages/ds/src/directives/${directiveName}/origam-${slug}.directive.ts`"
+                target="_blank"
+                rel="noopener noreferrer"
                 variant="text"
                 size="small"
-                :aria-label="t('directives.detail.hero.signature_copy_label', 'Copy directive signature')"
-                :data-cy="`directive-signature-btn-${slug}`"
-                @click="copySignature(displayDoc.signatureSummary)"
+                prepend-icon="mdi-github"
+                data-cy="directive-source-link"
               >
-                <span class="directive-hero__signature-text">{{ displayDoc.signatureSummary }}</span>
-                <origam-icon
-                  :icon="signatureCopied ? 'mdi-check' : 'mdi-content-copy'"
-                  size="14"
-                  aria-hidden="true"
-                />
+                {{ t('directives.detail.hero.source_label', 'Source') }}
               </origam-btn>
-            </div>
+            </nav>
+
+            <origam-btn
+              v-if="displayDoc?.signatureSummary"
+              class="directive-hero__signature-btn"
+              variant="text"
+              size="small"
+              :aria-label="`${displayDoc.signatureSummary} — ${t('directives.detail.hero.signature_copy_label', 'Copy directive signature')}`"
+              :data-cy="`directive-signature-btn-${slug}`"
+              @click="copySignature(displayDoc.signatureSummary)"
+            >
+              <span class="directive-hero__signature-text">{{ displayDoc.signatureSummary }}</span>
+              <origam-icon
+                :icon="signatureCopied ? 'mdi-check' : 'mdi-content-copy'"
+                size="14"
+                aria-hidden="true"
+              />
+            </origam-btn>
           </div>
-        </origam-container>
-      </div>
+        </template>
+      </enso-page-header>
 
       <catalog-related-families
         kind="directive"
         :slug="slug"
       />
 
-      <origam-container>
+      <origam-container class="home-container">
         <div class="directive-detail__layout">
           <aside
             v-if="tocSections.length > 0"
@@ -184,7 +187,7 @@
               data-cy="directive-signature-section"
             >
               <header class="directive-section__header">
-                <p class="directive-section__eyebrow">
+                <p class="directive-section__eyebrow home-eyebrow">
                   {{ t('directives.detail.signature.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -218,7 +221,7 @@
               data-cy="directive-args"
             >
               <header class="directive-section__header">
-                <p class="directive-section__eyebrow">
+                <p class="directive-section__eyebrow home-eyebrow">
                   {{ t('directives.detail.args.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -256,7 +259,7 @@
               data-cy="directive-modifiers"
             >
               <header class="directive-section__header">
-                <p class="directive-section__eyebrow">
+                <p class="directive-section__eyebrow home-eyebrow">
                   {{ t('directives.detail.modifiers.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -289,7 +292,7 @@
               data-cy="directive-examples"
             >
               <header class="directive-section__header">
-                <p class="directive-section__eyebrow">
+                <p class="directive-section__eyebrow home-eyebrow">
                   {{ t('directives.detail.examples.eyebrow', 'Usage') }}
                 </p>
                 <origam-title
@@ -338,7 +341,7 @@
               data-cy="directive-related"
             >
               <header class="directive-section__header">
-                <p class="directive-section__eyebrow">
+                <p class="directive-section__eyebrow home-eyebrow">
                   {{ t('directives.detail.related.eyebrow', 'Ecosystem') }}
                 </p>
                 <origam-title
@@ -445,7 +448,7 @@
         </div>
       </origam-container>
 
-      <origam-container>
+      <origam-container class="home-container">
         <catalog-prev-next
           kind="directive"
           :slug="slug"
@@ -600,61 +603,11 @@ useSeoMeta({
 }
 
 .directive-hero {
-    position: relative;
-    background: color-mix(in srgb, var(--origam-color__surface---raised) 62%, transparent);
-    border-block-end: 1px solid var(--origam-color__border---default);
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: var(--origam-gradient---hero-grid);
-        background-size: 32px 32px;
-        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
-        pointer-events: none;
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        inset-inline: 0;
-        inset-block-start: 0;
-        block-size: 100%;
-        background: var(--origam-gradient---hero-glow);
-        opacity: 0.45;
-        pointer-events: none;
-    }
-
-    &__container {
-        position: relative;
-        z-index: 1;
-        padding-block: var(--origam-space---5, 1.25rem) var(--origam-space---8, 2rem);
-    }
-
-    &__identity {
-        padding-block: var(--origam-space---8, 2rem) var(--origam-space---6, 1.5rem);
-        display: flex;
-        flex-direction: column;
-        gap: var(--origam-space---4, 1rem);
-    }
-
-    &__title-row {
+    &__chips {
         display: flex;
         align-items: center;
-        gap: var(--origam-space---3, 0.75rem);
+        gap: var(--origam-space---2, 0.5rem);
         flex-wrap: wrap;
-    }
-
-    &__title {
-        margin: 0;
-        font-size: clamp(2.25rem, 5vw, 2.75rem);
-        font-weight: 800;
-        letter-spacing: -0.045em;
-        line-height: 1;
-        color: var(--origam-color__text---ink);
-        display: block;
-        font-family: var(--origam-font__family---mono, monospace);
     }
 
     &__category-chip {
@@ -662,14 +615,6 @@ useSeoMeta({
         font-size: 0.625rem;
         letter-spacing: 0.05em;
         text-transform: uppercase;
-    }
-
-    &__desc {
-        margin: 0;
-        max-inline-size: 52ch;
-        font-size: var(--origam-font__size---lg, 1rem);
-        line-height: 1.65;
-        color: var(--origam-color__text---secondary);
     }
 
     &__bottom {
@@ -796,20 +741,15 @@ useSeoMeta({
     }
 
     &__eyebrow {
-        margin: 0 0 var(--origam-space---1, 0.25rem);
-        font-size: var(--origam-font__size---sm, 0.75rem);
-        font-weight: 700;
-        letter-spacing: 0.09em;
-        text-transform: uppercase;
-        color: var(--origam-color__action--primary---fgSubtle);
+        margin: 0 0 var(--origam-space---2, 0.5rem);
     }
 
     &__title {
         display: block;
-        font-size: var(--origam-font__size---2xl, 1.25rem);
+        font-size: clamp(1.35rem, 2.4vw, 1.75rem);
         font-weight: 700;
         color: var(--origam-color__text---ink);
-        letter-spacing: -0.02em;
+        letter-spacing: var(--home-ls-title);
         margin: 0 0 var(--origam-space---2, 0.5rem);
     }
 

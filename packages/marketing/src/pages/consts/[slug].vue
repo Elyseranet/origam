@@ -1,6 +1,6 @@
 <template>
   <article
-    class="const-detail"
+    class="const-detail home"
     :data-cy="`page-const-${slug}`"
   >
     <div
@@ -46,78 +46,81 @@
     </div>
 
     <template v-else>
-      <div
-        class="const-hero"
-        aria-labelledby="const-title"
+      <enso-page-header
+        family="catalog"
+        title-id="const-title"
       >
-        <origam-container class="const-hero__container">
+        <template #breadcrumb>
           <catalog-breadcrumb
             kind="const"
             :name="constName"
           />
+        </template>
 
-          <div class="const-hero__identity">
-            <div class="const-hero__title-row">
-              <origam-title
-                id="const-title"
-                tag="h1"
-                class="const-hero__title"
-              >
-                {{ constName }}
-              </origam-title>
+        <template #eyebrow>
+          {{ t('nav.consts', 'Constants') }}
+        </template>
 
-              <origam-chip
-                color="secondary"
-                size="small"
-                variant="outlined"
-                class="const-hero__kind-chip"
-              >
-                {{ t('consts.kind.const', 'const') }}
-              </origam-chip>
+        <template #title>
+          {{ constName }}
+        </template>
 
-              <origam-chip
-                v-if="constCategory"
-                size="small"
-                variant="tonal"
-                class="const-hero__category-chip"
-              >
-                {{ constCategory }}
-              </origam-chip>
-            </div>
+        <template
+          v-if="constDescKey || constDescFallback"
+          #intro
+        >
+          {{ t(constDescKey, constDescFallback) }}
+        </template>
 
-            <p class="const-hero__desc">
-              {{ t(constDescKey, constDescFallback) }}
-            </p>
+        <template #default>
+          <div class="const-hero__chips">
+            <origam-chip
+              color="secondary"
+              size="small"
+              variant="outlined"
+              class="const-hero__kind-chip"
+            >
+              {{ t('consts.kind.const', 'const') }}
+            </origam-chip>
 
-            <div class="const-hero__bottom">
-              <nav
-                v-if="displayDoc?.sourceFile"
-                class="const-hero__actions"
-                :aria-label="t('consts.detail.external_links_label', 'External resources')"
-              >
-                <origam-btn
-                  :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="text"
-                  size="small"
-                  prepend-icon="mdi-github"
-                  data-cy="const-source-link"
-                >
-                  {{ t('consts.detail.hero.source_label', 'Source') }}
-                </origam-btn>
-              </nav>
-            </div>
+            <origam-chip
+              v-if="constCategory"
+              size="small"
+              variant="tonal"
+              class="const-hero__category-chip"
+            >
+              {{ constCategory }}
+            </origam-chip>
           </div>
-        </origam-container>
-      </div>
+
+          <div class="const-hero__bottom">
+            <nav
+              v-if="displayDoc?.sourceFile"
+              class="const-hero__actions"
+              :aria-label="t('consts.detail.external_links_label', 'External resources')"
+            >
+              <origam-btn
+                :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="text"
+                size="small"
+                prepend-icon="mdi-github"
+                data-cy="const-source-link"
+              >
+                {{ t('consts.detail.hero.source_label', 'Source') }}
+              </origam-btn>
+            </nav>
+          </div>
+        </template>
+      </enso-page-header>
 
       <catalog-related-families
         kind="const"
         :slug="slug"
       />
 
-      <origam-container>
+      <origam-container class="home-container">
         <div class="const-detail__layout">
           <aside
             v-if="tocSections.length > 0"
@@ -162,7 +165,7 @@
               data-cy="const-definition"
             >
               <header class="const-section__header">
-                <p class="const-section__eyebrow">
+                <p class="const-section__eyebrow home-eyebrow">
                   {{ t('consts.detail.definition.eyebrow', 'TypeScript') }}
                 </p>
                 <origam-title
@@ -217,7 +220,7 @@
               data-cy="const-values"
             >
               <header class="const-section__header">
-                <p class="const-section__eyebrow">
+                <p class="const-section__eyebrow home-eyebrow">
                   {{ t('consts.detail.values.eyebrow', 'Entries') }}
                 </p>
                 <origam-title
@@ -247,7 +250,7 @@
               data-cy="const-used-by"
             >
               <header class="const-section__header">
-                <p class="const-section__eyebrow">
+                <p class="const-section__eyebrow home-eyebrow">
                   {{ t('consts.detail.used_by.eyebrow', 'Ecosystem') }}
                 </p>
                 <origam-title
@@ -315,7 +318,7 @@
               data-cy="const-examples"
             >
               <header class="const-section__header">
-                <p class="const-section__eyebrow">
+                <p class="const-section__eyebrow home-eyebrow">
                   {{ t('consts.detail.examples.eyebrow', 'Usage') }}
                 </p>
                 <origam-title
@@ -358,7 +361,7 @@
         </div>
       </origam-container>
 
-      <origam-container>
+      <origam-container class="home-container">
         <catalog-prev-next
           kind="const"
           :slug="slug"
@@ -512,61 +515,11 @@ useSeoMeta({
 }
 
 .const-hero {
-    position: relative;
-    background: color-mix(in srgb, var(--origam-color__surface---raised) 62%, transparent);
-    border-block-end: 1px solid var(--origam-color__border---default);
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: var(--origam-gradient---hero-grid);
-        background-size: 32px 32px;
-        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
-        pointer-events: none;
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        inset-inline: 0;
-        inset-block-start: 0;
-        block-size: 100%;
-        background: var(--origam-gradient---hero-glow);
-        opacity: 0.45;
-        pointer-events: none;
-    }
-
-    &__container {
-        position: relative;
-        z-index: 1;
-        padding-block: var(--origam-space---5, 1.25rem) var(--origam-space---8, 2rem);
-    }
-
-    &__identity {
-        padding-block: var(--origam-space---8, 2rem) var(--origam-space---6, 1.5rem);
-        display: flex;
-        flex-direction: column;
-        gap: var(--origam-space---4, 1rem);
-    }
-
-    &__title-row {
+    &__chips {
         display: flex;
         align-items: center;
-        gap: var(--origam-space---3, 0.75rem);
+        gap: var(--origam-space---2, 0.5rem);
         flex-wrap: wrap;
-    }
-
-    &__title {
-        margin: 0;
-        font-size: clamp(2rem, 5vw, 2.5rem);
-        font-weight: 800;
-        letter-spacing: -0.045em;
-        line-height: 1;
-        color: var(--origam-color__text---ink);
-        display: block;
-        font-family: var(--origam-font__family---mono, monospace);
     }
 
     &__kind-chip {
@@ -578,14 +531,6 @@ useSeoMeta({
 
     &__category-chip {
         font-size: var(--origam-font__size---sm, 0.75rem);
-    }
-
-    &__desc {
-        margin: 0;
-        max-inline-size: 52ch;
-        font-size: var(--origam-font__size---lg, 1rem);
-        line-height: 1.65;
-        color: var(--origam-color__text---secondary);
     }
 
     &__bottom {
@@ -689,20 +634,15 @@ useSeoMeta({
     }
 
     &__eyebrow {
-        margin: 0 0 var(--origam-space---1, 0.25rem);
-        font-size: var(--origam-font__size---sm, 0.75rem);
-        font-weight: 700;
-        letter-spacing: 0.09em;
-        text-transform: uppercase;
-        color: var(--origam-color__action--primary---fgSubtle);
+        margin: 0 0 var(--origam-space---2, 0.5rem);
     }
 
     &__title {
         display: block;
-        font-size: var(--origam-font__size---2xl, 1.25rem);
+        font-size: clamp(1.35rem, 2.4vw, 1.75rem);
         font-weight: 700;
         color: var(--origam-color__text---ink);
-        letter-spacing: -0.02em;
+        letter-spacing: var(--home-ls-title);
         margin: 0 0 var(--origam-space---2, 0.5rem);
     }
 

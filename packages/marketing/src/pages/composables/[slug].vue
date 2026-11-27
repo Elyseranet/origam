@@ -1,6 +1,6 @@
 <template>
   <article
-    class="composable-detail"
+    class="composable-detail home"
     :data-cy="`page-composable-${slug}`"
   >
     <div
@@ -46,94 +46,97 @@
     </div>
 
     <template v-else>
-      <div
-        class="composable-hero"
-        aria-labelledby="composable-title"
+      <enso-page-header
+        family="catalog"
+        title-id="composable-title"
       >
-        <origam-container class="composable-hero__container">
+        <template #breadcrumb>
           <catalog-breadcrumb
             kind="composable"
             :name="composableName"
           />
+        </template>
 
-          <div class="composable-hero__identity">
-            <div class="composable-hero__title-row">
-              <origam-title
-                id="composable-title"
-                tag="h1"
-                class="composable-hero__title"
-              >
-                {{ composableName }}
-              </origam-title>
+        <template #eyebrow>
+          {{ t('nav.composables', 'Composables') }}
+        </template>
 
-              <origam-chip
-                color="primary"
-                size="small"
-                variant="outlined"
-                class="composable-hero__domain-chip"
-              >
-                {{ composableDomain }}
-              </origam-chip>
+        <template #title>
+          {{ composableName }}
+        </template>
 
-              <origam-chip
-                size="small"
-                color="success"
-                variant="outlined"
-                prepend-icon="mdi-circle"
-                class="composable-hero__status-chip"
-              >
-                {{ t('composables.detail.hero.stable_label', 'stable') }}
-              </origam-chip>
-            </div>
+        <template
+          v-if="composableDescFb"
+          #intro
+        >
+          {{ composableDescFb }}
+        </template>
 
-            <p class="composable-hero__desc">
-              {{ composableDescFb }}
-            </p>
+        <template #default>
+          <div class="composable-hero__chips">
+            <origam-chip
+              color="primary"
+              size="small"
+              variant="outlined"
+              class="composable-hero__domain-chip"
+            >
+              {{ composableDomain }}
+            </origam-chip>
 
-            <div class="composable-hero__bottom">
-              <nav
-                class="composable-hero__actions"
-                :aria-label="t('composables.detail.external_links_label', 'External resources')"
-              >
-                <origam-btn
-                  :href="`https://github.com/origam-io/origam/blob/main/packages/ds/src/composables/${composableDomain}/${composableName.replace(/^use/, '').replace(/([A-Z])/g, (m) => m.toLowerCase())}.composable.ts`"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="text"
-                  size="small"
-                  prepend-icon="mdi-github"
-                  data-cy="composable-source-link"
-                >
-                  {{ t('composables.detail.hero.source_label', 'Source') }}
-                </origam-btn>
-              </nav>
+            <origam-chip
+              size="small"
+              color="success"
+              variant="outlined"
+              prepend-icon="mdi-circle"
+              class="composable-hero__status-chip"
+            >
+              {{ t('composables.detail.hero.stable_label', 'stable') }}
+            </origam-chip>
+          </div>
 
+          <div class="composable-hero__bottom">
+            <nav
+              class="composable-hero__actions"
+              :aria-label="t('composables.detail.external_links_label', 'External resources')"
+            >
               <origam-btn
-                class="composable-hero__import"
+                :href="`https://github.com/origam-io/origam/blob/main/packages/ds/src/composables/${composableDomain}/${composableName.replace(/^use/, '').replace(/([A-Z])/g, (m) => m.toLowerCase())}.composable.ts`"
+                target="_blank"
+                rel="noopener noreferrer"
                 variant="text"
                 size="small"
-                :aria-label="t('composables.detail.hero.import_label', 'Copy import statement')"
-                :data-cy="`composable-import-btn-${slug}`"
-                @click="copyImport"
+                prepend-icon="mdi-github"
+                data-cy="composable-source-link"
               >
-                <span class="composable-hero__import-text">{{ importStatement }}</span>
-                <origam-icon
-                  :icon="importCopied ? 'mdi-check' : 'mdi-content-copy'"
-                  size="14"
-                  aria-hidden="true"
-                />
+                {{ t('composables.detail.hero.source_label', 'Source') }}
               </origam-btn>
-            </div>
+            </nav>
+
+            <origam-btn
+              class="composable-hero__import"
+              variant="text"
+              size="small"
+              :aria-label="`${importStatement} — ${t('composables.detail.hero.import_label', 'Copy import statement')}`"
+              :data-cy="`composable-import-btn-${slug}`"
+              @click="copyImport"
+            >
+              <span class="composable-hero__import-text">{{ importStatement }}</span>
+              <origam-icon
+                :icon="importCopied ? 'mdi-check' : 'mdi-content-copy'"
+                size="14"
+                aria-hidden="true"
+              />
+            </origam-btn>
           </div>
-        </origam-container>
-      </div>
+        </template>
+      </enso-page-header>
 
       <catalog-related-families
         kind="composable"
         :slug="slug"
       />
 
-      <origam-container>
+      <origam-container class="home-container">
         <div class="composable-detail__layout">
           <aside
             v-if="tocSections.length > 0"
@@ -178,7 +181,7 @@
               data-cy="composable-signature"
             >
               <header class="composable-section__header">
-                <p class="composable-section__eyebrow">
+                <p class="composable-section__eyebrow home-eyebrow">
                   {{ t('composables.detail.signature.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -278,7 +281,7 @@
               data-cy="composable-params"
             >
               <header class="composable-section__header">
-                <p class="composable-section__eyebrow">
+                <p class="composable-section__eyebrow home-eyebrow">
                   {{ t('composables.detail.params.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -308,7 +311,7 @@
               data-cy="composable-returns"
             >
               <header class="composable-section__header">
-                <p class="composable-section__eyebrow">
+                <p class="composable-section__eyebrow home-eyebrow">
                   {{ t('composables.detail.returns.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -366,7 +369,7 @@
               data-cy="composable-examples"
             >
               <header class="composable-section__header">
-                <p class="composable-section__eyebrow">
+                <p class="composable-section__eyebrow home-eyebrow">
                   {{ t('composables.detail.examples.eyebrow', 'Usage') }}
                 </p>
                 <origam-title
@@ -414,7 +417,7 @@
               data-cy="composable-related"
             >
               <header class="composable-section__header">
-                <p class="composable-section__eyebrow">
+                <p class="composable-section__eyebrow home-eyebrow">
                   {{ t('composables.detail.related.eyebrow', 'Ecosystem') }}
                 </p>
                 <origam-title
@@ -480,7 +483,7 @@
         </div>
       </origam-container>
 
-      <origam-container>
+      <origam-container class="home-container">
         <catalog-prev-next
           kind="composable"
           :slug="slug"
@@ -605,6 +608,10 @@
       padding-block: var(--origam-space---10, 2.5rem) var(--origam-space---20, 5rem);
       align-items: start;
     }
+
+    &__body {
+      min-inline-size: 0;
+    }
   }
 
   .composable-detail-not-found {
@@ -642,62 +649,12 @@
   }
 
   .composable-hero {
-    position: relative;
-    background: color-mix(in srgb, var(--origam-color__surface---raised) 62%, transparent);
-    border-block-end: 1px solid var(--origam-color__border---default);
-    overflow: hidden;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: var(--origam-gradient---hero-grid);
-      background-size: 32px 32px;
-      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
-      pointer-events: none;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset-inline: 0;
-      inset-block-start: 0;
-      block-size: 100%;
-      background: var(--origam-gradient---hero-glow);
-      opacity: 0.45;
-      pointer-events: none;
-    }
-
-    &__container {
-      position: relative;
-      z-index: 1;
-      padding-block: var(--origam-space---5, 1.25rem) var(--origam-space---8, 2rem);
-    }
-
-    &__identity {
-      padding-block: var(--origam-space---8, 2rem) var(--origam-space---6, 1.5rem);
-      display: flex;
-      flex-direction: column;
-      gap: var(--origam-space---4, 1rem);
-    }
-
-    &__title-row {
-      display: flex;
-      align-items: center;
-      gap: var(--origam-space---3, 0.75rem);
-      flex-wrap: wrap;
-    }
-
-    &__title {
-      margin: 0;
-      font-size: clamp(2.25rem, 5vw, 2.75rem);
-      font-weight: 800;
-      letter-spacing: -0.045em;
-      line-height: 1;
-      color: var(--origam-color__text---ink);
-      display: block;
-      font-family: var(--origam-font__family---mono, monospace);
-    }
+      &__chips {
+          display: flex;
+          align-items: center;
+          gap: var(--origam-space---2, 0.5rem);
+          flex-wrap: wrap;
+      }
 
     &__domain-chip {
       font-family: var(--origam-font__family---mono, monospace);
@@ -708,14 +665,6 @@
 
     &__status-chip {
       font-size: var(--origam-font__size---sm, 0.75rem);
-    }
-
-    &__desc {
-      margin: 0;
-      max-inline-size: 52ch;
-      font-size: var(--origam-font__size---lg, 1rem);
-      line-height: 1.65;
-      color: var(--origam-color__text---secondary);
     }
 
     &__bottom {
@@ -747,8 +696,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       max-inline-size: 40ch;
-    }
-  }
+    }  }
 
   .composable-toc {
     position: sticky;
@@ -814,20 +762,15 @@
     }
 
     &__eyebrow {
-      margin: 0 0 var(--origam-space---2, 0.5rem);
-      font-size: var(--origam-font__size---sm, 0.75rem);
-      font-weight: var(--origam-font__weight---semibold, 600);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--origam-color__action--primary---fgSubtle);
+        margin: 0 0 var(--origam-space---2, 0.5rem);
     }
 
     &__title {
       margin: 0 0 var(--origam-space---3, 0.75rem);
       display: block;
-      font-size: clamp(1.25rem, 3vw, 1.5rem);
+      font-size: clamp(1.35rem, 2.4vw, 1.75rem);
       font-weight: var(--origam-font__weight---bold, 700);
-      letter-spacing: -0.02em;
+      letter-spacing: var(--home-ls-title);
       color: var(--origam-color__text---primary);
     }
 

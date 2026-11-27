@@ -1,6 +1,6 @@
 <template>
   <article
-    class="component-detail"
+    class="component-detail home"
     :data-cy="`page-component-${slug}`"
   >
     <div
@@ -46,152 +46,155 @@
     </div>
 
     <template v-else>
-      <div
-        class="component-hero"
-        aria-labelledby="component-title"
+      <enso-page-header
+        family="catalog"
+        title-id="component-title"
       >
-        <origam-container class="component-hero__container">
+        <template #breadcrumb>
           <catalog-breadcrumb
             kind="component"
             :name="componentName"
             :parent="parentEntry"
           />
+        </template>
 
-          <div class="component-hero__identity">
-            <div class="component-hero__title-row">
-              <origam-title
-                id="component-title"
-                tag="h1"
-                class="component-hero__title"
-              >
-                {{ componentName }}
-              </origam-title>
+        <template #eyebrow>
+          {{ t('nav.components', 'Components') }}
+        </template>
 
-              <origam-chip
-                color="primary"
+        <template #title>
+          {{ componentName }}
+        </template>
+
+        <template
+          v-if="componentDescKey || componentDescFallback"
+          #intro
+        >
+          {{ t(componentDescKey, componentDescFallback) }}
+        </template>
+
+        <template #default>
+          <div class="component-hero__chips">
+            <origam-chip
+              color="primary"
+              size="small"
+              class="component-hero__category-chip"
+            >
+              {{ componentCategory }}
+            </origam-chip>
+
+            <origam-chip
+              v-if="displayDoc?.packageNote !== 'beta' && displayDoc?.packageNote !== 'experimental'"
+              size="small"
+              color="success"
+              prepend-icon="mdi-circle"
+              class="component-hero__status-chip"
+            >
+              {{ t('components.detail.hero.stable_label', 'stable') }}
+            </origam-chip>
+          </div>
+
+          <div class="component-hero__bottom">
+            <nav
+              class="component-hero__actions"
+              :aria-label="t('components.detail.external_links_label', 'External resources')"
+            >
+              <origam-btn
+                v-if="displayDoc?.docUrl"
+                :href="displayDoc.docUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="outlined"
                 size="small"
-                class="component-hero__category-chip"
+                prepend-icon="mdi-file-document-outline"
+                data-cy="component-doc-link"
               >
-                {{ componentCategory }}
-              </origam-chip>
-
-              <origam-chip
-                v-if="displayDoc?.packageNote !== 'beta' && displayDoc?.packageNote !== 'experimental'"
-                size="small"
-                color="success"
-                prepend-icon="mdi-circle"
-                class="component-hero__status-chip"
-              >
-                {{ t('components.detail.hero.stable_label', 'stable') }}
-              </origam-chip>
-            </div>
-
-            <p class="component-hero__desc">
-              {{ t(componentDescKey, componentDescFallback) }}
-            </p>
-
-            <div class="component-hero__bottom">
-              <nav
-                class="component-hero__actions"
-                :aria-label="t('components.detail.external_links_label', 'External resources')"
-              >
-                <origam-btn
-                  v-if="displayDoc?.docUrl"
-                  :href="displayDoc.docUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="outlined"
-                  size="small"
-                  prepend-icon="mdi-file-document-outline"
-                  data-cy="component-doc-link"
-                >
-                  {{ t('components.detail.hero.docs_label', 'Docs') }}
-                </origam-btn>
-
-                <origam-btn
-                  v-if="displayDoc?.storyUrl"
-                  :href="displayDoc.storyUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="outlined"
-                  size="small"
-                  prepend-icon="mdi-play-circle-outline"
-                  data-cy="component-story-link"
-                >
-                  {{ t('components.detail.hero.story_label', 'Story') }}
-                </origam-btn>
-
-                <origam-btn
-                  :href="`https://github.com/origam-io/origam/blob/main/packages/ds/src/components/${componentName}/Origam${componentName}.vue`"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="text"
-                  size="small"
-                  prepend-icon="mdi-github"
-                  data-cy="component-source-link"
-                >
-                  {{ t('components.detail.hero.source_label', 'Source') }}
-                </origam-btn>
-              </nav>
+                {{ t('components.detail.hero.docs_label', 'Docs') }}
+              </origam-btn>
 
               <origam-btn
-                class="component-hero__import"
+                v-if="displayDoc?.storyUrl"
+                :href="displayDoc.storyUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="outlined"
+                size="small"
+                prepend-icon="mdi-play-circle-outline"
+                data-cy="component-story-link"
+              >
+                {{ t('components.detail.hero.story_label', 'Story') }}
+              </origam-btn>
+
+              <origam-btn
+                :href="`https://github.com/origam-io/origam/blob/main/packages/ds/src/components/${componentName}/Origam${componentName}.vue`"
+                target="_blank"
+                rel="noopener noreferrer"
                 variant="text"
                 size="small"
-                :aria-label="`${importStatement} — ${t('components.detail.hero.import_label', 'Copy import statement')}`"
-                :data-cy="`component-import-btn-${slug}`"
-                @click="copyImport"
+                prepend-icon="mdi-github"
+                data-cy="component-source-link"
               >
-                <span class="component-hero__import-text">{{ importStatement }}</span>
-                <origam-icon
-                  :icon="importCopied ? 'mdi-check' : 'mdi-content-copy'"
-                  size="14"
-                  aria-hidden="true"
-                />
+                {{ t('components.detail.hero.source_label', 'Source') }}
               </origam-btn>
+            </nav>
+
+            <origam-btn
+              class="component-hero__import"
+              variant="text"
+              size="small"
+              :aria-label="`${importStatement} — ${t('components.detail.hero.import_label', 'Copy import statement')}`"
+              :data-cy="`component-import-btn-${slug}`"
+              @click="copyImport"
+            >
+              <span class="component-hero__import-text">{{ importStatement }}</span>
+              <origam-icon
+                :icon="importCopied ? 'mdi-check' : 'mdi-content-copy'"
+                size="14"
+                aria-hidden="true"
+              />
+            </origam-btn>
+          </div>
+        </template>
+      </enso-page-header>
+
+      <div
+        v-if="hasPreview"
+        class="component-hero__preview"
+      >
+        <origam-container class="component-hero__preview-inner home-container">
+          <p class="component-hero__preview-label">
+            {{ t('components.detail.hero.preview_label', 'Preview') }}
+          </p>
+          <div
+            class="component-hero__preview-stage"
+            :aria-label="`${t('components.detail.hero.preview_label', 'Preview')} — ${componentName}`"
+            data-cy="component-preview-stage"
+          >
+            <div
+              v-for="variant in heroVariants"
+              :key="variant.label"
+              class="component-hero__preview-variant"
+              :data-cy="`preview-variant-${variantSlugOf(variant.label)}`"
+            >
+              <client-only>
+                <template v-if="hostEntry">
+                  <playground-scene-node
+                    v-for="root in variant.roots"
+                    :key="root.id"
+                    :instance="root"
+                    :registry="hostEntry.registry"
+                  />
+                </template>
+                <template #fallback>
+                  <p class="component-preview__loading">
+                    {{ previewLoadingText }}
+                  </p>
+                </template>
+              </client-only>
+              <span class="component-hero__preview-variant-label">{{ variant.label }}</span>
             </div>
           </div>
         </origam-container>
-
-        <div
-          v-if="hasPreview"
-          class="component-hero__preview"
-        >
-          <origam-container class="component-hero__preview-inner">
-            <p class="component-hero__preview-label">
-              {{ t('components.detail.hero.preview_label', 'Preview') }}
-            </p>
-            <div
-              class="component-hero__preview-stage"
-              :aria-label="`${t('components.detail.hero.preview_label', 'Preview')} — ${componentName}`"
-              data-cy="component-preview-stage"
-            >
-              <div
-                v-for="variant in heroVariants"
-                :key="variant.label"
-                class="component-hero__preview-variant"
-                :data-cy="`preview-variant-${variantSlugOf(variant.label)}`"
-              >
-                <client-only>
-                  <template v-if="hostEntry">
-                    <playground-scene-node
-                      v-for="root in variant.roots"
-                      :key="root.id"
-                      :instance="root"
-                      :registry="hostEntry.registry"
-                    />
-                  </template>
-                  <template #fallback>
-                    <p class="component-preview__loading">
-                      {{ previewLoadingText }}
-                    </p>
-                  </template>
-                </client-only>
-                <span class="component-hero__preview-variant-label">{{ variant.label }}</span>
-              </div>
-            </div>
-          </origam-container>
-        </div>
       </div>
 
       <catalog-related-families
@@ -199,7 +202,7 @@
         :slug="slug"
       />
 
-      <origam-container>
+      <origam-container class="home-container">
         <div class="component-detail__layout">
           <aside
             v-if="tocSections.length > 0"
@@ -245,7 +248,7 @@
               data-cy="component-anatomy"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.anatomy.eyebrow', 'Structure') }}
                 </p>
                 <origam-title
@@ -320,7 +323,7 @@
               data-cy="component-props"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.props.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -353,7 +356,7 @@
               data-cy="component-slots"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.slots.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -406,7 +409,7 @@
               data-cy="component-emits"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.emits.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -466,7 +469,7 @@
               data-cy="component-exposed"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.exposed.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -498,7 +501,7 @@
               data-cy="component-css-vars"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.css_vars.eyebrow', 'Customisation') }}
                 </p>
                 <origam-title
@@ -530,7 +533,7 @@
               data-cy="component-composable"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.composable.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -586,7 +589,7 @@
               data-cy="component-a11y"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.a11y.eyebrow', 'Inclusion') }}
                 </p>
                 <origam-title
@@ -718,7 +721,7 @@
               data-cy="component-tokens"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.tokens.eyebrow', 'Foundation') }}
                 </p>
                 <origam-title
@@ -764,7 +767,7 @@
               data-cy="component-playground"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.playground.eyebrow', 'Interactive') }}
                 </p>
                 <origam-title
@@ -854,7 +857,7 @@
               data-cy="component-examples"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.examples.eyebrow', 'Usage') }}
                 </p>
                 <origam-title
@@ -902,7 +905,7 @@
               data-cy="component-family"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.family.eyebrow', 'Ecosystem') }}
                 </p>
                 <origam-title
@@ -977,7 +980,7 @@
               data-cy="component-related"
             >
               <header class="component-section__header">
-                <p class="component-section__eyebrow">
+                <p class="component-section__eyebrow home-eyebrow">
                   {{ t('components.detail.related.eyebrow', 'Ecosystem') }}
                 </p>
                 <origam-title
@@ -1088,7 +1091,7 @@
         </div>
       </origam-container>
 
-      <origam-container>
+      <origam-container class="home-container">
         <catalog-prev-next
           kind="component"
           :slug="slug"
@@ -1419,61 +1422,12 @@
 
   /* ── HERO ──────────────────────────────────────────────────── */
   .component-hero {
-    position: relative;
-    background: color-mix(in srgb, var(--origam-color__surface---raised) 62%, transparent);
-    border-block-end: 1px solid var(--origam-color__border---default);
-    overflow: hidden;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: var(--origam-gradient---hero-grid);
-      background-size: 32px 32px;
-      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
-      pointer-events: none;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset-inline: 0;
-      inset-block-start: 0;
-      block-size: 100%;
-      background: var(--origam-gradient---hero-glow);
-      opacity: 0.45;
-      pointer-events: none;
-    }
-
-    &__container {
-      position: relative;
-      z-index: 1;
-      padding-block: var(--origam-space---5, 1.25rem) var(--origam-space---8, 2rem);
-    }
-
-    &__identity {
-      padding-block: var(--origam-space---8, 2rem) var(--origam-space---6, 1.5rem);
-      display: flex;
-      flex-direction: column;
-      gap: var(--origam-space---4, 1rem);
-    }
-
-    &__title-row {
-      display: flex;
-      align-items: center;
-      gap: var(--origam-space---3, 0.75rem);
-      flex-wrap: wrap;
-    }
-
-    &__title {
-      margin: 0;
-      font-size: clamp(2.25rem, 5vw, 2.75rem);
-      font-weight: 800;
-      letter-spacing: -0.045em;
-      line-height: 1;
-      color: var(--origam-color__text---ink);
-      display: block;
-    }
+      &__chips {
+          display: flex;
+          align-items: center;
+          gap: var(--origam-space---2, 0.5rem);
+          flex-wrap: wrap;
+      }
 
     &__category-chip {
       font-family: var(--origam-font__family---mono, monospace);
@@ -1484,14 +1438,6 @@
 
     &__status-chip {
       font-size: var(--origam-font__size---sm, 0.75rem);
-    }
-
-    &__desc {
-      margin: 0;
-      max-inline-size: 52ch;
-      font-size: var(--origam-font__size---lg, 1rem);
-      line-height: 1.65;
-      color: var(--origam-color__text---secondary);
     }
 
     &__bottom {
@@ -1595,8 +1541,7 @@
           color: var(--origam-color__text---tertiary);
         }
       }
-    }
-  }
+    }  }
 
   /* ── ToC ──────────────────────────────────────────────────── */
   .component-toc {
@@ -1690,20 +1635,15 @@
     }
 
     &__eyebrow {
-      margin: 0 0 var(--origam-space---1, 0.25rem);
-      font-size: var(--origam-font__size---sm, 0.75rem);
-      font-weight: 700;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      color: var(--origam-color__action--primary---fgSubtle);
+        margin: 0 0 var(--origam-space---2, 0.5rem);
     }
 
     &__title {
       display: block;
-      font-size: var(--origam-font__size---2xl, 1.25rem);
+      font-size: clamp(1.35rem, 2.4vw, 1.75rem);
       font-weight: 700;
       color: var(--origam-color__text---ink);
-      letter-spacing: -0.02em;
+      letter-spacing: var(--home-ls-title);
       margin: 0 0 var(--origam-space---2, 0.5rem);
     }
 

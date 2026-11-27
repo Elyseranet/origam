@@ -1,6 +1,6 @@
 <template>
   <article
-    class="util-detail"
+    class="util-detail home"
     :data-cy="`page-util-${slug}`"
   >
     <div
@@ -46,96 +46,99 @@
     </div>
 
     <template v-else>
-      <div
-        class="util-hero"
-        aria-labelledby="util-title"
+      <enso-page-header
+        family="catalog"
+        title-id="util-title"
       >
-        <origam-container class="util-hero__container">
+        <template #breadcrumb>
           <catalog-breadcrumb
             kind="util"
             :name="utilName"
           />
+        </template>
 
-          <div class="util-hero__identity">
-            <div class="util-hero__title-row">
-              <origam-title
-                id="util-title"
-                tag="h1"
-                class="util-hero__title"
-              >
-                {{ utilName }}
-              </origam-title>
+        <template #eyebrow>
+          {{ t('nav.utils', 'Utils') }}
+        </template>
 
-              <origam-chip
-                v-if="utilCategory"
-                color="primary"
-                size="small"
-                variant="outlined"
-                class="util-hero__category-chip"
-              >
-                {{ utilCategory }}
-              </origam-chip>
+        <template #title>
+          {{ utilName }}
+        </template>
 
-              <origam-chip
-                size="small"
-                color="success"
-                variant="outlined"
-                prepend-icon="mdi-circle"
-                class="util-hero__status-chip"
-              >
-                {{ t('utils.detail.hero.stable_label', 'stable') }}
-              </origam-chip>
-            </div>
+        <template
+          v-if="utilDescFb"
+          #intro
+        >
+          {{ utilDescFb }}
+        </template>
 
-            <p class="util-hero__desc">
-              {{ utilDescFb }}
-            </p>
+        <template #default>
+          <div class="util-hero__chips">
+            <origam-chip
+              v-if="utilCategory"
+              color="primary"
+              size="small"
+              variant="outlined"
+              class="util-hero__category-chip"
+            >
+              {{ utilCategory }}
+            </origam-chip>
 
-            <div class="util-hero__bottom">
-              <nav
-                v-if="displayDoc?.sourceFile"
-                class="util-hero__actions"
-                :aria-label="t('utils.detail.external_links_label', 'External resources')"
-              >
-                <origam-btn
-                  :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="text"
-                  size="small"
-                  prepend-icon="mdi-github"
-                  data-cy="util-source-link"
-                >
-                  {{ t('utils.detail.hero.source_label', 'Source') }}
-                </origam-btn>
-              </nav>
+            <origam-chip
+              size="small"
+              color="success"
+              variant="outlined"
+              prepend-icon="mdi-circle"
+              class="util-hero__status-chip"
+            >
+              {{ t('utils.detail.hero.stable_label', 'stable') }}
+            </origam-chip>
+          </div>
 
+          <div class="util-hero__bottom">
+            <nav
+              v-if="displayDoc?.sourceFile"
+              class="util-hero__actions"
+              :aria-label="t('utils.detail.external_links_label', 'External resources')"
+            >
               <origam-btn
-                class="util-hero__import"
+                :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
+                target="_blank"
+                rel="noopener noreferrer"
                 variant="text"
                 size="small"
-                :aria-label="t('utils.detail.hero.import_label', 'Copy import statement')"
-                :data-cy="`util-import-btn-${slug}`"
-                @click="copyImport"
+                prepend-icon="mdi-github"
+                data-cy="util-source-link"
               >
-                <span class="util-hero__import-text">{{ importStatement }}</span>
-                <origam-icon
-                  :icon="importCopied ? 'mdi-check' : 'mdi-content-copy'"
-                  size="14"
-                  aria-hidden="true"
-                />
+                {{ t('utils.detail.hero.source_label', 'Source') }}
               </origam-btn>
-            </div>
+            </nav>
+
+            <origam-btn
+              class="util-hero__import"
+              variant="text"
+              size="small"
+              :aria-label="`${importStatement} — ${t('utils.detail.hero.import_label', 'Copy import statement')}`"
+              :data-cy="`util-import-btn-${slug}`"
+              @click="copyImport"
+            >
+              <span class="util-hero__import-text">{{ importStatement }}</span>
+              <origam-icon
+                :icon="importCopied ? 'mdi-check' : 'mdi-content-copy'"
+                size="14"
+                aria-hidden="true"
+              />
+            </origam-btn>
           </div>
-        </origam-container>
-      </div>
+        </template>
+      </enso-page-header>
 
       <catalog-related-families
         kind="util"
         :slug="slug"
       />
 
-      <origam-container>
+      <origam-container class="home-container">
         <div class="util-detail__layout">
           <aside
             v-if="tocSections.length > 0"
@@ -180,7 +183,7 @@
               data-cy="util-signature"
             >
               <header class="util-section__header">
-                <p class="util-section__eyebrow">
+                <p class="util-section__eyebrow home-eyebrow">
                   {{ t('utils.detail.signature.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -231,7 +234,7 @@
               data-cy="util-params"
             >
               <header class="util-section__header">
-                <p class="util-section__eyebrow">
+                <p class="util-section__eyebrow home-eyebrow">
                   {{ t('utils.detail.params.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -261,7 +264,7 @@
               data-cy="util-returns"
             >
               <header class="util-section__header">
-                <p class="util-section__eyebrow">
+                <p class="util-section__eyebrow home-eyebrow">
                   {{ t('utils.detail.returns.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -306,7 +309,7 @@
               data-cy="util-examples"
             >
               <header class="util-section__header">
-                <p class="util-section__eyebrow">
+                <p class="util-section__eyebrow home-eyebrow">
                   {{ t('utils.detail.examples.eyebrow', 'Usage') }}
                 </p>
                 <origam-title
@@ -354,7 +357,7 @@
               data-cy="util-related"
             >
               <header class="util-section__header">
-                <p class="util-section__eyebrow">
+                <p class="util-section__eyebrow home-eyebrow">
                   {{ t('utils.detail.related.eyebrow', 'Ecosystem') }}
                 </p>
                 <origam-title
@@ -420,7 +423,7 @@
         </div>
       </origam-container>
 
-      <origam-container>
+      <origam-container class="home-container">
         <catalog-prev-next
           kind="util"
           :slug="slug"
@@ -570,61 +573,11 @@ useSeoMeta({
 }
 
 .util-hero {
-    position: relative;
-    background: color-mix(in srgb, var(--origam-color__surface---raised) 62%, transparent);
-    border-block-end: 1px solid var(--origam-color__border---default);
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: var(--origam-gradient---hero-grid);
-        background-size: 32px 32px;
-        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
-        pointer-events: none;
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        inset-inline: 0;
-        inset-block-start: 0;
-        block-size: 100%;
-        background: var(--origam-gradient---hero-glow);
-        opacity: 0.45;
-        pointer-events: none;
-    }
-
-    &__container {
-        position: relative;
-        z-index: 1;
-        padding-block: var(--origam-space---5, 1.25rem) var(--origam-space---8, 2rem);
-    }
-
-    &__identity {
-        padding-block: var(--origam-space---8, 2rem) var(--origam-space---6, 1.5rem);
-        display: flex;
-        flex-direction: column;
-        gap: var(--origam-space---4, 1rem);
-    }
-
-    &__title-row {
+    &__chips {
         display: flex;
         align-items: center;
-        gap: var(--origam-space---3, 0.75rem);
+        gap: var(--origam-space---2, 0.5rem);
         flex-wrap: wrap;
-    }
-
-    &__title {
-        margin: 0;
-        font-size: clamp(2.25rem, 5vw, 2.75rem);
-        font-weight: 800;
-        letter-spacing: -0.045em;
-        line-height: 1;
-        color: var(--origam-color__text---ink);
-        display: block;
-        font-family: var(--origam-font__family---mono, monospace);
     }
 
     &__category-chip {
@@ -636,14 +589,6 @@ useSeoMeta({
 
     &__status-chip {
         font-size: var(--origam-font__size---sm, 0.75rem);
-    }
-
-    &__desc {
-        margin: 0;
-        max-inline-size: 52ch;
-        font-size: var(--origam-font__size---lg, 1rem);
-        line-height: 1.65;
-        color: var(--origam-color__text---secondary);
     }
 
     &__bottom {
@@ -734,19 +679,14 @@ useSeoMeta({
 
     &__eyebrow {
         margin: 0 0 var(--origam-space---2, 0.5rem);
-        font-size: var(--origam-font__size---sm, 0.75rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--origam-color__action--primary---fgSubtle);
     }
 
     &__title {
         margin: 0 0 var(--origam-space---3, 0.75rem);
         display: block;
-        font-size: clamp(1.25rem, 3vw, 1.5rem);
+        font-size: clamp(1.35rem, 2.4vw, 1.75rem);
         font-weight: var(--origam-font__weight---bold, 700);
-        letter-spacing: -0.02em;
+        letter-spacing: var(--home-ls-title);
         color: var(--origam-color__text---primary);
     }
 
