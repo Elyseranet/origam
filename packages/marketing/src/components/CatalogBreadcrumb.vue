@@ -104,6 +104,6 @@ const items = computed(() => {
 
 <style scoped lang="scss">
 .catalog-breadcrumb {
-    padding-block-start: var(--origam-space---5, 1.25rem);
+    margin-inline-start: calc(-1 * var(--origam-space---3, 0.75rem));
 }
 </style>

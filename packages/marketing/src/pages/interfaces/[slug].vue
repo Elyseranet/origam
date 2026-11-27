@@ -1,6 +1,6 @@
 <template>
   <article
-    class="interface-detail"
+    class="interface-detail home"
     :data-cy="`page-interface-${slug}`"
   >
     <div
@@ -46,78 +46,81 @@
     </div>
 
     <template v-else>
-      <div
-        class="interface-hero"
-        aria-labelledby="interface-title"
+      <enso-page-header
+        family="catalog"
+        title-id="interface-title"
       >
-        <origam-container class="interface-hero__container">
+        <template #breadcrumb>
           <catalog-breadcrumb
             kind="interface"
             :name="interfaceName"
           />
+        </template>
 
-          <div class="interface-hero__identity">
-            <div class="interface-hero__title-row">
-              <origam-title
-                id="interface-title"
-                tag="h1"
-                class="interface-hero__title"
-              >
-                {{ interfaceName }}
-              </origam-title>
+        <template #eyebrow>
+          {{ t('nav.interfaces', 'Interfaces') }}
+        </template>
 
-              <origam-chip
-                color="primary"
-                size="small"
-                variant="outlined"
-                class="interface-hero__kind-chip"
-              >
-                {{ t('interfaces.kind.interface', 'interface') }}
-              </origam-chip>
+        <template #title>
+          {{ interfaceName }}
+        </template>
 
-              <origam-chip
-                v-if="interfaceCategory"
-                size="small"
-                variant="tonal"
-                class="interface-hero__category-chip"
-              >
-                {{ interfaceCategory }}
-              </origam-chip>
-            </div>
+        <template
+          v-if="interfaceDescKey || interfaceDescFb"
+          #intro
+        >
+          {{ t(interfaceDescKey, interfaceDescFb) }}
+        </template>
 
-            <p class="interface-hero__desc">
-              {{ t(interfaceDescKey, interfaceDescFb) }}
-            </p>
+        <template #default>
+          <div class="interface-hero__chips">
+            <origam-chip
+              color="primary"
+              size="small"
+              variant="outlined"
+              class="interface-hero__kind-chip"
+            >
+              {{ t('interfaces.kind.interface', 'interface') }}
+            </origam-chip>
 
-            <div class="interface-hero__bottom">
-              <nav
-                v-if="displayDoc?.sourceFile"
-                class="interface-hero__actions"
-                :aria-label="t('interfaces.detail.external_links_label', 'External resources')"
-              >
-                <origam-btn
-                  :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="text"
-                  size="small"
-                  prepend-icon="mdi-github"
-                  data-cy="interface-source-link"
-                >
-                  {{ t('interfaces.detail.hero.source_label', 'Source') }}
-                </origam-btn>
-              </nav>
-            </div>
+            <origam-chip
+              v-if="interfaceCategory"
+              size="small"
+              variant="tonal"
+              class="interface-hero__category-chip"
+            >
+              {{ interfaceCategory }}
+            </origam-chip>
           </div>
-        </origam-container>
-      </div>
+
+          <div class="interface-hero__bottom">
+            <nav
+              v-if="displayDoc?.sourceFile"
+              class="interface-hero__actions"
+              :aria-label="t('interfaces.detail.external_links_label', 'External resources')"
+            >
+              <origam-btn
+                :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="text"
+                size="small"
+                prepend-icon="mdi-github"
+                data-cy="interface-source-link"
+              >
+                {{ t('interfaces.detail.hero.source_label', 'Source') }}
+              </origam-btn>
+            </nav>
+          </div>
+        </template>
+      </enso-page-header>
 
       <catalog-related-families
         kind="interface"
         :slug="slug"
       />
 
-      <origam-container>
+      <origam-container class="home-container">
         <div class="interface-detail__layout">
           <aside
             v-if="tocSections.length > 0"
@@ -162,7 +165,7 @@
               data-cy="interface-definition"
             >
               <header class="interface-section__header">
-                <p class="interface-section__eyebrow">
+                <p class="interface-section__eyebrow home-eyebrow">
                   {{ t('interfaces.detail.definition.eyebrow', 'TypeScript') }}
                 </p>
                 <origam-title
@@ -200,7 +203,7 @@
               data-cy="interface-extends"
             >
               <header class="interface-section__header">
-                <p class="interface-section__eyebrow">
+                <p class="interface-section__eyebrow home-eyebrow">
                   {{ t('interfaces.detail.extends.eyebrow', 'Inheritance') }}
                 </p>
                 <origam-title
@@ -251,7 +254,7 @@
               data-cy="interface-props"
             >
               <header class="interface-section__header">
-                <p class="interface-section__eyebrow">
+                <p class="interface-section__eyebrow home-eyebrow">
                   {{ t('interfaces.detail.props.eyebrow', 'API') }}
                 </p>
                 <origam-title
@@ -281,7 +284,7 @@
               data-cy="interface-used-by"
             >
               <header class="interface-section__header">
-                <p class="interface-section__eyebrow">
+                <p class="interface-section__eyebrow home-eyebrow">
                   {{ t('interfaces.detail.used_by.eyebrow', 'Ecosystem') }}
                 </p>
                 <origam-title
@@ -360,7 +363,7 @@
               data-cy="interface-examples"
             >
               <header class="interface-section__header">
-                <p class="interface-section__eyebrow">
+                <p class="interface-section__eyebrow home-eyebrow">
                   {{ t('interfaces.detail.examples.eyebrow', 'Usage') }}
                 </p>
                 <origam-title
@@ -403,7 +406,7 @@
         </div>
       </origam-container>
 
-      <origam-container>
+      <origam-container class="home-container">
         <catalog-prev-next
           kind="interface"
           :slug="slug"
@@ -561,61 +564,11 @@ useSeoMeta({
 }
 
 .interface-hero {
-    position: relative;
-    background: color-mix(in srgb, var(--origam-color__surface---raised) 62%, transparent);
-    border-block-end: 1px solid var(--origam-color__border---default);
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: var(--origam-gradient---hero-grid);
-        background-size: 32px 32px;
-        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
-        pointer-events: none;
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        inset-inline: 0;
-        inset-block-start: 0;
-        block-size: 100%;
-        background: var(--origam-gradient---hero-glow);
-        opacity: 0.45;
-        pointer-events: none;
-    }
-
-    &__container {
-        position: relative;
-        z-index: 1;
-        padding-block: var(--origam-space---5, 1.25rem) var(--origam-space---8, 2rem);
-    }
-
-    &__identity {
-        padding-block: var(--origam-space---8, 2rem) var(--origam-space---6, 1.5rem);
-        display: flex;
-        flex-direction: column;
-        gap: var(--origam-space---4, 1rem);
-    }
-
-    &__title-row {
+    &__chips {
         display: flex;
         align-items: center;
-        gap: var(--origam-space---3, 0.75rem);
+        gap: var(--origam-space---2, 0.5rem);
         flex-wrap: wrap;
-    }
-
-    &__title {
-        margin: 0;
-        font-size: clamp(2.25rem, 5vw, 2.75rem);
-        font-weight: 800;
-        letter-spacing: -0.045em;
-        line-height: 1;
-        color: var(--origam-color__text---ink);
-        display: block;
-        font-family: var(--origam-font__family---mono, monospace);
     }
 
     &__kind-chip {
@@ -627,14 +580,6 @@ useSeoMeta({
 
     &__category-chip {
         font-size: var(--origam-font__size---sm, 0.75rem);
-    }
-
-    &__desc {
-        margin: 0;
-        max-inline-size: 52ch;
-        font-size: var(--origam-font__size---lg, 1rem);
-        line-height: 1.65;
-        color: var(--origam-color__text---secondary);
     }
 
     &__bottom {
@@ -738,20 +683,15 @@ useSeoMeta({
     }
 
     &__eyebrow {
-        margin: 0 0 var(--origam-space---1, 0.25rem);
-        font-size: var(--origam-font__size---sm, 0.75rem);
-        font-weight: 700;
-        letter-spacing: 0.09em;
-        text-transform: uppercase;
-        color: var(--origam-color__action--primary---fgSubtle);
+        margin: 0 0 var(--origam-space---2, 0.5rem);
     }
 
     &__title {
         display: block;
-        font-size: var(--origam-font__size---2xl, 1.25rem);
+        font-size: clamp(1.35rem, 2.4vw, 1.75rem);
         font-weight: 700;
         color: var(--origam-color__text---ink);
-        letter-spacing: -0.02em;
+        letter-spacing: var(--home-ls-title);
         margin: 0 0 var(--origam-space---2, 0.5rem);
     }
 

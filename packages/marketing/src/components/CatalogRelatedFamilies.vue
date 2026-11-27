@@ -4,7 +4,7 @@
     :aria-labelledby="titleId"
     data-cy="catalog-related"
   >
-    <origam-container>
+    <origam-container class="home-container">
       <origam-title
         :id="titleId"
         tag="h2"

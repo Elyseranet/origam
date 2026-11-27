@@ -61,6 +61,12 @@
   padding-inline: var(--site-gutter);
 }
 
+/* Le conteneur Origam redéclare sa largeur (0,2,0, par breakpoint) : sous `.home`, le conteneur de page garde celle de la maquette (fiches du catalogue, #1586). */
+.home .origam-container.home-container {
+  --origam-container---width: 100%;
+  --origam-container---max-width: calc(var(--home-container-max) + 2 * var(--site-gutter));
+}
+
 .home-section {
   padding-block: var(--home-section-gap);
 }
