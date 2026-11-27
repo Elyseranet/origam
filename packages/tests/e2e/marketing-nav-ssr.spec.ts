@@ -1,5 +1,5 @@
 /**
- * Nav & footer — SSR reality check (audit-ssr-nav)
+ * Nav & footer sitemap — SSR reality check (audit-ssr-nav)
  *
  * The bug this guards against: the marketing site's nav and footer render
  * EMPTY in the HTML actually served by the server. No existing test ever
@@ -21,8 +21,7 @@
  * description for the actual numbers captured. Every test below must FAIL
  * on that state; a test that doesn't fail red first proves nothing.
  *
- * HISTORIQUE (retiré par #1596, voir le test du pied de page plus bas) — contrat du plan du site
- * (normative, fixed 2026-08-31, revised same day
+ * Footer sitemap contract (normative, fixed 2026-08-31, revised same day
  * once `fix-nav-ssr` landed real markup — both branches target this):
  *
  *   <nav class="site-footer__sitemap" data-cy="footer-sitemap" aria-label="…">
@@ -71,6 +70,33 @@ const PAGES_WITH_BASELINE: IPageBaseline[] = [
     { path: '/support', baselineInternalLinks: 2 }
 ]
 
+// All 16 NAV_SECTIONS hrefs, in NAV_SECTIONS order (3 sections: introduction,
+// getting_started, features). Confirmed stable, slash-final included for
+// '/stories/' and '/docs/' — sourced from
+// packages/marketing/src/consts/nav.const.ts.
+const STABLE_SITEMAP_HREFS = [
+    '/why-origam',
+    '/stability',
+    '/roadmap',
+    '/changelog',
+    '/installation',
+    '/wireframe',
+    '/components',
+    '/directives',
+    '/composables',
+    '/types',
+    '/enums',
+    '/interfaces',
+    '/utils',
+    '/consts',
+    '/stories/',
+    '/docs/'
+]
+
+// 3 sections → 3 <h3> + 3 <ul>.
+const EXPECTED_SITEMAP_LINK_COUNT = STABLE_SITEMAP_HREFS.length
+const EXPECTED_SITEMAP_SECTION_COUNT = 3
+
 const THEMING_HREF = '/theming'
 
 /**
@@ -112,6 +138,11 @@ function extractTaggedBlocks (html: string, openTag: RegExp, closeTag: string): 
     return blocks
 }
 
+function countTag (html: string, tag: string): number {
+    const re = new RegExp(`<${tag}\\b`, 'g')
+    return (html.match(re) ?? []).length
+}
+
 test.describe('Nav & footer sitemap — presence in the HTML served, no JS', () => {
 
     for (const { path, baselineInternalLinks } of PAGES_WITH_BASELINE) {
@@ -131,12 +162,121 @@ test.describe('Nav & footer sitemap — presence in the HTML served, no JS', () 
         })
     }
 
-    // #1596 — la maquette v12 retire le plan du site en 16 liens du pied de page (decision
-    // du proprietaire : le pied de page tient sur deux niveaux). Le contrat « footer-sitemap »
-    // qui vivait ici est donc retire ; le pied de page serveur est verifie ci-dessous et le
-    // maillage des 16 pages reste porte par les menus du header (rendus au clic, donc ABSENTS
-    // du HTML serveur : perte de maillage SSR signalee dans la PR, arbitrage en attente).
-    test('the two-level footer is in the HTML served, no JS, with its stable links', async ({ request }) => {
+    test('the footer sitemap (data-cy="footer-sitemap") exists in the HTML served for /', async ({ request }) => {
+        const res = await request.get('/')
+        const html = await res.text()
+
+        const sitemapBlocks = extractTaggedBlocks(
+            html,
+            /<nav\b[^>]*data-cy="footer-sitemap"[^>]*>/,
+            '</nav>'
+        )
+
+        expect(
+            sitemapBlocks.length,
+            'no <nav data-cy="footer-sitemap"> found in the HTML served for / (no JS)'
+        ).toBeGreaterThan(0)
+    })
+
+    test('the footer sitemap carries the stable NAV_SECTIONS links, nommément, with no JS', async ({ request }) => {
+        const res = await request.get('/')
+        const html = await res.text()
+
+        const sitemapBlocks = extractTaggedBlocks(
+            html,
+            /<nav\b[^>]*data-cy="footer-sitemap"[^>]*>/,
+            '</nav>'
+        )
+        expect(sitemapBlocks.length, 'no <nav data-cy="footer-sitemap"> found').toBeGreaterThan(0)
+        const sitemapHtml = sitemapBlocks.join('\n')
+
+        for (const href of STABLE_SITEMAP_HREFS) {
+            expect(
+                sitemapHtml.includes(`href="${href}"`),
+                `footer sitemap is missing <a href="${href}"> in the SSR HTML (no JS)`
+            ).toBe(true)
+        }
+    })
+
+    test('the footer sitemap is a real <nav> landmark with a non-empty accessible name', async ({ request }) => {
+        const res = await request.get('/')
+        const html = await res.text()
+
+        const sitemapBlocks = extractTaggedBlocks(
+            html,
+            /<nav\b[^>]*data-cy="footer-sitemap"[^>]*>/,
+            '</nav>'
+        )
+        expect(sitemapBlocks.length, 'no <nav data-cy="footer-sitemap"> found').toBeGreaterThan(0)
+
+        for (const block of sitemapBlocks) {
+            const openTag = block.slice(0, block.indexOf('>') + 1)
+            const ariaLabelMatch = openTag.match(/aria-label="([^"]*)"/)
+            expect(
+                ariaLabelMatch?.[1]?.trim().length ?? 0,
+                `<nav data-cy="footer-sitemap"> must carry a non-empty aria-label — got tag: ${openTag}`
+            ).toBeGreaterThan(0)
+        }
+    })
+
+    test('the footer sitemap has exactly 16 links and 3 sections (NAV_SECTIONS size), no JS', async ({ request }) => {
+        const res = await request.get('/')
+        const html = await res.text()
+
+        const sitemapBlocks = extractTaggedBlocks(
+            html,
+            /<nav\b[^>]*data-cy="footer-sitemap"[^>]*>/,
+            '</nav>'
+        )
+        expect(sitemapBlocks.length, 'no <nav data-cy="footer-sitemap"> found').toBeGreaterThan(0)
+        const sitemapHtml = sitemapBlocks.join('\n')
+
+        expect(
+            countTag(sitemapHtml, 'a'),
+            `footer sitemap should list exactly ${EXPECTED_SITEMAP_LINK_COUNT} links (NAV_SECTIONS size)`
+        ).toBe(EXPECTED_SITEMAP_LINK_COUNT)
+
+        expect(
+            countTag(sitemapHtml, 'h3'),
+            `footer sitemap should have exactly ${EXPECTED_SITEMAP_SECTION_COUNT} section headings (<h3>, one per NAV_SECTIONS section)`
+        ).toBe(EXPECTED_SITEMAP_SECTION_COUNT)
+
+        expect(
+            countTag(sitemapHtml, 'ul'),
+            `footer sitemap should have exactly ${EXPECTED_SITEMAP_SECTION_COUNT} lists (<ul>, one per NAV_SECTIONS section)`
+        ).toBe(EXPECTED_SITEMAP_SECTION_COUNT)
+    })
+
+    test('the footer sitemap lists the stable links in NAV_SECTIONS order, no JS', async ({ request }) => {
+        const res = await request.get('/')
+        const html = await res.text()
+
+        const sitemapBlocks = extractTaggedBlocks(
+            html,
+            /<nav\b[^>]*data-cy="footer-sitemap"[^>]*>/,
+            '</nav>'
+        )
+        expect(sitemapBlocks.length, 'no <nav data-cy="footer-sitemap"> found').toBeGreaterThan(0)
+        const sitemapHtml = sitemapBlocks.join('\n')
+
+        const positions = STABLE_SITEMAP_HREFS.map(href => sitemapHtml.indexOf(`href="${href}"`))
+
+        for (const [i, pos] of positions.entries()) {
+            expect(pos, `sitemap is missing href="${STABLE_SITEMAP_HREFS[i]}"`).toBeGreaterThanOrEqual(0)
+        }
+
+        for (let i = 1; i < positions.length; i++) {
+            expect(
+                positions[i],
+                `"${STABLE_SITEMAP_HREFS[i]}" should come after "${STABLE_SITEMAP_HREFS[i - 1]}" ` +
+                `(NAV_SECTIONS order) — positions: ${JSON.stringify(positions)}`
+            ).toBeGreaterThan(positions[i - 1])
+        }
+    })
+
+    // #1596 — le pied de page sur deux niveaux : le plan du site reste dans le niveau 2 (contrat
+    // ci-dessus, inchange) et le reste du pied de page est lui aussi dans le HTML serveur.
+    test('the two-level footer is in the HTML served, no JS, with its stable links (#1596)', async ({ request }) => {
         const html = await (await request.get('/')).text()
 
         const nav = extractTaggedBlocks(html, /<nav\b[^>]*data-cy="footer-nav"[^>]*>/, '</nav>').join('\n')
@@ -145,10 +285,9 @@ test.describe('Nav & footer sitemap — presence in the HTML served, no JS', () 
         }
 
         const legal = extractTaggedBlocks(html, /<nav\b[^>]*data-cy="footer-legal"[^>]*>/, '</nav>').join('\n')
-        for (const href of ['/legal', '/privacy', '/contact']) {
+        for (const href of ['/legal', '/privacy', '/contact', '/support']) {
             expect(legal.includes(`href="${href}"`), `footer legal nav is missing <a href="${href}"> in the SSR HTML`).toBe(true)
         }
-        expect(/<nav\b[^>]*data-cy="footer-legal"[^>]*aria-label="[^"]+"|<nav\b[^>]*aria-label="[^"]+"[^>]*data-cy="footer-legal"/.test(html), 'footer legal nav needs an aria-label').toBe(true)
     })
 
     test('/theming already renders as a real SSR <a href> and must not regress', async ({ request }) => {

@@ -4,7 +4,7 @@
  * Contrat :
  *  - niveau 1 (violet profond, `brand-deep---end`) : une ligne logo | liens | réseaux ;
  *  - niveau 2 (encre) : mentions légales, confidentialité, contact, puis la ligne de copyright ;
- *  - plus de plan du site, plus de crête : la scène du CTA fait la jonction, SANS couture
+ *  - plan du site (16 liens, rendu serveur) dans le niveau 2, plus de crête : la scène du CTA fait la jonction, SANS couture
  *    (mesurée en pixels, clair et sombre) ;
  *  - identique dans les deux modes, hors l'encre du niveau 2 ;
  *  - les liens internes sont localisés, le site de documentation (statique) reste un lien brut ;
@@ -48,10 +48,11 @@ function contrast (page: Page, fg: string, bg: string): Promise<number> {
 
 test.describe('SiteFooter — deux niveaux', () => {
 
-    test('un seul <footer>, sans plan du site ni panorama', async ({ page }) => {
+    test('un seul <footer> : plan du site (16 liens) dans le niveau 2, plus de panorama', async ({ page }) => {
         await openHome(page, 'light')
         await expect(page.locator('footer.site-footer')).toHaveCount(1)
-        await expect(page.locator('[data-cy="footer-sitemap"], [data-cy="footer-art"], .site-footer__sitemap')).toHaveCount(0)
+        await expect(page.locator('[data-cy="footer-art"]')).toHaveCount(0)
+        await expect(page.locator('.site-footer__legal [data-cy="footer-sitemap"] a')).toHaveCount(16)
     })
 
     test('niveau 1 : le logo mène à l\'accueil, quatre liens, deux réseaux au moins', async ({ page }) => {
@@ -73,13 +74,13 @@ test.describe('SiteFooter — deux niveaux', () => {
         await expect(x).toHaveAttribute('target', '_blank')
     })
 
-    test('niveau 2 : trois pages légales et la ligne de copyright', async ({ page }) => {
+    test('niveau 2 : pages légales, soutien et ligne de copyright', async ({ page }) => {
         await openHome(page, 'light')
 
         const legal = page.locator('[data-cy="footer-legal"]')
         await expect(legal).toHaveAttribute('aria-label', 'Legal information')
         const hrefs = await legal.locator('a').evaluateAll(els => els.map(el => el.getAttribute('href')))
-        expect(hrefs).toEqual(['/legal', '/privacy', '/contact'])
+        expect(hrefs).toEqual(['/legal', '/privacy', '/contact', '/support'])
 
         await expect(page.locator('[data-cy="footer-copyright"]')).toHaveText('© 2026 origam · MIT license · Made with origam, by humans.')
         await expect(page.locator('footer.site-footer')).not.toContainText(/LEGAL_|home\.cta\.|footer\./)
@@ -89,7 +90,7 @@ test.describe('SiteFooter — deux niveaux', () => {
         await openHome(page, 'light', '/fr')
 
         const hrefs = await page.locator('footer.site-footer a').evaluateAll(els => els.map(el => el.getAttribute('href')))
-        expect(hrefs).toEqual(expect.arrayContaining(['/fr', '/fr/components', '/docs/', '/fr/theming', '/fr#playground', '/fr/legal', '/fr/privacy', '/fr/contact']))
+        expect(hrefs).toEqual(expect.arrayContaining(['/fr', '/fr/components', '/docs/', '/fr/theming', '/fr#playground', '/fr/legal', '/fr/privacy', '/fr/contact', '/fr/support']))
         await expect(page.locator('[data-cy="footer-copyright"]')).toHaveText('© 2026 origam · licence MIT · Fait avec origam, par des humains.')
     })
 
@@ -98,13 +99,13 @@ test.describe('SiteFooter — deux niveaux', () => {
         await page.locator('[data-cy="footer-brand"]').focus()
 
         const order: string[] = []
-        for (let i = 0; i < 12 && order.at(-1) !== '/contact'; i++) {
+        for (let i = 0; i < 40 && order.at(-1) !== '/support'; i++) {
             order.push(await page.evaluate(() => (document.activeElement as HTMLElement).getAttribute('href') ?? ''))
             await page.keyboard.press('Tab')
         }
         expect(order.slice(0, 5)).toEqual(['/', '/components', '/docs/', '/theming', '/#playground'])
         expect(order[5]).toMatch(/github\.com/)
-        expect(order.slice(-3)).toEqual(['/legal', '/privacy', '/contact'])
+        expect(order.slice(-4)).toEqual(['/legal', '/privacy', '/contact', '/support'])
     })
 
     for (const mode of ['light', 'dark'] as const) {

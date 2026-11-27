@@ -11,11 +11,12 @@ export const FOOTER_NAV: readonly INavLink[] = [
     { i18nKey: 'footer.nav.playground', i18nFallback: 'Playground', href: '/#playground' }
 ]
 
-/** Niveau 2 : les pages légales. Les valeurs de l'éditeur vivent dans ces pages (variables `LEGAL_*`), jamais ici. */
+/** Niveau 2 : les pages légales et le soutien (/support, qui n'a plus d'autre lien). Les valeurs de l'éditeur vivent dans ces pages (variables `LEGAL_*`), jamais ici. */
 export const FOOTER_LEGAL: readonly INavLink[] = [
     { i18nKey: 'footer.legal.legal_notice', i18nFallback: 'Legal notice', href: '/legal' },
     { i18nKey: 'footer.legal.privacy', i18nFallback: 'Privacy', href: '/privacy' },
-    { i18nKey: 'footer.legal.contact', i18nFallback: 'Contact', href: '/contact' }
+    { i18nKey: 'footer.legal.contact', i18nFallback: 'Contact', href: '/contact' },
+    { i18nKey: 'footer.legal.support', i18nFallback: 'Support origam', href: '/support' }
 ]
 
 /** Glyphes 24 × 24 de la maquette v12 (X, YouTube) ; GitHub vient du jeu MDI du site. */

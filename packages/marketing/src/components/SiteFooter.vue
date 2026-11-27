@@ -72,6 +72,40 @@
       class="site-footer__legal"
       :style="legalStyle"
     >
+      <nav
+        class="site-footer__sitemap"
+        data-cy="footer-sitemap"
+        :aria-label="t('nav.a11y.sitemap', 'Site map')"
+      >
+        <template
+          v-for="section in NAV_SECTIONS"
+          :key="section.titleKey"
+        >
+          <h3 class="site-footer__sitemap-title">{{ t(section.titleKey, section.titleFallback) }}</h3>
+          <ul class="site-footer__sitemap-list">
+            <li
+              v-for="item in section.items"
+              :key="item.href"
+            >
+              <a
+                v-if="item.external"
+                :href="item.href"
+                class="site-footer__link"
+              >
+                {{ t(item.i18nKey, item.i18nFallback) }}
+              </a>
+              <nuxt-link
+                v-else
+                :to="localeHref(item.href)"
+                class="site-footer__link"
+              >
+                {{ t(item.i18nKey, item.i18nFallback) }}
+              </nuxt-link>
+            </li>
+          </ul>
+        </template>
+      </nav>
+
       <div class="site-footer__legal-bar">
         <nav
           :aria-label="t('footer.legal.title', 'Legal information')"
@@ -108,6 +142,7 @@ import { computed } from 'vue'
 import { useLocaleHref } from '~/composables/useLocaleHref'
 import { useT } from '~/composables/useT'
 import { ENSO_CIRCLE_OPEN, ENSO_MASK_DRY_05 } from '~/consts/enso.const'
+import { NAV_SECTIONS } from '~/consts/nav.const'
 import {
     FOOTER_LEGAL,
     FOOTER_MARK_WIDTH,
@@ -319,6 +354,44 @@ defineExpose({})
         }
     }
 
+    &__sitemap {
+        position: relative;
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        align-items: baseline;
+        gap: 6px 24px;
+        padding: 18px max(20px, 3vw) 6px;
+        font-size: 13px;
+        color: var(--site-footer-muted);
+    }
+
+    &__sitemap-title {
+        margin: 0;
+        font-size: 10.5px;
+        font-weight: var(--origam-font__weight---semibold, 600);
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+    }
+
+    &__sitemap-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 22px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        .site-footer__link {
+            display: inline-flex;
+            align-items: center;
+            min-block-size: 32px;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
     &__legal-bar {
         position: relative;
         display: flex;
@@ -357,6 +430,16 @@ defineExpose({})
         &__legal-bar {
             justify-content: center;
             text-align: center;
+        }
+
+        &__sitemap {
+            grid-template-columns: 1fr;
+            justify-items: center;
+            text-align: center;
+        }
+
+        &__sitemap-list {
+            justify-content: center;
         }
 
         &__list--legal {

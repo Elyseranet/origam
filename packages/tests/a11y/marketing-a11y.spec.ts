@@ -162,14 +162,14 @@ test.describe('Marketing a11y — navigation usable with zero JavaScript', () =>
 
     test.use({ javaScriptEnabled: false })
 
-    test('the footer nav is visible and clickable with JS disabled, and lands on the target page (#1596)', async ({ page }) => {
+    test('the footer sitemap is visible and clickable with JS disabled, and lands on the target page', async ({ page }) => {
         await page.goto('/')
 
-        const footerLink = page.locator('[data-cy="footer-nav"] a[href="/components"]')
-        await expect(footerLink).toBeVisible()
+        const sitemapLink = page.locator('[data-cy="footer-sitemap"] a[href="/why-origam"]')
+        await expect(sitemapLink).toBeVisible()
 
-        await footerLink.click()
-        await expect(page).toHaveURL(/\/components\/?$/)
+        await sitemapLink.click()
+        await expect(page).toHaveURL(/\/why-origam\/?$/)
     })
 
     test('the skip link is visible on focus and present with JS disabled', async ({ page }) => {

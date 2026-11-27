@@ -19,6 +19,10 @@ import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 
 const PLANES = ['mountains', 'ridge', 'foreground'] as const
+/** Course maximale du parallaxe de chaque plan (px) : vitesse × hauteur de la section (800 px). */
+/** Alpha en dessous duquel un pixel est invisible (moins d'un niveau sur 255). */
+const ALPHA_INVISIBLE = 1 / 255
+const MAX_SHIFT_PX = { mountains: 13.2, ridge: 8.4, foreground: 3.6 }
 const TEXTS = ['cta-title', 'cta-description', 'cta-btn-components', 'cta-btn-docs']
 
 async function openCta (page: Page, mode: 'light' | 'dark'): Promise<void> {
@@ -29,6 +33,11 @@ async function openCta (page: Page, mode: 'light' | 'dark'): Promise<void> {
     ])
     await page.goto('/', { waitUntil: 'load' })
     await page.locator('[data-cy="cta-plane-foreground"]').waitFor({ state: 'attached', timeout: 30_000 })
+    // En dev, le SCSS des SFC est injecté APRÈS `load` (#1516) : sans sa règle de fond, la section et son titre
+    // ne sont pas encore mis en forme et deux captures successives diffèrent.
+    await page.waitForFunction(() => getComputedStyle(document.querySelector('section.home-cta')!).backgroundImage.includes('linear-gradient'), undefined, { timeout: 30_000 })
+    // Polices chargées : un échange de police en cours de mesure déplace le texte entre deux captures.
+    await page.evaluate(() => Promise.all(['400', '600', '700'].map(w => document.fonts.load(`${ w } 1em Sora`))).then(() => document.fonts.ready))
 }
 
 /** Décalage vertical (px) appliqué par le parallaxe à une couche. */
@@ -51,20 +60,43 @@ async function scrollToProgress (page: Page, progress: number): Promise<void> {
     await page.waitForTimeout(250)
 }
 
-/** Capture de chaque élément de texte de la section (marge de 4 px), un par un pour ne dépendre d'aucun défilement. */
-async function shootTexts (page: Page): Promise<Record<string, Buffer>> {
-    const shots: Record<string, Buffer> = {}
-    for (const cy of TEXTS) {
-        const loc = page.locator(`[data-cy="${ cy }"]`)
-        await loc.scrollIntoViewIfNeeded()
-        const box = (await loc.boundingBox())!
-        const width = page.viewportSize()!.width
-        shots[cy] = await page.screenshot({
-            clip: { x: Math.max(0, box.x - 4), y: box.y - 4, width: Math.min(width, box.width + 8), height: box.height + 8 },
-            animations: 'disabled'
-        })
-    }
-    return shots
+/**
+ * Opacité maximale (0 à 1) que les plans peignent sous chaque élément de texte, lue sur l'ALPHA réel de chaque
+ * image : le plan est dessiné à son rectangle courant (transformation du parallaxe comprise), on garde le plus
+ * grand alpha qui recouvre la zone de l'élément, multiplié par l'opacité CSS du plan. Aucune capture d'écran :
+ * rien ne dépend de la fin d'une transition ni d'un contenu chargé tard au-dessus.
+ */
+function landscapeAlphaUnder (page: Page): Promise<Record<string, number>> {
+    return page.evaluate(async ([texts]) => {
+        const rects = Object.fromEntries(texts.map(cy => [cy, document.querySelector(`[data-cy="${ cy }"]`)!.getBoundingClientRect()]))
+        const worst: Record<string, number> = Object.fromEntries(texts.map(cy => [cy, 0]))
+
+        for (const plane of document.querySelectorAll<HTMLElement>('.home-cta__plane')) {
+            const url = /url\("?([^")]+)"?\)/.exec(getComputedStyle(plane).backgroundImage)?.[1]
+            if (!url) continue
+            const img = new Image()
+            img.src = url
+            await img.decode()
+
+            const box = plane.getBoundingClientRect()
+            const w = Math.max(1, Math.round(box.width))
+            const h = Math.max(1, Math.round(box.height))
+            const ctx = new OffscreenCanvas(w, h).getContext('2d', { willReadFrequently: true })!
+            ctx.drawImage(img, 0, 0, w, h)
+            const opacity = Number(getComputedStyle(plane).opacity)
+
+            for (const cy of texts) {
+                const r = rects[cy]
+                const x0 = Math.max(0, Math.floor(r.left - box.left)), x1 = Math.min(w, Math.ceil(r.right - box.left))
+                const y0 = Math.max(0, Math.floor(r.top - box.top)), y1 = Math.min(h, Math.ceil(r.bottom - box.top))
+                if (x1 <= x0 || y1 <= y0) continue
+                const data = ctx.getImageData(x0, y0, x1 - x0, y1 - y0).data
+                for (let i = 3; i < data.length; i += 4) worst[cy] = Math.max(worst[cy], (data[i] / 255) * opacity)
+            }
+        }
+
+        return worst
+    }, [TEXTS] as const)
 }
 
 test.describe('HomeCta — scène de paysage', () => {
@@ -116,13 +148,12 @@ test.describe('HomeCta — scène de paysage', () => {
         test('les plans ne bougent pas', async ({ page }) => {
             await openCta(page, 'light')
 
-            await scrollToProgress(page, 0.02)
-            const enter = await Promise.all(PLANES.map(p => layerShift(page, p)))
-            await scrollToProgress(page, 0.98)
-            const leave = await Promise.all(PLANES.map(p => layerShift(page, p)))
+            const shifts = () => Promise.all(PLANES.map(p => layerShift(page, p)))
 
-            expect(enter).toEqual([0, 0, 0])
-            expect(leave).toEqual([0, 0, 0])
+            await scrollToProgress(page, 0.15)
+            await expect.poll(shifts, { timeout: 4_000 }).toEqual([0, 0, 0])
+            await scrollToProgress(page, 0.85)
+            await expect.poll(shifts, { timeout: 4_000 }).toEqual([0, 0, 0])
         })
     })
 
@@ -131,19 +162,24 @@ test.describe('HomeCta — scène de paysage', () => {
             test(`${ width }px ${ mode } : aucun pixel de paysage sous le texte ni sous un bouton`, async ({ page }) => {
                 await page.setViewportSize({ width, height: 900 })
                 await openCta(page, mode)
-                await page.emulateMedia({ reducedMotion: 'reduce' })
                 await page.locator('section.home-cta').scrollIntoViewIfNeeded()
 
-                // Rendu avec les plans, puis sans ; le texte reste le même dans les deux.
-                const withPlanes = await shootTexts(page)
-                await page.addStyleTag({ content: '.home-cta__plane { visibility: hidden !important }' })
-                const withoutPlanes = await shootTexts(page)
+                // Les trois positions du parallaxe : neutre et les deux extrêmes (course maximale de chaque plan, posée
+                // en ligne : on mesure le décor, pas l'état d'un moteur de défilement).
+                for (const sign of [0, 1, -1]) {
+                    await page.evaluate(([sg, shifts]) => {
+                        for (const [plane, px] of Object.entries(shifts)) {
+                            document.querySelector<HTMLElement>(`[data-cy="cta-plane-${ plane }"]`)!.style.setProperty('transform', `translate3d(0, ${ sg * px }px, 0)`, 'important')
+                        }
+                    }, [sign, MAX_SHIFT_PX] as const)
 
-                for (const cy of TEXTS) {
-                    expect(
-                        withPlanes[cy].equals(withoutPlanes[cy]),
-                        `${ cy } (${ width }px, ${ mode }) : un plan du paysage passe sous cet élément`
-                    ).toBe(true)
+                    const worst = await landscapeAlphaUnder(page)
+                    for (const cy of TEXTS) {
+                        expect(
+                            worst[cy],
+                            `${ cy } (${ width }px, ${ mode }, parallaxe ${ sign }) : un plan du paysage passe sous cet élément (alpha ${ worst[cy].toFixed(3) })`
+                        ).toBeLessThanOrEqual(ALPHA_INVISIBLE)
+                    }
                 }
             })
         }
