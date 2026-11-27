@@ -2268,5 +2268,17 @@
         "field_host_address": "Address",
         "field_host_phone": "Telephone",
         "field_host_country": "Country"
+    },
+    "enso_demo": {
+        "title": "Enso foundations",
+        "intro": "Control page for the enso redesign: the shared decorations and every converted illustration, in light and dark side by side.",
+        "mode_light": "Light",
+        "mode_dark": "Dark",
+        "stage_text": "Washi paper, brush-underlined title, falling petals and the brush divider below.",
+        "gallery_label": "Converted illustrations",
+        "meta": {
+            "title": "Enso foundations · origam",
+            "description": "Internal control page for the enso redesign assets."
+        }
     }
 }
