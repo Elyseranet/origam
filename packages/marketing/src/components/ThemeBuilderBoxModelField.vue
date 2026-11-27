@@ -190,56 +190,56 @@ const onEdge = (key: 'top' | 'left' | 'bottom' | 'right', value: unknown): void 
 .tbc-box-model {
     &__none-chip {
         align-self: flex-start;
-        padding: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-2, 0.5rem);
+        padding: var(--origam-space---1) var(--origam-space---2);
         font-size: 0.6875rem;
-        background-color: var(--origam-color-surface-default);
-        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-        border-radius: var(--origam-radius-sm, 0.25rem);
+        background-color: var(--origam-color__surface---default);
+        border: 1px solid var(--origam-color__border---subtle);
+        border-radius: var(--origam-radius---sm);
         cursor: pointer;
 
         &:hover {
-            background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
+            background-color: var(--origam-color__surface---raised);
         }
 
         &--active {
             border-color: var(--origam-color__action--primary---bg, #7c3aed);
             color: var(--origam-color__action--primary---bg, #7c3aed);
-            font-weight: var(--origam-font-weight-bold, 700);
+            font-weight: var(--origam-font__weight---bold);
         }
     }
 
     &__scale-label {
         margin: 0;
         font-size: 0.625rem;
-        font-weight: var(--origam-font-weight-bold, 700);
+        font-weight: var(--origam-font__weight---bold);
         text-transform: uppercase;
         letter-spacing: 0.04em;
-        color: var(--origam-color-text-subtle);
+        color: var(--origam-color__text---secondary);
     }
 
     &__scale-grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: var(--origam-spacing-1, 0.25rem);
+        gap: var(--origam-space---1);
     }
 
     &__scale-chip {
-        padding: var(--origam-spacing-1, 0.25rem);
+        padding: var(--origam-space---1);
         font-size: 0.6875rem;
         text-align: center;
-        background-color: var(--origam-color-surface-default);
-        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-        border-radius: var(--origam-radius-sm, 0.25rem);
+        background-color: var(--origam-color__surface---default);
+        border: 1px solid var(--origam-color__border---subtle);
+        border-radius: var(--origam-radius---sm);
         cursor: pointer;
 
         &:hover {
-            background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
+            background-color: var(--origam-color__surface---raised);
         }
 
         &--active {
             border-color: var(--origam-color__action--primary---bg, #7c3aed);
             color: var(--origam-color__action--primary---bg, #7c3aed);
-            font-weight: var(--origam-font-weight-bold, 700);
+            font-weight: var(--origam-font__weight---bold);
         }
     }
 
@@ -260,14 +260,14 @@ const onEdge = (key: 'top' | 'left' | 'bottom' | 'right', value: unknown): void 
     &__modes {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--origam-spacing-1, 0.25rem);
+        gap: var(--origam-space---1);
     }
 
     &__axis-grid,
     &__edge-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: var(--origam-spacing-2, 0.5rem);
+        gap: var(--origam-space---2);
     }
 }
 </style>

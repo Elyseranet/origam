@@ -125,7 +125,7 @@ const onCustom = (value: unknown): void => {
 .tbc-color-field {
     display: flex;
     flex-direction: column;
-    gap: var(--origam-spacing-2, 0.5rem);
+    gap: var(--origam-space---2);
     inline-size: 100%;
 
     &__select-wrap {
@@ -135,7 +135,7 @@ const onCustom = (value: unknown): void => {
     &__fieldset {
         display: flex;
         flex-direction: column;
-        gap: var(--origam-spacing-2, 0.5rem);
+        gap: var(--origam-space---2);
         padding: 0;
         margin: 0;
         border: none;
@@ -144,10 +144,10 @@ const onCustom = (value: unknown): void => {
     &__legend {
         padding: 0;
         font-size: 0.625rem;
-        font-weight: var(--origam-font-weight-bold, 700);
+        font-weight: var(--origam-font__weight---bold);
         text-transform: uppercase;
         letter-spacing: 0.04em;
-        color: var(--origam-color-text-subtle);
+        color: var(--origam-color__text---secondary);
     }
 }
 </style>
