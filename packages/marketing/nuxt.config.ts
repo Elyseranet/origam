@@ -205,6 +205,7 @@ export default defineNuxtConfig({
             npmVersion: process.env.NUXT_PUBLIC_NPM_VERSION ?? dsVersion,
             siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? MARKETING_DEFAULTS.siteUrl,
             donateUrl: process.env.NUXT_PUBLIC_DONATE_URL ?? MARKETING_DEFAULTS.donateUrl,
+            youtubeUrl: process.env.NUXT_PUBLIC_YOUTUBE_URL ?? '',
             legal: { ...LEGAL_DEFAULTS }
         }
     },

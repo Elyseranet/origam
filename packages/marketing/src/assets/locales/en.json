@@ -11,7 +11,6 @@
         "themes_tooling": "Tooling compatibility",
         "themes_preview_tiles": "Theme preview tiles",
         "roadmap_effort": "Effort",
-        "donate": "Support origam with a donation",
         "donate_qr": "QR code linking to the donation page",
         "github": "origam on GitHub"
     },
@@ -957,30 +956,26 @@
         }
     },
     "footer": {
-        "tagline": "The Vue 3 design system that just works.",
-        "product": {
-            "title": "Product",
-            "charts": "Charts",
-            "themes": "Themes"
+        "brand_tagline": "DESIGN SYSTEM",
+        "nav_label": "Footer",
+        "nav": {
+            "components": "Components",
+            "documentation": "Documentation",
+            "theming": "Theming",
+            "playground": "Playground"
         },
-        "resources": {
-            "title": "Resources",
+        "social": {
             "github": "GitHub",
-            "discord": "Discord",
-            "discussions": "Discussions",
-            "twitter": "Twitter",
-            "support": "Support origam"
+            "x": "X",
+            "youtube": "YouTube"
         },
         "legal": {
-            "title": "Legal",
-            "license": "MIT License",
+            "title": "Legal information",
             "privacy": "Privacy",
             "contact": "Contact",
             "legal_notice": "Legal notice"
         },
-        "copyright": "© 2026 origam · MIT",
-        "made_with": "Made with origam, by humans.",
-        "donate": "Support origam"
+        "copyright": "© 2026 origam · MIT license · Made with origam, by humans."
     },
     "home": {
         "meta": {
@@ -1062,13 +1057,11 @@
             "note": "The npm package ships the base origam theme. The others are examples, to open in the Theme Builder."
         },
         "cta": {
-            "title": "Three steps to begin.",
-            "cta_start": "Install",
-            "cta_docs": "Explore the components",
+            "title": "Ready to build your interfaces?",
+            "cta_docs": "Explore the components →",
+            "cta_read_docs": "Read the documentation",
             "actions_label": "Get started",
-            "description": "npm i origam, then the plugin and a first component. On Nuxt, one module to add.",
-            "support": "Origam is free, MIT licensed and maintained by one person.",
-            "support_link": "Support the project"
+            "description": "npm i origam, then the plugin and a first component. On Nuxt, one module to add."
         },
         "proof": {
             "eyebrow": "Measured in the code",

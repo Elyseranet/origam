@@ -184,45 +184,6 @@ export const ENSO_SECTION_WAVE: IEnsoArt = {
     }
 }
 
-export const ENSO_CTA_WAVE: IEnsoArt = {
-    width: 2400,
-    height: 1200,
-    light: {
-        src: '/brand/enso/light/cta-wave-2400.avif',
-        srcset: '/brand/enso/light/cta-wave-800.avif 800w, /brand/enso/light/cta-wave-1600.avif 1600w, /brand/enso/light/cta-wave-2400.avif 2400w'
-    },
-    dark: {
-        src: '/brand/enso/dark/cta-wave-2400.avif',
-        srcset: '/brand/enso/dark/cta-wave-800.avif 800w, /brand/enso/dark/cta-wave-1600.avif 1600w, /brand/enso/dark/cta-wave-2400.avif 2400w'
-    }
-}
-
-export const ENSO_CTA_WAVE_REVERSE: IEnsoArt = {
-    width: 2400,
-    height: 1200,
-    light: {
-        src: '/brand/enso/light/cta-wave-reverse-2400.avif',
-        srcset: '/brand/enso/light/cta-wave-reverse-800.avif 800w, /brand/enso/light/cta-wave-reverse-1600.avif 1600w, /brand/enso/light/cta-wave-reverse-2400.avif 2400w'
-    },
-    dark: {
-        src: '/brand/enso/dark/cta-wave-reverse-2400.avif',
-        srcset: '/brand/enso/dark/cta-wave-reverse-800.avif 800w, /brand/enso/dark/cta-wave-reverse-1600.avif 1600w, /brand/enso/dark/cta-wave-reverse-2400.avif 2400w'
-    }
-}
-
-export const ENSO_FOOTER: IEnsoArt = {
-    width: 2880,
-    height: 960,
-    light: {
-        src: '/brand/enso/light/footer-04-2880.avif',
-        srcset: '/brand/enso/light/footer-04-960.avif 960w, /brand/enso/light/footer-04-1920.avif 1920w, /brand/enso/light/footer-04-2880.avif 2880w'
-    },
-    dark: {
-        src: '/brand/enso/dark/footer-04-2880.avif',
-        srcset: '/brand/enso/dark/footer-04-960.avif 960w, /brand/enso/dark/footer-04-1920.avif 1920w, /brand/enso/dark/footer-04-2880.avif 2880w'
-    }
-}
-
 export const ENSO_CIRCLE_OPEN: IEnsoArt = {
     width: 800,
     height: 778,
@@ -410,10 +371,9 @@ export const ENSO_BRUSH: IEnsoArt = {
 /** Largeur d'affichage (px CSS) qui choisit le fichier 1x / 2x des fonds CSS. */
 export const ENSO_PAPER_TILE_WIDTH = 512
 
-/** Largeurs d'affichage (px) qui choisissent le fichier du trait : lien actif, bord bas du header, panorama du footer. */
+/** Largeurs d'affichage (px) qui choisissent le fichier du trait : lien actif, bord bas du header. */
 export const ENSO_NAV_BRUSH_WIDTH = 240
 export const ENSO_BAR_BRUSH_WIDTH = 1920
-export const ENSO_FOOTER_ART_WIDTH = 1920
 export const ENSO_PETAL_WIDTH = 40
 
 /**
@@ -455,9 +415,6 @@ export const ENSO_GALLERY: readonly IEnsoGalleryItem[] = [
     { name: 'ENSO_SECTION_MOUNTAIN', art: ENSO_SECTION_MOUNTAIN },
     { name: 'ENSO_SECTION_HILLS', art: ENSO_SECTION_HILLS },
     { name: 'ENSO_SECTION_WAVE', art: ENSO_SECTION_WAVE },
-    { name: 'ENSO_CTA_WAVE', art: ENSO_CTA_WAVE },
-    { name: 'ENSO_CTA_WAVE_REVERSE', art: ENSO_CTA_WAVE_REVERSE },
-    { name: 'ENSO_FOOTER', art: ENSO_FOOTER },
     { name: 'ENSO_CIRCLE_OPEN', art: ENSO_CIRCLE_OPEN },
     { name: 'ENSO_CIRCLE_WIDE', art: ENSO_CIRCLE_WIDE },
     { name: 'ENSO_BRUSH', art: ENSO_BRUSH },

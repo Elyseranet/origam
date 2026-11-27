@@ -11,7 +11,6 @@
         "themes_tooling": "Compatibilité des outils",
         "themes_preview_tiles": "Aperçus des thèmes",
         "roadmap_effort": "Effort",
-        "donate": "Soutenir origam par un don",
         "donate_qr": "Code QR menant à la page de dons",
         "github": "origam sur GitHub"
     },
@@ -957,30 +956,26 @@
         }
     },
     "footer": {
-        "tagline": "Le design system Vue 3 qui marche, tout simplement.",
-        "product": {
-            "title": "Produit",
-            "charts": "Graphiques",
-            "themes": "Thèmes"
+        "brand_tagline": "DESIGN SYSTEM",
+        "nav_label": "Pied de page",
+        "nav": {
+            "components": "Composants",
+            "documentation": "Documentation",
+            "theming": "Thématisation",
+            "playground": "Playground"
         },
-        "resources": {
-            "title": "Ressources",
+        "social": {
             "github": "GitHub",
-            "discord": "Discord",
-            "discussions": "Discussions",
-            "twitter": "Twitter",
-            "support": "Soutenir origam"
+            "x": "X",
+            "youtube": "YouTube"
         },
         "legal": {
-            "title": "Mentions légales",
-            "license": "Licence MIT",
+            "title": "Informations légales",
             "privacy": "Confidentialité",
             "contact": "Contact",
             "legal_notice": "Mentions légales"
         },
-        "copyright": "© 2026 origam · MIT",
-        "made_with": "Fait avec origam, par des humains.",
-        "donate": "Soutenir origam"
+        "copyright": "© 2026 origam · licence MIT · Fait avec origam, par des humains."
     },
     "home": {
         "meta": {
@@ -1062,13 +1057,11 @@
             "note": "Le paquet npm livre le thème de base origam. Les autres sont des exemples, à ouvrir dans le Theme Builder."
         },
         "cta": {
-            "title": "Trois gestes pour commencer.",
-            "cta_start": "Installer",
-            "cta_docs": "Explorer les composants",
+            "title": "Prêt à construire vos interfaces ?",
+            "cta_docs": "Explorer les composants →",
+            "cta_read_docs": "Lire la documentation",
             "actions_label": "Pour commencer",
-            "description": "npm i origam, puis le plugin et un premier composant. Sous Nuxt, un module à ajouter.",
-            "support": "Origam est libre, sous licence MIT, et maintenu par une seule personne.",
-            "support_link": "Soutenir le projet"
+            "description": "npm i origam, puis le plugin et un premier composant. Sous Nuxt, un module à ajouter."
         },
         "proof": {
             "eyebrow": "Mesuré dans le code",

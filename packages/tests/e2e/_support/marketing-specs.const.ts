@@ -35,6 +35,7 @@ export const MARKETING_SPEC_PATTERNS = [
     '**/marketing-primary-nav.spec.ts',
     '**/marketing-site-chrome.spec.ts',
     '**/marketing-enso-chrome.spec.ts',
+    '**/site-footer.spec.ts',
     '**/theming-feedback-tokens.spec.ts',
     '**/home-*.spec.ts',
     '**/why-origam.spec.ts',

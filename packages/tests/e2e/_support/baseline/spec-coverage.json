@@ -84,7 +84,6 @@
     "grids.spec.ts",
     "group-propagation.spec.ts",
     "home-benefits.spec.ts",
-    "home-cta.spec.ts",
     "home-hero.spec.ts",
     "home-playground.spec.ts",
     "home-themes.spec.ts",

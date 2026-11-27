@@ -1,108 +1,110 @@
 <template>
-  <origam-theme-provider mode="dark">
-    <section
-      class="home-cta"
-      :style="brushVars"
-      aria-labelledby="cta-title"
+  <section
+    class="home-cta"
+    aria-labelledby="cta-title"
+  >
+    <origam-parallax
+      class="home-cta__scene"
+      easing="ease-out"
+      aria-hidden="true"
+      data-cy="cta-scene"
     >
-      <div class="home-cta__inner home-container">
-        <div class="home-cta__text">
-          <origam-title
-            id="cta-title"
-            tag="h2"
-            class="home-cta__title"
-          >
-            {{ t('home.cta.title', 'Three steps to begin.') }}
-          </origam-title>
+      <origam-parallax-layer
+        v-for="plane in planes"
+        :key="plane.key"
+        class="home-cta__layer"
+        :speed="plane.speed"
+        :data-cy="`cta-plane-${plane.key}`"
+      >
+        <div
+          class="home-cta__plane"
+          :class="plane.classes"
+          :style="plane.style"
+        />
+      </origam-parallax-layer>
+    </origam-parallax>
 
-          <p
-            class="home-cta__description"
-            data-cy="cta-description"
-          >
-            {{ t('home.cta.description', 'npm i origam, then the plugin and a first component. On Nuxt, one module to add.') }}
-          </p>
+    <div class="home-cta__copy">
+      <origam-title
+        id="cta-title"
+        tag="h2"
+        class="home-cta__title"
+        data-cy="cta-title"
+      >
+        {{ t('home.cta.title', 'Ready to build your interfaces?') }}
+      </origam-title>
 
-          <p
-            class="home-cta__support"
-            data-cy="cta-support"
-          >
-            {{ t('home.cta.support', 'Origam is free, MIT licensed and maintained by one person.') }}
-            <origam-btn
-              class="home-cta__support-link"
-              variant="text"
-              size="small"
-              append-icon="mdi-arrow-right"
-              :href="CONTACT_SUPPORT_ROUTE"
-              data-cy="cta-support-link"
-            >
-              {{ t('home.cta.support_link', 'Support the project') }}
-            </origam-btn>
-          </p>
-        </div>
+      <p
+        class="home-cta__description"
+        data-cy="cta-description"
+      >
+        {{ t('home.cta.description', 'npm i origam, then the plugin and a first component. On Nuxt, one module to add.') }}
+      </p>
 
-        <nav
-          class="home-cta__actions"
-          :aria-label="t('home.cta.actions_label', 'Get started')"
+      <nav
+        class="home-cta__actions"
+        :aria-label="t('home.cta.actions_label', 'Get started')"
+      >
+        <origam-btn
+          v-bind="CTA_BTN"
+          class="home-cta__btn"
+          variant="flat"
+          :bg-color="CTA_SUN_COLOR"
+          :color="CTA_INK_COLOR"
+          :href="localeHref(CTA_COMPONENTS_HREF)"
+          data-cy="cta-btn-components"
         >
-          <origam-btn
-            class="home-cta__btn"
-            variant="flat"
-            size="x-large"
-            :bg-color="CTA_SUN_COLOR"
-            :color="CTA_INK_COLOR"
-            :href="CTA_START_HREF"
-            data-cy="cta-btn-start"
-          >
-            {{ t('home.cta.cta_start', 'Install') }}
-          </origam-btn>
+          {{ t('home.cta.cta_docs', 'Explore the components') }}
+        </origam-btn>
 
-          <origam-btn
-            class="home-cta__btn"
-            variant="outlined"
-            size="x-large"
-            :href="CTA_COMPONENTS_HREF"
-            data-cy="cta-btn-docs"
-          >
-            {{ t('home.cta.cta_docs', 'Explore the components') }}
-          </origam-btn>
-        </nav>
-      </div>
-    </section>
-  </origam-theme-provider>
+        <origam-btn
+          v-bind="CTA_BTN"
+          class="home-cta__btn home-cta__btn--line"
+          variant="outlined"
+          :color="CTA_LINE_COLOR"
+          :href="CTA_DOCS_HREF"
+          data-cy="cta-btn-docs"
+        >
+          {{ t('home.cta.cta_read_docs', 'Read the documentation') }}
+        </origam-btn>
+      </nav>
+    </div>
+  </section>
 </template>
 
 <script setup lang="ts">
+import { useLocaleHref } from '~/composables/useLocaleHref'
 import { useT } from '~/composables/useT'
-import { CONTACT_SUPPORT_ROUTE } from '~/consts/contact.const'
-import { CTA_COMPONENTS_HREF, CTA_INK_COLOR, CTA_START_HREF, CTA_SUN_COLOR, CTA_BRUSH_WIDTH } from '~/consts/cta.const'
-import { ENSO_BRUSH_IVORY } from '~/consts/enso.const'
-import { ensoImageSet } from '~/utils/enso.util'
+import { CTA_BTN, CTA_COMPONENTS_HREF, CTA_DOCS_HREF, CTA_INK_COLOR, CTA_LINE_COLOR, CTA_SUN_COLOR } from '~/consts/cta.const'
+import { ctaPlaneViews } from '~/utils/enso.util'
 
 /*********************************************************
  * Props, emits & slots
  *
  * @description
- * Bande finale : titre à gauche, boutons à droite (T8 de #1554). Fond uni violet
- * Origam (token primary 600) dans les deux modes (sous-arbre forcé en sombre :
- * texte clair) ; le pinceau ivoire du kit chevauche le bord haut et fait la
- * transition avec la section au-dessus.
+ * Bande finale « Crépuscule » (#1596) : pleine largeur, sans carte ni pinceau.
+ * Le ciel descend de la couleur de la thématisation vers le violet profond ;
+ * trois plans de paysage montent du bas ; le texte est centré dans le ciel, là
+ * où aucun plan ne passe. Elle suit le mode du site (`data-mode`).
  ********************************************************/
 defineEmits([])
 
 defineSlots<Record<string, never>>()
 
 const { t } = useT()
+const { localeHref } = useLocaleHref()
 
 /*********************************************************
- * Pinceau
+ * Plans
  *
  * @description
- * Pinceau ivoire terminé en doré du kit : identique dans les deux modes.
+ * Les plans de `CTA_PLANES` avec leurs variables CSS (`--enso-art-*`), statiques.
+ * Chacun est posé dans une `OrigamParallaxLayer` : le défilement les déplace à
+ * leur vitesse, sans pointeur (le CTA ne réagit pas à la souris). `easing="ease-out"`
+ * choisit le chemin JS du DS : le chemin CSS (`linear`) anime aussi l'axe X, et pose
+ * sa classe `--css-driven` côté client seulement (hydration mismatch).
  ********************************************************/
-const brushVars = {
-    '--home-cta-brush': ensoImageSet(ENSO_BRUSH_IVORY, CTA_BRUSH_WIDTH),
-    '--home-cta-brush-ratio': `${ENSO_BRUSH_IVORY.width} / ${ENSO_BRUSH_IVORY.height}`
-}
+const planes = ctaPlaneViews()
 
 /*********************************************************
  * Expose
@@ -115,83 +117,182 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-cta {
-    --home-cta-art: min(100vw, 62.5rem);
+    --home-cta-bg: var(--origam-color__surface---sunken);
+    --home-cta-deep-start: var(--origam-color__brand-deep---start);
+    --home-cta-deep-end: var(--origam-color__brand-deep---end);
+    --home-cta-sky:
+        var(--home-cta-bg) 0,
+        var(--home-cta-bg) 24%,
+        color-mix(in srgb, var(--origam-color__surface---sunken) 92%, var(--origam-color__primary---800)) 40%,
+        color-mix(in srgb, var(--origam-color__surface---sunken) 58%, var(--origam-color__primary---700)) 54%,
+        color-mix(in srgb, var(--origam-color__primary---400) 82%, var(--home-cta-deep-start)) 66%,
+        color-mix(in srgb, var(--origam-color__primary---500) 48%, var(--home-cta-deep-start)) 78%,
+        var(--home-cta-deep-start) 88%,
+        var(--home-cta-deep-end) 100%;
+    --home-cta-line: var(--origam-color__primary---600);
+    --home-cta-ink: var(--origam-color__brand-deep---ink);
+    --home-cta-foreground-filter: brightness(0.55) saturate(1.1);
 
     position: relative;
     isolation: isolate;
-    container-type: inline-size;
-    margin-block-start: calc(var(--home-cta-art) * 0.07);
-    padding-block-start: calc(var(--home-cta-art) * 0.27 + var(--origam-space---4, 1rem));
-    padding-block-end: var(--origam-space---12, 3rem);
-    background-color: var(--origam-color__primary---600);
+    display: flex;
+    flex-direction: column;
+    overflow: clip;
+    min-block-size: 50rem;
+    background: linear-gradient(180deg, var(--home-cta-sky));
     color: var(--origam-color__text---primary);
 
-    &::before {
+    &::after {
         content: '';
         position: absolute;
-        inset-block-start: calc(var(--home-cta-art) * -0.07);
-        inset-inline: 0;
-        z-index: -1;
-        inline-size: var(--home-cta-art);
-        aspect-ratio: var(--home-cta-brush-ratio);
-        margin-inline: auto;
-        background: var(--home-cta-brush) center / 100% 100% no-repeat;
+        inset: auto 0 0;
+        block-size: 13.75rem;
+        pointer-events: none;
+        background: linear-gradient(
+            color-mix(in srgb, var(--home-cta-deep-end) 0%, transparent),
+            color-mix(in srgb, var(--home-cta-deep-end) 35%, transparent) 35%,
+            color-mix(in srgb, var(--home-cta-deep-end) 80%, transparent) 70%,
+            var(--home-cta-deep-end) 100%
+        );
+    }
+
+    .home-cta__scene {
+        position: absolute;
+        inset: 0;
         pointer-events: none;
     }
 
-    &__inner {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        align-items: center;
-        gap: var(--origam-space---8, 2rem);
+    &__layer {
+        pointer-events: none;
     }
 
-    &__text {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--origam-space---4, 1rem);
+    &__plane {
+        position: absolute;
+        inset-inline-start: -3%;
+        inline-size: 106%;
+        aspect-ratio: var(--enso-art-ratio);
+        background: var(--enso-art) center / 100% 100% no-repeat;
+
+        &--mountains {
+            inset-block-end: 10px;
+            opacity: 0.6;
+        }
+
+        &--ridge {
+            inset-block-end: -40px;
+            opacity: 0.85;
+        }
+
+        &--foreground {
+            inset-block-end: -200px;
+            filter: var(--home-cta-foreground-filter);
+        }
+    }
+
+    &__copy {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        justify-items: center;
+        gap: 22px;
+        inline-size: 100%;
+        margin-block-end: auto;
+        padding: 72px var(--site-gutter) 0;
+        text-align: center;
     }
 
     &__title {
         margin: 0;
-        font-size: var(--home-fs-h2);
+        max-inline-size: 18ch;
+        font-size: clamp(1.9rem, 3.6vw, 2.9rem);
         font-weight: var(--origam-font__weight---bold, 700);
         letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-        line-height: 1.15;
+        line-height: 1.1;
+        text-wrap: balance;
         color: var(--origam-color__text---primary);
     }
 
     &__description {
         margin: 0;
-        max-inline-size: 34rem;
-        font-size: var(--home-fs-body);
+        max-inline-size: 46ch;
+        font-size: 16.5px;
         line-height: 1.6;
-        color: var(--origam-color__text---primary);
-    }
-
-    &__support {
-        margin: 0;
-        font-size: var(--home-fs-small);
         color: var(--origam-color__text---primary);
     }
 
     &__actions {
         display: flex;
         flex-wrap: wrap;
-        align-items: center;
-        justify-content: flex-end;
-        gap: var(--origam-space---3, 0.75rem);
+        justify-content: center;
+        gap: 12px;
+
+        .home-cta__btn {
+            --origam-btn---min-height: 48px;
+            --origam-btn---font-size: 15px;
+            --origam-btn---border-radius: 10px;
+        }
+
+        .home-cta__btn--line {
+            --origam-btn---border-color: var(--home-cta-line);
+            --origam-btn---border-width: 1.5px;
+        }
     }
 }
 
-@container (max-width: 48rem) {
-    .home-cta__inner {
-        grid-template-columns: 1fr;
-    }
+@media (max-width: 48rem) {
+    .home-cta {
+        min-block-size: 52.5rem;
 
-    .home-cta__actions {
-        justify-content: flex-start;
+        &__copy {
+            padding-block-start: 56px;
+        }
+
+        &__plane {
+            inset-inline-start: 50%;
+            inline-size: auto;
+            translate: -50% 0;
+
+            &--mountains {
+                block-size: 220px;
+                inset-block-end: 100px;
+            }
+
+            &--ridge {
+                block-size: 170px;
+                inset-block-end: 20px;
+            }
+
+            &--foreground {
+                block-size: 300px;
+                inset-block-end: -120px;
+            }
+        }
+    }
+}
+</style>
+
+<style lang="scss">
+@mixin dark-tokens {
+    --home-cta-bg: var(--origam-color__surface---overlay);
+    --home-cta-sky:
+        var(--home-cta-bg) 0,
+        var(--home-cta-bg) 26%,
+        color-mix(in srgb, var(--origam-color__surface---overlay) 85%, var(--origam-color__primary---800)) 42%,
+        color-mix(in srgb, var(--origam-color__primary---900) 82%, var(--origam-color__primary---800)) 58%,
+        var(--home-cta-deep-start) 76%,
+        var(--home-cta-deep-end) 100%;
+    --home-cta-line: var(--origam-color__primary---500);
+    --home-cta-foreground-filter: none;
+    --home-cta-ink: var(--origam-color__surface---default);
+}
+
+:root[data-mode='dark'] .home-cta {
+    @include dark-tokens;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-mode]) .home-cta {
+        @include dark-tokens;
     }
 }
 </style>

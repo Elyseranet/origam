@@ -31,8 +31,8 @@ async function settledOverflow (page: Page): Promise<number> {
     // (la regle scopee `.site-footer { display: flex }`), et on exige aussi que
     // le nombre de balises <style> soit stable.
     await page.waitForFunction(() => {
-        const footer = document.querySelector('.site-footer')
-        return footer !== null && getComputedStyle(footer).display === 'flex'
+        const bar = document.querySelector('.site-footer__bar')
+        return bar !== null && getComputedStyle(bar).display === 'grid'
     }, undefined, { timeout: 30_000 })
 
     let last = Number.NaN

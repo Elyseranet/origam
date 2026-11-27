@@ -2,7 +2,8 @@
 import { describe, expect, it } from 'vitest'
 
 import { ENSO_BRUSH, ENSO_DEMO_MODES, ENSO_GALLERY, ENSO_PETAL_FLIGHTS } from '~/consts/enso.const'
-import { ensoArtVars, ensoDemoColumns, ensoImageSet, ensoPetalViews } from '~/utils/enso.util'
+import { CTA_PLANES } from '~/consts/cta.const'
+import { ctaPlaneViews, ensoArtVars, ensoDemoColumns, ensoImageSet, ensoPetalViews } from '~/utils/enso.util'
 
 const SOURCE = { src: '/a-1600.avif', srcset: '/a-400.avif 400w, /a-1600.avif 1600w, /a-800.avif 800w' }
 
@@ -66,5 +67,26 @@ describe('ensoDemoColumns', () => {
         expect(find(dark, 'ENSO_SUN_DISC')?.src).toBe('/brand/enso/shared/sun-disc-540.avif')
         expect(find(light, 'ENSO_CTA_RIDGE')?.src).toBe('/brand/enso/light/cta-ridge-1983.avif')
         expect(find(dark, 'ENSO_CTA_RIDGE')?.src).toBe('/brand/enso/dark/cta-ridge-1983.avif')
+    })
+})
+
+describe('ctaPlaneViews (#1596)', () => {
+    it('donne un plan par entrée de CTA_PLANES, du plus lointain au plus proche, avec sa vitesse', () => {
+        const views = ctaPlaneViews()
+
+        expect(views.map(v => v.key)).toEqual(['mountains', 'ridge', 'foreground'])
+        expect(views.map(v => v.speed)).toEqual(CTA_PLANES.map(p => p.speed))
+        // sens du parallaxe de la maquette : négatif, et d'autant plus faible que le plan est proche
+        const magnitudes = views.map(v => Math.abs(v.speed))
+        expect(views.every(v => v.speed < 0)).toBe(true)
+        expect([...magnitudes].sort((a, b) => b - a)).toEqual(magnitudes)
+    })
+
+    it('porte la variante de chaque mode et la classe de décor', () => {
+        const [mountains] = ctaPlaneViews()
+
+        expect(mountains.classes).toContain('enso-art')
+        expect(mountains.style['--enso-art-light']).toContain('/brand/enso/light/cta-mountains-')
+        expect(mountains.style['--enso-art-dark']).toContain('/brand/enso/dark/cta-mountains-')
     })
 })
