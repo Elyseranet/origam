@@ -1,4 +1,4 @@
-import { ENSO_DEMO_MODES, ENSO_GALLERY, ENSO_PETAL_FLIGHTS, ENSO_PETAL_WIDTH } from '~/consts/enso.const'
+import { ENSO_DEMO_MODES, ENSO_GALLERY, ENSO_PAPER_TILE_WIDTH, ENSO_PAPER_WASHI, ENSO_PETAL_FLIGHTS, ENSO_PETAL_WIDTH } from '~/consts/enso.const'
 import type { IEnsoArt, IEnsoDemoColumn, IEnsoPetalView, IEnsoSrcsetCandidate } from '~/interfaces/enso.interface'
 import { HERO_PLANES } from '~/consts/hero.const'
 import type { IHeroPlaneView, IHeroVisual } from '~/interfaces/hero.interface'
@@ -38,6 +38,14 @@ export function ensoArtVars (art: IEnsoArt, displayWidth: number): TEnsoArtVars 
         '--enso-art-light': ensoImageSet(art.light, displayWidth),
         '--enso-art-dark': ensoImageSet(art.dark, displayWidth),
         '--enso-art-ratio': `${art.width} / ${art.height}`
+    }
+}
+
+/** Texture papier washi : variables d'`ensoArtVars` + taille de la tuile (`--enso-paper---tile`). */
+export function ensoPaperVars (): TEnsoArtVars {
+    return {
+        ...ensoArtVars(ENSO_PAPER_WASHI, ENSO_PAPER_TILE_WIDTH),
+        '--enso-paper---tile': `${ENSO_PAPER_TILE_WIDTH}px`
     }
 }
 

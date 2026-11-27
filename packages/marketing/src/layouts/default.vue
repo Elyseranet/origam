@@ -13,12 +13,14 @@
   import { SEARCH_SHORTCUT } from '~/consts/chrome.const'
   import { CATALOG_FAMILIES } from '~/consts/catalog-family.const'
   import { GLOBAL_SEARCH_ALL_FAMILY } from '~/consts/global-search.const'
+  import { ENSO_BRUSH, ENSO_FOOTER, ENSO_NAV_BRUSH_WIDTH, ENSO_BAR_BRUSH_WIDTH, ENSO_FOOTER_ART_WIDTH } from '~/consts/enso.const'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
   import { useLocaleHref } from '~/composables/useLocaleHref'
   import { useT } from '~/composables/useT'
   import { useVersion } from '~/composables/useVersion'
   import { useGithubStars } from '~/composables/useGithubStars'
   import { useGlobalSearch } from '~/composables/useGlobalSearch'
+  import { ensoArtVars, ensoPaperVars } from '~/utils/enso.util'
 
   const { t } = useT()
   const { localeHref, navLinkHref } = useLocaleHref()
@@ -132,6 +134,14 @@
     return section.items.some(isLinkActive)
   }
 
+  // Fond papier de page : `enso-art` + texture sur <body>, donc aussi pour les
+  // menus téléportés hors de l'arbre du layout (ils héritent de <body>).
+  useHead({ bodyAttrs: { class: 'enso-art', style: ensoPaperVars() } })
+
+  const navBrushVars = ensoArtVars(ENSO_BRUSH, ENSO_NAV_BRUSH_WIDTH)
+  const barBrushVars = ensoArtVars(ENSO_BRUSH, ENSO_BAR_BRUSH_WIDTH)
+  const footerArtVars = ensoArtVars(ENSO_FOOTER, ENSO_FOOTER_ART_WIDTH)
+
 </script>
 
 <template>
@@ -159,7 +169,8 @@
 
       <template #content>
         <nav
-          class="primary-nav"
+          class="primary-nav enso-art"
+          :style="navBrushVars"
           :aria-label="primaryNavAriaLabel"
         >
           <origam-menu
@@ -214,11 +225,16 @@
       </template>
 
       <template #append>
+        <span
+          class="site-appbar__brush enso-art"
+          :style="barBrushVars"
+          aria-hidden="true"
+          data-cy="appbar-brush"
+        />
         <div class="appbar-actions">
           <button
             class="search-trigger"
             type="button"
-            :aria-label="searchAriaLabel"
             data-cy="search-trigger"
             @click="openPalette"
           >
@@ -413,6 +429,12 @@
     </origam-main>
 
     <footer class="site-footer">
+      <span
+        class="site-footer__art enso-art"
+        :style="footerArtVars"
+        aria-hidden="true"
+        data-cy="footer-art"
+      />
       <origam-grid
         class="site-footer__top"
         :columns="FOOTER_GRID_COLUMNS"
@@ -569,10 +591,21 @@
 
   .site-appbar {
     --origam-toolbar---padding-inline: var(--site-gutter);
-    --origam-toolbar---background: var(--origam-appbar---bg);
-    backdrop-filter: saturate(1.4) blur(16px);
-    -webkit-backdrop-filter: saturate(1.4) blur(16px);
-    border-block-end: 1px solid var(--origam-color__border---ghost, rgba(0, 0, 0, 0.08));
+    // Papier washi OPAQUE (la couleur de surface sous la texture) : un fond
+    // transparent laissait le contenu défiler visiblement dessous. #1571
+    --origam-toolbar---background: var(--enso-art) 0 0 / var(--enso-paper---tile, 512px) repeat, var(--origam-color__surface---default);
+    --origam-appbar---backdrop-filter: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+
+    &__brush {
+      position: absolute;
+      inset-inline: 0;
+      inset-block-end: 0;
+      block-size: 6px;
+      background: var(--enso-art) center / 100% 100% no-repeat;
+      pointer-events: none;
+    }
   }
 
   .primary-nav {
@@ -617,10 +650,10 @@
           content: '';
           position: absolute;
           inset-inline: var(--origam-btn---padding-inline, 0.75rem);
-          inset-block-end: 4px;
-          block-size: 2px;
-          border-radius: var(--origam-radius---xs, 1px);
-          background-color: var(--origam-color__action--primary---bg, currentColor);
+          inset-block-end: 2px;
+          block-size: 6px;
+          background: var(--enso-art) center / 100% 100% no-repeat;
+          pointer-events: none;
         }
       }
     }
@@ -717,10 +750,30 @@
     display: flex;
     flex-direction: column;
     gap: var(--origam-space---4, 1rem);
-    padding: var(--origam-space---8, 2rem) var(--site-gutter) var(--origam-space---5, 1.25rem);
-    background-color: var(--origam-color__surface---sunken, #f5f5f5);
-    border-block-start: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+    --site-footer---art-height: clamp(10rem, 26vw, 24rem);
+    position: relative;
+    isolation: isolate;
+    padding: calc(var(--site-footer---art-height) * 0.92) var(--site-gutter) var(--origam-space---5, 1.25rem);
+    background: var(--enso-art) 0 0 / var(--enso-paper---tile, 512px) repeat, var(--origam-color__surface---default, #f7f5ef);
     color: var(--origam-color__text---secondary, #525252);
+
+    // Panorama du kit : le pinceau s'estompe vers le contenu, qui reste
+    // posé sur le papier uni (contraste). Les bords haut et bas sont fondus
+    // pour que le fond propre à l'image ne dessine pas de rectangle.
+    &__art {
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline: 0;
+      z-index: -1;
+      block-size: var(--site-footer---art-height);
+      background: var(--enso-art) center 58% / cover no-repeat;
+      mask-image:
+        linear-gradient(to bottom, transparent 0%, #000 22%, #000 52%, transparent 86%),
+        linear-gradient(to right, transparent 8%, #000 28%, #000 72%, transparent 92%);
+      mask-composite: intersect;
+      -webkit-mask-composite: source-in;
+      pointer-events: none;
+    }
 
     &__top {
       align-items: start;
@@ -992,7 +1045,15 @@
     font-size: var(--appbar-nav---font-size);
   }
 
+  body.enso-art {
+    background-image: var(--enso-art), var(--origam-page---background-image, none);
+    background-size: var(--enso-paper---tile, 512px), auto;
+    background-repeat: repeat, repeat;
+  }
+
   .appbar-menu .origam-menu__content {
+    background: var(--enso-art) 0 0 / var(--enso-paper---tile, 512px) repeat, var(--origam-color__surface---default);
+    border: 1px solid var(--origam-color__border---default);
     min-width: 200px;
     width: 200px;
     /*

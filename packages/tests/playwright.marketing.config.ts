@@ -142,6 +142,14 @@ const MARKETING_GREEN_SPECS = [
     'marketing-primary-nav.spec.ts',
     'marketing-site-chrome.spec.ts',
 
+    // #1571 — chrome enso : header opaque papier / encre (fond calcule, pas de
+    // flou), decors `aria-hidden` (trait du header, panorama du footer), lien
+    // actif souligne au pinceau. Clair et sombre via le cookie de mode.
+    // Mesure d'admission : 30/30 en `--repeat-each=5 --retries=0` contre un
+    // build de production (port isole). Pas de controle positif contre le
+    // parent : non mesure.
+    'marketing-enso-chrome.spec.ts',
+
     // #1032 — la palette ⌘K couvre les 8 familles et se filtre par famille ;
     // le rail de navigation n'existe plus.
     //
