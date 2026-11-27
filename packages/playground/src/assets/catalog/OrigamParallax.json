@@ -105,7 +105,7 @@
         "page-top"
       ],
       "control": "select",
-      "description": "Where the scroll offset is measured from (#1603).\n - `'viewport'` (default) → relative to the host's centre in the\n   window: a layer is at offset 0 only when the host is centred, so at\n   rest (`scrollY = 0`) it is shifted by an amount that depends on the\n   window height.\n - `'page-top'`           → relative to the host's position at\n   `scrollY = 0`: every layer sits at its static offset at rest, in\n   the window of any height, and the server render matches (no jump\n   after hydration). Uses the JS path (the CSS `view()` timeline has no\n   page-top geometry), so `easing=\"linear\"` no longer selects the CSS\n   path with this value.",
+      "description": "*******************************************************\norigin (#1603)",
       "source": "types"
     },
     {
