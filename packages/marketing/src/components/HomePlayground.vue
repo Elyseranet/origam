@@ -4,6 +4,8 @@
     class="home-playground home-container home-section"
     aria-labelledby="playground-heading"
   >
+    <enso-backdrop :art="ENSO_SECTION_HILLS" />
+
     <h2
       id="playground-heading"
       class="home-playground__sr-title"
@@ -78,6 +80,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useT } from '~/composables/useT'
+import { ENSO_SECTION_HILLS } from '~/consts/enso.const'
 import { HOME_DEMO_BUTTONS, HOME_DEMO_CODE_BUTTON, HOME_DEMO_DOTS } from '~/consts/playground.const'
 import { buildHomeDemoSnippet } from '~/utils/home-demo.util'
 
@@ -112,6 +115,12 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-playground {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    // Room under the card so the hills show as a horizon.
+    padding-block-end: calc(var(--home-section-gap) * 4);
+
 
     &__sr-title {
         position: absolute;
