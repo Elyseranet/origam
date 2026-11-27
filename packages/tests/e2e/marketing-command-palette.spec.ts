@@ -273,9 +273,11 @@ test.describe('palette ⌘K — bouton loupe sous 600 px (390 px)', () => {
         await page.waitForLoadState('load')
 
         const clipped = await page.evaluate(() => {
-            const bar = document.querySelector('header')!.getBoundingClientRect()
+            const appBar = document.querySelector('header')!
+            const bar = appBar.getBoundingClientRect()
 
-            return [...document.querySelectorAll('header a, header button')]
+            // L'app bar seule : l'en-tête de page enso (#1584) est un autre `<header>`, sous la barre.
+            return [...appBar.querySelectorAll('a, button')]
                 .filter(e => getComputedStyle(e).display !== 'none')
                 .filter((e) => {
                     const r = e.getBoundingClientRect()
