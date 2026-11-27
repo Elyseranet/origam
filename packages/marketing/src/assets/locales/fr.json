@@ -2268,5 +2268,17 @@
         "field_host_address": "Adresse",
         "field_host_phone": "Téléphone",
         "field_host_country": "Pays"
+    },
+    "enso_demo": {
+        "title": "Fondations enso",
+        "intro": "Page de contrôle de la refonte enso : les décors partagés et chaque illustration convertie, en clair et en sombre côte à côte.",
+        "mode_light": "Clair",
+        "mode_dark": "Sombre",
+        "stage_text": "Papier washi, titre souligné au pinceau, pétales qui tombent et séparateur au pinceau dessous.",
+        "gallery_label": "Illustrations converties",
+        "meta": {
+            "title": "Fondations enso · origam",
+            "description": "Page de contrôle interne des assets de la refonte enso."
+        }
     }
 }

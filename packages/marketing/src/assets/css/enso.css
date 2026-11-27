@@ -1,0 +1,17 @@
+.enso-art {
+  --enso-art: var(--enso-art-light);
+}
+
+[data-mode="dark"] .enso-art {
+  --enso-art: var(--enso-art-dark);
+}
+
+[data-mode="dark"] [data-mode="light"] .enso-art {
+  --enso-art: var(--enso-art-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode]) .enso-art {
+    --enso-art: var(--enso-art-dark);
+  }
+}

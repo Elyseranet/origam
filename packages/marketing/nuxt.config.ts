@@ -158,7 +158,8 @@ export default defineNuxtConfig({
     // not a vulnerability — but an administration surface has no business in a
     // public sitemap, and advertising it only invites probing.
     sitemap: {
-        exclude: ['/admin', '/admin/**']
+        // `/enso` : page de contrôle interne de la refonte enso (#1570), en noindex.
+        exclude: ['/admin', '/admin/**', '/enso', '/*/enso']
     },
 
     robots: {
@@ -185,7 +186,9 @@ export default defineNuxtConfig({
         'origam/tokens/css/dark',
         '~/assets/css/themes/_shared.css',
         '~/assets/css/base.css',
-        '~/assets/css/home.css'
+        '~/assets/css/home.css',
+        // #1570 — choix clair / sombre des décors enso (`.enso-art`) selon `data-mode`.
+        '~/assets/css/enso.css'
     ],
 
     runtimeConfig: {
