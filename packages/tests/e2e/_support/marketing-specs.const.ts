@@ -66,5 +66,6 @@ export const MARKETING_SPEC_PATTERNS = [
     '**/api-docs-generated.spec.ts',
     '**/marketing-playground-host.spec.ts',
     '**/marketing-theming-preview-width.spec.ts',
-    '**/marketing-theming-split-overlay-attach.spec.ts'
+    '**/marketing-theming-split-overlay-attach.spec.ts',
+    '**/marketing-catalog-index.spec.ts'
 ]
