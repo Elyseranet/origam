@@ -62,6 +62,35 @@ translation — useful for fine positioning without touching `speed`.
 </template>
 ```
 
+## Pointer amplitude — `mouseX` / `mouseY`
+
+`speed` drives the **scroll** only. The pointer has its own amplitudes, in
+px, per layer and per axis: `mouseX` / `mouseY` are how far the layer
+slides when the pointer goes from the host centre to its edge. A distant
+layer gets a small value, a near one a large value.
+
+```vue
+<template>
+    <OrigamParallax direction="both">
+        <OrigamParallaxLayer :speed="0.1" :mouse-x="10" :mouse-y="6">…</OrigamParallaxLayer>
+        <OrigamParallaxLayer :speed="0.3" :mouse-x="40" :mouse-y="24">…</OrigamParallaxLayer>
+    </OrigamParallax>
+</template>
+```
+
+- Works on both paths, **including `easing="linear"`** (the default): the
+  pointer drives the CSS `translate` property, which composes with the
+  scroll `transform`.
+- Smoothed by a 400 ms CSS `transition` on `translate`.
+- Wired only with a fine pointer (`(hover: hover) and (pointer: fine)`).
+  On touch devices only the scroll moves the layers; there is no
+  gyroscope on this path.
+- Under `prefers-reduced-motion: reduce` (or `disabled`) the host installs
+  **no** `mousemove` listener and the layers stay still.
+- Left unset, the legacy rule applies: with `direction="both"` the X
+  amplitude is `host width × 0.5 × speed` and Y does not move; with any
+  other direction the pointer is ignored.
+
 ## Stacking order
 
 `zIndex` overrides the default document-order stacking, when layers need
@@ -95,6 +124,8 @@ interface IParallaxLayerProps extends ICommonsComponentProps, ITagProps {
     speed?: number    // default 1
     offsetX?: number  // default 0, px
     offsetY?: number  // default 0, px
+    mouseX?: number   // unset = legacy; px at the host edge
+    mouseY?: number   // unset = no vertical pointer movement
     zIndex?: number   // unset = document order
 }
 ```
@@ -110,12 +141,12 @@ interface IParallaxLayerProps extends ICommonsComponentProps, ITagProps {
 ## Behaviour notes
 
 - **Registration contract.** On mount, the layer registers a
-  `{ id, speed, offsetX, offsetY, target }` descriptor with the parent
+  `{ id, speed, offsetX, offsetY, mouseX, mouseY, target }` descriptor with the parent
   runtime (`useParallaxRuntime`). The parent's `rAF` loop and CSS
   scroll-driven path both read `speed` / `offsetX` / `offsetY` straight
   off that descriptor on every frame / re-publish — outside Vue
   reactivity, by design, so per-frame work never triggers a Vue render.
-  A `watch()` on the three props calls the runtime's `update()` to patch
+  A `watch()` on these props calls the runtime's `update()` to patch
   the SAME descriptor in place whenever they change reactively after
   mount, keeping the object/`target` identity the spring-easing state
   keys off.

@@ -394,7 +394,10 @@
 		justify-content: center;
 		align-items: center;
 		position: relative;
-		overflow: hidden;
+		// `clip`, not `hidden`: `hidden` makes the host a scroll container, and
+		// the layers' `view()` timeline then binds to it instead of the page
+		// scroller — progress stuck at 0.5, no scroll movement (#1591).
+		overflow: clip;
 
 		perspective: var(--origam-parallax---perspective, 1000px);
 		transform-origin: var(--origam-parallax---transform-origin, center center);

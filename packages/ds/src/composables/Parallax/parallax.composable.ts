@@ -3,7 +3,9 @@ import { computed, onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue'
 import { useCssSupport } from '../Commons/cssSupport.composable'
 
 import {
+    PARALLAX_FINE_POINTER_QUERY,
     PARALLAX_MOUSE_AMPLITUDE_FACTOR,
+    PARALLAX_MOUSE_SMOOTHING,
     PARALLAX_SPRING_DAMPING,
     PARALLAX_TRANSFORM_PRECISION
 } from '../../consts/Parallax/parallax.const'
@@ -22,17 +24,17 @@ import type { TParallaxDirection } from '../../types/Parallax/parallax.type'
 export type { IUseParallaxRuntimeOptions } from '../../interfaces/Parallax/parallax.interface'
 
 /**
- * Detect `prefers-reduced-motion: reduce` once at mount time. We watch the
- * media query so the runtime honours user OS-level changes without a page
- * reload. Returns a SSR-safe ref (defaults to `false` server-side).
+ * Track a media query. We watch it so the runtime honours OS-level changes
+ * (reduced motion, pointer capabilities) without a page reload. Returns a
+ * SSR-safe ref (defaults to `false` server-side).
  */
-function usePrefersReducedMotion (): Ref<boolean> {
+function useMediaQuery (query: string): Ref<boolean> {
     const flag = ref(false)
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
         return flag
     }
 
-    const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const mql = window.matchMedia(query)
     flag.value = mql.matches
 
     const onChange = (ev: MediaQueryListEvent) => { flag.value = ev.matches }
@@ -49,8 +51,6 @@ function usePrefersReducedMotion (): Ref<boolean> {
  * Compose the per-frame transform string for a single layer.
  *
  * @param progress    scroll progress in `[0, 1]` (clamped beyond viewport).
- * @param mouseRatio  current mouse-ratio (each axis in `[-1, 1]`); only used
- *                    when direction === 'both' and mouse mode is active.
  * @param direction   axis selector.
  * @param layer       registered layer descriptor (speed + static offsets).
  * @param hostHeight  host element height (px) — used to convert progress to
@@ -59,7 +59,6 @@ function usePrefersReducedMotion (): Ref<boolean> {
  */
 function composeLayerTransform (
     progress: number,
-    mouseRatio: { x: number, y: number },
     direction: TParallaxDirection,
     layer: IParallaxLayerRegistry,
     hostHeight: number,
@@ -76,9 +75,8 @@ function composeLayerTransform (
             tx += centred * hostWidth * layer.speed
             break
         case PARALLAX_DIRECTION.BOTH:
-            // For "both" we mix scroll-progress on Y and mouse-ratio on X
-            // when available. mouseRatio.x defaults to 0 (no mouse data).
-            tx += mouseRatio.x * hostWidth * PARALLAX_MOUSE_AMPLITUDE_FACTOR * layer.speed
+            // The pointer is applied separately (`translate`, see
+            // `applyMouse`): here "both" scrolls on Y like "vertical".
             ty += centred * hostHeight * layer.speed
             break
         case PARALLAX_DIRECTION.VERTICAL:
@@ -110,7 +108,8 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         supports('animation-timeline: scroll()') && options.easing.value === PARALLAX_EASING.LINEAR
     )
 
-    const reducedMotion = usePrefersReducedMotion()
+    const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
+    const finePointer = useMediaQuery(PARALLAX_FINE_POINTER_QUERY)
 
     const layers = ref<IParallaxLayerRegistry[]>([])
     const progress = ref(0)
@@ -169,13 +168,15 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
      * re-published here too, or the CSS animation keeps interpolating
      * against the stale amplitude until the layer re-enters the viewport.
      ********************************************************/
-    const update = (id: symbol, patch: Pick<IParallaxLayerRegistry, 'speed' | 'offsetX' | 'offsetY'>) => {
+    const update = (id: symbol, patch: Pick<IParallaxLayerRegistry, 'speed' | 'offsetX' | 'offsetY' | 'mouseX' | 'mouseY'>) => {
         const layer = layers.value.find(l => l.id === id)
         if (!layer) return
 
         layer.speed = patch.speed
         layer.offsetX = patch.offsetX
         layer.offsetY = patch.offsetY
+        layer.mouseX = patch.mouseX
+        layer.mouseY = patch.mouseY
 
         if (cssScrollDriven.value) {
             publishLayerVars(layer)
@@ -227,7 +228,6 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
 
             const target = composeLayerTransform(
                 progress.value,
-                mouseRatio.value,
                 dir,
                 layer,
                 rect.height,
@@ -321,20 +321,68 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         }
     }
 
+    /*********************************************************
+     * Pointer — #1591
+     *
+     * @description
+     * The pointer drives the CSS `translate` property, NOT `transform`: it
+     * composes with the scroll movement (JS `transform` or CSS keyframes)
+     * without either overwriting the other, so the pointer works on both
+     * paths — including `easing="linear"` where the browser owns
+     * `transform`. A CSS `transition` on `translate` does the smoothing.
+     * @description
+     * Per-layer amplitude (px at the host edge): `mouseX` / `mouseY` when
+     * set; otherwise the legacy rule — `direction="both"` slides X by
+     * `host width × 0.5 × speed`, Y stays still.
+     * @description
+     * `syncMouse` installs / removes the single `mousemove` listener and
+     * resets the layers when it goes away.
+     ********************************************************/
+    const mouseAmplitude = (layer: IParallaxLayerRegistry, hostWidth: number) => ({
+        x: layer.mouseX ?? (options.direction.value === PARALLAX_DIRECTION.BOTH
+            ? hostWidth * PARALLAX_MOUSE_AMPLITUDE_FACTOR * layer.speed
+            : 0),
+        y: layer.mouseY ?? 0
+    })
+
+    const mouseEnabled = computed(() =>
+        !options.disabled.value
+        && !reducedMotion.value
+        && finePointer.value
+        && (options.direction.value === PARALLAX_DIRECTION.BOTH
+            || layers.value.some(l => l.mouseX != null || l.mouseY != null))
+    )
+
     const onMouseMove = (event: MouseEvent) => {
-        if (options.direction.value !== PARALLAX_DIRECTION.BOTH) return
         const host = options.target.value
         if (!host) return
         const rect = host.getBoundingClientRect()
+        if (!rect.width || !rect.height) return
         // mouseRatio expressed in [-1, 1] from the centre.
-        const cx = rect.left + rect.width / 2
-        const cy = rect.top + rect.height / 2
-        mouseRatio.value = {
-            x: (event.clientX - cx) / (rect.width / 2),
-            y: (event.clientY - cy) / (rect.height / 2)
+        const x = Math.max(-1, Math.min(1, (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2)))
+        const y = Math.max(-1, Math.min(1, (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2)))
+        mouseRatio.value = { x, y }
+        for (const layer of layers.value) {
+            const amp = mouseAmplitude(layer, rect.width)
+            layer.target.style.translate = `${(x * amp.x).toFixed(PARALLAX_TRANSFORM_PRECISION)}px ${(y * amp.y).toFixed(PARALLAX_TRANSFORM_PRECISION)}px`
         }
-        if (rafId == null && isInViewport) {
-            rafId = requestAnimationFrame(tick)
+    }
+
+    const syncMouse = () => {
+        const host = options.target.value
+        if (!host) return
+        host.removeEventListener('mousemove', onMouseMove)
+        if (mouseEnabled.value) {
+            host.addEventListener('mousemove', onMouseMove, { passive: true })
+            for (const layer of layers.value) {
+                layer.target.style.transition = `translate ${PARALLAX_MOUSE_SMOOTHING}ms ease-out`
+            }
+            return
+        }
+        mouseRatio.value = { x: 0, y: 0 }
+        for (const layer of layers.value) {
+            layer.target.style.translate = ''
+            layer.target.style.transition = ''
         }
     }
 
@@ -373,9 +421,9 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
 
         window.addEventListener('scroll', onScroll, { passive: true })
         window.addEventListener('resize', onScroll, { passive: true })
+        syncMouse()
 
         if (!cssScrollDriven.value) {
-            host.addEventListener('mousemove', onMouseMove, { passive: true })
             /*********************************************************
              * Premier rendu a progress=0 — handle desormais capture (#753)
              *
@@ -409,6 +457,8 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         const host = options.target.value
         host?.removeEventListener('mousemove', onMouseMove)
     })
+
+    watch([mouseEnabled, () => layers.value.length], syncMouse)
 
     // Watch the direction / easing — if the CSS branch flips at runtime
     // (very unlikely but possible if a layer is added late), re-publish the

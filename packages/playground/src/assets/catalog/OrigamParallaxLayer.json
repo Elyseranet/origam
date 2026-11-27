@@ -41,6 +41,27 @@
       "source": "types"
     },
     {
+      "name": "mouseX",
+      "label": "mouseX",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "*******************************************************\nmouseX / mouseY",
+      "source": "types"
+    },
+    {
+      "name": "mouseY",
+      "label": "mouseY",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "source": "types"
+    },
+    {
       "name": "zIndex",
       "label": "zIndex",
       "tsType": "number | undefined",
