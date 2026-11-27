@@ -12,3 +12,6 @@ export const CTA_SUN_COLOR = 'var(--origam-color__sun---500)'
 
 /** Ink text on the sun button. */
 export const CTA_INK_COLOR = 'var(--origam-color__neutral---900)'
+
+/** Largeur d'affichage du pinceau du CTA (choix du fichier du srcset). */
+export const CTA_WAVE_WIDTH = 1000

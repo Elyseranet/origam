@@ -117,7 +117,7 @@
                       size="small"
                       append-icon="mdi-arrow-right"
                       :href="tile.href"
-                      :aria-label="t('home.themes.preview_open_aria', 'Open the {theme} theme in the Theme Builder', { theme: t(tile.labelKey, tile.labelFallback) })"
+                      :aria-label="t('home.themes.preview_open_aria', 'Customize the {theme} theme in the Theme Builder', { theme: t(tile.labelKey, tile.labelFallback) })"
                       class="home-themes__preview-btn"
                       data-cy="themes-tile-button"
                     >
@@ -148,7 +148,7 @@ const { t } = useT()
 
 <style scoped lang="scss">
 .home-themes {
-    --enso-backdrop---opacity: 0.3;
+    --enso-backdrop---opacity: 0.15;
 
     position: relative;
     isolation: isolate;

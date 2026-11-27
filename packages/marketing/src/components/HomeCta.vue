@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
 import { CONTACT_SUPPORT_ROUTE } from '~/consts/contact.const'
-import { CTA_COMPONENTS_HREF, CTA_INK_COLOR, CTA_START_HREF, CTA_SUN_COLOR } from '~/consts/cta.const'
+import { CTA_COMPONENTS_HREF, CTA_INK_COLOR, CTA_START_HREF, CTA_SUN_COLOR, CTA_WAVE_WIDTH } from '~/consts/cta.const'
 import { ENSO_CTA_WAVE } from '~/consts/enso.const'
 import { ensoArtVars } from '~/utils/enso.util'
 
@@ -95,7 +95,7 @@ const { t } = useT()
  * @description
  * Fond CTA du kit dans les deux variantes ; `.enso-art` choisit selon `data-mode`.
  ********************************************************/
-const waveVars = ensoArtVars(ENSO_CTA_WAVE, 1000)
+const waveVars = ensoArtVars(ENSO_CTA_WAVE, CTA_WAVE_WIDTH)
 
 /*********************************************************
  * Expose

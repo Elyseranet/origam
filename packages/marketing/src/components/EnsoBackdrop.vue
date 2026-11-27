@@ -8,6 +8,7 @@
 </template>
 
 <script setup lang="ts">
+import { ENSO_BACKDROP_WIDTH } from '~/consts/enso-backdrop.const'
 import type { IEnsoBackdropProps } from '~/interfaces/enso-backdrop.interface'
 import { ensoArtVars } from '~/utils/enso.util'
 
@@ -19,7 +20,7 @@ import { ensoArtVars } from '~/utils/enso.util'
  * overflow: hidden) et derrière son contenu. Décoratif : `aria-hidden`.
  ********************************************************/
 const props = withDefaults(defineProps<IEnsoBackdropProps>(), {
-    width: 1440
+    width: undefined
 })
 
 defineEmits([])
@@ -32,7 +33,7 @@ defineSlots<Record<string, never>>()
  * @description
  * Les deux variantes du fond, choisies selon le mode par `.enso-art`.
  ********************************************************/
-const artVars = ensoArtVars(props.art, props.width)
+const artVars = ensoArtVars(props.art, props.width ?? ENSO_BACKDROP_WIDTH)
 
 /*********************************************************
  * Expose

@@ -1057,7 +1057,7 @@
             "preview_brand_a": "brand-a.json",
             "preview_brand_b": "brand-b.json",
             "preview_open": "Customize",
-            "preview_open_aria": "Open the {theme} theme in the Theme Builder",
+            "preview_open_aria": "Customize the {theme} theme in the Theme Builder",
             "actions_label": "Open the Theme Builder",
             "cta_builder": "Open the Theme Builder",
             "note": "The npm package ships the base origam theme. The others are examples, to open in the Theme Builder."
