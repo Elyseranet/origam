@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.48.2] - 2026-11-27
+
+### Fixed — `OrigamParallax` : origine du défilement, hydratation SSR, axe du chemin CSS, ancêtre défilant (#1603)
+
+- **Nouvelle prop `origin`** sur `OrigamParallax` (`'viewport'` par défaut, comportement inchangé ; `'page-top'`) : avec `page-top`, le décalage au repos vaut 0 quelle que soit la hauteur de fenêtre, et le rendu serveur et client coïncident (plus de saut après hydratation). Enum `PARALLAX_ORIGIN`, type `TParallaxOrigin`. `page-top` passe par le chemin JS.
+- **Hydratation** : sous `prefers-reduced-motion: reduce`, les classes `--reduced-motion` n'apparaissaient que côté client (« Hydration class mismatch » mesuré sous Nuxt SSR) ; `useMediaQuery` lit désormais `matchMedia` après montage. La classe `--css-driven` dérive des props seules, le support étant testé par `@supports` en CSS : plus de mismatch, et l'animation tourne avant l'hydratation.
+- **Chemin CSS** : en `direction="vertical"`, les keyframes translataient aussi l'axe X (36 px mesurés). Keyframes séparés par axe.
+- **Ancêtre `overflow: hidden/auto`** : il devenait le scroller de la `view()` timeline et figeait la progression ; détecté au montage, le composant bascule sur le chemin JS. Limite documentée : un ancêtre qui devient défilant après le montage n'est pas détecté.
+- **Reduced-motion** : plus d'écouteurs `scroll` / `resize` posés sans raison (sauf si `@scroll-progress` est écouté). Le gestionnaire `mousemove` legacy ne mesure plus l'hôte quand aucun `OrigamParallaxElement` ne s'y est enregistré.
+- Vérifié : `parallax-origin.spec.ts` 7 rouges sur 10 avant le correctif, 10/10 après ; TU d'hydratation 3 rouges sur 4 avant, 4/4 après ; 35 specs e2e parallax vertes.
+
 ## [2.48.1] - 2026-11-27
 
 ### Fixed — `OrigamParallaxLayer` : souris sur les deux axes, amplitudes par plan, défilement par défaut (#1591)

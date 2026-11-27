@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.48.2',
+        date: '2026-11-27',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2482.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2482.h1', textFallback: 'OrigamParallax : origine du défilement, hydratation SSR, axe du chemin CSS, ancêtre défilant (#1603)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.48.1',
         date: '2026-11-27',
         type: 'patch',
