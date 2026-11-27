@@ -94,29 +94,12 @@
           </origam-btn>
         </nav>
 
-        <origam-code
-          :code="installCommand"
-          :prompt="HERO_INSTALL_PROMPT"
-          lang="plaintext"
-          compact
-          copyable
-          class="home-hero__install"
-          data-cy="hero-install-command"
-        />
-
-        <p
-          class="home-hero__proof"
-          data-cy="hero-proof"
-        >
-          {{ t('home.hero.proof', 'MIT license · Vue 3.5+ · Nuxt module included') }}
-        </p>
       </div>
     </origam-container>
   </origam-parallax>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useT } from '~/composables/useT'
 import { CTA_START_HREF } from '~/consts/cta.const'
 import {
@@ -124,8 +107,7 @@ import {
     HERO_BTN_VARS,
     HERO_CTA_BG,
     HERO_CTA_OUTLINE_BG,
-    HERO_CTA_FG,
-    HERO_INSTALL_PROMPT
+    HERO_CTA_FG
 } from '~/consts/hero.const'
 import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
 import { heroPlaneViews } from '~/utils/enso.util'
@@ -146,8 +128,6 @@ import { heroPlaneViews } from '~/utils/enso.util'
 const { t } = useT()
 
 const githubRepo = MARKETING_DEFAULTS.githubRepo
-
-const installCommand = computed(() => t('home.hero.install', 'npm i origam'))
 
 /*********************************************************
  * Plans
@@ -173,6 +153,9 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-hero {
+    --home-hero-appbar: 72px;
+    --home-hero-enso-top: calc(36px - var(--home-hero-appbar));
+
     position: relative;
     background: var(--origam-color__surface---default);
 
@@ -233,7 +216,7 @@ defineExpose({})
 
     &__plane--enso {
         inset-inline-end: 5%;
-        inset-block-start: 36px;
+        inset-block-start: var(--home-hero-enso-top);
         inline-size: min(28vw, 400px);
     }
 
@@ -292,16 +275,6 @@ defineExpose({})
         flex-wrap: wrap;
         gap: var(--origam-space---5, 1.25rem);
         margin-block-start: var(--origam-space---2, 0.5rem);
-    }
-
-    &__install {
-        max-inline-size: 100%;
-    }
-
-    &__proof {
-        margin: 0;
-        font-size: var(--home-fs-small);
-        color: var(--origam-color__text---primary);
     }
 }
 

@@ -43,19 +43,6 @@ test.describe('HomeHero — maquette A', () => {
         await expect(cta).toHaveAttribute('href', '/installation')
     })
 
-    test('la ligne « npm i origam » est un OrigamCode copiable, invite hors du code', async ({ page }) => {
-        const code = page.locator('[data-cy="hero-install-command"]')
-        await expect(code).toBeVisible()
-        await expect(code).toHaveClass(/origam-code/)
-        await expect(code.locator('code')).toHaveText('npm i origam')
-        await expect(code.locator('button')).toHaveCount(1)
-    })
-
-    test('la ligne de preuves cite la licence, Vue et Nuxt, sans compteur d\'adoption', async ({ page }) => {
-        await expect(page.locator('[data-cy="hero-proof"]')).toHaveText('MIT license · Vue 3.5+ · Nuxt module included')
-        await expect(page.locator('#hero')).not.toContainText(/stars|downloads|WCAG/i)
-    })
-
     test('CTA GitHub est externe (target=_blank, rel noopener)', async ({ page }) => {
         const cta = page.locator('[data-cy="hero-cta-github"]')
         await expect(cta).toBeVisible()

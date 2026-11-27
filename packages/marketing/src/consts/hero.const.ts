@@ -25,9 +25,6 @@ export const HERO_PLANES: readonly IHeroPlane[] = [
 export const HERO_CTA_BG = 'var(--origam-color__sun---500)'
 export const HERO_CTA_FG = 'var(--origam-color__neutral---950)'
 
-/** Invite de shell décorative devant `npm i origam` : jamais copiée (prop `prompt` d'OrigamCode). */
-export const HERO_INSTALL_PROMPT = '$'
-
 /** Fond sous le bouton GitHub : sans lui, son texte passe sur la montagne sombre en mobile. */
 export const HERO_CTA_OUTLINE_BG = 'color-mix(in srgb, var(--origam-color__surface---default) 80%, transparent)'
 
