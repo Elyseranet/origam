@@ -3,8 +3,6 @@
     "packages/marketing/src/assets/css/themes/_shared.css::--origam-color__text---ink",
     "packages/marketing/src/assets/scss/_why-section.scss::--origam-font-size---lg",
     "packages/marketing/src/assets/scss/_why-section.scss::--origam-font-size---xs",
-    "packages/marketing/src/components/HomeThemes.vue::--origam-font-size---sm",
-    "packages/marketing/src/components/HomeThemes.vue::--origam-font-size---xs",
     "packages/marketing/src/components/ThemeBuilderBorderField.vue::--origam-color-border-default",
     "packages/marketing/src/components/ThemeBuilderBorderField.vue::--origam-color-border-subtle",
     "packages/marketing/src/components/ThemeBuilderBorderField.vue::--origam-color-text-subtle",
