@@ -35,10 +35,12 @@ export function ensoImageSet (source: IHeroVisual, displayWidth: number): string
 }
 
 /** Les deux variantes d'une illustration en variables CSS ; la classe globale `.enso-art` choisit selon `data-mode`. */
-export function ensoArtVars (art: IEnsoArt, displayWidth: number): TEnsoArtVars {
+export function ensoArtVars (art: IEnsoArt | IEnsoSharedArt, displayWidth: number): TEnsoArtVars {
+    const { light, dark } = 'light' in art ? art : { light: art, dark: art }
+
     return {
-        '--enso-art-light': ensoImageSet(art.light, displayWidth),
-        '--enso-art-dark': ensoImageSet(art.dark, displayWidth),
+        '--enso-art-light': ensoImageSet(light, displayWidth),
+        '--enso-art-dark': ensoImageSet(dark, displayWidth),
         '--enso-art-ratio': `${art.width} / ${art.height}`
     }
 }
@@ -96,17 +98,15 @@ export function ctaPlaneViews (): ICtaPlaneView[] {
     }))
 }
 
-/** Plans du hero prêts à poser en `style` ; sans variante sombre, `--enso-art-dark: none` laisse le fond encre nu. */
+/** Plans du hero (#1593) : variables d'art, puis `speed` / `mouseX` / `mouseY` pour OrigamParallaxLayer. */
 export function heroPlaneViews (): IHeroPlaneView[] {
     return HERO_PLANES.map(plane => ({
         key: plane.key,
         cy: `hero-plane-${plane.key}`,
-        classes: ['enso-art', `home-hero__plane--${plane.key}`, ...(plane.desktopOnly ? ['home-hero__plane--desktop-only'] : [])],
-        style: {
-            ...ensoArtVars(plane.art, plane.displayWidth),
-            ...(plane.lightOnly ? { '--enso-art-dark': 'none' } : {}),
-            ...(plane.darkOnly ? { '--enso-art-light': 'none' } : {}),
-            '--plane-shift': `${plane.shift}px`
-        }
+        classes: ['enso-art', `home-hero__plane--${plane.key}`, ...(plane.wideOnly ? ['home-hero__plane--wide-only'] : [])],
+        style: ensoArtVars(plane.art, plane.displayWidth),
+        speed: plane.speed,
+        mouseX: plane.mouseX,
+        mouseY: plane.mouseY
     }))
 }

@@ -10,36 +10,7 @@ import type { IEnsoArt, IEnsoDemoMode, IEnsoGalleryItem, IEnsoPetalFlight, IEnso
  * mode de la page (`data-mode`) qui choisit. `width` / `height` sont ceux du plus
  * grand fichier livré (le ratio à réserver) ; `srcset` liste toutes les largeurs,
  * pour `<origam-img :srcset>` ou pour `ensoArtVars()` (fonds CSS).
- *
- * ⚠️ `ENSO_HERO_SKY.dark` est un ciel CLAIR dans le kit lui-même (fond papier,
- * mesuré) : sur un fond encre, préférer `ENSO_HERO_SUN` seul.
  */
-
-export const ENSO_HERO_SKY: IEnsoArt = {
-    width: 2880,
-    height: 623,
-    light: {
-        src: '/brand/enso/light/hero-sky-2880.avif',
-        srcset: '/brand/enso/light/hero-sky-960.avif 960w, /brand/enso/light/hero-sky-1920.avif 1920w, /brand/enso/light/hero-sky-2880.avif 2880w'
-    },
-    dark: {
-        src: '/brand/enso/dark/hero-sky-2880.avif',
-        srcset: '/brand/enso/dark/hero-sky-960.avif 960w, /brand/enso/dark/hero-sky-1920.avif 1920w, /brand/enso/dark/hero-sky-2880.avif 2880w'
-    }
-}
-
-export const ENSO_HERO_SUN: IEnsoArt = {
-    width: 700,
-    height: 700,
-    light: {
-        src: '/brand/enso/light/hero-sun-700.avif',
-        srcset: '/brand/enso/light/hero-sun-350.avif 350w, /brand/enso/light/hero-sun-700.avif 700w'
-    },
-    dark: {
-        src: '/brand/enso/dark/hero-sun-700.avif',
-        srcset: '/brand/enso/dark/hero-sun-350.avif 350w, /brand/enso/dark/hero-sun-700.avif 700w'
-    }
-}
 
 export const ENSO_HERO_MOUNTAINS: IEnsoArt = {
     width: 1899,
@@ -155,19 +126,6 @@ export const ENSO_CIRCLE_OPEN: IEnsoArt = {
     dark: {
         src: '/brand/enso/dark/enso-open-800.avif',
         srcset: '/brand/enso/dark/enso-open-400.avif 400w, /brand/enso/dark/enso-open-800.avif 800w'
-    }
-}
-
-export const ENSO_CIRCLE_WIDE: IEnsoArt = {
-    width: 800,
-    height: 778,
-    light: {
-        src: '/brand/enso/light/enso-wide-800.avif',
-        srcset: '/brand/enso/light/enso-wide-400.avif 400w, /brand/enso/light/enso-wide-800.avif 800w'
-    },
-    dark: {
-        src: '/brand/enso/dark/enso-wide-800.avif',
-        srcset: '/brand/enso/dark/enso-wide-400.avif 400w, /brand/enso/dark/enso-wide-800.avif 800w'
     }
 }
 
@@ -366,15 +324,12 @@ export const ENSO_DEMO_MODES: readonly IEnsoDemoMode[] = [
 export const ENSO_DEMO_GALLERY_SIZES = '(min-width: 64rem) 14rem, 45vw'
 
 export const ENSO_GALLERY: readonly IEnsoGalleryItem[] = [
-    { name: 'ENSO_HERO_SKY', art: ENSO_HERO_SKY },
-    { name: 'ENSO_HERO_SUN', art: ENSO_HERO_SUN },
     { name: 'ENSO_HERO_MOUNTAINS', art: ENSO_HERO_MOUNTAINS },
     { name: 'ENSO_HERO_LANDSCAPE', art: ENSO_HERO_LANDSCAPE },
     { name: 'ENSO_HERO_ARCHITECTURE', art: ENSO_HERO_ARCHITECTURE },
     { name: 'ENSO_HERO_SAKURA', art: ENSO_HERO_SAKURA },
     { name: 'ENSO_HERO_BRUSH', art: ENSO_HERO_BRUSH },
     { name: 'ENSO_CIRCLE_OPEN', art: ENSO_CIRCLE_OPEN },
-    { name: 'ENSO_CIRCLE_WIDE', art: ENSO_CIRCLE_WIDE },
     { name: 'ENSO_BRUSH', art: ENSO_BRUSH },
     { name: 'ENSO_GOLD_TICK', art: ENSO_GOLD_TICK },
     { name: 'ENSO_SUN_DISC', art: ENSO_SUN_DISC },

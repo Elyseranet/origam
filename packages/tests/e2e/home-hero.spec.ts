@@ -72,48 +72,35 @@ test.describe('HomeHero — maquette A', () => {
 
     test('illustrations : plans décoratifs hors du flux de lecture, sans image dans l\'arbre', async ({ page }) => {
         await expect(page.locator('#hero .home-hero__visual')).toHaveAttribute('aria-hidden', 'true')
-        await expect(page.locator('#hero [data-cy="enso-petals"]')).toHaveAttribute('aria-hidden', 'true')
         await expect(page.locator('#hero img')).toHaveCount(0)
     })
 
-    test('clair : six plans sur grand écran, chacun avec sa variante claire en AVIF', async ({ browser }) => {
+    test('clair : six plans sur grand écran, le soleil sous les montagnes, variante claire en AVIF', async ({ browser }) => {
         const ctx = await browser.newContext({ colorScheme: 'light', viewport: { width: 1440, height: 900 } })
         const page = await ctx.newPage()
         await page.goto('/')
-        for (const key of ['sky', 'enso', 'mountains', 'landscape', 'pagoda', 'sakura']) {
+        for (const key of ['sun', 'mountains', 'landscape', 'pagoda', 'sakura', 'enso']) {
             await expect(page.locator(`#hero [data-cy="hero-plane-${key}"]`)).toBeVisible()
         }
+        await expect(page.locator('#hero [data-cy="hero-plane-sky"]')).toHaveCount(0)
         const bg = await page.locator('#hero [data-cy="hero-plane-mountains"]').evaluate(el => getComputedStyle(el).backgroundImage)
         expect(bg).toMatch(/brand\/enso\/light\/hero-mountains-.*\.avif/)
+        const order = await page.evaluate(() => [...document.querySelectorAll('#hero [data-cy^="hero-plane-"]')].map(el => (el as HTMLElement).dataset.cy))
+        expect(order.indexOf('hero-plane-sun')).toBeLessThan(order.indexOf('hero-plane-mountains'))
         await ctx.close()
     })
 
-    test('mobile : moins de plans (pas de pagode)', async ({ browser }) => {
+    test('sous 860 px : enso et soleil retirés, les autres plans restent', async ({ browser }) => {
         const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } })
         const page = await ctx.newPage()
         await page.goto('/')
-        for (const key of ['pagoda']) {
+        for (const key of ['sun', 'enso']) {
             await expect(page.locator(`#hero [data-cy="hero-plane-${key}"]`)).toBeHidden()
         }
-        for (const key of ['sky', 'mountains', 'landscape', 'sakura']) {
+        for (const key of ['mountains', 'landscape', 'pagoda', 'sakura']) {
             await expect(page.locator(`#hero [data-cy="hero-plane-${key}"]`)).toBeVisible()
         }
         await ctx.close()
-    })
-
-    test('pétales : derrière le texte et les boutons, jamais cliquables', async ({ page }) => {
-        const m = await page.evaluate(() => {
-            const petals = document.querySelector('#hero [data-cy="enso-petals"]') as HTMLElement
-            const inner = document.querySelector('#hero .home-hero__inner') as HTMLElement
-            return {
-                z: Number(getComputedStyle(petals).zIndex),
-                pointer: getComputedStyle(petals).pointerEvents,
-                behind: !!(petals.compareDocumentPosition(inner) & Node.DOCUMENT_POSITION_FOLLOWING)
-            }
-        })
-        expect(m.z).toBeLessThan(0)
-        expect(m.pointer).toBe('none')
-        expect(m.behind).toBe(true)
     })
 
     test('le texte du hero s\'aligne sur le bord commun de la home (178 px en 1440, maquette v12)', async ({ page }) => {
@@ -131,7 +118,7 @@ test.describe('HomeHero — maquette A', () => {
         expect(lefts.hero).toBe(lefts.playground)
     })
 
-    test('T3 — CTA x-large (52 px, 16 px / 600, 12 px de rayon), GitHub en contour avec son icône', async ({ page }) => {
+    test('T3 — CTA x-large (52 px, 15 px / 600, 12 px de rayon), GitHub en contour avec son icône', async ({ page }) => {
         await page.setViewportSize({ width: 1440, height: 900 })
         await page.goto('/')
         const m = await page.evaluate(() => {
@@ -151,7 +138,7 @@ test.describe('HomeHero — maquette A', () => {
             return { start: read('hero-cta-start'), github: read('hero-cta-github') }
         })
         for (const b of [m.start, m.github]) {
-            expect(b).toMatchObject({ h: 52, fs: '16px', fw: '600', radius: '12px', px: '32px', icon: true })
+            expect(b).toMatchObject({ h: 52, fs: '15px', fw: '600', radius: '12px', px: '32px', icon: true })
         }
         expect(m.github.border).toBe('1px')
         expect(m.start.border).toBe('0px')
@@ -171,15 +158,14 @@ test.describe('HomeHero — maquette A', () => {
         expect(m.transform).not.toBe('none')
     })
 
-    test('sombre : variantes sombres des plans (sans ciel), texte lisible', async ({ browser }) => {
+    test('sombre : variantes sombres des plans (soleil partagé), texte lisible', async ({ browser }) => {
         const ctx = await browser.newContext({ colorScheme: 'dark', viewport: { width: 1440, height: 900 } })
         const page = await ctx.newPage()
         await page.goto('/')
         const bg = (key: string) => page.locator(`#hero [data-cy="hero-plane-${key}"]`).evaluate(el => getComputedStyle(el).backgroundImage)
         expect(await bg('mountains')).toMatch(/brand\/enso\/dark\/hero-mountains-.*\.avif/)
-        expect(await bg('sky')).toBe('none')
-        expect(await bg('enso')).toMatch(/brand\/enso\/dark\/enso-wide-.*\.avif/)
-        expect(await bg('sun')).toMatch(/brand\/enso\/dark\/hero-sun-.*\.avif/)
+        expect(await bg('enso')).toMatch(/brand\/enso\/dark\/enso-open-.*\.avif/)
+        expect(await bg('sun')).toMatch(/brand\/enso\/shared\/sun-disc-.*\.avif/)
         const m = await page.evaluate(() => {
             const lum = (c: string) => {
                 const [r, g, b] = (c.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number).map(v => {
