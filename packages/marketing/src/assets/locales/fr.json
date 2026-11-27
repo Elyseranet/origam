@@ -2240,6 +2240,7 @@
     },
     "legal_notice": {
         "title": "Mentions légales",
+        "eyebrow": "Informations légales",
         "intro": "Informations sur l’éditeur et l’hébergeur de ce site.",
         "to_complete": "À compléter",
         "publisher_title": "Éditeur",

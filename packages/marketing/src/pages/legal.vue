@@ -16,6 +16,10 @@
                 />
             </template>
 
+            <template #eyebrow>
+                <span data-cy="legal-hero-badge">{{ t('legal_notice.eyebrow', 'Legal information') }}</span>
+            </template>
+
             <template #title>
                 {{ t('legal_notice.title', 'Legal notice') }}
             </template>

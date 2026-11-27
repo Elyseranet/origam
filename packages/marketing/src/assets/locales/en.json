@@ -2240,6 +2240,7 @@
     },
     "legal_notice": {
         "title": "Legal notice",
+        "eyebrow": "Legal information",
         "intro": "Information about the publisher and the hosting provider of this website.",
         "to_complete": "To complete",
         "publisher_title": "Publisher",

@@ -111,6 +111,7 @@
                 <origam-btn
                     :to="supportRoute"
                     variant="text"
+                    padding-inline-start="0"
                     size="large"
                     rounded="lg"
                     class="contact-block__cta"
