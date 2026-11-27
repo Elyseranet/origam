@@ -80,7 +80,7 @@ test.describe('HomeHero — maquette A', () => {
         const ctx = await browser.newContext({ colorScheme: 'light', viewport: { width: 1440, height: 900 } })
         const page = await ctx.newPage()
         await page.goto('/')
-        for (const key of ['sky', 'sun', 'mountains', 'landscape', 'pagoda', 'sakura']) {
+        for (const key of ['sky', 'enso', 'mountains', 'landscape', 'pagoda', 'sakura']) {
             await expect(page.locator(`#hero [data-cy="hero-plane-${key}"]`)).toBeVisible()
         }
         const bg = await page.locator('#hero [data-cy="hero-plane-mountains"]').evaluate(el => getComputedStyle(el).backgroundImage)
@@ -178,6 +178,8 @@ test.describe('HomeHero — maquette A', () => {
         const bg = (key: string) => page.locator(`#hero [data-cy="hero-plane-${key}"]`).evaluate(el => getComputedStyle(el).backgroundImage)
         expect(await bg('mountains')).toMatch(/brand\/enso\/dark\/hero-mountains-.*\.avif/)
         expect(await bg('sky')).toBe('none')
+        expect(await bg('enso')).toMatch(/brand\/enso\/dark\/enso-wide-.*\.avif/)
+        expect(await bg('sun')).toMatch(/brand\/enso\/dark\/hero-sun-.*\.avif/)
         const m = await page.evaluate(() => {
             const lum = (c: string) => {
                 const [r, g, b] = (c.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number).map(v => {
@@ -204,6 +206,21 @@ test.describe('HomeHero — maquette A', () => {
         expect(m.description).toBeGreaterThanOrEqual(4.5)
         expect(m.cta).toBeGreaterThanOrEqual(4.5)
         await ctx.close()
+    })
+
+    test('a11y — aucune violation axe-core (WCAG 2.0 A/AA, 2.1 A/AA) sur la section hero, clair et sombre', async ({ browser }) => {
+        for (const colorScheme of ['light', 'dark'] as const) {
+            const ctx = await browser.newContext({ colorScheme, viewport: { width: 1440, height: 900 } })
+            const page = await ctx.newPage()
+            await page.goto('/')
+            await page.waitForLoadState('load')
+            const results = await new AxeBuilder({ page }).include('#hero').withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
+            expect(
+                results.violations,
+                `${colorScheme} : ` + results.violations.map(v => `[${v.impact}] ${v.id}`).join(', ')
+            ).toHaveLength(0)
+            await ctx.close()
+        }
     })
 
     test('a11y — pas de violation axe-core critique ou sérieuse sur la section hero', async ({ page }) => {

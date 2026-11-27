@@ -216,9 +216,9 @@ defineExpose({})
     }
 
     &__plane--sun {
-        inset-block-start: 3%;
-        inset-inline-end: 4%;
-        inline-size: 7rem;
+        inset-block-end: 16%;
+        inset-inline-end: 18%;
+        inline-size: 5rem;
     }
 
     &__plane--mountains {
@@ -313,10 +313,21 @@ defineExpose({})
         display: block;
     }
 
+    .home-hero__plane--sky {
+        inset-block-start: 4rem;
+        mask-image: linear-gradient(to bottom, transparent, var(--origam-color__neutral---950) 3rem);
+    }
+
+    .home-hero__plane--enso {
+        inset-block-start: 0;
+        inset-inline-end: 3%;
+        inline-size: clamp(14rem, 31vw, 30rem);
+    }
+
     .home-hero__plane--sun {
-        inset-block-start: 6%;
-        inset-inline-end: 5%;
-        inline-size: clamp(9rem, 17vw, 15rem);
+        inset-block-end: 14%;
+        inset-inline-end: 34%;
+        inline-size: clamp(8rem, 13vw, 13rem);
     }
 
     .home-hero__plane--mountains {

@@ -1,4 +1,4 @@
-import { ENSO_HERO_ARCHITECTURE, ENSO_HERO_LANDSCAPE, ENSO_HERO_MOUNTAINS, ENSO_HERO_SAKURA, ENSO_HERO_SKY, ENSO_HERO_SUN } from '~/consts/enso.const'
+import { ENSO_CIRCLE_WIDE, ENSO_HERO_ARCHITECTURE, ENSO_HERO_LANDSCAPE, ENSO_HERO_MOUNTAINS, ENSO_HERO_SAKURA, ENSO_HERO_SKY, ENSO_HERO_SUN } from '~/consts/enso.const'
 import type { IHeroPlane } from '~/interfaces/hero.interface'
 
 /**
@@ -11,6 +11,7 @@ import type { IHeroPlane } from '~/interfaces/hero.interface'
  */
 export const HERO_PLANES: readonly IHeroPlane[] = [
     { key: 'sky', art: ENSO_HERO_SKY, displayWidth: 1440, shift: 80, lightOnly: true },
+    { key: 'enso', art: ENSO_CIRCLE_WIDE, displayWidth: 480, shift: 76, desktopOnly: true },
     { key: 'sun', art: ENSO_HERO_SUN, displayWidth: 240, shift: 64, darkOnly: true },
     { key: 'mountains', art: ENSO_HERO_MOUNTAINS, displayWidth: 900, shift: 40 },
     { key: 'landscape', art: ENSO_HERO_LANDSCAPE, displayWidth: 1440, shift: 20 },
