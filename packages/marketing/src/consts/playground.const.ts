@@ -18,7 +18,7 @@ export const HOME_DEMO_CODE_BUTTON: IHomeDemoButton = {
     key: 'primary',
     labelKey: 'home.playground.btn_primary',
     labelFallback: 'Primary',
-    props: { variant: 'flat', 'bg-color': 'primary' }
+    props: { variant: 'flat', 'bg-color': 'primary', size: 'x-large' }
 }
 
 export const HOME_DEMO_BUTTONS: IHomeDemoButton[] = [
@@ -27,7 +27,7 @@ export const HOME_DEMO_BUTTONS: IHomeDemoButton[] = [
         key: 'secondary',
         labelKey: 'home.playground.btn_secondary',
         labelFallback: 'Secondary',
-        props: { variant: 'outlined', 'border-color': 'var(--origam-color__action--primary---bg)' }
+        props: { variant: 'outlined', 'border-color': 'var(--origam-color__action--primary---bg)', size: 'x-large' }
     },
     {
         key: 'ghost',
@@ -35,9 +35,13 @@ export const HOME_DEMO_BUTTONS: IHomeDemoButton[] = [
         labelFallback: 'Ghost',
         props: {
             variant: 'flat',
+            size: 'x-large',
             border: true,
             'border-color': 'var(--origam-color__surface---sunken)',
             'bg-color': 'var(--origam-color__surface---raised)'
         }
     }
 ]
+
+/** Window chrome dots, left to right (mockup: red, yellow, green). */
+export const HOME_DEMO_DOTS = ['danger', 'warning', 'success'] as const

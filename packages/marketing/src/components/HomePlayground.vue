@@ -11,10 +11,11 @@
       {{ t('home.playground.title', 'A few lines, real components.') }}
     </h2>
 
+    <!-- shortcut: rounded="2xl" n'émet aucune classe (DS #1567), à remplacer quand #1567 sera corrigé -->
     <origam-sheet
       tag="div"
-      rounded="xl"
-      bg-color="var(--origam-color__surface---overlay)"
+      rounded="var(--origam-radius---2xl)"
+      bg-color="var(--origam-color__surface---sunken)"
       class="home-playground__block"
     >
       <origam-theme-provider
@@ -24,16 +25,38 @@
         <origam-code
           :code="snippet"
           lang="vue"
-          :filename="t('home.playground.file', 'App.vue')"
-          rounded="lg"
+          rounded="xl"
           class="home-playground__code"
           data-cy="playground-code"
-        />
+        >
+          <template #header>
+            <span
+              class="home-playground__dots"
+              aria-hidden="true"
+            >
+              <origam-icon
+                v-for="tone in dots"
+                :key="tone"
+                icon="mdi-circle"
+                :color="tone"
+                :size="12"
+              />
+            </span>
+            <origam-icon
+              icon="mdi-vuejs"
+              color="success"
+              :size="44"
+              class="home-playground__logo"
+              aria-hidden="true"
+            />
+          </template>
+        </origam-code>
       </origam-theme-provider>
 
+      <!-- shortcut: rounded="2xl" n'émet aucune classe (DS #1567), à remplacer quand #1567 sera corrigé -->
       <origam-sheet
         tag="div"
-        rounded="lg"
+        rounded="var(--origam-radius---2xl)"
         elevation="sm"
         bg-color="var(--origam-color__surface---raised)"
         class="home-playground__variants"
@@ -55,7 +78,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useT } from '~/composables/useT'
-import { HOME_DEMO_BUTTONS, HOME_DEMO_CODE_BUTTON } from '~/consts/playground.const'
+import { HOME_DEMO_BUTTONS, HOME_DEMO_CODE_BUTTON, HOME_DEMO_DOTS } from '~/consts/playground.const'
 import { buildHomeDemoSnippet } from '~/utils/home-demo.util'
 
 const { t } = useT()
@@ -71,6 +94,8 @@ const { t } = useT()
  ********************************************************/
 
 const buttons = HOME_DEMO_BUTTONS
+
+const dots = HOME_DEMO_DOTS
 
 const labels = computed(() =>
     Object.fromEntries(buttons.map(({ key, labelKey, labelFallback }) => [key, t(labelKey, labelFallback)]))
@@ -99,10 +124,40 @@ defineExpose({})
 
     &__block {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
         gap: var(--origam-space---6, 1.5rem);
         align-items: center;
-        padding: var(--origam-space---8, 2rem);
+        padding: var(--origam-space---8, 2rem) var(--origam-space---12, 3rem);
+    }
+
+    &__window {
+        /* The window is 18 px / 1.8 like the mockup at x1.8; scoped here, not on every OrigamCode. */
+        --origam-code---font-size: var(--origam-font__size---xl, 1.125rem);
+        --origam-code---line-height: 1.8;
+    }
+
+    &__code {
+        position: relative;
+        overflow: visible;
+    }
+
+    /* The code stays overflow: visible for the logo, so the header paints the window's top corners itself. */
+    &__code :deep(.origam-code__header) {
+        border-start-start-radius: inherit;
+        border-start-end-radius: inherit;
+    }
+
+    &__dots {
+        display: inline-flex;
+        gap: var(--origam-space---2, 0.5rem);
+    }
+
+    /* The Vue logo overflows the window's top-right corner, as in the mockup. */
+    &__logo {
+        position: absolute;
+        inset-block-start: 0;
+        transform: translateY(-50%);
+        inset-inline-end: var(--origam-space---4, 1rem);
     }
 
     &__window :deep(.origam-code__code span) {
@@ -121,7 +176,7 @@ defineExpose({})
 
 @media (max-width: 1024px) {
     .home-playground__block {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         padding: var(--origam-space---4, 1rem);
     }
 }
