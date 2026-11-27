@@ -62,7 +62,7 @@
     "@vue/compiler-dom": "3.5.45",
     "@vue/compiler-sfc": "3.5.45",
     "tsx": "^4.23.5",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vue-tsc": "^3.3.14"
   }
 }
