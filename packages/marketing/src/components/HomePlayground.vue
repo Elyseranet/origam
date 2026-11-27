@@ -1,85 +1,90 @@
 <template>
   <section
     id="playground"
-    class="home-playground home-container home-section"
+    class="home-playground"
+    :style="edgeStyle"
     aria-labelledby="playground-heading"
   >
-    <h2
-      id="playground-heading"
-      class="home-playground__sr-title"
-    >
-      {{ t('home.playground.title', 'A few lines, real components.') }}
-    </h2>
-
-    <!-- shortcut: rounded="2xl" n'émet aucune classe (DS #1567), à remplacer quand #1567 sera corrigé -->
-    <origam-sheet
-      tag="div"
-      rounded="var(--origam-radius---2xl)"
-      bg-color="var(--origam-color__surface---sunken)"
-      class="home-playground__block"
-    >
-      <origam-theme-provider
-        mode="dark"
-        class="home-playground__window"
+    <div class="home-container">
+      <h2
+        id="playground-heading"
+        class="home-playground__sr-title"
       >
-        <origam-code
-          :code="snippet"
-          lang="vue"
-          rounded="xl"
-          class="home-playground__code"
-          data-cy="playground-code"
-        >
-          <template #header>
-            <span
-              class="home-playground__dots"
-              aria-hidden="true"
-            >
-              <origam-icon
-                v-for="tone in dots"
-                :key="tone"
-                icon="mdi-circle"
-                :color="tone"
-                :size="12"
-              />
-            </span>
-            <origam-icon
-              icon="mdi-vuejs"
-              color="success"
-              :size="28"
-              class="home-playground__logo"
-              aria-hidden="true"
-            />
-          </template>
-        </origam-code>
-      </origam-theme-provider>
+        {{ t('home.playground.title', 'A few lines, real components.') }}
+      </h2>
 
       <!-- shortcut: rounded="2xl" n'émet aucune classe (DS #1567), à remplacer quand #1567 sera corrigé -->
       <origam-sheet
         tag="div"
         rounded="var(--origam-radius---2xl)"
-        elevation="sm"
-        bg-color="var(--origam-color__surface---raised)"
-        class="home-playground__variants"
-        data-cy="playground-preview"
+        bg-color="var(--origam-color__surface---sunken)"
+        class="home-playground__block"
       >
-        <origam-btn
-          v-for="button in buttons"
-          :key="button.key"
-          v-bind="button.props"
-          :data-cy="`playground-btn-${button.key}`"
+        <origam-theme-provider
+          mode="dark"
+          class="home-playground__window"
         >
-          {{ labels[button.key] }}
-        </origam-btn>
+          <origam-code
+            :code="snippet"
+            lang="vue"
+            rounded="xl"
+            class="home-playground__code"
+            data-cy="playground-code"
+          >
+            <template #header>
+              <span
+                class="home-playground__dots"
+                aria-hidden="true"
+              >
+                <origam-icon
+                  v-for="tone in dots"
+                  :key="tone"
+                  icon="mdi-circle"
+                  :color="tone"
+                  :size="12"
+                />
+              </span>
+              <origam-icon
+                icon="mdi-vuejs"
+                color="success"
+                :size="28"
+                class="home-playground__logo"
+                aria-hidden="true"
+              />
+            </template>
+          </origam-code>
+        </origam-theme-provider>
+
+        <!-- shortcut: rounded="2xl" n'émet aucune classe (DS #1567), à remplacer quand #1567 sera corrigé -->
+        <origam-sheet
+          tag="div"
+          rounded="var(--origam-radius---2xl)"
+          elevation="sm"
+          bg-color="var(--origam-color__surface---raised)"
+          class="home-playground__variants"
+          data-cy="playground-preview"
+        >
+          <origam-btn
+            v-for="button in buttons"
+            :key="button.key"
+            v-bind="button.props"
+            :data-cy="`playground-btn-${button.key}`"
+          >
+            {{ labels[button.key] }}
+          </origam-btn>
+        </origam-sheet>
       </origam-sheet>
-    </origam-sheet>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useT } from '~/composables/useT'
+import { ENSO_MASK_DRY_02 } from '~/consts/enso.const'
 import { HOME_DEMO_BUTTONS, HOME_DEMO_CODE_BUTTON, HOME_DEMO_DOTS } from '~/consts/playground.const'
 import { buildHomeDemoSnippet } from '~/utils/home-demo.util'
+import { ensoMaskUrl } from '~/utils/enso.util'
 
 const { t } = useT()
 
@@ -103,6 +108,15 @@ const labels = computed(() =>
 
 const snippet = computed(() => buildHomeDemoSnippet(HOME_DEMO_CODE_BUTTON, t(HOME_DEMO_CODE_BUTTON.labelKey, HOME_DEMO_CODE_BUTTON.labelFallback)))
 
+/*********************************************************
+ * Bord peint (T2)
+ *
+ * @description
+ * Le geste inversé de `dry-02` qui déborde sur la bibliothèque ; masque
+ * servi depuis la même origine, seul son alpha compte.
+ ********************************************************/
+const edgeStyle = { '--home-mask-edge': ensoMaskUrl(ENSO_MASK_DRY_02) }
+
 defineEmits([])
 
 defineSlots<Record<string, never>>()
@@ -112,6 +126,25 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-playground {
+    position: relative;
+    z-index: 1;
+    overflow-x: clip;
+    padding-block: 88px 120px;
+    background-color: var(--origam-color__surface---overlay);
+
+    // T2 (demo -> bibliotheque) : la lavande deborde sur le papier par un geste inverse (dry-02, bas plein a 50 %).
+    &::after {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        inset-inline: -4%;
+        inset-block-end: -70px;
+        block-size: 140px;
+        pointer-events: none;
+        background-color: var(--origam-color__surface---overlay);
+        transform: scaleY(-1);
+        mask: var(--home-mask-edge) 0 0 / 100% 100% no-repeat, linear-gradient(#000 0 0) 0 100% / 100% 50% no-repeat;
+    }
 
     &__sr-title {
         position: absolute;
@@ -161,6 +194,13 @@ defineExpose({})
         justify-content: center;
         gap: var(--origam-space---4, 1rem);
         padding: var(--origam-space---10, 2.5rem) var(--origam-space---6, 1.5rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .home-playground::after {
+        inset-block-end: -44px;
+        block-size: 88px;
     }
 }
 

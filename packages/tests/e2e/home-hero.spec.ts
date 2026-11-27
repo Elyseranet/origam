@@ -120,7 +120,7 @@ test.describe('HomeHero — maquette A', () => {
         await page.setViewportSize({ width: 1440, height: 900 })
         await page.goto('/')
         const lefts = await page.evaluate(() => {
-            const playground = document.querySelector('section#playground')!
+            const playground = document.querySelector('section#playground .home-container')!
             return {
                 hero: Math.round(document.querySelector('#hero .home-hero__header')!.getBoundingClientRect().left),
                 playground: Math.round(playground.getBoundingClientRect().left + parseFloat(getComputedStyle(playground).paddingLeft))

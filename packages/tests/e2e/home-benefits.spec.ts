@@ -16,11 +16,11 @@ const columnsAt = async (page: import('@playwright/test').Page, width: number) =
 
 test.describe('HomeBenefits — maquette A', () => {
 
-    test('4 bénéfices dans une liste, chacun avec un titre h2 et une description', async ({ page }) => {
+    test('4 bénéfices dans une liste, chacun avec un titre h3 et une description', async ({ page }) => {
         await page.goto('/')
         const items = page.locator('#benefits li[data-cy="benefit-item"]')
         await expect(items).toHaveCount(4)
-        await expect(page.locator('#benefits li h2')).toHaveCount(4)
+        await expect(page.locator('#benefits li h3')).toHaveCount(4)
         await expect(page.locator('#benefits ul')).toHaveCount(1)
     })
 

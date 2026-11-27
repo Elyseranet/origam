@@ -1,4 +1,4 @@
-import type { TMode, TTheme } from 'origam/types'
+import type { TElevation, TMode, TTheme } from 'origam/types'
 
 export interface IThemeChip {
     key: string
@@ -19,6 +19,8 @@ export interface IThemePreviewTile {
     theme: TTheme
     /** Color mode applied via <OrigamThemeProvider mode>. */
     mode: TMode
+    /** Élévation de la tuile : `none` partout (maquette v12), `md` pour Cartoon dont l'ombre dure vient du thème. */
+    elevation: TElevation
     /** Theme Builder deep link preloading this theme (`/theming?preset=...`). */
     href: string
 }

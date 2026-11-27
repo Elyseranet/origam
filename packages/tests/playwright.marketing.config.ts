@@ -31,6 +31,9 @@ const MARKETING_GREEN_SPECS = [
     // #1554 (T2) — bord gauche, ecart de section et trait d'eyebrow communs a la home.
     'home-foundations.spec.ts',
 
+    // #1595 — rythme de fonds et transitions T1/T2/T3, clair et sombre (27 passed en --repeat-each=3).
+    'home-rhythm.spec.ts',
+
     // #1517 — la vitrine des themes ouvre le Theme Builder avec le theme precharge.
     'home-themes-builder-link.spec.ts',
 

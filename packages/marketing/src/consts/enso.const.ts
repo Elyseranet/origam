@@ -145,45 +145,6 @@ export const ENSO_PETAL_12: IEnsoArt = {
     }
 }
 
-export const ENSO_SECTION_MOUNTAIN: IEnsoArt = {
-    width: 2400,
-    height: 1200,
-    light: {
-        src: '/brand/enso/light/section-mountain-2400.avif',
-        srcset: '/brand/enso/light/section-mountain-800.avif 800w, /brand/enso/light/section-mountain-1600.avif 1600w, /brand/enso/light/section-mountain-2400.avif 2400w'
-    },
-    dark: {
-        src: '/brand/enso/dark/section-mountain-2400.avif',
-        srcset: '/brand/enso/dark/section-mountain-800.avif 800w, /brand/enso/dark/section-mountain-1600.avif 1600w, /brand/enso/dark/section-mountain-2400.avif 2400w'
-    }
-}
-
-export const ENSO_SECTION_HILLS: IEnsoArt = {
-    width: 2400,
-    height: 1200,
-    light: {
-        src: '/brand/enso/light/section-hills-2400.avif',
-        srcset: '/brand/enso/light/section-hills-800.avif 800w, /brand/enso/light/section-hills-1600.avif 1600w, /brand/enso/light/section-hills-2400.avif 2400w'
-    },
-    dark: {
-        src: '/brand/enso/dark/section-hills-2400.avif',
-        srcset: '/brand/enso/dark/section-hills-800.avif 800w, /brand/enso/dark/section-hills-1600.avif 1600w, /brand/enso/dark/section-hills-2400.avif 2400w'
-    }
-}
-
-export const ENSO_SECTION_WAVE: IEnsoArt = {
-    width: 2400,
-    height: 1200,
-    light: {
-        src: '/brand/enso/light/section-wave-2400.avif',
-        srcset: '/brand/enso/light/section-wave-800.avif 800w, /brand/enso/light/section-wave-1600.avif 1600w, /brand/enso/light/section-wave-2400.avif 2400w'
-    },
-    dark: {
-        src: '/brand/enso/dark/section-wave-2400.avif',
-        srcset: '/brand/enso/dark/section-wave-800.avif 800w, /brand/enso/dark/section-wave-1600.avif 1600w, /brand/enso/dark/section-wave-2400.avif 2400w'
-    }
-}
-
 export const ENSO_CIRCLE_OPEN: IEnsoArt = {
     width: 800,
     height: 778,
@@ -412,9 +373,6 @@ export const ENSO_GALLERY: readonly IEnsoGalleryItem[] = [
     { name: 'ENSO_HERO_ARCHITECTURE', art: ENSO_HERO_ARCHITECTURE },
     { name: 'ENSO_HERO_SAKURA', art: ENSO_HERO_SAKURA },
     { name: 'ENSO_HERO_BRUSH', art: ENSO_HERO_BRUSH },
-    { name: 'ENSO_SECTION_MOUNTAIN', art: ENSO_SECTION_MOUNTAIN },
-    { name: 'ENSO_SECTION_HILLS', art: ENSO_SECTION_HILLS },
-    { name: 'ENSO_SECTION_WAVE', art: ENSO_SECTION_WAVE },
     { name: 'ENSO_CIRCLE_OPEN', art: ENSO_CIRCLE_OPEN },
     { name: 'ENSO_CIRCLE_WIDE', art: ENSO_CIRCLE_WIDE },
     { name: 'ENSO_BRUSH', art: ENSO_BRUSH },

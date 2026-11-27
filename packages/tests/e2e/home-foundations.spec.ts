@@ -19,7 +19,7 @@ test.describe('Home foundations', () => {
         await page.goto(BASE, { waitUntil: 'domcontentloaded' })
 
         const lefts = await Promise.all(SECTIONS.map(id =>
-            page.locator(`section#${id}`).evaluate((el) => {
+            page.locator(`section#${id} .home-container`).first().evaluate((el) => {
                 const cs = getComputedStyle(el)
                 return Math.round(el.getBoundingClientRect().left + parseFloat(cs.paddingLeft))
             })
@@ -30,23 +30,15 @@ test.describe('Home foundations', () => {
         expect(lefts).toEqual([178, 178, 178])
     })
 
-    test('section padding follows --home-section-gap', async ({ page }) => {
+    test('middle sections carry the v12 background rhythm paddings (spec 1, 5, 6)', async ({ page }) => {
         await page.goto(BASE, { waitUntil: 'domcontentloaded' })
 
-        const { gap, paddings } = await page.evaluate((ids) => {
-            const probe = document.createElement('div')
-            probe.style.paddingTop = 'var(--home-section-gap)'
-            document.body.appendChild(probe)
-            const gap = getComputedStyle(probe).paddingTop
-            probe.remove()
-            return {
-                gap,
-                paddings: ids.map(id => getComputedStyle(document.querySelector(`section#${id}`)!).paddingTop)
-            }
-        }, ['benefits', ...SECTIONS])
+        const paddings = await page.evaluate(ids => ids.map((id) => {
+            const cs = getComputedStyle(document.querySelector(`section#${id}`)!)
+            return [cs.paddingTop, cs.paddingBottom]
+        }), ['benefits', 'playground', 'library', 'themes'])
 
-        expect(gap).toBe('24px')
-        expect(paddings).toEqual([gap, gap, gap, gap])
+        expect(paddings).toEqual([['40px', '0px'], ['88px', '120px'], ['130px', '150px'], ['90px', '40px']])
     })
 
     test('.home-eyebrow draws the gold-tick mark, 18x24, rotated 28deg', async ({ page }) => {

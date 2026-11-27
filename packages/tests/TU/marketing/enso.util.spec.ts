@@ -1,9 +1,9 @@
 // #1570 — décors enso : choix du fichier 1x / 2x des fonds CSS, variables par mode, pétales bornés.
 import { describe, expect, it } from 'vitest'
 
-import { ENSO_BRUSH, ENSO_DEMO_MODES, ENSO_GALLERY, ENSO_PETAL_FLIGHTS } from '~/consts/enso.const'
+import { ENSO_BRUSH, ENSO_DEMO_MODES, ENSO_GALLERY, ENSO_MASK_DRY_02, ENSO_PETAL_FLIGHTS } from '~/consts/enso.const'
 import { CTA_PLANES } from '~/consts/cta.const'
-import { ctaPlaneViews, ensoArtVars, ensoDemoColumns, ensoImageSet, ensoPetalViews } from '~/utils/enso.util'
+import { ctaPlaneViews, ensoArtVars, ensoDemoColumns, ensoImageSet, ensoMaskUrl, ensoPetalViews } from '~/utils/enso.util'
 
 const SOURCE = { src: '/a-1600.avif', srcset: '/a-400.avif 400w, /a-1600.avif 1600w, /a-800.avif 800w' }
 
@@ -30,6 +30,13 @@ describe('ensoArtVars', () => {
         expect(vars['--enso-art-light']).toContain('/brand/enso/shared/brush-violet-')
         expect(vars['--enso-art-dark']).toContain('/brand/enso/shared/brush-ivory-')
         expect(vars['--enso-art-ratio']).toBe(`${ENSO_BRUSH.width} / ${ENSO_BRUSH.height}`)
+    })
+})
+
+describe('ensoMaskUrl', () => {
+    it('donne un url() de même origine, sur src et jamais sur le srcset', () => {
+        expect(ensoMaskUrl(ENSO_MASK_DRY_02)).toBe(`url("${ENSO_MASK_DRY_02.src}")`)
+        expect(ensoMaskUrl(ENSO_MASK_DRY_02)).toMatch(/^url\("\/brand\//)
     })
 })
 
