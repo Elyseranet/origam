@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest'
 
 import { ENSO_BRUSH, ENSO_DEMO_MODES, ENSO_GALLERY, ENSO_MASK_DRY_02, ENSO_PETAL_FLIGHTS } from '~/consts/enso.const'
 import { CTA_PLANES } from '~/consts/cta.const'
-import { ctaPlaneViews, ensoArtVars, ensoDemoColumns, ensoImageSet, ensoMaskUrl, ensoPetalViews } from '~/utils/enso.util'
+import { ctaPlaneViews, ensoArtVars, ensoDemoColumns, ensoImageSet, ensoMaskUrl, ensoPageHeaderPlaneViews, ensoPetalViews } from '~/utils/enso.util'
+import { ENSO_PAGE_HEADER_PLANES } from '~/consts/enso-page-header.const'
+import { ENSO_PAGE_HEADER_FAMILY } from '~/enums/enso-page-header.enum'
 
 const SOURCE = { src: '/a-1600.avif', srcset: '/a-400.avif 400w, /a-1600.avif 1600w, /a-800.avif 800w' }
 
@@ -95,5 +97,40 @@ describe('ctaPlaneViews (#1596)', () => {
         expect(mountains.classes).toContain('enso-art')
         expect(mountains.style['--enso-art-light']).toContain('/brand/enso/light/cta-mountains-')
         expect(mountains.style['--enso-art-dark']).toContain('/brand/enso/dark/cta-mountains-')
+    })
+})
+
+describe('ensoPageHeaderPlaneViews (#1584)', () => {
+    const families = Object.values(ENSO_PAGE_HEADER_FAMILY)
+
+    it('couvre exactement les quatre familles, avec un ou deux plans', () => {
+        expect(families).toEqual(['catalog', 'editorial', 'legal', 'tool'])
+        expect(Object.keys(ENSO_PAGE_HEADER_PLANES).sort()).toEqual([...families].sort())
+        for (const family of families) expect([1, 2]).toContain(ensoPageHeaderPlaneViews(family).length)
+    })
+
+    it('n\'utilise jamais le Fuji (réservé au hero et au CTA)', () => {
+        const fuji = /hero-mountains|hero-sky|hero-sun|cta-mountains/
+        for (const family of families) {
+            for (const view of ensoPageHeaderPlaneViews(family)) {
+                expect(String(view.style['--enso-art-light'])).not.toMatch(fuji)
+                expect(String(view.style['--enso-art-dark'])).not.toMatch(fuji)
+            }
+        }
+    })
+
+    it('porte les deux modes sur chaque plan, le plan lointain avant et plus fort que le proche', () => {
+        for (const family of families) {
+            const views = ensoPageHeaderPlaneViews(family)
+
+            expect(views[0].key).toBe('back')
+            for (const view of views) {
+                expect(view.classes).toEqual(['enso-art', `enso-page-header__plane--${view.key}`])
+                expect(String(view.style['--enso-art-light'])).toContain('/brand/enso/light/')
+                expect(String(view.style['--enso-art-dark'])).toContain('/brand/enso/dark/')
+                expect(view.speed).toBeGreaterThan(0)
+            }
+            if (views.length === 2) expect(views[0].speed).toBeGreaterThan(views[1].speed)
+        }
     })
 })

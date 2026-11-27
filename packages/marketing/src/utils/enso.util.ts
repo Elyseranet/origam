@@ -5,6 +5,9 @@ import { HERO_PLANES } from '~/consts/hero.const'
 import type { ICtaPlaneView } from '~/interfaces/cta.interface'
 import type { IHeroPlaneView, IHeroVisual } from '~/interfaces/hero.interface'
 import type { TEnsoArtVars } from '~/types/enso.type'
+import { ENSO_PAGE_HEADER_PLANES } from '~/consts/enso-page-header.const'
+import type { ENSO_PAGE_HEADER_FAMILY } from '~/enums/enso-page-header.enum'
+import type { IEnsoPageHeaderPlaneView } from '~/interfaces/enso.interface'
 
 /** Le plus petit fichier qui couvre `target`, sinon le plus grand, sinon `src` (srcset vide). */
 function pickCandidate (candidates: IEnsoSrcsetCandidate[], target: number, fallback: string): string {
@@ -94,6 +97,16 @@ export function ctaPlaneViews (): ICtaPlaneView[] {
         key: plane.key,
         speed: plane.speed,
         classes: ['enso-art', `home-cta__plane--${plane.key}`],
+        style: ensoArtVars(plane.art, plane.displayWidth)
+    }))
+}
+
+/** Plans du décor de l'en-tête de page d'une famille, prêts à poser sur une `OrigamParallaxLayer`. */
+export function ensoPageHeaderPlaneViews (family: `${ENSO_PAGE_HEADER_FAMILY}`): IEnsoPageHeaderPlaneView[] {
+    return ENSO_PAGE_HEADER_PLANES[family as ENSO_PAGE_HEADER_FAMILY].map(plane => ({
+        key: plane.key,
+        speed: plane.speed,
+        classes: ['enso-art', `enso-page-header__plane--${plane.key}`],
         style: ensoArtVars(plane.art, plane.displayWidth)
     }))
 }

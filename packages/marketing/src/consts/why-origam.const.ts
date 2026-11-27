@@ -1,12 +1,4 @@
-import type { CSSProperties } from 'vue'
 import type { IStrength, IUseCase, IWeakness } from '~/interfaces/why-origam.interface'
-
-/**
- * Hero section: gradient badge, same styling as HomeHero badge.
- */
-export const WHY_HERO_BADGE_VARS: CSSProperties = {
-    '--origam-chip---background-color': 'transparent'
-} as CSSProperties
 
 /**
  * Strengths list (S2).

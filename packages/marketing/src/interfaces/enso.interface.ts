@@ -1,3 +1,4 @@
+import type { ENSO_PAGE_HEADER_FAMILY, ENSO_PAGE_HEADER_PLANE } from '~/enums/enso-page-header.enum'
 import type { IHeroVisual } from '~/interfaces/hero.interface'
 import type { TEnsoArtVars, TEnsoMode } from '~/types/enso.type'
 
@@ -78,4 +79,37 @@ export interface IEnsoGalleryView extends IHeroVisual {
 
 export interface IEnsoDemoColumn extends IEnsoDemoMode {
     items: IEnsoGalleryView[]
+}
+
+/** Un plan du décor de l'en-tête de page : l'illustration, sa largeur d'affichage et sa vitesse de parallaxe. */
+export interface IEnsoPageHeaderPlane {
+    key: `${ENSO_PAGE_HEADER_PLANE}`
+    art: IEnsoArt
+    /** Largeur d'affichage approximative (px CSS), qui choisit le fichier 1x / 2x. */
+    displayWidth: number
+    /** Vitesse de la couche `OrigamParallaxLayer` (positive : le plan retarde sur le défilement). */
+    speed: number
+}
+
+export interface IEnsoPageHeaderPlaneView {
+    key: string
+    speed: number
+    classes: string[]
+    style: TEnsoArtVars
+}
+
+export interface IEnsoPageHeaderProps {
+    /** Famille de pages : choisit le décor dans un jeu fermé. */
+    family: `${ENSO_PAGE_HEADER_FAMILY}`
+    /** `id` du `h1` ; par défaut un identifiant généré (SSR-safe). */
+    titleId?: string
+}
+
+/** `breadcrumb` : fil d'Ariane ; `eyebrow`, `title`, `intro` : le texte ; `default` : actions sous l'intro. */
+export interface IEnsoPageHeaderSlots {
+    breadcrumb?: () => unknown
+    eyebrow?: () => unknown
+    title?: () => unknown
+    intro?: () => unknown
+    default?: () => unknown
 }

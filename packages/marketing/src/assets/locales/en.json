@@ -1229,6 +1229,7 @@
         }
     },
     "nav": {
+        "home": "Home",
         "components": "Components",
         "docs": "Docs",
         "stories": "Stories",

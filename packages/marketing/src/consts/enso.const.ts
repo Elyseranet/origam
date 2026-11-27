@@ -279,6 +279,34 @@ export const ENSO_CTA_FOREGROUND: IEnsoArt = {
     }
 }
 
+/** En-tête de page « Vallée » (#1584), famille éditoriale : `foreground-2` du kit. */
+export const ENSO_PAGE_FOREGROUND: IEnsoArt = {
+    width: 1983,
+    height: 793,
+    light: {
+        src: '/brand/enso/light/page-foreground-1983.avif',
+        srcset: '/brand/enso/light/page-foreground-800.avif 800w, /brand/enso/light/page-foreground-1600.avif 1600w, /brand/enso/light/page-foreground-1983.avif 1983w'
+    },
+    dark: {
+        src: '/brand/enso/dark/page-foreground-1983.avif',
+        srcset: '/brand/enso/dark/page-foreground-800.avif 800w, /brand/enso/dark/page-foreground-1600.avif 1600w, /brand/enso/dark/page-foreground-1983.avif 1983w'
+    }
+}
+
+/** En-tête de page « Vallée » (#1584), famille outil : `temple-rocks` du kit. */
+export const ENSO_PAGE_TEMPLE: IEnsoArt = {
+    width: 600,
+    height: 684,
+    light: {
+        src: '/brand/enso/light/page-temple-600.avif',
+        srcset: '/brand/enso/light/page-temple-300.avif 300w, /brand/enso/light/page-temple-600.avif 600w'
+    },
+    dark: {
+        src: '/brand/enso/dark/page-temple-600.avif',
+        srcset: '/brand/enso/dark/page-temple-300.avif 300w, /brand/enso/dark/page-temple-600.avif 600w'
+    }
+}
+
 /** Trait qui suit le mode : violet terminé en doré sur papier, ivoire terminé en doré sur encre. */
 export const ENSO_BRUSH: IEnsoArt = {
     width: ENSO_BRUSH_VIOLET.width,
@@ -341,5 +369,7 @@ export const ENSO_GALLERY: readonly IEnsoGalleryItem[] = [
     { name: 'ENSO_MASK_DRY_05', art: ENSO_MASK_DRY_05 },
     { name: 'ENSO_CTA_MOUNTAINS', art: ENSO_CTA_MOUNTAINS },
     { name: 'ENSO_CTA_RIDGE', art: ENSO_CTA_RIDGE },
-    { name: 'ENSO_CTA_FOREGROUND', art: ENSO_CTA_FOREGROUND }
+    { name: 'ENSO_CTA_FOREGROUND', art: ENSO_CTA_FOREGROUND },
+    { name: 'ENSO_PAGE_FOREGROUND', art: ENSO_PAGE_FOREGROUND },
+    { name: 'ENSO_PAGE_TEMPLE', art: ENSO_PAGE_TEMPLE }
 ]
