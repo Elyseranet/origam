@@ -15,6 +15,11 @@ describe('ensoImageSet', () => {
     it('retombe sur le plus grand fichier quand aucun ne couvre la largeur', () => {
         expect(ensoImageSet(SOURCE, 2000)).toBe('image-set(url("/a-1600.avif") 1x, url("/a-1600.avif") 2x)')
     })
+
+    it('ignore les entrées mal formées et retombe sur `src` si le srcset est vide', () => {
+        expect(ensoImageSet({ src: '/s.avif', srcset: '/x.avif, /a-400.avif 400w' }, 300)).toBe('image-set(url("/a-400.avif") 1x, url("/a-400.avif") 2x)')
+        expect(ensoImageSet({ src: '/s.avif', srcset: '' }, 300)).toBe('image-set(url("/s.avif") 1x, url("/s.avif") 2x)')
+    })
 })
 
 describe('ensoArtVars', () => {

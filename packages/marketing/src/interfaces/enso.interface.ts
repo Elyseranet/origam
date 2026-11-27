@@ -15,15 +15,21 @@ export interface IEnsoSharedArt extends IHeroVisual {
     height: number
 }
 
-/** Trajectoire d'un pétale : `art` indexe `ENSO_PETAL_ARTS`, le reste alimente les variables CSS du `@keyframes`. */
+/** Trajectoire d'un pétale : `art` est la variante peinte, le reste alimente les variables CSS du `@keyframes`. */
 export interface IEnsoPetalFlight {
-    art: number
+    art: IEnsoArt
     start: string
     drift: string
     duration: string
     delay: string
     scale: number
     spin: string
+}
+
+/** Une entrée `url Nw` d'un `srcset`. */
+export interface IEnsoSrcsetCandidate {
+    url: string
+    width: number
 }
 
 export interface IEnsoPetalView {

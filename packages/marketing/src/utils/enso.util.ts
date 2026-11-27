@@ -1,10 +1,24 @@
-import { ENSO_DEMO_MODES, ENSO_GALLERY, ENSO_PETAL_ARTS, ENSO_PETAL_FLIGHTS, ENSO_PETAL_WIDTH } from '~/consts/enso.const'
-import type { IEnsoArt, IEnsoDemoColumn, IEnsoPetalView } from '~/interfaces/enso.interface'
+import { ENSO_DEMO_MODES, ENSO_GALLERY, ENSO_PETAL_FLIGHTS, ENSO_PETAL_WIDTH } from '~/consts/enso.const'
+import type { IEnsoArt, IEnsoDemoColumn, IEnsoPetalView, IEnsoSrcsetCandidate } from '~/interfaces/enso.interface'
 import type { IHeroVisual } from '~/interfaces/hero.interface'
 import type { TEnsoArtVars } from '~/types/enso.type'
 
-function pickCandidate (candidates: { url: string, width: number }[], target: number): string {
-    return (candidates.find(c => c.width >= target) ?? candidates[candidates.length - 1]).url
+/** Le plus petit fichier qui couvre `target`, sinon le plus grand, sinon `src` (srcset vide). */
+function pickCandidate (candidates: IEnsoSrcsetCandidate[], target: number, fallback: string): string {
+    return (candidates.find(c => c.width >= target) ?? candidates.at(-1))?.url ?? fallback
+}
+
+/** Entrées `url Nw` d'un `srcset`, triées par largeur croissante ; une entrée mal formée est ignorée. */
+function parseSrcset (srcset: string): IEnsoSrcsetCandidate[] {
+    return srcset
+        .split(',')
+        .flatMap((entry) => {
+            const [url, descriptor] = entry.trim().split(/\s+/)
+            const width = Number.parseInt(descriptor ?? '', 10)
+
+            return url && Number.isFinite(width) ? [{ url, width }] : []
+        })
+        .sort((a, b) => a.width - b.width)
 }
 
 /**
@@ -12,16 +26,9 @@ function pickCandidate (candidates: { url: string, width: number }[], target: nu
  * fichier qui couvre `displayWidth` en 1x, puis `2 × displayWidth` en 2x.
  */
 export function ensoImageSet (source: IHeroVisual, displayWidth: number): string {
-    const candidates = source.srcset
-        .split(',')
-        .map((entry) => {
-            const [url, descriptor] = entry.trim().split(/\s+/)
+    const candidates = parseSrcset(source.srcset)
 
-            return { url, width: Number.parseInt(descriptor, 10) }
-        })
-        .sort((a, b) => a.width - b.width)
-
-    return `image-set(url("${pickCandidate(candidates, displayWidth)}") 1x, url("${pickCandidate(candidates, displayWidth * 2)}") 2x)`
+    return `image-set(url("${pickCandidate(candidates, displayWidth, source.src)}") 1x, url("${pickCandidate(candidates, displayWidth * 2, source.src)}") 2x)`
 }
 
 /** Les deux variantes d'une illustration en variables CSS ; la classe globale `.enso-art` choisit selon `data-mode`. */
@@ -53,7 +60,7 @@ export function ensoPetalViews (count: number): IEnsoPetalView[] {
     return ENSO_PETAL_FLIGHTS.slice(0, total).map((flight, index) => ({
         key: index,
         style: {
-            ...ensoArtVars(ENSO_PETAL_ARTS[flight.art], ENSO_PETAL_WIDTH),
+            ...ensoArtVars(flight.art, ENSO_PETAL_WIDTH),
             '--petal-start': flight.start,
             '--petal-drift': flight.drift,
             '--petal-duration': flight.duration,

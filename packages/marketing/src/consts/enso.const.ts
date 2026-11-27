@@ -311,26 +311,24 @@ export const ENSO_DIVIDER_BRUSH_WIDTH = 960
 export const ENSO_PAPER_TILE_WIDTH = 512
 export const ENSO_PETAL_WIDTH = 40
 
-export const ENSO_PETAL_ARTS: readonly IEnsoArt[] = [ENSO_PETAL_01, ENSO_PETAL_07, ENSO_PETAL_12]
-
 /**
  * Trajectoires des pétales, toutes différentes (départ, dérive, durée, délai
  * négatif : la pluie est déjà en cours au chargement). Leur nombre est le
  * plafond de `count` ; les six premières restent visibles sur mobile.
  */
 export const ENSO_PETAL_FLIGHTS: readonly IEnsoPetalFlight[] = [
-    { art: 0, start: '8%', drift: '18vw', duration: '14s', delay: '-2s', scale: 1, spin: '320deg' },
-    { art: 1, start: '22%', drift: '12vw', duration: '17s', delay: '-9s', scale: 0.7, spin: '-260deg' },
-    { art: 2, start: '41%', drift: '22vw', duration: '12s', delay: '-5s', scale: 0.85, spin: '400deg' },
-    { art: 0, start: '57%', drift: '10vw', duration: '19s', delay: '-13s', scale: 0.6, spin: '-300deg' },
-    { art: 1, start: '73%', drift: '16vw', duration: '15s', delay: '-1s', scale: 0.95, spin: '280deg' },
-    { art: 2, start: '88%', drift: '8vw', duration: '18s', delay: '-11s', scale: 0.75, spin: '-360deg' },
-    { art: 1, start: '3%', drift: '24vw', duration: '16s', delay: '-7s', scale: 0.55, spin: '240deg' },
-    { art: 2, start: '31%', drift: '14vw', duration: '20s', delay: '-16s', scale: 0.9, spin: '-220deg' },
-    { art: 0, start: '49%', drift: '20vw', duration: '13s', delay: '-4s', scale: 0.65, spin: '340deg' },
-    { art: 2, start: '66%', drift: '11vw', duration: '21s', delay: '-18s', scale: 0.8, spin: '-380deg' },
-    { art: 0, start: '81%', drift: '15vw', duration: '15s', delay: '-8s', scale: 0.5, spin: '300deg' },
-    { art: 1, start: '95%', drift: '6vw', duration: '18s', delay: '-14s', scale: 0.7, spin: '-240deg' }
+    { art: ENSO_PETAL_01, start: '8%', drift: '18vw', duration: '14s', delay: '-2s', scale: 1, spin: '320deg' },
+    { art: ENSO_PETAL_07, start: '22%', drift: '12vw', duration: '17s', delay: '-9s', scale: 0.7, spin: '-260deg' },
+    { art: ENSO_PETAL_12, start: '41%', drift: '22vw', duration: '12s', delay: '-5s', scale: 0.85, spin: '400deg' },
+    { art: ENSO_PETAL_01, start: '57%', drift: '10vw', duration: '19s', delay: '-13s', scale: 0.6, spin: '-300deg' },
+    { art: ENSO_PETAL_07, start: '73%', drift: '16vw', duration: '15s', delay: '-1s', scale: 0.95, spin: '280deg' },
+    { art: ENSO_PETAL_12, start: '88%', drift: '8vw', duration: '18s', delay: '-11s', scale: 0.75, spin: '-360deg' },
+    { art: ENSO_PETAL_07, start: '3%', drift: '24vw', duration: '16s', delay: '-7s', scale: 0.55, spin: '240deg' },
+    { art: ENSO_PETAL_12, start: '31%', drift: '14vw', duration: '20s', delay: '-16s', scale: 0.9, spin: '-220deg' },
+    { art: ENSO_PETAL_01, start: '49%', drift: '20vw', duration: '13s', delay: '-4s', scale: 0.65, spin: '340deg' },
+    { art: ENSO_PETAL_12, start: '66%', drift: '11vw', duration: '21s', delay: '-18s', scale: 0.8, spin: '-380deg' },
+    { art: ENSO_PETAL_01, start: '81%', drift: '15vw', duration: '15s', delay: '-8s', scale: 0.5, spin: '300deg' },
+    { art: ENSO_PETAL_07, start: '95%', drift: '6vw', duration: '18s', delay: '-14s', scale: 0.7, spin: '-240deg' }
 ]
 
 /** Page de contrôle `/enso` (lots E2 à E5) : les deux modes côte à côte. */
