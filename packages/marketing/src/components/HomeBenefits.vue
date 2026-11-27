@@ -28,7 +28,7 @@
           </span>
 
           <origam-title
-            tag="h2"
+            tag="h3"
             class="home-benefits__title"
           >
             {{ t(benefit.titleKey, benefit.titleKey) }}
@@ -121,6 +121,8 @@ defineExpose({})
         margin: 0;
         font-size: var(--origam-font__size---xl, 1.125rem);
         font-weight: var(--origam-font__weight---semibold, 600);
+        line-height: 1.6;
+        letter-spacing: normal;
     }
 
     &__description {

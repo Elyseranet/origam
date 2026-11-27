@@ -58,6 +58,7 @@
               class="home-themes__btn"
               variant="text"
               size="x-large"
+              font-weight="semibold"
               append-icon="mdi-arrow-right"
               :href="HOME_THEMES_BUILDER_HREF"
               data-cy="themes-cta-builder"
@@ -250,7 +251,11 @@ const washStyle = {
         margin-block-start: var(--origam-space---2, 0.5rem);
     }
 
+    // Lien de la maquette v12 : 15 px, 600, 0,02em. Aucun cran de `fontSize` ne vaut 15 px : variables du bouton.
     &__btn {
+        --origam-btn---font-size: 0.9375rem;
+        --origam-btn---letter-spacing: 0.02em;
+
         padding-inline: 0;
     }
 
