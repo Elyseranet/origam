@@ -89,15 +89,74 @@ test.describe('HomeHero — maquette A', () => {
         await ctx.close()
     })
 
-    test('le texte du hero s\'aligne sur le logo du header (gouttière du site)', async ({ page }) => {
+    test('le texte du hero s\'aligne sur le bord commun de la home (80 px en 1440)', async ({ page }) => {
         await page.setViewportSize({ width: 1440, height: 900 })
         await page.goto('/')
-        const gutter = await page.evaluate(() => {
-            const logo = document.querySelector('[data-cy="site-logo"]') as HTMLElement
-            const text = document.querySelector('#hero .home-hero__header') as HTMLElement
-            return { logo: Math.round(logo.getBoundingClientRect().left), text: Math.round(text.getBoundingClientRect().left) }
+        const lefts = await page.evaluate(() => {
+            const playground = document.querySelector('section#playground')!
+            return {
+                hero: Math.round(document.querySelector('#hero .home-hero__header')!.getBoundingClientRect().left),
+                playground: Math.round(playground.getBoundingClientRect().left + parseFloat(getComputedStyle(playground).paddingLeft))
+            }
         })
-        expect(Math.abs(gutter.text - gutter.logo)).toBeLessThanOrEqual(2)
+        // (1440 - 1280) / 2 = 80
+        expect(lefts.hero).toBe(80)
+        expect(lefts.hero).toBe(lefts.playground)
+    })
+
+    test('T3 — CTA x-large (52 px, 16 px / 600, 12 px de rayon), GitHub en contour avec son icône', async ({ page }) => {
+        await page.setViewportSize({ width: 1440, height: 900 })
+        await page.goto('/')
+        const m = await page.evaluate(() => {
+            const read = (cy: string) => {
+                const el = document.querySelector(`[data-cy="${cy}"]`)!
+                const s = getComputedStyle(el)
+                return {
+                    h: Math.round(el.getBoundingClientRect().height),
+                    fs: s.fontSize,
+                    fw: s.fontWeight,
+                    radius: s.borderTopLeftRadius,
+                    px: s.paddingLeft,
+                    border: s.borderTopWidth,
+                    icon: !!el.querySelector('.origam-icon')
+                }
+            }
+            return { start: read('hero-cta-start'), github: read('hero-cta-github') }
+        })
+        for (const b of [m.start, m.github]) {
+            expect(b).toMatchObject({ h: 52, fs: '16px', fw: '600', radius: '12px', px: '32px', icon: true })
+        }
+        expect(m.github.border).toBe('1px')
+        expect(m.start.border).toBe('0px')
+    })
+
+    test('T3 — H1 à 56 px, description à 18 px, eyebrow avec trait jaune incliné', async ({ page }) => {
+        await page.setViewportSize({ width: 1440, height: 900 })
+        await page.goto('/')
+        const m = await page.evaluate(() => {
+            const fs = (sel: string) => getComputedStyle(document.querySelector(sel)!).fontSize
+            const mark = getComputedStyle(document.querySelector('#hero .home-hero__eyebrow')!, '::before')
+            return { h1: fs('#hero h1'), description: fs('#hero .home-hero__description'), bg: mark.backgroundColor, transform: mark.transform }
+        })
+        expect(m.h1).toBe('56px')
+        expect(m.description).toBe('18px')
+        expect(m.bg).not.toBe('rgba(0, 0, 0, 0)')
+        expect(m.transform).not.toBe('none')
+    })
+
+    test('T3 — symbole A1 : 36 % de la largeur, 74 % de la hauteur du hero, en haut', async ({ page }) => {
+        await page.setViewportSize({ width: 1440, height: 900 })
+        await page.goto('/')
+        // l'image arrive avec une animation d'entrée : on attend qu'elle se pose.
+        await expect.poll(async () => page.evaluate(() => {
+            const hero = document.querySelector('#hero')!.getBoundingClientRect()
+            const sy = document.querySelector('#hero [data-cy="hero-symbol"]')!.getBoundingClientRect()
+            return {
+                w: Math.round(sy.width / hero.width * 100) / 100,
+                h: Math.round(sy.height / hero.height * 100) / 100,
+                top: Math.round((sy.top - hero.top) / hero.height * 100) / 100
+            }
+        })).toEqual({ w: 0.36, h: 0.74, top: 0.04 })
     })
 
     test('sombre : le hero reste en clair (aquarelle, symbole, texte encre lisible) sur une page sombre', async ({ browser }) => {
