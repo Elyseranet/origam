@@ -37,7 +37,7 @@
     --origam-font-weight---extrabold: 800;
 
     /* ── Heading font-family (overridden per brand) ──────────────────────── */
-    --origam-font-family---heading: Inter, 'Helvetica Neue', Arial, sans-serif;
+    --origam-font-family---heading: Sora, Inter, 'Helvetica Neue', Arial, sans-serif;
 
     /* ── Radii ───────────────────────────────────────────────────────────── */
     --origam-radius---card: 10px;
@@ -50,6 +50,9 @@
     --origam-color__brand-deep---start: #3d1a7f;
     --origam-color__brand-deep---end: #2a1063;
     --origam-color__brand-deep---ink: #1b1127;
+
+    /* ── Home enso (#1594) : encre des sources en monospace (maquette v12 `--muted`). */
+    --origam-color__text---source: #4a4157;
 
     /* ── Header height — 72px, source unique (layouts/default.vue `:height="72"`, #1554 T10) ── */
     --marketing-header-height: 4.5rem;
@@ -145,4 +148,5 @@
 /* Encre du pied de page en sombre : plus profonde que `surface---default` (#1b1127). */
 :root:root[data-mode='dark'] {
     --origam-color__brand-deep---ink: #0e0915;
+    --origam-color__text---source: #c3b8d6;
 }

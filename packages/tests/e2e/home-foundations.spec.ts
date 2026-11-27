@@ -25,8 +25,9 @@ test.describe('Home foundations', () => {
             })
         ))
 
-        // (1440 - 1280) / 2 = 80
-        expect(lefts).toEqual([80, 80, 80])
+        // maquette v12 (#1594) : conteneur 1200 px, gouttière max(20px, 4vw) = 57,6 px à 1440
+        // (1440 - 1200) / 2 + 57,6 = 177,6
+        expect(lefts).toEqual([178, 178, 178])
     })
 
     test('section padding follows --home-section-gap', async ({ page }) => {

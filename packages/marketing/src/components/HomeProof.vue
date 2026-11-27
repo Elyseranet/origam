@@ -5,7 +5,6 @@
   >
     <origam-container
       class="home-proof__inner home-container"
-      max-width="none"
     >
       <div class="home-proof__cols">
         <header class="home-proof__lead">
@@ -116,6 +115,10 @@ defineExpose({})
 .home-proof {
     padding-block-end: 150px;
 
+    &__inner {
+        --origam-container---max-width: calc(var(--home-container-max) + 2 * var(--site-gutter));
+    }
+
     &__cols {
         display: grid;
         grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
@@ -132,7 +135,7 @@ defineExpose({})
 
     &__intro {
         margin: var(--origam-space---3, 0.75rem) 0 0;
-        font-size: var(--home-fs-body);
+        font-size: var(--home-fs-lead);
         color: var(--origam-color__text---secondary);
     }
 
@@ -176,7 +179,7 @@ defineExpose({})
         display: block;
         margin-block-start: 4px;
         font: 12.5px/1.5 ui-monospace, 'SF Mono', Menlo, monospace;
-        color: var(--origam-color__text---secondary);
+        color: var(--origam-color__text---source);
         overflow-wrap: anywhere;
     }
 
