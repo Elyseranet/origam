@@ -54,9 +54,10 @@ test.describe('Wireframe page — /wireframe', () => {
         ).toHaveLength(0)
     })
 
-    test('hero section présente avec aria-labelledby correct', async ({ page }) => {
-        const hero = page.locator('.wireframe-hero')
+    test('en-tête commun présent, famille catalogue, h1 relié', async ({ page }) => {
+        const hero = page.locator('[data-cy="enso-page-header"]')
         await expect(hero).toBeVisible()
+        await expect(hero).toHaveAttribute('data-family', 'catalog')
 
         const title = page.locator('#wireframe-title')
         await expect(title).toBeVisible()

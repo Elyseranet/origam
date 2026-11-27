@@ -3,48 +3,43 @@
         class="contact"
         data-cy="page-contact"
     >
-        <section
-            class="contact-hero"
-            aria-labelledby="contact-title"
+        <enso-page-header
+            family="legal"
+            title-id="contact-title"
         >
-            <origam-container class="contact-hero__inner">
-                <origam-chip
-                    class="contact-hero__badge"
-                    color="primary"
-                    size="small"
-                    border
-                    pill
-                    data-cy="contact-hero-badge"
-                >
-                    {{ t('contact.hero.badge', 'One maintainer') }}
-                </origam-chip>
+            <template #breadcrumb>
+                <origam-breadcrumb
+                    :items="breadcrumbItems"
+                    divider="/"
+                    :border="0"
+                    data-cy="contact-breadcrumb"
+                />
+            </template>
 
-                <origam-title
-                    id="contact-title"
-                    tag="h1"
-                    class="contact-hero__title"
-                >
-                    {{ t('contact.hero.title', 'Contact') }}
-                </origam-title>
+            <template #eyebrow>
+                <span data-cy="contact-hero-badge">{{ t('contact.hero.badge', 'One maintainer') }}</span>
+            </template>
 
-                <p class="contact-hero__lead">
-                    {{ t('contact.hero.lead', 'origam is maintained by one developer. Everything goes through GitHub, in the open — a question asked there helps the next person who searches for it, and nothing gets buried in a mailbox.') }}
-                </p>
-            </origam-container>
-        </section>
+            <template #title>
+                {{ t('contact.hero.title', 'Contact') }}
+            </template>
+
+            <template #intro>
+                {{ t('contact.hero.lead', 'origam is maintained by one developer. Everything goes through GitHub, in the open — a question asked there helps the next person who searches for it, and nothing gets buried in a mailbox.') }}
+            </template>
+        </enso-page-header>
 
         <section
             class="contact-block"
             aria-labelledby="contact-issues-title"
         >
-            <origam-container class="contact-block__inner">
-                <origam-title
+            <origam-container class="contact-block__inner home-container">
+                <enso-section-title
                     id="contact-issues-title"
                     tag="h2"
-                    class="contact-block__title"
                 >
                     {{ t('contact.issues.title', 'Report a bug') }}
-                </origam-title>
+                </enso-section-title>
 
                 <p class="contact-block__body">
                     {{ t('contact.issues.body', 'Open an issue on the repository. A useful report names the component, the version of origam, what you expected and what happened instead — a minimal reproduction is worth more than a paragraph of description.') }}
@@ -70,14 +65,13 @@
             class="contact-block"
             aria-labelledby="contact-discussions-title"
         >
-            <origam-container class="contact-block__inner">
-                <origam-title
+            <origam-container class="contact-block__inner home-container">
+                <enso-section-title
                     id="contact-discussions-title"
                     tag="h2"
-                    class="contact-block__title"
                 >
                     {{ t('contact.discussions.title', 'Ask a question') }}
-                </origam-title>
+                </enso-section-title>
 
                 <p class="contact-block__body">
                     {{ t('contact.discussions.body', 'Use the discussions of the repository for anything that is not a defect: how to use a component, an idea for one that does not exist yet, or feedback on the documentation.') }}
@@ -102,14 +96,13 @@
             class="contact-block"
             aria-labelledby="contact-support-title"
         >
-            <origam-container class="contact-block__inner">
-                <origam-title
+            <origam-container class="contact-block__inner home-container">
+                <enso-section-title
                     id="contact-support-title"
                     tag="h2"
-                    class="contact-block__title"
                 >
                     {{ t('contact.support.title', 'Support the project') }}
-                </origam-title>
+                </enso-section-title>
 
                 <p class="contact-block__body">
                     {{ t('contact.support.body', 'origam is free and MIT-licensed. If it saves you time, the support page explains how a donation funds the maintenance work.') }}
@@ -132,14 +125,13 @@
             class="contact-block"
             aria-labelledby="contact-no-email-title"
         >
-            <origam-container class="contact-block__inner">
-                <origam-title
+            <origam-container class="contact-block__inner home-container">
+                <enso-section-title
                     id="contact-no-email-title"
                     tag="h2"
-                    class="contact-block__title"
                 >
                     {{ t('contact.no_email.title', 'There is no support address') }}
-                </origam-title>
+                </enso-section-title>
 
                 <origam-divider class="contact-block__rule"/>
 
@@ -171,6 +163,12 @@
      * source the footer links already read.
      ********************************************************/
     const { t } = useT()
+    const { localeHref } = useLocaleHref()
+
+    const breadcrumbItems = computed(() => [
+        { title: t('nav.home', 'Home'), to: localeHref('/') },
+        { title: t('contact.hero.title', 'Contact') }
+    ])
     const { public: publicConfig } = useRuntimeConfig()
     const localePath = useLocalePath()
 
@@ -214,24 +212,16 @@
 </script>
 
 <style scoped lang="scss">
-    .contact-hero {
-        padding-block: var(--origam-space---12, 3rem);
-        text-align: center;
-
-        &__badge {
-            margin-block-end: var(--origam-space---4, 1rem);
-        }
-
-        &__lead {
-            margin-block-start: var(--origam-space---4, 1rem);
-            margin-inline: auto;
-            max-inline-size: 60ch;
-            color: var(--origam-color__text---secondary);
-        }
+    .contact {
+        --site-gutter: var(--home-gutter);
     }
 
     .contact-block {
         padding-block-end: var(--origam-space---12, 3rem);
+
+        &__inner {
+            --origam-container---max-width: calc(var(--home-container-max) + 2 * var(--site-gutter));
+        }
 
         &__body {
             margin-block-start: var(--origam-space---4, 1rem);
