@@ -1,8 +1,8 @@
 <template>
   <origam-theme-provider mode="dark">
     <section
-      class="home-cta enso-art"
-      :style="waveVars"
+      class="home-cta"
+      :style="brushVars"
       aria-labelledby="cta-title"
     >
       <div class="home-cta__inner home-container">
@@ -74,18 +74,18 @@
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
 import { CONTACT_SUPPORT_ROUTE } from '~/consts/contact.const'
-import { CTA_COMPONENTS_HREF, CTA_INK_COLOR, CTA_START_HREF, CTA_SUN_COLOR, CTA_WAVE_WIDTH } from '~/consts/cta.const'
-import { ENSO_CTA_WAVE } from '~/consts/enso.const'
-import { ensoArtVars } from '~/utils/enso.util'
+import { CTA_COMPONENTS_HREF, CTA_INK_COLOR, CTA_START_HREF, CTA_SUN_COLOR, CTA_BRUSH_WIDTH } from '~/consts/cta.const'
+import { ENSO_BRUSH_IVORY } from '~/consts/enso.const'
+import { ensoImageSet } from '~/utils/enso.util'
 
 /*********************************************************
  * Props, emits & slots
  *
  * @description
- * Bande finale : titre à gauche, boutons à droite (T8 de #1554). Le pinceau du
- * kit (lilas terminé en doré) court sur le bord haut, derrière le texte. La
- * bande reste encre dans les deux modes (sous-arbre forcé en sombre) : le kit
- * n'a pas de fond CTA violet plein, la variante sombre est la plus proche.
+ * Bande finale : titre à gauche, boutons à droite (T8 de #1554). Fond uni violet
+ * Origam (token primary 600) dans les deux modes (sous-arbre forcé en sombre :
+ * texte clair) ; le pinceau ivoire du kit chevauche le bord haut et fait la
+ * transition avec la section au-dessus.
  ********************************************************/
 defineEmits([])
 
@@ -97,9 +97,12 @@ const { t } = useT()
  * Pinceau
  *
  * @description
- * Fond CTA du kit dans les deux variantes ; `.enso-art` choisit selon `data-mode`.
+ * Pinceau ivoire terminé en doré du kit : identique dans les deux modes.
  ********************************************************/
-const waveVars = ensoArtVars(ENSO_CTA_WAVE, CTA_WAVE_WIDTH)
+const brushVars = {
+    '--home-cta-brush': ensoImageSet(ENSO_BRUSH_IVORY, CTA_BRUSH_WIDTH),
+    '--home-cta-brush-ratio': `${ENSO_BRUSH_IVORY.width} / ${ENSO_BRUSH_IVORY.height}`
+}
 
 /*********************************************************
  * Expose
@@ -116,25 +119,23 @@ defineExpose({})
 
     position: relative;
     isolation: isolate;
-    overflow: hidden;
     container-type: inline-size;
-    padding-block-start: calc(var(--home-cta-art) * 0.25);
+    margin-block-start: calc(var(--home-cta-art) * 0.07);
+    padding-block-start: calc(var(--home-cta-art) * 0.27 + var(--origam-space---4, 1rem));
     padding-block-end: var(--origam-space---12, 3rem);
-    background-color: var(--origam-color__surface---default);
+    background-color: var(--origam-color__primary---600);
     color: var(--origam-color__text---primary);
 
     &::before {
         content: '';
         position: absolute;
-        inset-block-start: calc(var(--home-cta-art) * -0.235);
+        inset-block-start: calc(var(--home-cta-art) * -0.07);
         inset-inline: 0;
         z-index: -1;
         inline-size: var(--home-cta-art);
-        aspect-ratio: var(--enso-art-ratio);
+        aspect-ratio: var(--home-cta-brush-ratio);
         margin-inline: auto;
-        background: var(--enso-art) center / 100% 100% no-repeat;
-        mask-image: linear-gradient(to bottom, transparent, black 12%, black 80%, transparent), linear-gradient(to right, transparent, black 18%, black 82%, transparent);
-        mask-composite: intersect;
+        background: var(--home-cta-brush) center / 100% 100% no-repeat;
         pointer-events: none;
     }
 
@@ -166,13 +167,13 @@ defineExpose({})
         max-inline-size: 34rem;
         font-size: var(--home-fs-body);
         line-height: 1.6;
-        color: var(--origam-color__text---secondary);
+        color: var(--origam-color__text---primary);
     }
 
     &__support {
         margin: 0;
         font-size: var(--home-fs-small);
-        color: var(--origam-color__text---secondary);
+        color: var(--origam-color__text---primary);
     }
 
     &__actions {

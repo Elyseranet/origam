@@ -3,7 +3,7 @@
  *
  * Contrat :
  *  - <section> labellee par le H2 #cta-title, sous-arbre force en mode sombre
- *    (bande encre/lilas du kit en clair comme en sombre, #1574) ;
+ *    (bande violette Origam, pinceau ivoire du kit, en clair comme en sombre, #1574) ;
  *  - deux CTA (#1543) : « Installer » (/installation) et « Explorer les
  *    composants » (/components) ;
  *  - une ligne de soutien discrete qui mene a /support (seul canal : le don) ;
@@ -64,7 +64,7 @@ test.describe('HomeCta — bande de CTA finale', () => {
     })
 
     test('le pinceau est un fond CSS decoratif : ni img ni svg dans la section', async ({ page }) => {
-        await expect(page.locator('section.home-cta.enso-art')).toHaveCount(1)
+        await expect(page.locator('section.home-cta')).toHaveCount(1)
         await expect(page.locator('section.home-cta img')).toHaveCount(0)
         await expect(page.locator('section.home-cta svg')).toHaveCount(0)
     })
