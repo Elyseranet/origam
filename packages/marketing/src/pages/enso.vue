@@ -183,7 +183,7 @@ defineExpose({})
 }
 
 .enso-demo__img {
-    border: var(--origam-border__width---1, 1px) dashed var(--origam-color__border---subtle);
+    border: var(--origam-border__width---thin, 1px) dashed var(--origam-color__border---subtle);
 }
 
 .enso-demo__caption {
