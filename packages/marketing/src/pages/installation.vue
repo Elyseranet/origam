@@ -98,7 +98,6 @@
                 :code="currentInstallCmd"
                 lang="bash"
                 copyable
-                rounded="lg"
                 class="installation-step__code installation-step__code--tabbed"
                 data-cy="installation-code-install"
               >
@@ -172,7 +171,6 @@
                 :filename="INSTALLATION_CODE_REGISTER.filename"
                 copyable
                 :line-numbers="true"
-                rounded="lg"
                 class="installation-step__code"
                 data-cy="installation-code-register"
               />
@@ -221,7 +219,6 @@
                 :filename="INSTALLATION_CODE_USE.filename"
                 copyable
                 :line-numbers="true"
-                rounded="lg"
                 class="installation-step__code"
                 data-cy="installation-code-use"
               />
@@ -269,7 +266,6 @@
                 :lang="INSTALLATION_CODE_THEME_HTML.lang"
                 :filename="INSTALLATION_CODE_THEME_HTML.filename"
                 copyable
-                rounded="lg"
                 class="installation-step__code"
                 data-cy="installation-code-theme-html"
               />
@@ -283,7 +279,6 @@
                 :lang="INSTALLATION_CODE_THEME_RUNTIME.lang"
                 copyable
                 :line-numbers="true"
-                rounded="lg"
                 class="installation-step__code"
                 data-cy="installation-code-theme-runtime"
               />
@@ -297,7 +292,6 @@
                 :lang="INSTALLATION_CODE_THEME_SCOPED.lang"
                 copyable
                 :line-numbers="true"
-                rounded="lg"
                 class="installation-step__code"
                 data-cy="installation-code-theme-scoped"
               />
@@ -344,7 +338,6 @@
                 :filename="INSTALLATION_CODE_NUXT.filename"
                 copyable
                 :line-numbers="true"
-                rounded="lg"
                 class="installation-step__code"
                 data-cy="installation-code-nuxt"
               />
@@ -385,7 +378,7 @@
         <origam-table
           class="installation-peer-deps__table"
           border
-          rounded="lg"
+          border-color="var(--origam-color__border---default)"
           :caption="t('installation.peer_deps.table_caption', 'Peer dependencies')"
           data-cy="installation-peer-deps-table"
         >
@@ -423,7 +416,8 @@
                 :code="dep.pkg"
                 lang="plaintext"
                 compact
-                class="installation-peer-deps__pkg-code"
+                :copyable="false"
+                class="installation-peer-deps__code"
               />
             </td>
             <td class="installation-peer-deps__td installation-peer-deps__td--version">
@@ -431,7 +425,8 @@
                 :code="dep.required"
                 lang="plaintext"
                 compact
-                class="installation-peer-deps__version-code"
+                :copyable="false"
+                class="installation-peer-deps__code"
               />
             </td>
             <td class="installation-peer-deps__td">
@@ -590,7 +585,18 @@ const currentInstallCmd = computed(() =>
     }
 
     &__code {
-        max-inline-size: 52rem;
+        --origam-code---background-color: var(--origam-color__surface---raised);
+        --origam-code---border-color: var(--origam-color__border---default);
+        --origam-code---border-radius: 14px;
+        --origam-code---padding-block: 14px;
+        --origam-code---padding-inline: 16px;
+        --origam-code---font-size: 13.5px;
+        --origam-code---line-height: 1.7;
+        --origam-code__header---background-color: transparent;
+        --origam-code__header---padding-block: 10px;
+        --origam-code__header---padding-inline: 16px;
+
+        max-inline-size: 47.5rem;
         margin-block-end: var(--origam-space---3, 0.75rem);
     }
 
@@ -606,14 +612,10 @@ const currentInstallCmd = computed(() =>
 
     &__note {
         margin: var(--origam-space---3, 0.75rem) 0 0;
-        padding: var(--origam-space---3, 0.75rem) var(--origam-space---4, 1rem);
-        border-inline-start: 3px solid var(--origam-color__action--primary---bg, #7c3aed);
-        background: var(--origam-color__surface---sunken, #f5f5f5);
-        border-radius: 0 var(--origam-radius---sm, 4px) var(--origam-radius---sm, 4px) 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        line-height: 1.65;
-        color: var(--origam-color__text---secondary, #525252);
-        max-inline-size: 52rem;
+        font-size: 14px;
+        line-height: var(--home-lh-body);
+        color: var(--origam-color__text---secondary);
+        max-inline-size: 70ch;
     }
 }
 
@@ -629,45 +631,57 @@ const currentInstallCmd = computed(() =>
     @include editorial.editorial-section(overlay, 30px, 120px);
 
     &__table {
+        --origam-table---background-color: var(--origam-color__surface---raised);
+        --origam-table---font-size: 14.5px;
+        --origam-table__header-cell---background-color: transparent;
+        --origam-table__header-cell---color: var(--origam-color__text---secondary);
+        --origam-table__header-cell---letter-spacing: 0.08em;
+        --origam-table__header-cell---text-transform: uppercase;
+        --origam-table__header-cell---border-bottom-width: 1px;
+        --origam-table__header-cell---border-bottom-color: var(--origam-color__border---default);
+        --origam-table__cell---border-color: var(--origam-color__border---default);
+        --origam-table__cell---padding-block: 12px;
+        --origam-table__cell---padding-inline: 16px;
+        --origam-table__header-cell---padding-block: 12px;
+        --origam-table__header-cell---padding-inline: 16px;
+
         inline-size: 100%;
-        max-inline-size: 48rem;
+        max-inline-size: 47.5rem;
+        border-radius: 14px;
+        overflow: hidden;
     }
 
     &__th {
         text-align: left;
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__text---primary, #0a0a0a);
-        padding-block: var(--origam-space---3, 0.75rem);
-        padding-inline: var(--origam-space---4, 1rem);
+        font-size: 12px;
+    }
+
+    &__tr:last-child &__td {
+        border-block-end: 0;
     }
 
     &__td {
-        padding-block: var(--origam-space---3, 0.75rem);
-        padding-inline: var(--origam-space---4, 1rem);
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        line-height: 1.6;
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---primary);
         vertical-align: middle;
-
-        &--pkg,
-        &--version {
-            white-space: nowrap;
-            vertical-align: middle;
-        }
     }
 
-    &__pkg-code,
-    &__version-code {
+    &__code {
+        --origam-code---background-color: transparent;
+        --origam-code---border-width: 0;
+        --origam-code---padding-block: 0;
+        --origam-code---padding-inline: 0;
+        --origam-code__compact---padding-block: 0;
+        --origam-code__compact---padding-inline: 0;
+        --origam-code---font-size: 13.5px;
+
         display: inline-flex;
     }
 
     &__note {
-        margin-block-start: var(--origam-space---5, 1.25rem);
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        color: var(--origam-color__text---secondary, #525252);
-        font-style: italic;
-        max-inline-size: 48rem;
+        margin-block-start: var(--origam-space---3, 0.75rem);
+        font-size: 14px;
+        color: var(--origam-color__text---secondary);
+        max-inline-size: 70ch;
     }
 }
 
@@ -679,6 +693,11 @@ const currentInstallCmd = computed(() =>
 }
 
 @media (max-width: 640px) {
+    .installation-peer-deps__table {
+        --origam-table__cell---padding-inline: 10px;
+        --origam-table__header-cell---padding-inline: 10px;
+    }
+
     .installation-step {
         grid-template-columns: 1fr;
 

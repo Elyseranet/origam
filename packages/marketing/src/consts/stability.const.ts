@@ -9,6 +9,8 @@ import type { IStabilitySection } from '../interfaces/stability.interface'
 export const STABILITY_SECTIONS: IStabilitySection[] = [
     {
         id: 'number',
+        eyebrowKey: 'stability.sections.number.eyebrow',
+        eyebrowFallback: 'The number',
         titleKey: 'stability.sections.number.title',
         titleFallback: 'What the 2.x number means',
         paragraphs: [
@@ -24,6 +26,8 @@ export const STABILITY_SECTIONS: IStabilitySection[] = [
     },
     {
         id: 'cadence',
+        eyebrowKey: 'stability.sections.cadence.eyebrow',
+        eyebrowFallback: 'Cadence',
         titleKey: 'stability.sections.cadence.title',
         titleFallback: 'Why releases are frequent',
         paragraphs: [
@@ -39,6 +43,8 @@ export const STABILITY_SECTIONS: IStabilitySection[] = [
     },
     {
         id: 'breaking',
+        eyebrowKey: 'stability.sections.breaking.eyebrow',
+        eyebrowFallback: 'Breaking changes',
         titleKey: 'stability.sections.breaking.title',
         titleFallback: 'How breaking changes ship',
         paragraphs: [
@@ -61,6 +67,8 @@ export const STABILITY_SECTIONS: IStabilitySection[] = [
     },
     {
         id: 'major',
+        eyebrowKey: 'stability.sections.major.eyebrow',
+        eyebrowFallback: 'Next major',
         titleKey: 'stability.sections.major.title',
         titleFallback: 'What 3.0.0 will be',
         paragraphs: [
@@ -83,6 +91,8 @@ export const STABILITY_SECTIONS: IStabilitySection[] = [
     },
     {
         id: 'deprecation',
+        eyebrowKey: 'stability.sections.deprecation.eyebrow',
+        eyebrowFallback: 'Deprecation',
         titleKey: 'stability.sections.deprecation.title',
         titleFallback: 'Deprecation policy',
         paragraphs: [
@@ -98,6 +108,8 @@ export const STABILITY_SECTIONS: IStabilitySection[] = [
     },
     {
         id: 'limits',
+        eyebrowKey: 'stability.sections.limits.eyebrow',
+        eyebrowFallback: 'Limits',
         titleKey: 'stability.sections.limits.title',
         titleFallback: 'What this page does not promise',
         paragraphs: [

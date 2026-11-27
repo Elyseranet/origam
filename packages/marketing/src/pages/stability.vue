@@ -39,7 +39,7 @@
         >
             <origam-container class="stability-section__inner home-container">
                 <p class="home-eyebrow">
-                    {{ section.label }}
+                    {{ t(section.eyebrowKey, section.eyebrowFallback) }}
                 </p>
 
                 <origam-title
@@ -73,6 +73,10 @@
 
         <home-cta
             surface="overlay"
+            :title="t('stability.cta.title', 'Every change is written down.')"
+            :description="t('stability.cta.description', 'The CHANGELOG records every release and every break; the roadmap says what comes next.')"
+            :actions-label="t('stability.cta.actions_label', 'Follow the changes to origam')"
+            :actions="STABILITY_CTA_ACTIONS"
             data-cy="stability-cta"
         />
     </article>
@@ -82,6 +86,7 @@
     import { computed } from 'vue'
     import { useLocaleHref } from '~/composables/useLocaleHref'
     import { useT } from '~/composables/useT'
+    import { STABILITY_CTA_ACTIONS } from '~/consts/editorial-cta.const'
     import { STABILITY_SECTIONS } from '~/consts/stability.const'
     import { editorialSectionViews } from '~/utils/editorial.util'
 

@@ -6,6 +6,7 @@
  *  - la page se TERMINE par la scène « Crépuscule » (`section.home-cta`), dernier enfant de
  *    l'`<article>`, dont le ciel part du fond de la section qui la précède (`surface=overlay`) :
  *    ce fond est bien `surface---overlay`, sans quoi le ciel aurait une couture ;
+ *  - le titre de la scène est celui de la page ;
  *  - les fonds alternent (une section `overlay` avant la scène, et une `default` s'il y en a plusieurs) ;
  *  - aucun débordement horizontal à 1440 et à 390 px, clair comme sombre ;
  *  - axe : 0 violation critical/serious.
@@ -16,11 +17,11 @@ import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 
 const PAGES = [
-    { path: '/installation', root: 'page-installation', title: 'installation-title', cta: 'installation-cta-title' },
-    { path: '/stability', root: 'page-stability', title: 'stability-title', cta: 'cta-title' },
-    { path: '/roadmap', root: 'page-roadmap', title: 'roadmap-title', cta: 'roadmap-cta-title' },
-    { path: '/changelog', root: 'page-changelog', title: 'changelog-title', cta: 'changelog-cta-title' },
-    { path: '/support', root: 'page-support', title: 'support-title', cta: 'cta-title' }
+    { path: '/installation', scene: 'Ready to build?', root: 'page-installation', title: 'installation-title', cta: 'installation-cta-title' },
+    { path: '/stability', scene: 'Every change is written down.', root: 'page-stability', title: 'stability-title', cta: 'cta-title' },
+    { path: '/roadmap', scene: 'Follow the progress.', root: 'page-roadmap', title: 'roadmap-title', cta: 'roadmap-cta-title' },
+    { path: '/changelog', scene: 'Stay in the loop.', root: 'page-changelog', title: 'changelog-title', cta: 'changelog-cta-title' },
+    { path: '/support', scene: 'Keep origam moving.', root: 'page-support', title: 'support-title', cta: 'cta-title' }
 ] as const
 
 const VIEWPORTS = [{ width: 1440, height: 900 }, { width: 390, height: 844 }] as const
@@ -75,6 +76,11 @@ for (const entry of PAGES) {
             expect(closing.labelledBy).toBe(entry.cta)
             expect(closing.skyFrom).toContain('--origam-color__surface---overlay')
             expect(closing.previousBg).toBe((await surfaceColors(page)).overlay)
+        })
+
+        test('la scène porte le titre propre à la page, pas celui de la home', async ({ page }) => {
+            await open(page, entry.path, 'light')
+            await expect(page.locator(`h2#${ entry.cta }`)).toHaveText(entry.scene)
         })
 
         test('les fonds alternent : une section overlay avant la scène, et une default quand il y en a plusieurs', async ({ page }) => {

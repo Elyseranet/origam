@@ -36,7 +36,7 @@
         >
             <origam-container class="support-give__inner home-container">
                 <p class="home-eyebrow">
-                    {{ give.label }}
+                    {{ t('support.give.eyebrow', 'Give') }}
                 </p>
 
                 <origam-title
@@ -90,7 +90,7 @@
         >
             <origam-container class="support-what__inner home-container">
                 <p class="home-eyebrow">
-                    {{ what.label }}
+                    {{ t('support.what.eyebrow', 'What it funds') }}
                 </p>
 
                 <origam-title
@@ -115,6 +115,10 @@
 
         <home-cta
             surface="overlay"
+            :title="t('support.cta.title', 'Keep origam moving.')"
+            :description="t('support.cta.description', 'origam is free and will stay free. A donation, a precise bug report or a word to a colleague all help.')"
+            :actions-label="t('support.cta.actions_label', 'Support origam')"
+            :actions="ctaActions"
             data-cy="support-cta"
         />
     </article>
@@ -125,6 +129,7 @@
 
     import { useLocaleHref } from '~/composables/useLocaleHref'
     import { useT } from '~/composables/useT'
+    import { SUPPORT_CTA_DONATE, SUPPORT_CTA_ISSUES } from '~/consts/editorial-cta.const'
     import { SUPPORT_SECTIONS } from '~/consts/support.const'
     import { editorialSectionViews } from '~/utils/editorial.util'
 
@@ -143,6 +148,8 @@
 
     const donateUrl = computed(() => publicConfig.donateUrl)
     const hasDonateUrl = computed(() => donateUrl.value.length > 0)
+
+    const ctaActions = computed(() => (hasDonateUrl.value ? [{ ...SUPPORT_CTA_DONATE, href: donateUrl.value }, SUPPORT_CTA_ISSUES] : [SUPPORT_CTA_ISSUES]))
 
     const qrAriaLabel = computed(() => t('a11y.donate_qr', 'QR code linking to the donation page'))
 

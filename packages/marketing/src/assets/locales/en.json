@@ -1602,34 +1602,45 @@
             "number": {
                 "title": "What the 2.x number means",
                 "p1": "The 2.x number is historical. In practice origam is a pre-1.0 project that carries a 2.x label.",
-                "p2": "Below 3.0.0, the minor and patch numbers are bookkeeping, not a compatibility contract."
+                "p2": "Below 3.0.0, the minor and patch numbers are bookkeeping, not a compatibility contract.",
+                "eyebrow": "The number"
             },
             "cadence": {
                 "title": "Why releases are frequent",
                 "p1": "Every merged change to the published package gets its own patch release. Changes are not held back to be batched into a weekly or monthly release, so the patch number climbs quickly.",
-                "p2": "A patch is a bug fix. A minor is a medium feature with limited impact on existing usage. Changes that do not touch the published package, such as this site, the documentation, the tests or the tooling, produce no release at all."
+                "p2": "A patch is a bug fix. A minor is a medium feature with limited impact on existing usage. Changes that do not touch the published package, such as this site, the documentation, the tests or the tooling, produce no release at all.",
+                "eyebrow": "Cadence"
             },
             "breaking": {
                 "title": "How breaking changes ship",
                 "p1": "Until 3.0.0, a breaking change can ship in a minor release. It is then documented explicitly and honestly in the CHANGELOG.",
                 "p2": "The CHANGELOG is where to look before upgrading across a minor version.",
-                "cta": "Read the changelog"
+                "cta": "Read the changelog",
+                "eyebrow": "Breaking changes"
             },
             "major": {
                 "title": "What 3.0.0 will be",
                 "p1": "3.0.0 is reserved for splitting the package into modules. It will be the first announced major breaking release.",
                 "p2": "Nothing else ships under that number: not a batch of bug fixes, not a dependency upgrade. This page gives no date for it.",
-                "cta": "See the roadmap"
+                "cta": "See the roadmap",
+                "eyebrow": "Next major"
             },
             "deprecation": {
                 "title": "Deprecation policy",
                 "p1": "There is no long deprecation cycle. At the current stage of the project the clean break is preferred to a compatibility layer: a deprecated API is removed as soon as someone gets to it, in a minor release, and the removal is written in the CHANGELOG.",
-                "p2": "Deprecations that were announced for the next major are not held back until 3.0.0. This is a rule for the current stage of the project, not a permanent guarantee."
+                "p2": "Deprecations that were announced for the next major are not held back until 3.0.0. This is a rule for the current stage of the project, not a permanent guarantee.",
+                "eyebrow": "Deprecation"
             },
             "limits": {
                 "title": "What this page does not promise",
-                "p1": "This page describes how versions are numbered and announced. origam publishes no long-term-support line, no support window and no guaranteed response time."
+                "p1": "This page describes how versions are numbered and announced. origam publishes no long-term-support line, no support window and no guaranteed response time.",
+                "eyebrow": "Limits"
             }
+        },
+        "cta": {
+            "title": "Every change is written down.",
+            "description": "The CHANGELOG records every release and every break; the roadmap says what comes next.",
+            "actions_label": "Follow the changes to origam"
         }
     },
     "support": {
@@ -1645,12 +1656,20 @@
         "give": {
             "title": "Make a donation",
             "hint": "Scan the code with your phone, or use the button below. Payments are handled by PayPal — no account is required to give by card.",
-            "cta": "Donate via PayPal"
+            "cta": "Donate via PayPal",
+            "eyebrow": "Give"
         },
         "what": {
             "title": "What it changes",
             "body": "Donations buy maintenance time: answering issues, keeping dependencies patched, testing across browsers, and writing the documentation that makes a component usable rather than merely shipped. They are not a support contract and they buy no priority — they simply make the unglamorous work sustainable.",
-            "alt": "Not in a position to give? Reporting a precise bug, improving a documentation page or telling someone about origam helps just as much."
+            "alt": "Not in a position to give? Reporting a precise bug, improving a documentation page or telling someone about origam helps just as much.",
+            "eyebrow": "What it funds"
+        },
+        "cta": {
+            "title": "Keep origam moving.",
+            "description": "origam is free and will stay free. A donation, a precise bug report or a word to a colleague all help.",
+            "actions_label": "Support origam",
+            "cta_issues": "Report a bug"
         }
     },
     "theming": {

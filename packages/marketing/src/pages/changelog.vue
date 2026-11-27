@@ -50,7 +50,7 @@
     </enso-page-header>
 
     <section
-      class="changelog-list"
+      class="changelog-intro"
       aria-labelledby="changelog-versions-title"
       data-cy="changelog-versions"
     >
@@ -74,8 +74,7 @@
           </p>
         </header>
 
-        <div class="changelog-release">
-          <div class="changelog-release__control">
+        <div class="changelog-intro__control">
             <origam-select
               v-model="selectedVersion"
               :items="versionSelectItems"
@@ -88,6 +87,15 @@
               data-cy="changelog-version-select"
             />
           </div>
+      </origam-container>
+    </section>
+
+    <section
+      class="changelog-list"
+      aria-labelledby="changelog-versions-title"
+    >
+      <origam-container class="home-container">
+        <div class="changelog-release">
 
           <article
             :key="currentVersion.version"
@@ -299,13 +307,16 @@ const currentVersionLabel = computed(() =>
     }
 }
 
+.changelog-intro {
+    @include editorial.editorial-section(default, 40px, 120px, $wash: false);
+
+    &__control {
+        max-inline-size: 26rem;
+    }
+}
+
 .changelog-list {
     @include editorial.editorial-section(overlay, 40px, 120px);
-
-    &::before {
-        inset-block-start: -50px;
-        block-size: 51px;
-    }
 }
 
 .changelog-release {
@@ -313,10 +324,6 @@ const currentVersionLabel = computed(() =>
     display: flex;
     flex-direction: column;
     gap: var(--origam-space---8, 2rem);
-
-    &__control {
-        max-inline-size: 26rem;
-    }
 
     &__card {
         display: flex;

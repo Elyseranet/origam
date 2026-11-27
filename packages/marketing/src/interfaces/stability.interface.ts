@@ -13,6 +13,8 @@ export interface IStabilityLink {
 
 export interface IStabilitySection {
     id: string
+    eyebrowKey: string
+    eyebrowFallback: string
     titleKey: string
     titleFallback: string
     paragraphs: IStabilityParagraph[]
