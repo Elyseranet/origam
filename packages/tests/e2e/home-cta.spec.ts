@@ -2,13 +2,13 @@
  * home-cta.spec.ts — bande de CTA finale (#1517, maquette A du kit A1)
  *
  * Contrat :
- *  - <section> labellee par le H2 #cta-title, sous-arbre force en mode sombre
- *    (la bande reste encre/violet en clair comme en sombre) ;
+ *  - <section> labellee par le H2 #cta-title ; la bande suit le mode du site
+ *    (fond CTA du kit en clair ET en sombre, #1574) ;
  *  - deux CTA (#1543) : « Installer » (/installation) et « Explorer les
  *    composants » (/components) ;
  *  - une ligne de soutien discrete qui mene a /support (seul canal : le don) ;
- *  - le balayage est un SVG decoratif (aria-hidden, non focusable), aucun
- *    asset du kit embarque ;
+ *  - le pinceau est un fond CSS du kit (aucune balise img/svg dans la section,
+ *    donc rien dans l'arbre d'accessibilite) ;
  *  - le titre est lisible AA sur la bande (mesure, 2 modes du site).
  *
  * Le contraste du bouton soleil est mesure par home-cta-contrast.spec.ts.
@@ -63,11 +63,10 @@ test.describe('HomeCta — bande de CTA finale', () => {
         }
     })
 
-    test('le balayage est un SVG decoratif, hors arbre d\'accessibilite et du clavier', async ({ page }) => {
-        const svg = page.locator('section.home-cta svg.home-cta__brush')
-        await expect(svg).toHaveAttribute('aria-hidden', 'true')
-        await expect(svg).toHaveAttribute('focusable', 'false')
+    test('le pinceau est un fond CSS decoratif : ni img ni svg dans la section', async ({ page }) => {
+        await expect(page.locator('section.home-cta.enso-art')).toHaveCount(1)
         await expect(page.locator('section.home-cta img')).toHaveCount(0)
+        await expect(page.locator('section.home-cta svg')).toHaveCount(0)
     })
 
     for (const mode of ['light', 'dark'] as const) {
@@ -82,7 +81,9 @@ test.describe('HomeCta — bande de CTA finale', () => {
                 }
                 const section = el.closest('section') as HTMLElement
                 const fg = lum(parse(getComputedStyle(el).color))
-                const bg = lum(parse(getComputedStyle(section).backgroundColor))
+                let node: HTMLElement | null = section
+                while (node && /rgba\(0, 0, 0, 0\)|transparent/.test(getComputedStyle(node).backgroundColor)) node = node.parentElement
+                const bg = lum(parse(getComputedStyle(node ?? document.body).backgroundColor))
                 const [hi, lo] = fg > bg ? [fg, bg] : [bg, fg]
                 return (hi + 0.05) / (lo + 0.05)
             })
@@ -90,9 +91,9 @@ test.describe('HomeCta — bande de CTA finale', () => {
         })
     }
 
-    test('la bande reste sombre meme quand le site est en clair', async ({ page }) => {
+    test('la bande suit le mode du site (aucun sous-arbre force en sombre)', async ({ page }) => {
         await applyBrand(page, 'origam', 'light')
-        await expect(page.locator('[data-mode="dark"] > section.home-cta')).toHaveCount(1)
+        await expect(page.locator('[data-mode="dark"] > section.home-cta')).toHaveCount(0)
     })
 
     test('aucune cle i18n brute dans la section', async ({ page }) => {

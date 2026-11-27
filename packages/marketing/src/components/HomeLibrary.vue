@@ -4,19 +4,17 @@
     class="home-library home-container home-section"
     aria-labelledby="library-heading"
   >
+    <enso-backdrop :art="ENSO_SECTION_HILLS" />
+
     <header class="home-library__intro">
       <div>
         <p class="home-eyebrow">
           {{ t('home.library.eyebrow', 'A complete catalogue') }}
         </p>
 
-        <origam-title
-          id="library-heading"
-          tag="h2"
-          class="home-library__title"
-        >
+        <enso-section-title id="library-heading">
           {{ t('home.library.title', 'From form to chart.') }}
-        </origam-title>
+        </enso-section-title>
       </div>
 
       <p class="home-library__text">
@@ -61,6 +59,7 @@
 
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
+import { ENSO_SECTION_HILLS } from '~/consts/enso.const'
 import { HOME_LIBRARY_CATEGORIES } from '~/consts/home-library.const'
 import type { IHomeLibraryCategory } from '~/interfaces/home-library.interface'
 import { categoryAnchor } from '~/utils/components-catalog.util'
@@ -81,21 +80,17 @@ defineExpose({})
 
 <style scoped lang="scss">
 .home-library {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block-end: calc(var(--home-section-gap) * 4);
+
     &__intro {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: var(--origam-space---6, 1.5rem);
         align-items: center;
         margin-block-end: var(--origam-space---8, 2rem);
-    }
-
-    &__title {
-        margin: 0;
-        font-size: var(--home-fs-h2);
-        font-weight: var(--origam-font__weight---bold, 700);
-        line-height: 1.15;
-        letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-        color: var(--origam-color__text---primary);
     }
 
     &__text {

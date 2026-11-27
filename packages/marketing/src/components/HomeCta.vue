@@ -1,27 +1,11 @@
 <template>
-  <origam-theme-provider mode="dark">
-    <section
-      class="home-cta"
-      aria-labelledby="cta-title"
-    >
-      <svg
-        class="home-cta__brush"
-        viewBox="0 0 1440 360"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-        focusable="false"
-    >
-        <path
-          class="home-cta__stroke home-cta__stroke--violet"
-          d="M0 250 C 240 150 420 330 700 250 S 1180 90 1440 190 L 1440 360 L 0 360 Z"
-        />
-        <path
-          class="home-cta__stroke home-cta__stroke--sun"
-          d="M0 300 C 280 230 480 360 760 300 S 1200 190 1440 262 L 1440 360 L 0 360 Z"
-        />
-      </svg>
-
-      <div class="home-cta__inner">
+  <section
+    class="home-cta enso-art"
+    :style="waveVars"
+    aria-labelledby="cta-title"
+  >
+    <div class="home-cta__inner home-container">
+      <div class="home-cta__text">
         <origam-title
           id="cta-title"
           tag="h2"
@@ -36,31 +20,6 @@
         >
           {{ t('home.cta.description', 'npm i origam, then the plugin and a first component. On Nuxt, one module to add.') }}
         </p>
-
-        <nav
-          class="home-cta__actions"
-          :aria-label="t('home.cta.actions_label', 'Get started')"
-        >
-          <origam-btn
-            class="home-cta__btn"
-            variant="flat"
-            :bg-color="CTA_SUN_COLOR"
-            :color="CTA_INK_COLOR"
-            :href="CTA_START_HREF"
-            data-cy="cta-btn-start"
-          >
-            {{ t('home.cta.cta_start', 'Install') }}
-          </origam-btn>
-
-          <origam-btn
-            class="home-cta__btn"
-            variant="outlined"
-            :href="CTA_COMPONENTS_HREF"
-            data-cy="cta-btn-docs"
-          >
-            {{ t('home.cta.cta_docs', 'Explore the components') }}
-          </origam-btn>
-        </nav>
 
         <p
           class="home-cta__support"
@@ -79,88 +38,154 @@
           </origam-btn>
         </p>
       </div>
-    </section>
-  </origam-theme-provider>
+
+      <nav
+        class="home-cta__actions"
+        :aria-label="t('home.cta.actions_label', 'Get started')"
+      >
+        <origam-btn
+          class="home-cta__btn"
+          variant="flat"
+          size="x-large"
+          :bg-color="CTA_SUN_COLOR"
+          :color="CTA_INK_COLOR"
+          :href="CTA_START_HREF"
+          data-cy="cta-btn-start"
+        >
+          {{ t('home.cta.cta_start', 'Install') }}
+        </origam-btn>
+
+        <origam-btn
+          class="home-cta__btn"
+          variant="outlined"
+          size="x-large"
+          :href="CTA_COMPONENTS_HREF"
+          data-cy="cta-btn-docs"
+        >
+          {{ t('home.cta.cta_docs', 'Explore the components') }}
+        </origam-btn>
+      </nav>
+    </div>
+  </section>
 </template>
 
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
 import { CONTACT_SUPPORT_ROUTE } from '~/consts/contact.const'
 import { CTA_COMPONENTS_HREF, CTA_INK_COLOR, CTA_START_HREF, CTA_SUN_COLOR } from '~/consts/cta.const'
+import { ENSO_CTA_WAVE } from '~/consts/enso.const'
+import { ensoArtVars } from '~/utils/enso.util'
+
+/*********************************************************
+ * Props, emits & slots
+ *
+ * @description
+ * Bande finale : titre à gauche, boutons à droite (T8 de #1554). Le pinceau du
+ * kit (violet terminé en doré) court sur le bord haut, derrière le texte.
+ ********************************************************/
+defineEmits([])
+
+defineSlots<Record<string, never>>()
 
 const { t } = useT()
+
+/*********************************************************
+ * Pinceau
+ *
+ * @description
+ * Fond CTA du kit dans les deux variantes ; `.enso-art` choisit selon `data-mode`.
+ ********************************************************/
+const waveVars = ensoArtVars(ENSO_CTA_WAVE, 1000)
+
+/*********************************************************
+ * Expose
+ *
+ * @description
+ * Rien à piloter depuis l'extérieur.
+ ********************************************************/
+defineExpose({})
 </script>
 
 <style scoped lang="scss">
 .home-cta {
+    --home-cta-art: min(100vw, 62.5rem);
+
     position: relative;
-    overflow: hidden;
     isolation: isolate;
-    padding-block: var(--origam-space---24, 6rem);
-    padding-inline: var(--origam-space---6, 1.5rem);
-    background-color: color-mix(in srgb, var(--origam-color__action--primary---bg) 24%, var(--origam-color__surface---default));
+    overflow: hidden;
+    container-type: inline-size;
+    padding-block-start: calc(var(--home-cta-art) * 0.25);
+    padding-block-end: var(--origam-space---12, 3rem);
     color: var(--origam-color__text---primary);
 
-    &__brush {
+    &::before {
+        content: '';
         position: absolute;
+        inset-block-start: calc(var(--home-cta-art) * -0.235);
         inset-inline: 0;
-        inset-block-end: 0;
-        inline-size: 100%;
-        block-size: 45%;
         z-index: -1;
+        inline-size: var(--home-cta-art);
+        aspect-ratio: var(--enso-art-ratio);
+        margin-inline: auto;
+        background: var(--enso-art) center / 100% 100% no-repeat;
+        mask-image: linear-gradient(to bottom, transparent, black 12%, black 80%, transparent), linear-gradient(to right, transparent, black 18%, black 82%, transparent);
+        mask-composite: intersect;
         pointer-events: none;
     }
 
-    &__stroke {
-        &--violet {
-            fill: var(--origam-color__action--primary---bg);
-            opacity: 0.55;
-        }
-
-        &--sun {
-            fill: var(--origam-color__sun---500);
-            opacity: 0.85;
-        }
-    }
-
     &__inner {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
         align-items: center;
         gap: var(--origam-space---8, 2rem);
-        max-inline-size: 48rem;
-        margin-inline: auto;
-        text-align: center;
+    }
+
+    &__text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--origam-space---4, 1rem);
     }
 
     &__title {
         margin: 0;
-        font-size: clamp(2rem, 5vw, 3.25rem);
+        font-size: var(--home-fs-h2);
         font-weight: var(--origam-font__weight---bold, 700);
         letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-        line-height: 1.1;
+        line-height: 1.15;
         color: var(--origam-color__text---primary);
     }
 
     &__description {
         margin: 0;
-        font-size: var(--origam-font__size---lg, 1.125rem);
+        max-inline-size: 34rem;
+        font-size: var(--home-fs-body);
         line-height: 1.6;
-        color: var(--origam-color__text---primary);
+        color: var(--origam-color__text---secondary);
     }
 
     &__support {
         margin: 0;
-        font-size: var(--origam-font__size---sm, 0.875rem);
-        color: var(--origam-color__text---primary);
+        font-size: var(--home-fs-small);
+        color: var(--origam-color__text---secondary);
     }
 
     &__actions {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
         gap: var(--origam-space---3, 0.75rem);
+    }
+}
+
+@container (max-width: 48rem) {
+    .home-cta__inner {
+        grid-template-columns: 1fr;
+    }
+
+    .home-cta__actions {
+        justify-content: flex-start;
     }
 }
 </style>
