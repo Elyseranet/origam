@@ -1,6 +1,4 @@
-import type { IFooterColumn, INavLink, INavSection } from '../interfaces/nav.interface'
-
-import { MARKETING_DEFAULTS } from './marketing.const'
+import type { INavLink, INavSection } from '../interfaces/nav.interface'
 
 export const NAV_SECTIONS: INavSection[] = [
     {
@@ -49,39 +47,4 @@ export const NAV_THEMING_LINK: INavLink = {
     href: '/theming'
 }
 
-export const DISCORD_LINK = 'https://discord.gg/origam'
 export const TWITTER_LINK = 'https://twitter.com/origam'
-
-export const FOOTER_GRID_COLUMNS = '2fr 1fr 1fr 1fr'
-
-export const FOOTER_COLUMNS: IFooterColumn[] = [
-    {
-        titleKey: 'footer.product.title',
-        titleFallback: 'Product',
-        links: [
-            { i18nKey: 'footer.product.charts', i18nFallback: 'Charts', href: '/components#charts' },
-            { i18nKey: 'footer.product.themes', i18nFallback: 'Themes', href: '/#themes' }
-        ]
-    },
-    {
-        titleKey: 'footer.resources.title',
-        titleFallback: 'Resources',
-        links: [
-            { i18nKey: 'footer.resources.github', i18nFallback: 'GitHub', href: MARKETING_DEFAULTS.githubRepo, external: true },
-            { i18nKey: 'footer.resources.discord', i18nFallback: 'Discord', href: DISCORD_LINK, external: true },
-            { i18nKey: 'footer.resources.discussions', i18nFallback: 'Discussions', href: `${MARKETING_DEFAULTS.githubRepo}/discussions`, external: true },
-            { i18nKey: 'footer.resources.twitter', i18nFallback: 'Twitter', href: TWITTER_LINK, external: true },
-            { i18nKey: 'footer.resources.support', i18nFallback: 'Support origam', href: '/support' }
-        ]
-    },
-    {
-        titleKey: 'footer.legal.title',
-        titleFallback: 'Legal',
-        links: [
-            { i18nKey: 'footer.legal.license', i18nFallback: 'MIT License', href: `${MARKETING_DEFAULTS.githubRepo}/blob/main/LICENSE`, external: true },
-            { i18nKey: 'footer.legal.legal_notice', i18nFallback: 'Legal notice', href: '/legal' },
-            { i18nKey: 'footer.legal.privacy', i18nFallback: 'Privacy', href: '/privacy' },
-            { i18nKey: 'footer.legal.contact', i18nFallback: 'Contact', href: '/contact' }
-        ]
-    }
-]

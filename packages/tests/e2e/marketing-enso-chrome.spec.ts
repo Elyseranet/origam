@@ -1,5 +1,5 @@
 /**
- * Chrome enso — header papier opaque, trait de pinceau, footer panoramique (#1571)
+ * Chrome enso — header papier opaque, trait de pinceau, marque et pinceau sec du pied de page (#1571, #1596)
  *
  * Mesure le fond CALCULÉ du header (un fond transparent laissait le contenu
  * défiler dessous), la présence des décors `aria-hidden`, et que les deux
@@ -33,14 +33,23 @@ for (const mode of ['light', 'dark'] as const) {
       expect(header.height).toBe(72)
     })
 
-    test('le trait de pinceau et le panorama du footer sont décoratifs', async ({ page }) => {
+    test('le trait de pinceau du header est décoratif', async ({ page }) => {
       await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
 
-      for (const cy of ['appbar-brush', 'footer-art']) {
-        const art = page.locator(`[data-cy="${cy}"]`)
-        await expect(art).toHaveAttribute('aria-hidden', 'true')
-        expect(await art.evaluate(el => getComputedStyle(el).backgroundImage)).toContain('/brand/enso/')
-      }
+      const art = page.locator('[data-cy="appbar-brush"]')
+      await expect(art).toHaveAttribute('aria-hidden', 'true')
+      expect(await art.evaluate(el => getComputedStyle(el).backgroundImage)).toContain('/brand/enso/')
+    })
+
+    test('la marque enso du pied de page est décorative, le pinceau sec du niveau 2 est un masque du kit', async ({ page }) => {
+      await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
+
+      const mark = page.locator('.site-footer__mark')
+      await expect(mark).toHaveAttribute('aria-hidden', 'true')
+      expect(await mark.evaluate(el => getComputedStyle(el).backgroundImage)).toContain('/brand/enso/')
+
+      const dry = await page.locator('.site-footer__legal').evaluate(el => getComputedStyle(el, '::before').maskImage)
+      expect(dry).toContain('/brand/enso/shared/dry-05')
     })
 
     test('le lien actif est souligné au pinceau', async ({ page }) => {

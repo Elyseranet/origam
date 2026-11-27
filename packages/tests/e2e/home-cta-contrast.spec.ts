@@ -14,7 +14,8 @@ import type { Page } from '@playwright/test'
 // #1515 — le site rend toujours `origam` (le cookie de marque est ignoré).
 const THEMES = ['origam']
 const MODES = ['light', 'dark']
-const CTAS = ['hero-cta-start', 'cta-btn-start']
+// #1596 — le CTA « Crépuscule » : titre et description sur le ciel peint, deux boutons.
+const CTAS = ['hero-cta-start', 'cta-btn-components', 'cta-btn-docs', 'cta-title', 'cta-description']
 const AA = 4.5
 
 /**
@@ -51,7 +52,10 @@ async function minRatio (page: Page, cy: string): Promise<number> {
         const o = el.getBoundingClientRect()
         return { x: r.left - o.left, y: r.top - o.top, w: r.width, h: r.height, ow: o.width }
     })
-    await loc.evaluate(el => el.style.setProperty('color', 'transparent', 'important'))
+    await loc.evaluate((el) => {
+        // Le texte d'un titre vit dans des descendants qui portent leur propre couleur.
+        for (const node of [el, ...el.querySelectorAll<HTMLElement>('*')]) node.style.setProperty('color', 'transparent', 'important')
+    })
     await expect.poll(() => loc.evaluate(el => getComputedStyle(el.querySelector('.origam-btn__content') ?? el).color)).toMatch(/rgba\(0, 0, 0, 0\)|transparent/)
     await settled(page, cy)
     const buf = await loc.screenshot()
@@ -77,7 +81,8 @@ async function minRatio (page: Page, cy: string): Promise<number> {
         for (const fy of [0.2, 0.5, 0.8]) {
             const y = Math.floor((b.y + b.h * fy) * dpr)
             const d = ctx.getImageData(0, y, img.width, 1).data
-            for (let k = Math.floor(b.x * dpr); k < (b.x + b.w) * dpr; k += 2) {
+            // Borné à la largeur de l'image : une boîte de largeur fractionnaire (le titre du CTA) déborde d'un pixel.
+            for (let k = Math.floor(b.x * dpr); k < Math.min(img.width, (b.x + b.w) * dpr); k += 2) {
                 min = Math.min(min, ratio(f, [d[k * 4], d[k * 4 + 1], d[k * 4 + 2]]))
             }
         }

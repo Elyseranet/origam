@@ -8,31 +8,21 @@
   import type { INavLink, INavSection } from '~/interfaces/nav.interface'
 
   import { SKIP_LINK_HREF, SKIP_LINK_TARGET_ID } from '~/consts/a11y.const'
-  import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_SECTIONS, NAV_THEMING_LINK } from '~/consts/nav.const'
+  import { NAV_SECTIONS, NAV_THEMING_LINK } from '~/consts/nav.const'
   import { GITHUB_STARS_MIN_DISPLAY } from '~/consts/adoption.const'
   import { SEARCH_SHORTCUT } from '~/consts/chrome.const'
   import { CATALOG_FAMILIES } from '~/consts/catalog-family.const'
   import { GLOBAL_SEARCH_ALL_FAMILY } from '~/consts/global-search.const'
-  import { ENSO_BRUSH, ENSO_FOOTER, ENSO_NAV_BRUSH_WIDTH, ENSO_BAR_BRUSH_WIDTH, ENSO_FOOTER_ART_WIDTH } from '~/consts/enso.const'
+  import { ENSO_BRUSH, ENSO_NAV_BRUSH_WIDTH, ENSO_BAR_BRUSH_WIDTH } from '~/consts/enso.const'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
   import { useLocaleHref } from '~/composables/useLocaleHref'
   import { useT } from '~/composables/useT'
-  import { useVersion } from '~/composables/useVersion'
   import { useGithubStars } from '~/composables/useGithubStars'
   import { useGlobalSearch } from '~/composables/useGlobalSearch'
   import { ensoArtVars, ensoPaperVars } from '~/utils/enso.util'
 
   const { t } = useT()
   const { localeHref, navLinkHref } = useLocaleHref()
-  const { versionTag } = useVersion()
-  const { public: publicConfig } = useRuntimeConfig()
-
-  // The donation entry is opt-in: it appears only once NUXT_PUBLIC_DONATE_URL
-  // is set on the deployment, so no placeholder link is ever shipped.
-  const donateUrl = computed(() => publicConfig.donateUrl)
-  const hasDonateUrl = computed(() => donateUrl.value.length > 0)
-  const donateLabel = computed(() => t('footer.donate', 'Support origam'))
-  const donateAriaLabel = computed(() => t('a11y.donate', 'Support origam with a donation'))
 
   const { resolvedMode, toggleMode } = useTheme()
   const { stars } = useGithubStars()
@@ -110,7 +100,6 @@
   const sectionAriaLabel = (section: { titleKey: string; titleFallback: string }) =>
     t('nav.a11y.open_section', 'Open {section} menu', { section: t(section.titleKey, section.titleFallback) })
 
-  const sitemapAriaLabel = computed(() => t('nav.a11y.sitemap', 'Site map'))
 
   const route = useRoute()
 
@@ -140,7 +129,6 @@
 
   const navBrushVars = ensoArtVars(ENSO_BRUSH, ENSO_NAV_BRUSH_WIDTH)
   const barBrushVars = ensoArtVars(ENSO_BRUSH, ENSO_BAR_BRUSH_WIDTH)
-  const footerArtVars = ensoArtVars(ENSO_FOOTER, ENSO_FOOTER_ART_WIDTH)
 
 </script>
 
@@ -428,141 +416,7 @@
       <slot/>
     </origam-main>
 
-    <footer class="site-footer">
-      <span
-        class="site-footer__art enso-art"
-        :style="footerArtVars"
-        aria-hidden="true"
-        data-cy="footer-art"
-      />
-      <origam-grid
-        class="site-footer__top"
-        :columns="FOOTER_GRID_COLUMNS"
-        gap="xl"
-        tag="div"
-      >
-        <div class="site-footer__brand">
-          <nuxt-link
-            :to="localeHref('/')"
-            class="brand"
-            :aria-label="brandName"
-          >
-            <site-logo :alt="brandName"/>
-          </nuxt-link>
-          <origam-chip
-            class="site-footer__version"
-            size="x-small"
-            color="primary"
-            border
-          >{{ versionTag }}</origam-chip>
-          <p class="site-footer__tagline">{{ t('footer.tagline', 'The Vue 3 design system that just works.') }}</p>
-        </div>
-
-        <nav
-          v-for="column in FOOTER_COLUMNS"
-          :key="column.titleKey"
-          class="site-footer__column"
-          :aria-label="t(column.titleKey, column.titleFallback)"
-        >
-          <origam-title
-            tag="h2"
-            class="site-footer__column-title"
-            :text="t(column.titleKey, column.titleFallback)"
-          />
-          <origam-grid
-            tag="ul"
-            columns="1"
-            gap="0"
-            class="site-footer__list"
-          >
-            <origam-grid-item
-              v-for="link in column.links"
-              :key="link.href"
-              tag="li"
-            >
-              <a
-                v-if="link.external"
-                :href="link.href"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="site-footer__link"
-              >
-                {{ t(link.i18nKey, link.i18nFallback) }}
-              </a>
-              <nuxt-link
-                v-else
-                :to="localeHref(link.href)"
-                class="site-footer__link"
-              >
-                {{ t(link.i18nKey, link.i18nFallback) }}
-              </nuxt-link>
-            </origam-grid-item>
-          </origam-grid>
-        </nav>
-      </origam-grid>
-
-      <!--
-        Items flagged `external` in NAV_SECTIONS (Stories, Docs) are separate
-        static sites, not app routes: they keep a plain anchor and are never
-        localised. See nav.const.ts for the why. #760
-
-        ⛔ Keep this note OUTSIDE the v-for, and free of angle brackets: dev
-        SSR preserves template comments (production strips them), so a comment
-        inside the loop is emitted once per item — and one containing a literal
-        anchor tag made `marketing-nav-ssr.spec.ts` count 30 links instead of
-        15, green in prod and red in dev.
-      -->
-      <nav
-        class="site-footer__sitemap"
-        data-cy="footer-sitemap"
-        :aria-label="sitemapAriaLabel"
-      >
-        <template
-          v-for="section in NAV_SECTIONS"
-          :key="section.titleKey"
-        >
-          <h3 class="site-footer__sitemap-title">{{ t(section.titleKey, section.titleFallback) }}</h3>
-          <ul class="site-footer__sitemap-list">
-            <li
-              v-for="item in section.items"
-              :key="item.href"
-            >
-              <a
-                v-if="item.external"
-                :href="item.href"
-                class="site-footer__link"
-              >
-                {{ t(item.i18nKey, item.i18nFallback) }}
-              </a>
-              <nuxt-link
-                v-else
-                :to="localeHref(item.href)"
-                class="site-footer__link"
-              >
-                {{ t(item.i18nKey, item.i18nFallback) }}
-              </nuxt-link>
-            </li>
-          </ul>
-        </template>
-      </nav>
-
-      <origam-divider class="site-footer__rule"/>
-
-      <div class="site-footer__bottom">
-        <p class="site-footer__line">{{ t('footer.copyright', '© 2026 origam · MIT') }}</p>
-        <p class="site-footer__line">{{ t('footer.made_with', 'Made with origam, by humans.') }}</p>
-        <a
-          v-if="hasDonateUrl"
-          :href="donateUrl"
-          :aria-label="donateAriaLabel"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="site-footer__link"
-        >
-          {{ donateLabel }}
-        </a>
-      </div>
-    </footer>
+    <site-footer/>
   </origam-app>
 </template>
 
@@ -746,145 +600,6 @@
     }
   }
 
-  .site-footer {
-    display: flex;
-    flex-direction: column;
-    gap: var(--origam-space---4, 1rem);
-    --site-footer---art-height: clamp(10rem, 26vw, 24rem);
-    position: relative;
-    isolation: isolate;
-    padding: calc(var(--site-footer---art-height) * 0.92) var(--site-gutter) var(--origam-space---5, 1.25rem);
-    background: var(--enso-art) 0 0 / var(--enso-paper---tile, 512px) repeat, var(--origam-color__surface---default, #f7f5ef);
-    color: var(--origam-color__text---secondary, #525252);
-
-    // Panorama du kit : le pinceau s'estompe vers le contenu, qui reste
-    // posé sur le papier uni (contraste). Les bords haut et bas sont fondus
-    // pour que le fond propre à l'image ne dessine pas de rectangle.
-    &__art {
-      position: absolute;
-      inset-block-start: 0;
-      inset-inline: 0;
-      z-index: -1;
-      block-size: var(--site-footer---art-height);
-      background: var(--enso-art) center 58% / cover no-repeat;
-      mask-image:
-        linear-gradient(to bottom, transparent 0%, #000 22%, #000 52%, transparent 86%),
-        linear-gradient(to right, transparent 8%, #000 28%, #000 72%, transparent 92%);
-      mask-composite: intersect;
-      -webkit-mask-composite: source-in;
-      pointer-events: none;
-    }
-
-    &__top {
-      align-items: start;
-    }
-
-    &__version {
-      align-self: flex-start;
-      font-size: var(--origam-font-size---xs, 0.75rem);
-      font-weight: 500;
-    }
-
-    &__brand {
-      display: flex;
-      flex-direction: column;
-      gap: var(--origam-space---2, 0.5rem);
-      max-inline-size: 22rem;
-    }
-
-    &__tagline {
-      margin: 0;
-      font-size: var(--origam-font-size---sm, 0.875rem);
-      line-height: 1.5;
-      color: var(--origam-color__text---secondary, #525252);
-    }
-
-    &__column {
-      display: flex;
-      flex-direction: column;
-      gap: var(--origam-space---1, 0.25rem);
-    }
-
-    &__column-title {
-      --origam-title---font-size: var(--origam-font-size---xs, 0.75rem);
-      --origam-title---color: var(--origam-color__text---primary, #0a0a0a);
-      --origam-title---font-weight: 600;
-      --origam-title---letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    &__list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: var(--origam-space---1, 0.25rem);
-      font-size: var(--origam-font-size---sm, 0.875rem);
-      line-height: 1.4;
-    }
-
-    &__link {
-      line-height: 1.4;
-      font-size: var(--origam-font-size---sm, 0.875rem);
-      color: var(--origam-color__text---secondary, #525252);
-      text-decoration: none;
-      transition: color 0.15s ease;
-
-      &:hover,
-      &:focus-visible {
-        color: var(--origam-color__action--primary---bg, #7c3aed);
-      }
-    }
-
-    &__sitemap {
-      display: grid;
-      grid-template-columns: max-content 1fr;
-      align-items: baseline;
-      gap: var(--origam-space---1, 0.25rem) var(--origam-space---6, 1.5rem);
-    }
-
-    &__sitemap-title {
-      margin: 0;
-      font-size: var(--origam-font-size---xs, 0.75rem);
-      line-height: 1.4;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--origam-color__text---secondary, #525252);
-    }
-
-    &__sitemap-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-flow: row wrap;
-      gap: var(--origam-space---1, 0.25rem) var(--origam-space---4, 1rem);
-      font-size: var(--origam-font-size---sm, 0.875rem);
-      line-height: 1.4;
-    }
-
-    &__rule {
-      --origam-divider---opacity: 1;
-      --origam-divider---border-top-width: 1px;
-      --origam-divider---color: var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-    }
-
-    &__bottom {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: var(--origam-space---2, 0.5rem);
-    }
-
-    &__line {
-      margin: 0;
-      font-size: var(--origam-font-size---sm, 0.875rem);
-      line-height: 1.4;
-    }
-  }
-
   /*
     ⛔ LA NAV PRINCIPALE EST RETIREE SOUS 600px — #1032.
 
@@ -957,37 +672,6 @@
       block-size: 44px;
       --origam-btn---height: 44px;
       --origam-btn---min-height: 44px;
-    }
-  }
-
-  /*
-    ⛔ LE DEBORDEMENT HORIZONTAL DU PIED DE PAGE — #1032.
-
-    Mesure du 2026-10-02, 17 des 18 pages du marketing debordaient de
-    exactement 11px a 400px de large, et la cause n'est PAS la navigation :
-    c'est cette grille. `FOOTER_GRID_COLUMNS = '2fr 1fr 1fr 1fr'` est une
-    valeur unique — `IGridProps.columns` n'a aucune declinaison par palier —
-    donc les quatre colonnes ne se replient jamais et la derniere sort du
-    viewport.
-
-    `OrigamGrid` pose `--origam-grid---template-columns` en style INLINE
-    (`OrigamGrid.vue:172`), qu'aucune regle de feuille ne peut surcharger ;
-    on surcharge donc `grid-template-columns` directement, que son SCSS lit
-    via cette variable (`:262`).
-  */
-  @media (max-width: 40rem) {
-    .site-footer__sitemap {
-      grid-template-columns: 1fr;
-    }
-
-    .site-footer__top {
-      grid-template-columns: repeat(3, auto);
-      justify-content: space-between;
-      gap: var(--origam-space---4, 1rem);
-    }
-
-    .site-footer__brand {
-      grid-column: 1 / -1;
     }
   }
 

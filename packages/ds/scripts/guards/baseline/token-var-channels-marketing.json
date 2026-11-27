@@ -97,8 +97,6 @@
     "packages/marketing/src/components/WhyOrigamThemeDemo.vue::--origam-page---background-color",
     "packages/marketing/src/layouts/admin.vue::--origam-font-size---sm",
     "packages/marketing/src/layouts/default.vue::--origam-color__surface---variant",
-    "packages/marketing/src/layouts/default.vue::--origam-font-size---sm",
-    "packages/marketing/src/layouts/default.vue::--origam-font-size---xs",
     "packages/marketing/src/pages/admin/[kind]/[slug].vue::--origam-color__status--danger---bgSubtle",
     "packages/marketing/src/pages/admin/[kind]/[slug].vue::--origam-color__status--danger---fg",
     "packages/marketing/src/pages/admin/[kind]/[slug].vue::--origam-color__status--success---bgSubtle",

@@ -274,6 +274,22 @@ test.describe('Nav & footer sitemap — presence in the HTML served, no JS', () 
         }
     })
 
+    // #1596 — le pied de page sur deux niveaux : le plan du site reste dans le niveau 2 (contrat
+    // ci-dessus, inchange) et le reste du pied de page est lui aussi dans le HTML serveur.
+    test('the two-level footer is in the HTML served, no JS, with its stable links (#1596)', async ({ request }) => {
+        const html = await (await request.get('/')).text()
+
+        const nav = extractTaggedBlocks(html, /<nav\b[^>]*data-cy="footer-nav"[^>]*>/, '</nav>').join('\n')
+        for (const href of ['/components', '/docs/', '/theming', '/#playground']) {
+            expect(nav.includes(`href="${href}"`), `footer nav is missing <a href="${href}"> in the SSR HTML`).toBe(true)
+        }
+
+        const legal = extractTaggedBlocks(html, /<nav\b[^>]*data-cy="footer-legal"[^>]*>/, '</nav>').join('\n')
+        for (const href of ['/legal', '/privacy', '/contact', '/support']) {
+            expect(legal.includes(`href="${href}"`), `footer legal nav is missing <a href="${href}"> in the SSR HTML`).toBe(true)
+        }
+    })
+
     test('/theming already renders as a real SSR <a href> and must not regress', async ({ request }) => {
         const res = await request.get('/')
         const html = await res.text()

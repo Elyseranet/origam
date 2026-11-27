@@ -11,8 +11,12 @@ export interface INavSection {
     items: INavLink[]
 }
 
-export interface IFooterColumn {
-    titleKey: string
-    titleFallback: string
-    links: INavLink[]
+/** Réseau du pied de page : `icon` est un nom MDI ou un chemin SVG 24 × 24 ; sans `showLabel`, le libellé n'est que l'aria-label. */
+export interface IFooterSocial {
+    key: string
+    labelKey: string
+    labelFallback: string
+    href: string
+    icon: string
+    showLabel?: boolean
 }

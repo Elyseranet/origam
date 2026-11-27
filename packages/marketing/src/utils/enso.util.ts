@@ -1,6 +1,8 @@
 import { ENSO_DEMO_MODES, ENSO_GALLERY, ENSO_PAPER_TILE_WIDTH, ENSO_PAPER_WASHI, ENSO_PETAL_FLIGHTS, ENSO_PETAL_WIDTH } from '~/consts/enso.const'
 import type { IEnsoArt, IEnsoDemoColumn, IEnsoPetalView, IEnsoSrcsetCandidate } from '~/interfaces/enso.interface'
+import { CTA_PLANES } from '~/consts/cta.const'
 import { HERO_PLANES } from '~/consts/hero.const'
+import type { ICtaPlaneView } from '~/interfaces/cta.interface'
 import type { IHeroPlaneView, IHeroVisual } from '~/interfaces/hero.interface'
 import type { TEnsoArtVars } from '~/types/enso.type'
 
@@ -76,6 +78,16 @@ export function ensoPetalViews (count: number): IEnsoPetalView[] {
             '--petal-scale': flight.scale,
             '--petal-spin': flight.spin
         }
+    }))
+}
+
+/** Plans du paysage du CTA, prêts à poser sur une `OrigamParallaxLayer` (`speed`) et son décor (`classes`, `style`). */
+export function ctaPlaneViews (): ICtaPlaneView[] {
+    return CTA_PLANES.map(plane => ({
+        key: plane.key,
+        speed: plane.speed,
+        classes: ['enso-art', `home-cta__plane--${plane.key}`],
+        style: ensoArtVars(plane.art, plane.displayWidth)
     }))
 }
 

@@ -22,6 +22,12 @@ const MARKETING_GREEN_SPECS = [
     // #1428 — contraste AA des CTA primaires, 8 marques x 2 modes.
     'home-cta-contrast.spec.ts',
 
+    // #1596 — CTA « Crepuscule » (contrat, paysage et parallaxe, aucun pixel sous le texte)
+    // et pied de page sur deux niveaux (liens, couleurs, AA, jonction sans couture, axe).
+    'home-cta.spec.ts',
+    'home-cta-scene.spec.ts',
+    'site-footer.spec.ts',
+
     // #1554 (T2) — bord gauche, ecart de section et trait d'eyebrow communs a la home.
     'home-foundations.spec.ts',
 
