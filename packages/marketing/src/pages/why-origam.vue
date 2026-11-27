@@ -3,38 +3,33 @@
     class="why-origam"
     data-cy="page-why-origam"
   >
-    <!-- ─────────────────────────────── HERO ─────────────────────────── -->
-    <section
-      class="why-hero"
-      aria-labelledby="why-title"
+    <enso-page-header
+      family="editorial"
+      title-id="why-title"
     >
-      <origam-container class="why-hero__inner">
-        <origam-chip
-          class="why-hero__badge"
-          :style="WHY_HERO_BADGE_VARS"
-          color="primary"
-          border
-          border-color="var(--origam-color__action--primary---bg)"
-          size="small"
-          pill
-          data-cy="why-hero-badge"
-        >
-          {{ t('why_origam.hero.badge', 'Honest by design') }}
-        </origam-chip>
+      <template #breadcrumb>
+        <origam-breadcrumb
+          :items="breadcrumbItems"
+          divider="/"
+          :border="0"
+          data-cy="why-breadcrumb"
+        />
+      </template>
 
-        <origam-title
-          id="why-title"
-          tag="h1"
-          class="why-hero__title"
-        >
-          <span class="why-hero__title-line">{{ t('why_origam.hero.title_line1', 'Why origam?') }}</span>
-          <span class="why-hero__title-line why-hero__title-line--accent">{{ t('why_origam.hero.title_line2', 'An honest answer.') }}</span>
-        </origam-title>
+      <template #eyebrow>
+        <span data-cy="why-hero-badge">{{ t('why_origam.hero.badge', 'Honest by design') }}</span>
+      </template>
 
-        <p class="why-hero__subtitle">
-          {{ t('why_origam.hero.subtitle', 'Origam is for Vue 3 developers who want to theme through props and ship one base in several identities. Here is what it does well, and what it still lacks.') }}
-        </p>
+      <template #title>
+        {{ t('why_origam.hero.title_line1', 'Why origam?') }}
+        {{ t('why_origam.hero.title_line2', 'An honest answer.') }}
+      </template>
 
+      <template #intro>
+        {{ t('why_origam.hero.subtitle', 'Origam is for Vue 3 developers who want to theme through props and ship one base in several identities. Here is what it does well, and what it still lacks.') }}
+      </template>
+
+      <template #default>
         <nav
           class="why-hero__actions"
           :aria-label="t('why_origam.hero.actions_label', 'Explore the proof')"
@@ -59,39 +54,35 @@
             {{ t('why_origam.hero.cta_use_cases', 'When to choose it') }}
           </origam-btn>
         </nav>
+      </template>
+    </enso-page-header>
 
-        <!--
-          Identity strip. Every dot is painted by the theme it names —
-          each one sits inside its own <OrigamThemeProvider>, so the row
-          is a genuine sample of the palettes the demo cycles through,
-          not eight decorative hexes.
-        -->
-        <ul
-          class="why-hero__identities"
-          :aria-label="t('why_origam.hero.identities_label', 'Brand identities shipped with the site')"
+    <origam-container class="why-hero__strip home-container">
+      <ul
+        class="why-hero__identities"
+        :aria-label="t('why_origam.hero.identities_label', 'Brand identities shipped with the site')"
+      >
+        <li
+          v-for="entry in WHY_DEMO_THEMES"
+          :key="entry.key"
+          class="why-hero__identity"
         >
-          <li
-            v-for="entry in WHY_DEMO_THEMES"
-            :key="entry.key"
-            class="why-hero__identity"
+          <origam-theme-provider
+            tag="span"
+            :theme="entry.key"
+            mode="light"
+            class="why-hero__swatch-wrap"
           >
-            <origam-theme-provider
-              tag="span"
-              :theme="entry.key"
-              mode="light"
-              class="why-hero__swatch-wrap"
-            >
-                            <span
-                              class="why-hero__swatch"
-                              aria-hidden="true"
-                            />
-            </origam-theme-provider>
+            <span
+              class="why-hero__swatch"
+              aria-hidden="true"
+            />
+          </origam-theme-provider>
 
-            {{ t(identityKey(entry.key), entry.themes[0]?.label ?? entry.key) }}
-          </li>
-        </ul>
-      </origam-container>
-    </section>
+          {{ t(identityKey(entry.key), entry.themes[0]?.label ?? entry.key) }}
+        </li>
+      </ul>
+    </origam-container>
 
     <!-- ─────────────────────────────── DEMO ─────────────────────────── -->
     <why-origam-theme-demo />
@@ -373,9 +364,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useLocaleHref } from '~/composables/useLocaleHref'
 import { useT } from '~/composables/useT'
 import {
-    WHY_HERO_BADGE_VARS,
     WHY_STRENGTHS,
     WHY_WEAKNESSES,
     WHY_USE_CASES
@@ -384,6 +375,13 @@ import { WHY_DEMO_THEMES } from '~/consts/why-origam-demo.const'
 import { CTA_START_HREF } from '~/consts/cta.const'
 
 const { t } = useT()
+const { localeHref } = useLocaleHref()
+
+const breadcrumbItems = computed(() => [
+    { title: t('nav.home', 'Home'), to: localeHref('/') },
+    { title: t('nav.sections.introduction', 'Introduction') },
+    { title: t('nav.why_origam', 'Why origam?') }
+])
 
 useSeoMeta({
     title: () => t('why_origam.meta.title', 'Why origam? · Vue 3 design system'),
@@ -424,91 +422,17 @@ function identityKey (themeKey: string): string {
 
     /* ───────────────────────────────── HERO ─────────────────────────────── */
     .why-hero {
-        position: relative;
-        /*
-         * Asymmetric on purpose: the fold's job is to hand the reader to the
-         * demo, so the block below the identity strip is tightened. The old
-         * hero paid 4rem here on top of the next section's 6rem and left a
-         * 10rem void that read as "the page is over".
-         */
-        padding-block: var(--origam-space---20, 5rem) var(--origam-space---10, 2.5rem);
-        overflow: hidden;
+        &__strip {
+            --origam-container---max-width: calc(var(--home-container-max) + 2 * var(--site-gutter));
+            --site-gutter: var(--home-gutter);
 
-        &::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: var(--origam-gradient---hero-grid);
-            background-size: 64px 64px;
-            background-position: center top;
-            -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-            mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        &::after {
-            content: '';
-            position: absolute;
-            inset-inline: 0;
-            inset-block-start: 0;
-            block-size: 260px;
-            background-image: var(--origam-gradient---hero-glow);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        &__inner {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--origam-space---5, 1.25rem);
-            text-align: center;
-        }
-
-        &__badge {
-            --origam-chip---background-color: transparent;
-        }
-
-        /*
-          The old hero ran 5.25rem type over a 40rem measure and then stopped —
-          a third of the viewport was empty. The type steps down one notch and
-          the space is spent on an action row and a real sample of the palettes,
-          so the fold carries the argument instead of announcing it.
-        */
-        &__title {
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-family: var(--origam-font-family---heading);
-            font-size: clamp(2.5rem, 6.5vw, 4.5rem);
-            font-weight: var(--origam-font-weight---extrabold, 800);
-            line-height: var(--origam-line-height---hero, 0.95);
-            letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-            padding-block-end: 0.1em;
-            color: var(--origam-color__text---ink, #0a0a0a);
-        }
-
-        &__title-line--accent {
-            color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-        }
-
-        &__subtitle {
-            margin: 0;
-            max-inline-size: 44rem;
-            font-size: var(--origam-font-size---lg, 1.125rem);
-            line-height: var(--origam-line-height---relaxed, 1.7);
-            color: var(--origam-color__text---secondary, #525252);
+            padding-block-end: var(--origam-space---6, 1.5rem);
         }
 
         &__actions {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: center;
             gap: var(--origam-space---3, 0.75rem);
         }
 
@@ -516,9 +440,9 @@ function identityKey (themeKey: string): string {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: center;
             gap: var(--origam-space---2, 0.5rem) var(--origam-space---5, 1.25rem);
-            margin: var(--origam-space---4, 1rem) 0 0;
+            inline-size: 100%;
+            margin: 0;
             padding: 0;
             list-style: none;
             font-size: var(--origam-font-size---sm, 0.875rem);
@@ -815,14 +739,6 @@ function identityKey (themeKey: string): string {
                 border: 1px solid var(--origam-color---btn-secondary-border);
                 --origam-btn---color: var(--origam-color---btn-secondary-text);
                 --origam-btn---density-padding-x: var(--origam-space---4, 1rem);
-            }
-        }
-    }
-
-    @media (max-width: 1080px) {
-        .why-hero {
-            &__title {
-                font-size: clamp(2.5rem, 9vw, 4.5rem);
             }
         }
     }

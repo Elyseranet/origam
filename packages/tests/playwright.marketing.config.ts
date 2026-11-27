@@ -28,6 +28,9 @@ const MARKETING_GREEN_SPECS = [
     'home-cta-scene.spec.ts',
     'site-footer.spec.ts',
 
+    // #1584 — en-tête commun « Vallée » (décor par famille, parallaxe, aucun pixel sous le texte).
+    'enso-page-header.spec.ts',
+
     // #1554 (T2) — bord gauche, ecart de section et trait d'eyebrow communs a la home.
     'home-foundations.spec.ts',
 

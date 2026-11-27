@@ -30,7 +30,10 @@ const JOBS = [
     ...['light', 'dark'].flatMap(mode => [
         { name: 'cta-mountains', src: `${HERO}/${mode}/02-mountains/mountain-range-misty-${mode}.png`, scope: mode, widths: [800, 1600, 2136] },
         { name: 'cta-ridge', src: `${HERO}/${mode}/03-landscape/forest-ridge-${mode}.png`, scope: mode, widths: [800, 1600, 1983] },
-        { name: 'cta-foreground', src: `${HERO}/${mode}/07-foreground/foreground-1-${mode}.png`, scope: mode, widths: [800, 1600, 1983] }
+        { name: 'cta-foreground', src: `${HERO}/${mode}/07-foreground/foreground-1-${mode}.png`, scope: mode, widths: [800, 1600, 1983] },
+        /* En-tête de page « Vallée » (#1584) : forest-hills-wide = hero-landscape, forest-ridge = cta-ridge, foreground-1 = cta-foreground. */
+        { name: 'page-foreground', src: `${HERO}/${mode}/07-foreground/foreground-2-${mode}.png`, scope: mode, widths: [800, 1600, 1983] },
+        { name: 'page-temple', src: `${HERO}/${mode}/04-architecture/temple-rocks-${mode}.png`, scope: mode, widths: [300, 600] }
     ])
 ]
 
