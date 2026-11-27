@@ -251,8 +251,6 @@ defineExpose({})
     &__title {
         margin: 0;
         font-size: var(--home-fs-h1-sentence);
-        font-weight: var(--origam-font__weight---bold, 700);
-        line-height: 1.08;
         color: var(--origam-color__text---primary);
     }
 
