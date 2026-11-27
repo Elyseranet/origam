@@ -53,6 +53,7 @@ of scroll.
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `direction` | `'vertical' \| 'horizontal' \| 'both'` | `'vertical'` | Axis of the parallax translation. `both` scrolls on Y and, by default, follows the pointer on X; per-layer `mouseX` / `mouseY` on `<OrigamParallaxLayer>` set the pointer amplitudes on both axes (see that page). |
+| `origin` | `'viewport' \| 'page-top'` | `'viewport'` | Where the scroll offset is measured from. `viewport` (default): from the host's centre in the window — at rest a layer is shifted by an amount that depends on the window height. `page-top`: from the host's position at `scrollY = 0` — every layer sits at its static `offsetX` / `offsetY` at rest, in any window height, and the server render matches (no jump after hydration). `page-top` uses the JS path (see below), so it never selects the CSS path, even with `easing="linear"`. |
 | `easing` | `'linear' \| 'ease-out' \| 'spring' \| string` | `'linear'` | Easing keyword or raw CSS timing-function. Only `linear` activates the CSS-first path. |
 | `speed` | `number` | `0.5` | Default speed multiplier when the host has no `<OrigamParallaxLayer>` children. |
 | `disabled` | `boolean` | `false` | Hard kill-switch. `<OrigamParallaxLayer>` **and** `<OrigamParallaxElement>` stay at offset 0 regardless of the event source — scroll, mouse, or device orientation. See "`disabled` vs `active`" below. |
@@ -118,13 +119,36 @@ interface IParallaxLayerProps {
 
 | Condition | Path |
 |---|---|
-| `CSS.supports('animation-timeline: scroll()')` is `true` AND `easing === 'linear'` | **CSS** — `animation-timeline: view()` keyframe animation on each layer. Zero JS work per frame. |
-| Either condition above is false | **JS fallback** — `IntersectionObserver` + `requestAnimationFrame` mutate `transform` directly. Spring easing uses a damped lerp. |
+| `CSS.supports('animation-timeline: scroll()')` is `true`, `easing === 'linear'`, `origin === 'viewport'` AND no ancestor is a scroll container | **CSS** — `animation-timeline: view()` keyframe animation on each layer. Zero JS work per frame. The axis follows `direction` (Y for `vertical` / `both`, X for `horizontal`). |
+| Any condition above is false | **JS fallback** — `IntersectionObserver` + `requestAnimationFrame` mutate `transform` directly. Spring easing uses a damped lerp. |
 
 The runtime exposes the active path via `cssScrollDriven` (a reactive
 ref on the component instance) — useful for storybook diagnostics or
 custom debug overlays. The branch is computed at mount and re-evaluated
-when the `easing` prop changes.
+when the `easing` / `origin` props change.
+
+### Server rendering and hydration
+
+The `--css-driven` class (host and layers) reflects the **props-only** part
+of the decision (linear easing, `viewport` origin, no scroll-container
+ancestor), so it is identical in the server HTML and in the first client
+render. The browser feature test is done by the stylesheet's
+`@supports (animation-timeline: scroll())`, which also means the CSS
+animation runs **before** hydration. The `--reduced-motion` classes and the
+pointer capability are read **after mount** (the server has no `matchMedia`):
+the first client render is identical to the server HTML, the media-query
+state applies right after.
+
+### Scroll-container ancestors
+
+A CSS `view()` timeline binds to the **nearest scroll container** of the
+layer, and CSS offers no way to pick another one. An ancestor with
+`overflow: hidden`, `auto` or `scroll` (the host itself is `overflow: clip`,
+which does not scroll) therefore freezes the progress at 50 %. At mount the
+runtime detects such an ancestor (between the host and `<body>`) and uses the
+JS path instead, which measures against the viewport. Use `overflow: clip`
+rather than `hidden` on wrappers if you want to keep the CSS path. An
+ancestor that becomes a scroll container *after* mount is not detected.
 
 ## `prefers-reduced-motion` behavior
 
@@ -136,7 +160,9 @@ When `(prefers-reduced-motion: reduce)` matches, every layer:
 - The rAF loop short-circuits before mutating the DOM.
 
 The runtime watches the media-query and reacts live to OS-level changes
-without a page reload.
+without a page reload. Under reduced motion the `scroll` / `resize` listeners
+are not installed, unless a `@scroll-progress` listener is attached (the
+progress is still reported).
 
 ## Performance tips
 

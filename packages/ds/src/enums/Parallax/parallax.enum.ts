@@ -15,3 +15,8 @@ export enum PARALLAX_EVENT {
     SCROLL = 'scroll',
     ORIENTATION = 'orientation'
 }
+
+export enum PARALLAX_ORIGIN {
+    VIEWPORT = 'viewport',
+    PAGE_TOP = 'page-top'
+}

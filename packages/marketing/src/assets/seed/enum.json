@@ -2,7 +2,7 @@
   "kind": "enum",
   "exportedAt": "2026-11-25T09:44:37.809Z",
   "sourceCommit": "275da4ff9",
-  "entryCount": 141,
+  "entryCount": 142,
   "entries": [
     {
       "entry": {
@@ -51947,6 +51947,58 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "parallax-origin",
+        "name": "PARALLAX_ORIGIN",
+        "category": "Animation & Motion",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum PARALLAX_ORIGIN {\n    VIEWPORT = 'viewport',\n    PAGE_TOP = 'page-top'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Parallax/parallax.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "PARALLAX_ORIGIN.VIEWPORT",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "PARALLAX_ORIGIN.PAGE_TOP",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {

@@ -76,6 +76,50 @@
 			</template>
 		</Variant>
 
+		<Variant
+				title="Origin"
+				:init-state="() => useStoryInitState<Partial<IParallaxProps>>({
+					origin: PARALLAX_ORIGIN.PAGE_TOP,
+					speed: 0.35
+				})"
+		>
+			<template #default="{ state }">
+				<origam-parallax data-cy="parallax-origin-viewport" :style="hostStyleTall" :easing="PARALLAX_EASING.EASE_OUT" :origin="PARALLAX_ORIGIN.VIEWPORT">
+					<origam-parallax-layer data-cy="parallax-origin-viewport-layer" :speed="state.speed">
+						<div :style="layerStyle">origin: viewport (default)</div>
+					</origam-parallax-layer>
+				</origam-parallax>
+				<origam-parallax data-cy="parallax-origin-top" :style="hostStyleTall" :easing="PARALLAX_EASING.EASE_OUT" :origin="state.origin">
+					<origam-parallax-layer data-cy="parallax-origin-top-layer" :speed="state.speed">
+						<div :style="layerStyle">origin: {{ state.origin }}</div>
+					</origam-parallax-layer>
+				</origam-parallax>
+				<div :style="scrollFiller"></div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Scroll">
+					<HstSelect v-model="state.origin" title="Origin" :options="PARALLAX_ORIGIN_OPTIONS"/>
+					<HstNumber v-model="state.speed" title="Speed" :min="-2" :max="2" :step="0.05"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Scroll container">
+			<origam-parallax data-cy="parallax-plain" :style="hostStyleTall">
+				<origam-parallax-layer data-cy="parallax-plain-layer" :speed="0.4">
+					<div :style="layerStyle">plain ancestor (CSS path)</div>
+				</origam-parallax-layer>
+			</origam-parallax>
+			<div :style="{ overflow: 'hidden' }" data-cy="parallax-ancestor">
+				<origam-parallax data-cy="parallax-clipped" :style="hostStyleTall">
+					<origam-parallax-layer data-cy="parallax-clipped-layer" :speed="0.4">
+						<div :style="layerStyle">overflow: hidden ancestor</div>
+					</origam-parallax-layer>
+				</origam-parallax>
+			</div>
+			<div :style="scrollFiller"></div>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<origam-parallax :style="hostStyleTall" :event="PARALLAX_EVENT.SCROLL">
 				<origam-parallax-layer :speed="0.4">
@@ -127,12 +171,18 @@
 	import type { CSSProperties } from 'vue'
 
 	import { OrigamParallax, OrigamParallaxLayer } from '@origam/components'
-	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT } from '@origam/enums'
-	import type { IParallaxLayerProps } from '@origam/interfaces'
+	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT, PARALLAX_ORIGIN } from '@origam/enums'
+	import type { IOptions, IParallaxLayerProps, IParallaxProps } from '@origam/interfaces'
+	import type { TParallaxOrigin } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import { TAG_OPTIONS } from '@stories/const'
+
+	const PARALLAX_ORIGIN_OPTIONS: Array<IOptions<TParallaxOrigin>> = [
+		{ label: 'Viewport (default)', value: PARALLAX_ORIGIN.VIEWPORT },
+		{ label: 'Page top (rest = zero offset)', value: PARALLAX_ORIGIN.PAGE_TOP }
+	]
 
 	const hostStyleTall: CSSProperties = {
 		width: '100%',

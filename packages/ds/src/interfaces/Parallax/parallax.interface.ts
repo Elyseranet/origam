@@ -19,7 +19,8 @@ import type { IUseAudioProps } from '../Commons/audio.interface'
 import type {
     TParallaxDirection,
     TParallaxEasing,
-    TParallaxEvent
+    TParallaxEvent,
+    TParallaxOrigin
 } from '../../types/Parallax/parallax.type'
 import type { TPoint } from '../../types/Commons/point.type'
 
@@ -88,6 +89,23 @@ export interface IParallaxProps extends ICommonsComponentProps, ITagProps, IColo
      */
     direction?: TParallaxDirection
 
+    /*********************************************************
+     * origin (#1603)
+     *
+     * @description
+     * Where the scroll offset is measured from.
+     *  - `'viewport'` (default): relative to the host's centre in the window. A
+     *    layer is at offset 0 only when the host is centred, so at rest
+     *    (`scrollY = 0`) it is shifted by an amount that depends on the window
+     *    height.
+     *  - `'page-top'`: relative to the host's position at `scrollY = 0`. Every
+     *    layer sits at its static offset at rest, in a window of any height, and
+     *    the server render matches (no jump after hydration). Uses the JS path
+     *    (the CSS `view()` timeline has no page-top geometry), so
+     *    `easing="linear"` no longer selects the CSS path with this value.
+     ********************************************************/
+    origin?: TParallaxOrigin
+
     /**
      * Global parallax speed multiplier when no `<OrigamParallaxLayer>` is
      * provided (single-layer mode). Equivalent to wrapping the slot in a
@@ -130,6 +148,15 @@ export interface IParallaxProvide {
     eventData: Ref<TPoint>
     movement: Ref<{ x: number, y: number, target?: IBox | DOMRect }>
     isMoving: Ref<boolean>
+    /*********************************************************
+     * attach (#1603)
+     *
+     * @description
+     * A legacy `<OrigamParallaxElement>` announces itself here. The host's
+     * `mousemove` / measure handler only does work for those. Returns the detach
+     * function.
+     ********************************************************/
+    attach?: () => () => void
     event: Ref<TParallaxEvent>
     duration: Ref<number>
     easing: Ref<string>
@@ -163,6 +190,16 @@ export interface IParallaxLayerProvide {
      * CSS path is active.
      */
     cssScrollDriven: Ref<boolean>
+    /*********************************************************
+     * cssEligible (#1603)
+     *
+     * @description
+     * Props-only half of the CSS-path decision (linear easing, viewport origin,
+     * no scroll-container ancestor): identical on server and client, it is what
+     * the `--css-driven` classes reflect. The stylesheet's `@supports` does the
+     * browser feature test.
+     ********************************************************/
+    cssEligible: Ref<boolean>
     /**
      * Whether `prefers-reduced-motion: reduce` is honoured — layers MUST
      * stay at offset 0 when this is true.
@@ -193,6 +230,16 @@ export interface IUseParallaxRuntimeOptions {
     easing: Ref<TParallaxEasing | TAnyString>
     threshold: Ref<number>
     disabled: Ref<boolean>
+    /*********************************************************
+     * origin / wantsProgress (#1603)
+     *
+     * @description
+     * `origin`: scroll origin, `viewport` when omitted. `wantsProgress`: whether a
+     * `@scroll-progress` listener is attached, which keeps the scroll listeners
+     * alive under `prefers-reduced-motion`.
+     ********************************************************/
+    origin?: Ref<TParallaxOrigin>
+    wantsProgress?: () => boolean
     /**
      * Fallback speed used when `slot=default` carries raw content (no
      * `<OrigamParallaxLayer>`). Mirrors `IParallaxProps.speed`.

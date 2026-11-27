@@ -151,7 +151,10 @@ interface IParallaxLayerProps extends ICommonsComponentProps, ITagProps {
   mount, keeping the object/`target` identity the spring-easing state
   keys off.
 - **CSS-driven vs JS fallback.** When the browser supports
-  `animation-timeline: scroll()` and the host's `easing` is `'linear'`,
+  `animation-timeline: scroll()`, the host's `easing` is `'linear'`, its
+  `origin` is `'viewport'` and no ancestor is a scroll container (a CSS
+  `view()` timeline binds to the nearest one — see the host page),
+  the translation follows the host's `direction` (Y, or X for `horizontal`) and
   the layer's own `@keyframes` (scoped `<style>`) reads
   `--origam-parallax__layer---speed` / `---offset-x` / `---offset-y`
   directly — no JS per frame at all. Otherwise the host's `rAF` loop

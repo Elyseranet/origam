@@ -13,7 +13,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, StyleValue } from 'vue'
+	import { computed, inject, onBeforeUnmount, onMounted, StyleValue } from 'vue'
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
@@ -94,6 +94,16 @@
 	if (!parallax) throw new Error('[Origam] parallax-element needs to be placed inside parallax')
 
 	const {transformStyles, strength, customMovement} = useParallaxTransform(props)
+
+	/*********************************************************
+	 * Legacy consumer registration (#1603)
+	 *
+	 * @description
+	 * Tells the host a legacy consumer exists, so its movement handler works.
+	 ********************************************************/
+	let detach: (() => void) | undefined
+	onMounted(() => { detach = parallax.attach?.() })
+	onBeforeUnmount(() => detach?.())
 
 	const transform = computed(() => {
 		return transformCalculation()
