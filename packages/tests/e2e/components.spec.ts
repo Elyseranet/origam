@@ -43,10 +43,8 @@ test.describe('/components — catalogue', () => {
         await expect(heroTitle).toHaveClass(/origam-title/)
     })
 
-    test('le badge hero est un OrigamChip (.origam-chip)', async ({ page }) => {
-        const badge = page.locator('[data-cy="components-hero-badge"]')
-        await expect(badge).toBeVisible()
-        await expect(badge).toHaveClass(/origam-chip/)
+    test("l'eyebrow de l'en-tête est visible (section Fonctionnalités)", async ({ page }) => {
+        await expect(page.locator('[data-cy="components-hero-badge"]')).toBeVisible()
     })
 
     test('les cards de composants sont des OrigamCard et ont un lien vers /components/*', async ({ page }) => {
@@ -55,15 +53,14 @@ test.describe('/components — catalogue', () => {
         expect(count).toBeGreaterThan(10)
 
         const firstCardLink = cardLinks.first()
-        const firstCard = firstCardLink.locator('.origam-card').first()
-        await expect(firstCard).toHaveClass(/origam-card/)
+        await expect(firstCardLink).toHaveClass(/origam-card/)
 
         const href = await firstCardLink.evaluate((el) => (el as HTMLAnchorElement).href)
         expect(href).toMatch(/\/components\/[a-z]/)
     })
 
-    test('le catalogue est groupé par catégorie avec des OrigamTitle h3', async ({ page }) => {
-        const categoryTitles = page.locator('.components-category__title')
+    test('le catalogue est groupé par catégorie avec des OrigamTitle h2', async ({ page }) => {
+        const categoryTitles = page.locator('.catalog-group__title')
         const count = await categoryTitles.count()
         expect(count).toBeGreaterThanOrEqual(5)
         for (let i = 0; i < count; i++) {
@@ -72,13 +69,13 @@ test.describe('/components — catalogue', () => {
     })
 
     test('la grid de composants est présente dans chaque catégorie', async ({ page }) => {
-        const grids = page.locator('.components-category__grid')
+        const grids = page.locator('.catalog-group__grid')
         const count = await grids.count()
         expect(count).toBeGreaterThanOrEqual(5)
     })
 
     test('les chips famille sont des OrigamChip sur les composants avec famille', async ({ page }) => {
-        const familyChips = page.locator('.components-catalog-card__family-chip')
+        const familyChips = page.locator('[data-cy^="components-card-"] .origam-chip')
         const count = await familyChips.count()
         expect(count).toBeGreaterThan(0)
         for (let i = 0; i < Math.min(count, 5); i++) {

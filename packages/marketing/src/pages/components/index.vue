@@ -1,219 +1,69 @@
 <template>
-  <article
-    class="components-catalog"
-    data-cy="page-components"
+  <catalog-index-layout
+    :title="pageTitle"
+    :intro="t('components.hero.subtitle', 'Every component in origam is accessible, token-driven and themeable. Explore them by category, read the API and see them in action.')"
+    :current="t('nav.components', 'Components')"
+    title-id="components-title"
+    data-cy="components"
   >
-    <section
-      class="components-hero"
-      aria-labelledby="components-title"
-    >
-      <origam-container class="components-hero__inner">
-        <origam-chip
-          class="components-hero__badge"
-          color="primary"
-          border
-          border-color="var(--origam-color__action--primary---bg)"
-          size="small"
-          pill
-          data-cy="components-hero-badge"
+    <catalog-index-tools
+      v-model="searchQuery"
+      :placeholder="t('components.hero.search_placeholder', 'Search components…')"
+      :label="t('components.hero.search_label', 'Filter components by name or category')"
+      :count="countLabel"
+      :jump-label="t('catalog_index.jump_label', 'Categories')"
+      :anchors="anchors"
+      data-cy="components"
+    />
+
+    <catalog-index-empty
+      v-if="isFiltering && filteredCount === 0"
+      :title="t('components.catalog.empty_title', 'No components found')"
+      :description="emptyDescription"
+      data-cy="components-empty"
+    />
+
+    <template #groups>
+      <catalog-group
+        v-for="group in groupedByCategory"
+        :id="groupId(group.category)"
+        :key="group.category"
+        :title="group.category"
+        :count="group.entries.length"
+      >
+        <catalog-card
+          v-for="entry in group.entries"
+          :key="entry.slug"
+          :to="`/components/${entry.slug}`"
+          :name="entry.name"
+          :description="t(entry.descriptionKey, entry.descriptionFallback)"
+          :data-cy="`components-card-${entry.slug}`"
         >
-          {{ t('components.hero.badge', '218 components — Vue 3') }}
-        </origam-chip>
-
-        <origam-title
-          id="components-title"
-          tag="h1"
-          class="components-hero__title"
-        >
-          <span class="components-hero__title-line">{{ t('components.hero.title_line1', 'Component') }}</span>
-          <span class="components-hero__title-line components-hero__title-line--accent">{{ t('components.hero.title_line2', 'catalogue.') }}</span>
-        </origam-title>
-
-        <p class="components-hero__subtitle">
-          {{ t('components.hero.subtitle', 'Every component in origam is accessible, token-driven and themeable. Explore them by category, read the API and see them in action.') }}
-        </p>
-
-        <origam-text-field
-          v-model="searchQuery"
-          class="components-hero__search"
-          prepend-inner-icon="mdi-magnify"
-          :placeholder="t('components.hero.search_placeholder', 'Search components…')"
-          :aria-label="t('components.hero.search_label', 'Filter components by name or category')"
-          clearable
-          rounded="lg"
-          variant="outlined"
-          data-cy="components-search"
-        />
-
-        <p
-          class="components-hero__count"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          <template v-if="isFiltering">
-            {{ filteredCount }} {{ t('components.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('components.hero.count_filtered_match', 'components match') }}
-          </template>
-          <template v-else>
-            {{ totalCount }} {{ t('components.hero.count_families', 'component families across') }} {{ componentsCategories.length }} {{ t('components.hero.count_categories', 'categories') }}
-          </template>
-        </p>
-      </origam-container>
-    </section>
-
-    <section
-      class="components-grid-section"
-      aria-labelledby="components-grid-title"
-      data-cy="components-grid"
-    >
-      <origam-container>
-        <header class="components-grid-section__header">
-          <p class="components-section__eyebrow">
-            {{ t('components.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
-          </p>
-
-          <origam-title
-            id="components-grid-title"
-            tag="h2"
-            class="components-section__title components-section__title--single"
+          <template
+            v-if="entry.family.length > 0"
+            #meta
           >
-            {{ t('components.catalog.title', 'All components.') }}
-          </origam-title>
-        </header>
-
-        <div
-          v-if="isFiltering && filteredCount === 0"
-          class="components-empty"
-          role="status"
-          data-cy="components-empty"
-        >
-          <origam-icon
-            icon="mdi-magnify-remove-outline"
-            class="components-empty__icon"
-            aria-hidden="true"
-          />
-
-          <origam-title
-            tag="h3"
-            class="components-empty__title"
-          >
-            {{ t('components.catalog.empty_title', 'No components found') }}
-          </origam-title>
-
-          <p class="components-empty__desc">
-            {{ t('components.catalog.empty_desc', 'No component matches "{query}". Try a different term.', { query: searchQuery }) }}
-          </p>
-        </div>
-
-        <div
-          v-for="group in groupedByCategory"
-          :id="categoryAnchor(group.category)"
-          :key="group.category"
-          class="components-category"
-          :data-cy="categoryAnchor(group.category)"
-        >
-          <header class="components-category__header">
-            <origam-title
-              tag="h3"
-              class="components-category__title"
+            <origam-chip
+              v-for="member in entry.family.slice(0, 3)"
+              :key="member.slug"
+              size="x-small"
+              pill
             >
-              {{ group.category }}
-            </origam-title>
+              {{ member.name }}
+            </origam-chip>
 
             <origam-chip
-              size="small"
+              v-if="entry.family.length > 3"
+              size="x-small"
               pill
-              class="components-category__count-chip"
             >
-              {{ group.entries.length }}
+              +{{ entry.family.length - 3 }}
             </origam-chip>
-          </header>
-
-          <origam-grid
-            tag="ul"
-            columns="repeat(auto-fill, minmax(240px, 1fr))"
-            gap="1rem"
-            class="components-category__grid"
-          >
-            <origam-grid-item
-              v-for="entry in group.entries"
-              :key="entry.slug"
-              tag="li"
-              class="components-catalog-item"
-            >
-              <nuxt-link
-                :to="`/components/${entry.slug}`"
-                class="components-catalog-card__link"
-                :data-cy="`components-card-${entry.slug}`"
-              >
-                <origam-card
-                  rounded="lg"
-                  class="components-catalog-card"
-                >
-                  <template #default>
-                    <div class="components-catalog-card__inner">
-                      <div class="components-catalog-card__header">
-                        <origam-avatar
-                          :icon="entry.icon"
-                          color="primary"
-                          rounded="lg"
-                          size="40"
-                          class="components-catalog-card__avatar"
-                          aria-hidden="true"
-                        />
-
-                        <origam-title
-                          tag="h4"
-                          class="components-catalog-card__name"
-                        >
-                          {{ entry.name }}
-                        </origam-title>
-
-                        <origam-icon
-                          v-if="entry.family.length > 0"
-                          icon="mdi-family-tree"
-                          size="16"
-                          class="components-catalog-card__family-icon"
-                          aria-hidden="true"
-                        />
-                      </div>
-
-                      <p class="components-catalog-card__desc">
-                        {{ t(entry.descriptionKey, entry.descriptionFallback) }}
-                      </p>
-
-                      <div
-                        v-if="entry.family.length > 0"
-                        class="components-catalog-card__family-tags"
-                      >
-                        <origam-chip
-                          v-for="member in entry.family.slice(0, 3)"
-                          :key="member.slug"
-                          size="x-small"
-                          pill
-                          class="components-catalog-card__family-chip"
-                        >
-                          {{ member.name }}
-                        </origam-chip>
-
-                        <origam-chip
-                          v-if="entry.family.length > 3"
-                          size="x-small"
-                          pill
-                          class="components-catalog-card__family-chip components-catalog-card__family-chip--more"
-                        >
-                          +{{ entry.family.length - 3 }}
-                        </origam-chip>
-                      </div>
-                    </div>
-                  </template>
-                </origam-card>
-              </nuxt-link>
-            </origam-grid-item>
-          </origam-grid>
-        </div>
-      </origam-container>
-    </section>
-  </article>
+          </template>
+        </catalog-card>
+      </catalog-group>
+    </template>
+  </catalog-index-layout>
 </template>
 
 <script setup lang="ts">
@@ -266,298 +116,29 @@ const groupedByCategory = computed(() => {
 const totalCount = computed(() => topLevelEntries.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
+
+/*********************************************************
+ * En-tête et outils
+ *
+ * @description
+ * Les textes existent déjà (`components.hero.*`) : le gabarit commun les reçoit
+ * traduits. La ligne de compte est composée ici, comme l'ancien en-tête.
+ ********************************************************/
+const pageTitle = computed(() => `${t('components.hero.title_line1', 'Component')} ${t('components.hero.title_line2', 'catalogue.')}`)
+
+const emptyDescription = computed(() => t('components.catalog.empty_desc', 'No component matches "{query}". Try a different term.', { query: searchQuery.value }))
+
+const countLabel = computed(() => isFiltering.value
+    ? `${filteredCount.value} ${t('components.hero.count_filtered_of', 'of')} ${totalCount.value} ${t('components.hero.count_filtered_match', 'components match')}`
+    : `${totalCount.value} ${t('components.hero.count_families', 'component families across')} ${componentsCategories.value.length} ${t('components.hero.count_categories', 'categories')}`)
+
+/*********************************************************
+ * Ancres
+ *
+ * @description
+ * Une puce par groupe affiché ; l'identifiant sert aussi de cible au groupe.
+ ********************************************************/
+const groupId = categoryAnchor
+
+const anchors = computed(() => groupedByCategory.value.map(group => ({ id: groupId(group.category), label: group.category })))
 </script>
-
-<style scoped lang="scss">
-.components-catalog {
-    display: flex;
-    flex-direction: column;
-}
-
-.components-section {
-    &__eyebrow {
-        margin: 0 0 var(--origam-space---3, 0.75rem);
-        font-size: var(--origam-font__size---sm, 0.75rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__action--primary---fgSubtle);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-    }
-
-    &__title {
-        margin: 0 0 var(--origam-space---2, 0.5rem);
-        display: flex;
-        flex-direction: column;
-        font-size: var(--origam-font-size---section, 3rem);
-        font-weight: var(--origam-font__weight---bold, 700);
-        letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-        line-height: 1.05;
-        color: var(--origam-color__text---primary);
-
-        @media (max-width: 768px) {
-            font-size: clamp(1.75rem, 7vw, 3rem);
-        }
-
-        &--single {
-            display: block;
-        }
-    }
-}
-
-.components-hero {
-    position: relative;
-    padding-block: var(--origam-space---20, 5rem) var(--origam-space---16, 4rem);
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: var(--origam-gradient---hero-grid);
-        background-size: 64px 64px;
-        background-position: center top;
-        -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-        mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        inset-inline: 0;
-        inset-block-start: 0;
-        block-size: 100%;
-        background-image: var(--origam-gradient---hero-glow);
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    &__inner {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: var(--origam-space---6, 1.5rem);
-        text-align: center;
-    }
-
-    &__badge {
-        --origam-chip---background-color: transparent;
-    }
-
-    &__title {
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        font-size: var(--origam-font-size---hero, 5.25rem);
-        font-weight: var(--origam-font-weight---extrabold, 800);
-        line-height: var(--origam-line-height---hero, 0.95);
-        letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-        padding-block-end: 0.1em;
-        color: var(--origam-color__text---ink);
-
-        @media (max-width: 1080px) {
-            font-size: clamp(2.5rem, 9vw, 5.25rem);
-        }
-    }
-
-    &__title-line {
-        display: block;
-
-        &--accent {
-            color: var(--origam-color__action--primary---fgSubtle);
-        }
-    }
-
-    &__subtitle {
-        margin: 0;
-        max-inline-size: 40rem;
-        font-size: var(--origam-font__size---xl, 1.125rem);
-        line-height: var(--origam-line-height---relaxed, 1.7);
-        color: var(--origam-color__text---secondary);
-    }
-
-    &__search {
-        inline-size: 100%;
-        max-inline-size: 36rem;
-        --origam-field---background: var(--origam-color__surface---default);
-    }
-
-    &__count {
-        margin: 0;
-        font-size: var(--origam-font__size---md, 0.875rem);
-        color: var(--origam-color__text---tertiary);
-    }
-}
-
-.components-grid-section {
-    padding-block: var(--origam-space---16, 4rem) var(--origam-space---24, 6rem);
-
-    &__header {
-        margin-block-end: var(--origam-space---12, 3rem);
-    }
-}
-
-.components-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--origam-space---4, 1rem);
-    padding-block: var(--origam-space---16, 4rem);
-    text-align: center;
-
-    &__icon {
-        font-size: 3rem;
-        color: var(--origam-color__text---tertiary);
-    }
-
-    &__title {
-        display: block;
-        font-size: var(--origam-font__size---xl, 1.125rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__text---primary);
-        margin: 0;
-    }
-
-    &__desc {
-        margin: 0;
-        font-size: var(--origam-font__size---lg, 1rem);
-        color: var(--origam-color__text---secondary);
-    }
-}
-
-.components-category {
-    margin-block-end: var(--origam-space---16, 4rem);
-
-    &:last-child {
-        margin-block-end: 0;
-    }
-
-    &__header {
-        display: flex;
-        align-items: center;
-        gap: var(--origam-space---3, 0.75rem);
-        margin-block-end: var(--origam-space---6, 1.5rem);
-        padding-block-end: var(--origam-space---3, 0.75rem);
-        border-block-end: 1px solid var(--origam-color__border---default);
-    }
-
-    &__title {
-        display: block;
-        font-size: var(--origam-font__size---xl, 1.125rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__text---primary);
-        margin: 0;
-    }
-
-    &__count-chip {
-        --origam-chip---background-color: var(--origam-color__surface---sunken);
-    }
-
-    &__grid {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-
-        @media (max-width: 640px) {
-            grid-template-columns: 1fr;
-        }
-    }
-}
-
-.components-catalog-item {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-}
-
-.components-catalog-card {
-    block-size: 100%;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    display: flex;
-    flex-direction: column;
-
-    &__link {
-        display: flex;
-        flex-direction: column;
-        block-size: 100%;
-        text-decoration: none;
-        color: inherit;
-        border-radius: var(--origam-radius---lg, 12px);
-
-        &:hover .components-catalog-card {
-            transform: translateY(-2px);
-            box-shadow: var(--origam-shadow---md);
-        }
-
-        &:focus-visible {
-            outline: 2px solid var(--origam-color__action--primary---bg);
-            outline-offset: 2px;
-        }
-    }
-
-    &__inner {
-        padding: var(--origam-space---4, 1rem);
-        display: flex;
-        flex-direction: column;
-        gap: var(--origam-space---3, 0.75rem);
-        block-size: 100%;
-    }
-
-    &__header {
-        display: flex;
-        align-items: center;
-        gap: var(--origam-space---3, 0.75rem);
-    }
-
-    &__avatar {
-        flex-shrink: 0;
-    }
-
-    &__name {
-        display: block;
-        flex: 1;
-        font-size: var(--origam-font__size---lg, 1rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        font-family: var(--origam-font__family---mono, monospace);
-        color: var(--origam-color__text---primary);
-        margin: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    &__family-icon {
-        flex-shrink: 0;
-        color: var(--origam-color__text---tertiary);
-    }
-
-    &__desc {
-        margin: 0;
-        font-size: var(--origam-font__size---md, 0.875rem);
-        line-height: 1.55;
-        color: var(--origam-color__text---secondary);
-        flex: 1;
-    }
-
-    &__family-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--origam-space---1, 0.25rem);
-        margin-block-start: auto;
-    }
-
-    &__family-chip {
-        --origam-chip---background-color: var(--origam-color__surface---sunken);
-        font-family: var(--origam-font__family---mono, monospace);
-
-        &--more {
-            --origam-chip---background-color: var(--origam-color__action--primary---bgSubtle);
-            color: var(--origam-color__action--primary---fgSubtle);
-        }
-    }
-}
-</style>

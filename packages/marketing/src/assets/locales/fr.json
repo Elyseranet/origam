@@ -126,6 +126,10 @@
         "name": "origam",
         "tagline": "Le design system Vue 3 qui marche, tout simplement."
     },
+    "catalog_index": {
+        "jump_label": "Catégories",
+        "jump_select_label": "Aller à…"
+    },
     "changelog": {
         "meta": {
             "title": "Journal des versions · origam design system",
@@ -266,7 +270,6 @@
             "description": "Parcourez 218 composants Vue 3 accessibles et pilotés par tokens, groupés par catégorie. Cliquez sur un composant pour voir son API, ses props, emits, slots et exemples."
         },
         "hero": {
-            "badge": "218 composants — Vue 3",
             "title_line1": "Catalogue de",
             "title_line2": "composants.",
             "subtitle": "Chaque composant d'origam est accessible, piloté par tokens et thémable. Explorez-les par catégorie, lisez l'API et voyez-les en action.",
@@ -278,8 +281,6 @@
             "count_filtered_match": "composants correspondent"
         },
         "catalog": {
-            "eyebrow": "PARCOURIR PAR CATÉGORIE",
-            "title": "Tous les composants.",
             "empty_title": "Aucun composant trouvé",
             "empty_desc": "Aucun composant ne correspond à votre recherche. Essayez un autre terme."
         },
@@ -650,7 +651,6 @@
             "description": "Parcourez 80+ composables regroupés par domaine. Chacun expose une signature documentée, des paramètres, des valeurs de retour et des exemples d'usage."
         },
         "hero": {
-            "badge": "80+ composables — Vue 3",
             "title_line1": "Catalogue de",
             "title_line2": "composables.",
             "subtitle": "Chaque composable d'origam est documenté avec sa vraie signature TypeScript, ses paramètres et ses valeurs de retour — extraits directement du code source du DS.",
@@ -662,8 +662,6 @@
             "count_domains": "domaines"
         },
         "catalog": {
-            "eyebrow": "PARCOURIR PAR DOMAINE",
-            "title": "Tous les composables.",
             "empty_title": "Aucun composable trouvé",
             "empty_desc": "Aucun composable ne correspond à « {query} ». Essayez un autre terme."
         },
@@ -722,7 +720,6 @@
             "description": "Parcourez les constantes SCREAMING_SNAKE_CASE exportées par origam. Cliquez sur une constante pour voir sa définition, ses valeurs et les parties du DS qui l'utilisent."
         },
         "hero": {
-            "badge": "Constantes exportées",
             "title_line1": "API",
             "title_line2": "constantes.",
             "subtitle": "Chaque constante SCREAMING_SNAKE_CASE exportée par origam. Entièrement documentée avec ses définitions, ses valeurs et des références croisées vers les parties du DS qui les utilisent.",
@@ -734,8 +731,6 @@
             "count_categories": "catégories"
         },
         "catalog": {
-            "eyebrow": "PARCOURIR PAR CATÉGORIE",
-            "title": "Toutes les constantes.",
             "empty_title": "Aucune constante trouvée",
             "empty_desc": "Aucune constante ne correspond à « {query} ». Essayez un autre terme."
         },
@@ -817,7 +812,6 @@
             "description": "Six directives runtime qui étendent les templates Vue : détection de clic à l'extérieur, application du contraste, classes au survol, suivi d'intersection, effets d'ondulation et gestes tactiles/swipe."
         },
         "hero": {
-            "badge": "6 directives — Vue 3",
             "title_line1": "Directives de",
             "title_line2": "template.",
             "subtitle": "Six directives runtime qui étendent n'importe quel template Vue. De la détection de clic à l'extérieur aux effets d'ondulation, en passant par les gestes swipe, le suivi de viewport, les classes au survol et l'application du contraste WCAG.",
@@ -828,8 +822,6 @@
             "count_total": "directives — enregistrées globalement"
         },
         "catalog": {
-            "eyebrow": "RÉFÉRENCE API",
-            "title": "Toutes les directives.",
             "empty_title": "Aucune directive trouvée",
             "empty_desc": "Aucune directive ne correspond à « {query} ». Essayez un autre terme.",
             "card_tag": "directive"
@@ -893,7 +885,6 @@
             "description": "Parcourez les enums TypeScript utilisés dans les props d'origam. Cliquez sur un enum pour voir sa définition, ses membres et les composants qui l'utilisent."
         },
         "hero": {
-            "badge": "Enums TypeScript",
             "title_line1": "API",
             "title_line2": "énumérations.",
             "subtitle": "Chaque enum TypeScript utilisé dans les props d'origam. Entièrement documenté avec ses définitions, ses membres et des références croisées vers les composants qui les utilisent.",
@@ -905,8 +896,6 @@
             "count_categories": "catégories"
         },
         "catalog": {
-            "eyebrow": "PARCOURIR PAR CATÉGORIE",
-            "title": "Tous les enums.",
             "empty_title": "Aucun enum trouvé",
             "empty_desc": "Aucun enum ne correspond à « {query} ». Essayez un autre terme."
         },
@@ -1157,7 +1146,6 @@
             "description": "Parcourez les interfaces TypeScript de props utilisées à travers les composants origam. Cliquez sur une interface pour voir sa définition, ses propriétés et les composants qui l'utilisent."
         },
         "hero": {
-            "badge": "Interfaces TypeScript",
             "title_line1": "Interfaces",
             "title_line2": "API.",
             "subtitle": "Chaque interface de props utilisée à travers les composants origam. Entièrement documentée avec définitions, propriétés, chaînes d'héritage et références croisées vers les composants qui les utilisent.",
@@ -1169,8 +1157,6 @@
             "count_categories": "catégories"
         },
         "catalog": {
-            "eyebrow": "PARCOURIR PAR CATÉGORIE",
-            "title": "Toutes les interfaces.",
             "empty_title": "Aucune interface trouvée",
             "empty_desc": "Aucune interface ne correspond à « {query} ». Essayez un autre terme."
         },
@@ -1918,7 +1904,6 @@
             "description": "Parcourez les types TypeScript et les enums utilisés à travers les props d'origam. Cliquez sur un type pour voir sa définition, ses valeurs et les composants qui l'utilisent."
         },
         "hero": {
-            "badge": "Types & enums TypeScript",
             "title_line1": "Types",
             "title_line2": "API.",
             "subtitle": "Chaque type TypeScript et enum utilisé à travers les props d'origam. Entièrement documenté avec définitions, valeurs acceptées et références croisées vers les composants qui les utilisent.",
@@ -1930,8 +1915,6 @@
             "count_categories": "catégories"
         },
         "catalog": {
-            "eyebrow": "PARCOURIR PAR CATÉGORIE",
-            "title": "Tous les types.",
             "empty_title": "Aucun type trouvé",
             "empty_desc": "Aucun type ne correspond à « {query} ». Essayez un autre terme."
         },
@@ -1990,7 +1973,6 @@
             "description": "Parcourez les utils origam groupés par catégorie. Chacun expose une signature TypeScript documentée, ses paramètres, sa valeur de retour et des exemples d'usage."
         },
         "hero": {
-            "badge": "Utils — TypeScript",
             "title_line1": "Catalogue",
             "title_line2": "d'utilitaires.",
             "subtitle": "Chaque util origam est documenté avec sa véritable signature TypeScript, ses paramètres et sa valeur de retour — extraits directement du code source du DS.",
@@ -2002,8 +1984,6 @@
             "count_categories": "catégories"
         },
         "catalog": {
-            "eyebrow": "PARCOURIR PAR CATÉGORIE",
-            "title": "Tous les utils.",
             "empty_title": "Aucun util trouvé",
             "empty_desc": "Aucun util ne correspond à « {query} ». Essayez un autre terme."
         },

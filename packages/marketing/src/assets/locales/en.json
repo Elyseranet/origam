@@ -126,6 +126,10 @@
         "name": "origam",
         "tagline": "The Vue 3 design system that just works."
     },
+    "catalog_index": {
+        "jump_label": "Categories",
+        "jump_select_label": "Jump to…"
+    },
     "changelog": {
         "meta": {
             "title": "Changelog · origam design system",
@@ -266,7 +270,6 @@
             "description": "Browse 218 accessible, token-driven Vue 3 components grouped by category. Click any component to see its API, props, emits, slots and live examples."
         },
         "hero": {
-            "badge": "218 components — Vue 3",
             "title_line1": "Component",
             "title_line2": "catalogue.",
             "subtitle": "Every component in origam is accessible, token-driven and themeable. Explore them by category, read the API and see them in action.",
@@ -278,8 +281,6 @@
             "count_filtered_match": "components match"
         },
         "catalog": {
-            "eyebrow": "BROWSE BY CATEGORY",
-            "title": "All components.",
             "empty_title": "No components found",
             "empty_desc": "No component matches your search. Try a different term."
         },
@@ -650,7 +651,6 @@
             "description": "Browse 80+ composables grouped by domain. Each exposes a documented signature, parameters, return values and usage examples."
         },
         "hero": {
-            "badge": "80+ composables — Vue 3",
             "title_line1": "Composable",
             "title_line2": "catalogue.",
             "subtitle": "Every origam composable is documented with its real TypeScript signature, parameters and return values — sourced directly from the DS source code.",
@@ -662,8 +662,6 @@
             "count_domains": "domains"
         },
         "catalog": {
-            "eyebrow": "BROWSE BY DOMAIN",
-            "title": "All composables.",
             "empty_title": "No composables found",
             "empty_desc": "No composable matches \"{query}\". Try a different term."
         },
@@ -722,7 +720,6 @@
             "description": "Browse the SCREAMING_SNAKE_CASE constants exported by origam. Click any constant to see its definition, values and the parts of the DS that use it."
         },
         "hero": {
-            "badge": "Exported constants",
             "title_line1": "API",
             "title_line2": "constants.",
             "subtitle": "Every SCREAMING_SNAKE_CASE constant exported by origam. Fully documented with definitions, values and cross-references to the parts of the DS that use them.",
@@ -734,8 +731,6 @@
             "count_categories": "categories"
         },
         "catalog": {
-            "eyebrow": "BROWSE BY CATEGORY",
-            "title": "All constants.",
             "empty_title": "No constants found",
             "empty_desc": "No constant matches \"{query}\". Try a different term."
         },
@@ -817,7 +812,6 @@
             "description": "Six runtime directives that extend Vue templates with click-outside detection, contrast enforcement, hover classes, intersection tracking, ripple effects, and touch/swipe gestures."
         },
         "hero": {
-            "badge": "6 directives — Vue 3",
             "title_line1": "Template",
             "title_line2": "directives.",
             "subtitle": "Six runtime directives that extend any Vue template. From click-outside detection to ripple effects, swipe gestures, viewport tracking, hover classes, and WCAG contrast enforcement.",
@@ -828,8 +822,6 @@
             "count_total": "directives — globally registered"
         },
         "catalog": {
-            "eyebrow": "API REFERENCE",
-            "title": "All directives.",
             "empty_title": "No directives found",
             "empty_desc": "No directive matches \"{query}\". Try a different term.",
             "card_tag": "directive"
@@ -893,7 +885,6 @@
             "description": "Browse TypeScript enums used across origam props. Click any enum to see its definition, members and the components that use it."
         },
         "hero": {
-            "badge": "TypeScript enums",
             "title_line1": "API",
             "title_line2": "enums.",
             "subtitle": "Every TypeScript enum used across origam props. Fully documented with definitions, members and cross-references to the components that use them.",
@@ -905,8 +896,6 @@
             "count_categories": "categories"
         },
         "catalog": {
-            "eyebrow": "BROWSE BY CATEGORY",
-            "title": "All enums.",
             "empty_title": "No enums found",
             "empty_desc": "No enum matches \"{query}\". Try a different term."
         },
@@ -1157,7 +1146,6 @@
             "description": "Browse TypeScript prop interfaces used across origam components. Click any interface to see its definition, properties and the components that use it."
         },
         "hero": {
-            "badge": "TypeScript interfaces",
             "title_line1": "API",
             "title_line2": "interfaces.",
             "subtitle": "Every prop interface used across origam components. Fully documented with definitions, properties, extends chains and cross-references to the components that use them.",
@@ -1169,8 +1157,6 @@
             "count_categories": "categories"
         },
         "catalog": {
-            "eyebrow": "BROWSE BY CATEGORY",
-            "title": "All interfaces.",
             "empty_title": "No interfaces found",
             "empty_desc": "No interface matches \"{query}\". Try a different term."
         },
@@ -1918,7 +1904,6 @@
             "description": "Browse TypeScript types and enums used across origam props. Click any type to see its definition, values and the components that use it."
         },
         "hero": {
-            "badge": "TypeScript types & enums",
             "title_line1": "API",
             "title_line2": "types.",
             "subtitle": "Every TypeScript type and enum used across origam props. Fully documented with definitions, accepted values and cross-references to the components that use them.",
@@ -1930,8 +1915,6 @@
             "count_categories": "categories"
         },
         "catalog": {
-            "eyebrow": "BROWSE BY CATEGORY",
-            "title": "All types.",
             "empty_title": "No types found",
             "empty_desc": "No type matches \"{query}\". Try a different term."
         },
@@ -1990,7 +1973,6 @@
             "description": "Browse the origam utility helpers grouped by category. Each exposes a documented signature, parameters, return value and usage examples."
         },
         "hero": {
-            "badge": "Utility helpers — TypeScript",
             "title_line1": "Util",
             "title_line2": "catalogue.",
             "subtitle": "Every origam utility helper is documented with its real TypeScript signature, parameters and return value — sourced directly from the DS source code.",
@@ -2002,8 +1984,6 @@
             "count_categories": "categories"
         },
         "catalog": {
-            "eyebrow": "BROWSE BY CATEGORY",
-            "title": "All utils.",
             "empty_title": "No utils found",
             "empty_desc": "No util matches \"{query}\". Try a different term."
         },

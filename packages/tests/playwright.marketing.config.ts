@@ -28,6 +28,9 @@ const MARKETING_GREEN_SPECS = [
     'home-cta-scene.spec.ts',
     'site-footer.spec.ts',
 
+    // #1585 — les 8 index du catalogue (en-tete commun, aucun decor au milieu, axe, clair/sombre).
+    'marketing-catalog-index.spec.ts',
+
     // #1584 — en-tête commun « Vallée » (décor par famille, parallaxe, aucun pixel sous le texte).
     'enso-page-header.spec.ts',
 

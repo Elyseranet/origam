@@ -42,6 +42,7 @@
  * and to disappear entirely afterwards.
  */
 
+import { catalogGroupId } from './catalog-index.util'
 import type {
     IComponentCatalogGroup,
     IComponentEntry
@@ -119,5 +120,5 @@ export function groupComponentsByCategory (
 
 /** DOM id of a catalogue category group (`Form & Input` -> `components-category-form---input`), the target of the home library links. */
 export function categoryAnchor (category: string): string {
-    return `components-category-${category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`
+    return catalogGroupId('components-category', category)
 }

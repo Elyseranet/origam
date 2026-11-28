@@ -49,7 +49,7 @@ test.describe('HomeLibrary section', () => {
             const anchor = page.url().split('#')[1]
             const group = page.locator(`#${anchor}`)
             await expect(group).toBeVisible()
-            await expect(group.locator('h3').first()).toHaveText(category)
+            await expect(group.locator('h2').first()).toHaveText(category)
         })
     }
 })
