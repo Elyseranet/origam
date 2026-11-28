@@ -1,17 +1,9 @@
-import type { CSSProperties } from 'vue'
 import type {
     IInstallationStep,
     IInstallationCodeBlock,
     IInstallationPeerDep,
     IInstallationPackageManager
 } from '~/interfaces/installation.interface'
-
-/**
- * Hero badge CSS vars — same pattern as roadmap/why-origam.
- */
-export const INSTALLATION_HERO_BADGE_VARS: CSSProperties = {
-    '--origam-chip---background-color': 'transparent'
-} as CSSProperties
 
 /**
  * Steps for the ordered installation flow.

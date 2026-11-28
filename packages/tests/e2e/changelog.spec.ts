@@ -119,10 +119,10 @@ test.describe('changelog — DS-first', () => {
         expect(await card.locator('.changelog-release__highlight').count()).toBeGreaterThan(0)
     })
 
-    test('le badge hero est un OrigamChip (.origam-chip)', async ({ page }) => {
-        const badge = page.locator('[data-cy="changelog-hero-badge"]')
+    test('l\'eyebrow du hero est celui de l\'en-tete commun (#1587), sans pastille', async ({ page }) => {
+        const badge = page.locator('[data-cy="page-header-eyebrow"] [data-cy="changelog-hero-badge"]')
         await expect(badge).toBeVisible()
-        await expect(badge).toHaveClass(/origam-chip/)
+        await expect(page.locator('[data-cy="page-changelog"] .origam-chip.changelog-hero__badge')).toHaveCount(0)
     })
 
     test('les chips de type/highlights de la carte sont des OrigamChip (.origam-chip)', async ({ page }) => {

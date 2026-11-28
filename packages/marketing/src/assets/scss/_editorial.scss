@@ -1,0 +1,115 @@
+/*
+ * Pages éditoriales enso (#1587) : installation, stabilité, roadmap, changelog, support.
+ *
+ * Un `<style scoped>` ne franchit pas la frontière d'un composant et les cinq pages
+ * rendent les mêmes sections : ces mixins gardent UNE définition du rythme de fonds,
+ * du lavis qui relie deux fonds et du trio eyebrow doré / h2 / chapeau (maquette
+ * `w2/editorial.html`, valeurs de la home v12). Le trait doré de l'eyebrow est la classe
+ * globale `home-eyebrow` (home.css), posée sur le `<p>` ; elle n'est pas redéclarée ici.
+ *
+ * Chaque valeur est un token ; les replis ne servent que si une feuille ne charge pas.
+ */
+
+@use 'sass:map';
+
+$editorial-surfaces: (
+    default: var(--origam-color__surface---default),
+    overlay: var(--origam-color__surface---overlay)
+);
+
+@mixin editorial-page {
+    --site-gutter: var(--home-gutter);
+
+    display: flex;
+    flex-direction: column;
+    color: var(--origam-color__text---primary);
+    font-size: var(--home-fs-body);
+    line-height: var(--home-lh-body);
+}
+
+/*
+ * Une section sur son fond. `$surface` : `default` ou `overlay`. Le lavis (T1) est un
+ * pseudo-élément posé au-dessus du bord haut : trois efflorescences inégales qui finissent
+ * pleines, dans la couleur de CETTE section, donc il se lit dans les deux sens
+ * (default vers overlay, ou l'inverse). Le bas fait `$pad-end` : le lavis de la section
+ * suivante y monte et ne doit pas couvrir le texte. La dernière (suivie de la scène) n'a
+ * pas de lavis dessous : `$pad-last`.
+ */
+@mixin editorial-section($surface: default, $pad-start: 40px, $pad-end: 120px, $wash: true, $pad-last: 60px) {
+    $bg: map.get($editorial-surfaces, $surface);
+
+    position: relative;
+    isolation: isolate;
+    padding-block: $pad-start $pad-end;
+    background-color: $bg;
+
+    &:has(+ .home-cta) {
+        padding-block-end: $pad-last;
+    }
+
+    > .origam-container {
+        --origam-container---max-width: calc(var(--home-container-max) + 2 * var(--site-gutter));
+    }
+
+    @if $wash {
+        &::before {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            inset-inline: 0;
+            inset-block-start: -200px;
+            block-size: 201px;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse 34% 75% at 14% 100%, $bg 35%, transparent 72%),
+                radial-gradient(ellipse 44% 95% at 62% 100%, $bg 30%, transparent 75%),
+                radial-gradient(ellipse 26% 60% at 93% 100%, $bg 35%, transparent 72%),
+                linear-gradient(to bottom, transparent 20%, $bg);
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding-block: $pad-start calc(#{$pad-end} * 0.6);
+
+        &:has(+ .home-cta) {
+            padding-block-end: calc(#{$pad-last} * 0.6);
+        }
+
+        @if $wash {
+            &::before {
+                inset-block-start: -140px;
+                block-size: 141px;
+            }
+        }
+    }
+}
+
+/*
+ * En-tête d'une section : à inclure dans le bloc dont la classe est posée sur le `<header>`
+ * (`.installation-section { @include editorial.editorial-header; }`). L'eyebrow porte la
+ * classe globale `home-eyebrow` ; le bloc donne le h2 (`__title`) et le chapeau (`__subtitle`).
+ */
+@mixin editorial-header {
+    display: grid;
+    justify-items: start;
+    gap: 12px;
+    margin-block-end: 32px;
+
+    &__title {
+        margin: 0;
+        font-size: clamp(1.7rem, 3vw, 2.3rem);
+        font-weight: var(--home-fw-title);
+        line-height: var(--home-lh-title);
+        letter-spacing: var(--home-ls-title);
+        text-wrap: balance;
+        color: var(--origam-color__text---primary);
+    }
+
+    &__subtitle {
+        margin: 0;
+        max-inline-size: 60ch;
+        font-size: var(--home-fs-lead);
+        line-height: var(--home-lh-body);
+        color: var(--origam-color__text---secondary);
+    }
+}

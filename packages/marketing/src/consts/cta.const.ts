@@ -1,5 +1,5 @@
 import { ENSO_CTA_FOREGROUND, ENSO_CTA_MOUNTAINS, ENSO_CTA_RIDGE } from '~/consts/enso.const'
-import type { ICtaPlane } from '~/interfaces/cta.interface'
+import type { ICtaAction, ICtaPlane, TCtaSurface } from '~/interfaces/cta.interface'
 
 /**
  * Constants for the HomeCta section.
@@ -45,3 +45,15 @@ export const CTA_PLANES: readonly ICtaPlane[] = [
     { key: 'ridge', art: ENSO_CTA_RIDGE, displayWidth: 1600, speed: -0.0105 },
     { key: 'foreground', art: ENSO_CTA_FOREGROUND, displayWidth: 1600, speed: -0.0045 }
 ]
+
+/** Boutons de la bande de la home : composants (soleil), puis documentation (contour). */
+export const CTA_HOME_ACTIONS: readonly ICtaAction[] = [
+    { key: 'components', labelKey: 'home.cta.cta_docs', labelFallback: 'Explore the components', href: CTA_COMPONENTS_HREF, localized: true, dataCy: 'cta-btn-components' },
+    { key: 'docs', labelKey: 'home.cta.cta_read_docs', labelFallback: 'Read the documentation', href: CTA_DOCS_HREF, localized: false, dataCy: 'cta-btn-docs' }
+]
+
+/** Fond de départ du ciel, par surface de la section précédente (`var()` littéraux : gardés par `token-var-channels`). */
+export const CTA_SURFACE_BG: Record<TCtaSurface, string> = {
+    sunken: 'var(--origam-color__surface---sunken)',
+    overlay: 'var(--origam-color__surface---overlay)'
+}

@@ -479,10 +479,10 @@ test.describe('roadmap — DS-first', () => {
         }
     })
 
-    test('le badge hero est un OrigamChip (.origam-chip)', async ({ page }) => {
-        const badge = page.locator('[data-cy="roadmap-hero-badge"]')
+    test('l\'eyebrow du hero est celui de l\'en-tete commun (#1587), sans pastille', async ({ page }) => {
+        const badge = page.locator('[data-cy="page-header-eyebrow"] [data-cy="roadmap-hero-badge"]')
         await expect(badge).toBeVisible()
-        await expect(badge).toHaveClass(/origam-chip/)
+        await expect(page.locator('[data-cy="page-roadmap"] .origam-chip.roadmap-hero__badge')).toHaveCount(0)
     })
 
     test('audit a11y axe-core — 0 violation critical/serious', async ({ page }) => {

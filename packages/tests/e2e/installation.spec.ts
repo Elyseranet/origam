@@ -119,10 +119,10 @@ test.describe('installation — DS-first', () => {
         }
     })
 
-    test('le badge hero est un OrigamChip (.origam-chip)', async ({ page }) => {
-        const badge = page.locator('[data-cy="installation-hero-badge"]')
+    test('l\'eyebrow du hero est celui de l\'en-tete commun (#1587), sans pastille', async ({ page }) => {
+        const badge = page.locator('[data-cy="page-header-eyebrow"] [data-cy="installation-hero-badge"]')
         await expect(badge).toBeVisible()
-        await expect(badge).toHaveClass(/origam-chip/)
+        await expect(page.locator('[data-cy="page-installation"] .origam-chip.installation-hero__badge')).toHaveCount(0)
     })
 
     test('les boutons CTA sont des OrigamBtn (.origam-btn)', async ({ page }) => {

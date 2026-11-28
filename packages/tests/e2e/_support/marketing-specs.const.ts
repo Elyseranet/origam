@@ -40,6 +40,7 @@ export const MARKETING_SPEC_PATTERNS = [
     '**/enso-legal-pages.spec.ts',
     '**/marketing-theming-enso-header.spec.ts',
     '**/catalog-detail-enso.spec.ts',
+    '**/editorial-pages.spec.ts',
     '**/theming-feedback-tokens.spec.ts',
     '**/home-*.spec.ts',
     '**/why-origam.spec.ts',

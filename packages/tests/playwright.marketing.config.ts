@@ -40,6 +40,9 @@ const MARKETING_GREEN_SPECS = [
     // #1586 — fiches du catalogue [slug] (8 familles) : en-tête Vallée, un seul bord gauche, pas de décor dans le corps, 390 px, axe.
     'catalog-detail-enso.spec.ts',
 
+    // #1587 — pages éditoriales enso : en-tête Vallée, scène Crépuscule en fin de page, rythme de fonds.
+    'editorial-pages.spec.ts',
+
     // #1554 (T2) — bord gauche, ecart de section et trait d'eyebrow communs a la home.
     'home-foundations.spec.ts',
 

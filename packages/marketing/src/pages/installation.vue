@@ -3,47 +3,41 @@
     class="installation"
     data-cy="page-installation"
   >
-    <section
-      class="installation-hero"
-      aria-labelledby="installation-title"
+    <enso-page-header
+      family="editorial"
+      title-id="installation-title"
     >
-      <origam-container class="installation-hero__inner">
-        <origam-chip
-          class="installation-hero__badge"
-          :style="INSTALLATION_HERO_BADGE_VARS"
-          color="primary"
-          border
-          border-color="var(--origam-color__action--primary---bg)"
-          size="small"
-          pill
-          data-cy="installation-hero-badge"
-        >
-          {{ t('installation.hero.badge', 'npm install origam') }}
-        </origam-chip>
+      <template #breadcrumb>
+        <origam-breadcrumb
+          :items="breadcrumbItems"
+          divider="/"
+          :border="0"
+          data-cy="installation-breadcrumb"
+        />
+      </template>
 
-        <origam-title
-          id="installation-title"
-          tag="h1"
-          class="installation-hero__title"
-        >
-          <span class="installation-hero__title-line">{{ t('installation.hero.title_line1', 'Up and running') }}</span>
-          <span class="installation-hero__title-line installation-hero__title-line--accent">{{ t('installation.hero.title_line2', 'in minutes.') }}</span>
-        </origam-title>
+      <template #eyebrow>
+        <span data-cy="installation-hero-badge">{{ t('installation.hero.badge', 'npm install origam') }}</span>
+      </template>
 
-        <p class="installation-hero__subtitle">
-          {{ t('installation.hero.subtitle', 'Install origam, register the plugin and build with 97 Vue 3 component families.') }}
-        </p>
-      </origam-container>
-    </section>
+      <template #title>
+        {{ t('installation.hero.title_line1', 'Up and running') }}
+        {{ t('installation.hero.title_line2', 'in minutes.') }}
+      </template>
+
+      <template #intro>
+        {{ t('installation.hero.subtitle', 'Install origam, register the plugin and build with 97 Vue 3 component families.') }}
+      </template>
+    </enso-page-header>
 
     <section
       class="installation-steps"
       aria-labelledby="installation-steps-title"
       data-cy="installation-steps"
     >
-      <origam-container>
-        <header class="installation-steps__header">
-          <p class="installation-section__eyebrow">
+      <origam-container class="home-container">
+        <header class="installation-section">
+          <p class="home-eyebrow">
             {{ t('installation.steps.eyebrow', 'STEP BY STEP') }}
           </p>
 
@@ -52,8 +46,8 @@
             tag="h2"
             class="installation-section__title"
           >
-            <span class="installation-section__title-line">{{ t('installation.steps.title_line1', 'Three steps,') }}</span>
-            <span class="installation-section__title-line installation-section__title-line--muted">{{ t('installation.steps.title_line2', 'then two if you need them.') }}</span>
+            {{ t('installation.steps.title_line1', 'Three steps,') }}
+            {{ t('installation.steps.title_line2', 'then two if you need them.') }}
           </origam-title>
 
           <p class="installation-section__subtitle">
@@ -75,10 +69,12 @@
           >
             <div class="installation-step__meta">
               <origam-avatar
-                icon="mdi-package-down"
-                color="primary"
-                rounded="lg"
-                size="48"
+                text="1"
+                bg-color="var(--origam-color__surface---overlay)"
+                color="var(--origam-color__text---primary)"
+                rounded="full"
+                :size="44"
+                border
                 class="installation-step__avatar"
                 aria-hidden="true"
               />
@@ -102,7 +98,6 @@
                 :code="currentInstallCmd"
                 lang="bash"
                 copyable
-                rounded="lg"
                 class="installation-step__code installation-step__code--tabbed"
                 data-cy="installation-code-install"
               >
@@ -145,10 +140,12 @@
           >
             <div class="installation-step__meta">
               <origam-avatar
-                icon="mdi-code-braces"
-                color="primary"
-                rounded="lg"
-                size="48"
+                text="2"
+                bg-color="var(--origam-color__surface---overlay)"
+                color="var(--origam-color__text---primary)"
+                rounded="full"
+                :size="44"
+                border
                 class="installation-step__avatar"
                 aria-hidden="true"
               />
@@ -174,7 +171,6 @@
                 :filename="INSTALLATION_CODE_REGISTER.filename"
                 copyable
                 :line-numbers="true"
-                rounded="lg"
                 class="installation-step__code"
                 data-cy="installation-code-register"
               />
@@ -192,10 +188,12 @@
           >
             <div class="installation-step__meta">
               <origam-avatar
-                icon="mdi-play-circle-outline"
-                color="primary"
-                rounded="lg"
-                size="48"
+                text="3"
+                bg-color="var(--origam-color__surface---overlay)"
+                color="var(--origam-color__text---primary)"
+                rounded="full"
+                :size="44"
+                border
                 class="installation-step__avatar"
                 aria-hidden="true"
               />
@@ -221,7 +219,6 @@
                 :filename="INSTALLATION_CODE_USE.filename"
                 copyable
                 :line-numbers="true"
-                rounded="lg"
                 class="installation-step__code"
                 data-cy="installation-code-use"
               />
@@ -235,10 +232,12 @@
           >
             <div class="installation-step__meta">
               <origam-avatar
-                icon="mdi-palette-outline"
-                color="primary"
-                rounded="lg"
-                size="48"
+                text="4"
+                bg-color="var(--origam-color__surface---overlay)"
+                color="var(--origam-color__text---primary)"
+                rounded="full"
+                :size="44"
+                border
                 class="installation-step__avatar"
                 aria-hidden="true"
               />
@@ -267,7 +266,6 @@
                 :lang="INSTALLATION_CODE_THEME_HTML.lang"
                 :filename="INSTALLATION_CODE_THEME_HTML.filename"
                 copyable
-                rounded="lg"
                 class="installation-step__code"
                 data-cy="installation-code-theme-html"
               />
@@ -281,7 +279,6 @@
                 :lang="INSTALLATION_CODE_THEME_RUNTIME.lang"
                 copyable
                 :line-numbers="true"
-                rounded="lg"
                 class="installation-step__code"
                 data-cy="installation-code-theme-runtime"
               />
@@ -295,7 +292,6 @@
                 :lang="INSTALLATION_CODE_THEME_SCOPED.lang"
                 copyable
                 :line-numbers="true"
-                rounded="lg"
                 class="installation-step__code"
                 data-cy="installation-code-theme-scoped"
               />
@@ -313,10 +309,12 @@
           >
             <div class="installation-step__meta">
               <origam-avatar
-                icon="mdi-nuxt"
-                color="primary"
-                rounded="lg"
-                size="48"
+                text="5"
+                bg-color="var(--origam-color__surface---overlay)"
+                color="var(--origam-color__text---primary)"
+                rounded="full"
+                :size="44"
+                border
                 class="installation-step__avatar"
                 aria-hidden="true"
               />
@@ -340,7 +338,6 @@
                 :filename="INSTALLATION_CODE_NUXT.filename"
                 copyable
                 :line-numbers="true"
-                rounded="lg"
                 class="installation-step__code"
                 data-cy="installation-code-nuxt"
               />
@@ -359,16 +356,16 @@
       aria-labelledby="installation-peer-deps-title"
       data-cy="installation-peer-deps"
     >
-      <origam-container>
-        <header class="installation-peer-deps__header">
-          <p class="installation-section__eyebrow">
+      <origam-container class="home-container">
+        <header class="installation-section">
+          <p class="home-eyebrow">
             {{ t('installation.peer_deps.eyebrow', 'REQUIREMENTS') }}
           </p>
 
           <origam-title
             id="installation-peer-deps-title"
             tag="h2"
-            class="installation-section__title installation-section__title--single"
+            class="installation-section__title"
           >
             {{ t('installation.peer_deps.title', 'Peer dependencies.') }}
           </origam-title>
@@ -381,7 +378,7 @@
         <origam-table
           class="installation-peer-deps__table"
           border
-          rounded="lg"
+          border-color="var(--origam-color__border---default)"
           :caption="t('installation.peer_deps.table_caption', 'Peer dependencies')"
           data-cy="installation-peer-deps-table"
         >
@@ -419,7 +416,8 @@
                 :code="dep.pkg"
                 lang="plaintext"
                 compact
-                class="installation-peer-deps__pkg-code"
+                :copyable="false"
+                class="installation-peer-deps__code"
               />
             </td>
             <td class="installation-peer-deps__td installation-peer-deps__td--version">
@@ -427,7 +425,8 @@
                 :code="dep.required"
                 lang="plaintext"
                 compact
-                class="installation-peer-deps__version-code"
+                :copyable="false"
+                class="installation-peer-deps__code"
               />
             </td>
             <td class="installation-peer-deps__td">
@@ -443,62 +442,15 @@
       </origam-container>
     </section>
 
-    <section
-      class="installation-cta"
-      aria-labelledby="installation-cta-title"
+    <home-cta
+      surface="overlay"
+      title-id="installation-cta-title"
+      :title="t('installation.cta.title', 'Ready to build?')"
+      :description="t('installation.cta.description', 'Explore the full component catalogue, browse interactive stories, or dive into the source on GitHub.')"
+      :actions-label="t('installation.cta.actions_label', 'Explore origam')"
+      :actions="INSTALLATION_CTA_ACTIONS"
       data-cy="installation-cta"
-    >
-      <div class="installation-cta__inner">
-        <origam-title
-          id="installation-cta-title"
-          tag="h2"
-          class="installation-cta__title"
-        >
-          {{ t('installation.cta.title', 'Ready to build?') }}
-        </origam-title>
-
-        <p class="installation-cta__desc">
-          {{ t('installation.cta.description', 'Explore the full component catalogue, browse interactive stories, or dive into the source on GitHub.') }}
-        </p>
-
-        <nav
-          class="installation-cta__actions"
-          :aria-label="t('installation.cta.actions_label', 'Explore origam')"
-        >
-          <origam-btn
-            class="installation-cta__btn installation-cta__btn--primary"
-            variant="text"
-            prepend-icon="mdi-view-grid-outline"
-            href="/components"
-            data-cy="installation-cta-components"
-          >
-            {{ t('installation.cta.cta_components', 'Browse components') }}
-          </origam-btn>
-
-          <origam-btn
-            class="installation-cta__btn installation-cta__btn--secondary"
-            variant="text"
-            prepend-icon="mdi-github"
-            :href="githubHref"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-cy="installation-cta-github"
-          >
-            {{ t('installation.cta.cta_github', 'View on GitHub') }}
-          </origam-btn>
-
-          <origam-btn
-            class="installation-cta__btn installation-cta__btn--secondary"
-            variant="text"
-            prepend-icon="mdi-shield-check-outline"
-            :href="localeHref('/stability')"
-            data-cy="installation-cta-stability"
-          >
-            {{ t('installation.cta.cta_stability', 'Stability and versioning') }}
-          </origam-btn>
-        </nav>
-      </div>
-    </section>
+    />
   </article>
 </template>
 
@@ -507,7 +459,6 @@ import { computed, ref } from 'vue'
 import { useLocaleHref } from '~/composables/useLocaleHref'
 import { useT } from '~/composables/useT'
 import {
-    INSTALLATION_HERO_BADGE_VARS,
     INSTALLATION_PEER_DEPS,
     INSTALLATION_PACKAGE_MANAGERS,
     INSTALLATION_CODE_REGISTER,
@@ -517,10 +468,16 @@ import {
     INSTALLATION_CODE_THEME_SCOPED,
     INSTALLATION_CODE_NUXT
 } from '~/consts/installation.const'
-import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
+import { INSTALLATION_CTA_ACTIONS } from '~/consts/editorial-cta.const'
 
 const { t } = useT()
 const { localeHref } = useLocaleHref()
+
+const breadcrumbItems = computed(() => [
+    { title: t('nav.home', 'Home'), to: localeHref('/') },
+    { title: t('nav.sections.getting_started', 'Getting started') },
+    { title: t('nav.installation', 'Installation') }
+])
 
 useSeoMeta({
     title: () => t('installation.meta.title', 'Installation · origam design system'),
@@ -536,134 +493,21 @@ const currentInstallCmd = computed(() =>
     INSTALLATION_PACKAGE_MANAGERS.find(pm => pm.value === activePackageManager.value)?.code
         ?? INSTALLATION_PACKAGE_MANAGERS[0].code
 )
-const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 </script>
 
 <style scoped lang="scss">
+@use '../assets/scss/editorial';
+
 .installation {
-    display: flex;
-    flex-direction: column;
+    @include editorial.editorial-page;
 }
 
 .installation-section {
-    &__eyebrow {
-        margin: 0 0 var(--origam-space---3, 0.75rem);
-        font-size: var(--origam-font-size---xs, 0.75rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-    }
-
-    &__title {
-        margin: 0 0 var(--origam-space---2, 0.5rem);
-        display: flex;
-        flex-direction: column;
-        font-size: var(--origam-font-size---section, 3rem);
-        font-weight: var(--origam-font__weight---bold, 700);
-        letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-        line-height: 1.05;
-        color: var(--origam-color__text---primary, #0a0a0a);
-
-        &--single {
-            display: block;
-        }
-    }
-
-    &__title-line {
-        &--muted {
-            color: var(--origam-color__text---secondary, #525252);
-        }
-    }
-
-    &__subtitle {
-        margin: var(--origam-space---4, 1rem) 0 0;
-        max-inline-size: 42rem;
-        font-size: var(--origam-font-size---lg, 1.125rem);
-        line-height: 1.65;
-        color: var(--origam-color__text---secondary, #525252);
-    }
-}
-
-.installation-hero {
-    position: relative;
-    padding-block: var(--origam-space---20, 5rem) var(--origam-space---16, 4rem);
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: var(--origam-gradient---hero-grid);
-        background-size: 64px 64px;
-        background-position: center top;
-        -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-        mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        inset-inline: 0;
-        inset-block-start: 0;
-        block-size: 260px;
-        background-image: var(--origam-gradient---hero-glow);
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    &__inner {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: var(--origam-space---6, 1.5rem);
-        text-align: center;
-    }
-
-    &__badge {
-        --origam-chip---background-color: transparent;
-    }
-
-    &__title {
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        font-size: var(--origam-font-size---hero, 5.25rem);
-        font-weight: var(--origam-font-weight---extrabold, 800);
-        line-height: var(--origam-line-height---hero, 0.95);
-        letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-        padding-block-end: 0.1em;
-        color: var(--origam-color__text---ink, #0a0a0a);
-    }
-
-    &__title-line {
-        display: block;
-
-        &--accent {
-            color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-        }
-    }
-
-    &__subtitle {
-        margin: 0;
-        max-inline-size: 40rem;
-        font-size: var(--origam-font-size---lg, 1.125rem);
-        line-height: var(--origam-line-height---relaxed, 1.7);
-        color: var(--origam-color__text---secondary, #525252);
-    }
+    @include editorial.editorial-header;
 }
 
 .installation-steps {
-    padding-block: var(--origam-space---24, 6rem);
-
-    &__header {
-        margin-block-end: var(--origam-space---12, 3rem);
-    }
+    @include editorial.editorial-section(default, 40px, 120px, $wash: false);
 
     &__list {
         list-style: none;
@@ -741,7 +585,18 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
     }
 
     &__code {
-        max-inline-size: 52rem;
+        --origam-code---background-color: var(--origam-color__surface---raised);
+        --origam-code---border-color: var(--origam-color__border---default);
+        --origam-code---border-radius: 14px;
+        --origam-code---padding-block: 14px;
+        --origam-code---padding-inline: 16px;
+        --origam-code---font-size: 13.5px;
+        --origam-code---line-height: 1.7;
+        --origam-code__header---background-color: transparent;
+        --origam-code__header---padding-block: 10px;
+        --origam-code__header---padding-inline: 16px;
+
+        max-inline-size: 47.5rem;
         margin-block-end: var(--origam-space---3, 0.75rem);
     }
 
@@ -757,14 +612,10 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 
     &__note {
         margin: var(--origam-space---3, 0.75rem) 0 0;
-        padding: var(--origam-space---3, 0.75rem) var(--origam-space---4, 1rem);
-        border-inline-start: 3px solid var(--origam-color__action--primary---bg, #7c3aed);
-        background: var(--origam-color__surface---sunken, #f5f5f5);
-        border-radius: 0 var(--origam-radius---sm, 4px) var(--origam-radius---sm, 4px) 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        line-height: 1.65;
-        color: var(--origam-color__text---secondary, #525252);
-        max-inline-size: 52rem;
+        font-size: 14px;
+        line-height: var(--home-lh-body);
+        color: var(--origam-color__text---secondary);
+        max-inline-size: 70ch;
     }
 }
 
@@ -777,158 +628,64 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 }
 
 .installation-peer-deps {
-    padding-block: var(--origam-space---24, 6rem);
-    background: var(--origam-color__surface---sunken, #f5f5f5);
-    border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-
-    &__header {
-        margin-block-end: var(--origam-space---10, 2.5rem);
-    }
+    @include editorial.editorial-section(overlay, 30px, 120px);
 
     &__table {
+        --origam-table---background-color: var(--origam-color__surface---raised);
+        --origam-table---font-size: 14.5px;
+        --origam-table__header-cell---background-color: transparent;
+        --origam-table__header-cell---color: var(--origam-color__text---secondary);
+        --origam-table__header-cell---letter-spacing: 0.08em;
+        --origam-table__header-cell---text-transform: uppercase;
+        --origam-table__header-cell---border-bottom-width: 1px;
+        --origam-table__header-cell---border-bottom-color: var(--origam-color__border---default);
+        --origam-table__cell---border-color: var(--origam-color__border---default);
+        --origam-table__cell---padding-block: 12px;
+        --origam-table__cell---padding-inline: 16px;
+        --origam-table__header-cell---padding-block: 12px;
+        --origam-table__header-cell---padding-inline: 16px;
+
         inline-size: 100%;
-        max-inline-size: 48rem;
+        max-inline-size: 47.5rem;
+        border-radius: 14px;
+        overflow: hidden;
     }
 
     &__th {
         text-align: left;
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__text---primary, #0a0a0a);
-        padding-block: var(--origam-space---3, 0.75rem);
-        padding-inline: var(--origam-space---4, 1rem);
+        font-size: 12px;
+    }
+
+    &__tr:last-child &__td {
+        border-block-end: 0;
     }
 
     &__td {
-        padding-block: var(--origam-space---3, 0.75rem);
-        padding-inline: var(--origam-space---4, 1rem);
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        line-height: 1.6;
-        color: var(--origam-color__text---secondary, #525252);
+        color: var(--origam-color__text---primary);
         vertical-align: middle;
-
-        &--pkg,
-        &--version {
-            white-space: nowrap;
-            vertical-align: middle;
-        }
     }
 
-    &__pkg-code,
-    &__version-code {
+    &__code {
+        --origam-code---background-color: transparent;
+        --origam-code---border-width: 0;
+        --origam-code---padding-block: 0;
+        --origam-code---padding-inline: 0;
+        --origam-code__compact---padding-block: 0;
+        --origam-code__compact---padding-inline: 0;
+        --origam-code---font-size: 13.5px;
+
         display: inline-flex;
     }
 
     &__note {
-        margin-block-start: var(--origam-space---5, 1.25rem);
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        color: var(--origam-color__text---secondary, #525252);
-        font-style: italic;
-        max-inline-size: 48rem;
-    }
-}
-
-.installation-cta {
-    position: relative;
-    padding-block: var(--origam-space---30, 7.5rem);
-    padding-inline: var(--origam-space---6, 1.5rem);
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset-inline: 0;
-        inset-block-start: 0;
-        block-size: 280px;
-        background-image: var(--origam-gradient---cta-glow-top);
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    &__inner {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: var(--origam-space---6, 1.5rem);
-        max-inline-size: 48rem;
-        margin-inline: auto;
-        text-align: center;
-    }
-
-    &__title {
-        margin: 0;
-        --origam-title---font-size: var(--origam-font-size---cta, 4rem);
-        font-weight: var(--origam-font-weight---extrabold, 800);
-        letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-        line-height: var(--origam-line-height---hero, 0.95);
-        color: var(--origam-color__text---ink, #0a0a0a);
-    }
-
-    &__desc {
-        margin: 0;
-        font-size: var(--origam-font-size---lg, 1.125rem);
-        color: var(--origam-color__text---secondary, #525252);
-        max-inline-size: 36rem;
-    }
-
-    &__actions {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        gap: var(--origam-space---3, 0.75rem);
-        margin-block-start: var(--origam-space---2, 0.5rem);
-    }
-
-    &__btn {
-        --origam-btn---height: 52px;
-        --origam-btn---density: 0px;
-        --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
-        --origam-btn---font-size: 1rem;
-        --origam-btn---font-weight: 400;
-        --origam-btn---border-radius: var(--origam-radius---btn, 10px);
-
-        &--primary {
-            background-image: var(--origam-gradient---btn-primary);
-            background-color: var(--origam-color---btn-primary-bg, transparent);
-            box-shadow: var(--origam-shadow---btn-primary);
-            --origam-btn---color: var(--origam-color---btn-primary-text);
-        }
-
-        &--secondary {
-            background-image: var(--origam-gradient---btn-secondary);
-            background-color: var(--origam-color---btn-secondary-bg);
-            box-shadow: var(--origam-shadow---btn-secondary);
-            border: 1px solid var(--origam-color---btn-secondary-border);
-            --origam-btn---color: var(--origam-color---btn-secondary-text);
-            --origam-btn---density-padding-x: var(--origam-space---4, 1rem);
-        }
-    }
-}
-
-@media (max-width: 1080px) {
-    .installation-hero {
-        &__title {
-            font-size: clamp(2.5rem, 9vw, 5.25rem);
-        }
+        margin-block-start: var(--origam-space---3, 0.75rem);
+        font-size: 14px;
+        color: var(--origam-color__text---secondary);
+        max-inline-size: 70ch;
     }
 }
 
 @media (max-width: 768px) {
-    .installation-section {
-        &__title {
-            font-size: clamp(1.75rem, 7vw, 3rem);
-        }
-    }
-
-    .installation-cta {
-        &__title {
-            --origam-title---font-size: clamp(2rem, 8vw, 4rem);
-        }
-    }
-
     .installation-step {
         grid-template-columns: 3rem 1fr;
         gap: 0 var(--origam-space---4, 1rem);
@@ -936,6 +693,11 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 }
 
 @media (max-width: 640px) {
+    .installation-peer-deps__table {
+        --origam-table__cell---padding-inline: 10px;
+        --origam-table__header-cell---padding-inline: 10px;
+    }
+
     .installation-step {
         grid-template-columns: 1fr;
 
