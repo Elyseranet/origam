@@ -1,7 +1,7 @@
 {
   "kind": "component",
-  "exportedAt": "2026-11-25T09:44:37.627Z",
-  "sourceCommit": "275da4ff9",
+  "exportedAt": "2026-11-28T08:35:10.021Z",
+  "sourceCommit": "3ce7bb1f8",
   "entryCount": 215,
   "entries": [
     {
@@ -92114,7 +92114,7 @@
           "type_slug": "",
           "type_kind": "primitive",
           "optional": false,
-          "required": true,
+          "required": false,
           "position": 0,
           "default_value": "undefined",
           "description_key": "components.data_text.props.text.description",
@@ -93091,7 +93091,7 @@
           "type_slug": "",
           "type_kind": "primitive",
           "optional": false,
-          "required": true,
+          "required": false,
           "position": 0,
           "default_value": "undefined",
           "description_key": "components.data_title.props.text.description",
@@ -93532,7 +93532,7 @@
       "slots": [
         {
           "slot": "default",
-          "slot_props": "{ text: string | number }",
+          "slot_props": "{ text?: string | number }",
           "position": 0,
           "description_key": "components.data_title.slots.default.description",
           "description_fallback": "Term label content. Receives the text prop as slot prop. Falls back to displaying text directly."
@@ -152960,13 +152960,25 @@
           "description_fallback": "Axis of the parallax effect. Both enables 2D mouse tracking."
         },
         {
+          "name": "origin",
+          "type_label": "TParallaxOrigin",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 7,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
           "name": "speed",
           "type_label": "number",
           "type_slug": "",
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 7,
+          "position": 8,
           "default_value": "0.5",
           "description_key": "components.parallax.props.speed.description",
           "description_fallback": "Global speed multiplier for single-layer mode (0 = fixed, 1 = scroll speed, >1 = faster)."
@@ -152978,7 +152990,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 8,
+          "position": 9,
           "default_value": "false",
           "description_key": "components.parallax.props.disabled.description",
           "description_fallback": "Forces the parallax translation to 0 regardless of scroll or events."
@@ -152990,7 +153002,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 9,
+          "position": 10,
           "default_value": "0",
           "description_key": "components.parallax.props.threshold.description",
           "description_fallback": "Proportion (0–1) of the host that must enter the viewport before the effect activates."
@@ -153002,7 +153014,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 10,
+          "position": 11,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153014,7 +153026,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 11,
+          "position": 12,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153026,7 +153038,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 12,
+          "position": 13,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153038,7 +153050,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 13,
+          "position": 14,
           "default_value": "'div'",
           "description_key": "components.parallax.props.tag.description",
           "description_fallback": "Root HTML element tag."
@@ -153050,7 +153062,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 14,
+          "position": 15,
           "default_value": "undefined",
           "description_key": "components.parallax.props.color.description",
           "description_fallback": "Text color applied to the parallax root."
@@ -153062,7 +153074,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 15,
+          "position": 16,
           "default_value": "undefined",
           "description_key": "components.parallax.props.bg_color.description",
           "description_fallback": "Background color applied to the parallax root."
@@ -153074,7 +153086,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 16,
+          "position": 17,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153086,7 +153098,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 17,
+          "position": 18,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153098,7 +153110,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 18,
+          "position": 19,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153110,7 +153122,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 19,
+          "position": 20,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153122,7 +153134,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 20,
+          "position": 21,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153134,7 +153146,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 21,
+          "position": 22,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153146,7 +153158,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 22,
+          "position": 23,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153158,7 +153170,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 23,
+          "position": 24,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153170,7 +153182,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 24,
+          "position": 25,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153182,7 +153194,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 25,
+          "position": 26,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153194,7 +153206,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 26,
+          "position": 27,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153206,7 +153218,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 27,
+          "position": 28,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153218,7 +153230,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 28,
+          "position": 29,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153230,7 +153242,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 29,
+          "position": 30,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153242,7 +153254,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 30,
+          "position": 31,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153254,7 +153266,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 31,
+          "position": 32,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153266,7 +153278,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 32,
+          "position": 33,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153278,7 +153290,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 33,
+          "position": 34,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153290,7 +153302,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 34,
+          "position": 35,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153302,7 +153314,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 35,
+          "position": 36,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153314,7 +153326,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 36,
+          "position": 37,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153326,7 +153338,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 37,
+          "position": 38,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153338,7 +153350,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 38,
+          "position": 39,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153350,7 +153362,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 39,
+          "position": 40,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153362,7 +153374,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 40,
+          "position": 41,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153374,7 +153386,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 41,
+          "position": 42,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153386,7 +153398,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 42,
+          "position": 43,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153398,7 +153410,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 43,
+          "position": 44,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153410,7 +153422,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 44,
+          "position": 45,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153422,7 +153434,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 45,
+          "position": 46,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153434,7 +153446,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 46,
+          "position": 47,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153446,7 +153458,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 47,
+          "position": 48,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153458,7 +153470,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 48,
+          "position": 49,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153470,7 +153482,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 49,
+          "position": 50,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153482,7 +153494,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 50,
+          "position": 51,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153494,7 +153506,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 51,
+          "position": 52,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153506,7 +153518,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 52,
+          "position": 53,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153518,7 +153530,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 53,
+          "position": 54,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153530,7 +153542,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 54,
+          "position": 55,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153542,7 +153554,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 55,
+          "position": 56,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153554,7 +153566,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 56,
+          "position": 57,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153566,7 +153578,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 57,
+          "position": 58,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153578,7 +153590,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 58,
+          "position": 59,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153590,7 +153602,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 59,
+          "position": 60,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153602,7 +153614,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 60,
+          "position": 61,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153614,7 +153626,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 61,
+          "position": 62,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153626,7 +153638,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 62,
+          "position": 63,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153638,7 +153650,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 63,
+          "position": 64,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153650,7 +153662,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 64,
+          "position": 65,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153662,7 +153674,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 65,
+          "position": 66,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153674,7 +153686,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 66,
+          "position": 67,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153686,7 +153698,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 67,
+          "position": 68,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153698,7 +153710,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 68,
+          "position": 69,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153710,7 +153722,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 69,
+          "position": 70,
           "default_value": "undefined",
           "description_key": "components.parallax.props.height.description",
           "description_fallback": "Height of the parallax container."
@@ -153722,7 +153734,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 70,
+          "position": 71,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153734,7 +153746,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 71,
+          "position": 72,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153746,7 +153758,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 72,
+          "position": 73,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153758,7 +153770,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 73,
+          "position": 74,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153770,7 +153782,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 74,
+          "position": 75,
           "default_value": "undefined",
           "description_key": "components.parallax.props.width.description",
           "description_fallback": "Width of the parallax container."
@@ -153782,7 +153794,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 75,
+          "position": 76,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -153794,7 +153806,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 76,
+          "position": 77,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -155232,13 +155244,37 @@
           "description_fallback": "Static vertical offset in px applied on top of the parallax translation."
         },
         {
+          "name": "mouseX",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 3,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "mouseY",
+          "type_label": "number",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 4,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
           "name": "zIndex",
           "type_label": "number",
           "type_slug": "",
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 3,
+          "position": 5,
           "default_value": "undefined",
           "description_key": "components.parallax_layer.props.z_index.description",
           "description_fallback": "Optional z-index override. By default layers stack in document order."
@@ -155250,7 +155286,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 4,
+          "position": 6,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -155262,7 +155298,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 5,
+          "position": 7,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -155274,7 +155310,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 6,
+          "position": 8,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -155286,7 +155322,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 7,
+          "position": 9,
           "default_value": "'div'",
           "description_key": "components.parallax_layer.props.tag.description",
           "description_fallback": "Root HTML element tag."
