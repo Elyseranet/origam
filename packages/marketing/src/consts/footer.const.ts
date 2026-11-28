@@ -3,14 +3,6 @@ import type { IFooterSocial, INavLink } from '~/interfaces/nav.interface'
 import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
 import { TWITTER_LINK } from '~/consts/nav.const'
 
-/** Niveau 1 du pied de page : les quatre entrées de la maquette v12, une seule ligne. */
-export const FOOTER_NAV: readonly INavLink[] = [
-    { i18nKey: 'footer.nav.components', i18nFallback: 'Components', href: '/components' },
-    { i18nKey: 'footer.nav.documentation', i18nFallback: 'Documentation', href: '/docs/', external: true },
-    { i18nKey: 'footer.nav.theming', i18nFallback: 'Theming', href: '/theming' },
-    { i18nKey: 'footer.nav.playground', i18nFallback: 'Playground', href: '/#playground' }
-]
-
 /** Niveau 2 : les pages légales et le soutien (/support, qui n'a plus d'autre lien). Les valeurs de l'éditeur vivent dans ces pages (variables `LEGAL_*`), jamais ici. */
 export const FOOTER_LEGAL: readonly INavLink[] = [
     { i18nKey: 'footer.legal.legal_notice', i18nFallback: 'Legal notice', href: '/legal' },

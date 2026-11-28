@@ -946,13 +946,6 @@
     },
     "footer": {
         "brand_tagline": "DESIGN SYSTEM",
-        "nav_label": "Footer",
-        "nav": {
-            "components": "Components",
-            "documentation": "Documentation",
-            "theming": "Theming",
-            "playground": "Playground"
-        },
         "social": {
             "github": "GitHub",
             "x": "X",
@@ -965,7 +958,7 @@
             "support": "Support origam",
             "legal_notice": "Legal notice"
         },
-        "copyright": "© 2026 origam · MIT license · Made with origam, by humans."
+        "copyright": "© 2026 Elysera · MIT license · Made with origam"
     },
     "home": {
         "meta": {

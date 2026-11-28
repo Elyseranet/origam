@@ -55,15 +55,13 @@ test.describe('SiteFooter — deux niveaux', () => {
         await expect(page.locator('.site-footer__legal [data-cy="footer-sitemap"] a')).toHaveCount(16)
     })
 
-    test('niveau 1 : le logo mène à l\'accueil, quatre liens, deux réseaux au moins', async ({ page }) => {
+    test('niveau 1 : le logo mène à l\'accueil, aucune rangée de liens, deux réseaux au moins', async ({ page }) => {
         await openHome(page, 'light')
 
         await expect(page.locator('[data-cy="footer-brand"]')).toHaveAttribute('href', '/')
 
-        const nav = page.locator('[data-cy="footer-nav"]')
-        await expect(nav).toHaveAttribute('aria-label', 'Footer')
-        const hrefs = await nav.locator('a').evaluateAll(els => els.map(el => el.getAttribute('href')))
-        expect(hrefs).toEqual(['/components', '/docs/', '/theming', '/#playground'])
+        await expect(page.locator('[data-cy="footer-nav"]')).toHaveCount(0)
+        await expect(page.locator('.site-footer__main a')).toHaveCount(3)
 
         const github = page.locator('[data-cy="footer-social-github"]')
         await expect(github).toHaveAttribute('href', /github\.com/)
@@ -82,7 +80,7 @@ test.describe('SiteFooter — deux niveaux', () => {
         const hrefs = await legal.locator('a').evaluateAll(els => els.map(el => el.getAttribute('href')))
         expect(hrefs).toEqual(['/legal', '/privacy', '/contact', '/support'])
 
-        await expect(page.locator('[data-cy="footer-copyright"]')).toHaveText('© 2026 origam · MIT license · Made with origam, by humans.')
+        await expect(page.locator('[data-cy="footer-copyright"]')).toHaveText('© 2026 Elysera · MIT license · Made with origam')
         await expect(page.locator('footer.site-footer')).not.toContainText(/LEGAL_|home\.cta\.|footer\./)
     })
 
@@ -90,8 +88,8 @@ test.describe('SiteFooter — deux niveaux', () => {
         await openHome(page, 'light', '/fr')
 
         const hrefs = await page.locator('footer.site-footer a').evaluateAll(els => els.map(el => el.getAttribute('href')))
-        expect(hrefs).toEqual(expect.arrayContaining(['/fr', '/fr/components', '/docs/', '/fr/theming', '/fr#playground', '/fr/legal', '/fr/privacy', '/fr/contact', '/fr/support']))
-        await expect(page.locator('[data-cy="footer-copyright"]')).toHaveText('© 2026 origam · licence MIT · Fait avec origam, par des humains.')
+        expect(hrefs).toEqual(expect.arrayContaining(['/fr', '/fr/components', '/docs/', '/fr/legal', '/fr/privacy', '/fr/contact', '/fr/support']))
+        await expect(page.locator('[data-cy="footer-copyright"]')).toHaveText('© 2026 Elysera · Licence MIT · Fait avec origam')
     })
 
     test('les liens se parcourent au clavier dans l\'ordre visuel', async ({ page }) => {
@@ -103,8 +101,8 @@ test.describe('SiteFooter — deux niveaux', () => {
             order.push(await page.evaluate(() => (document.activeElement as HTMLElement).getAttribute('href') ?? ''))
             await page.keyboard.press('Tab')
         }
-        expect(order.slice(0, 5)).toEqual(['/', '/components', '/docs/', '/theming', '/#playground'])
-        expect(order[5]).toMatch(/github\.com/)
+        expect(order[0]).toBe('/')
+        expect(order[1]).toMatch(/github\.com/)
         expect(order.slice(-4)).toEqual(['/legal', '/privacy', '/contact', '/support'])
     })
 
@@ -122,7 +120,6 @@ test.describe('SiteFooter — deux niveaux', () => {
                 await openHome(page, mode)
                 const probes: Array<[string, string]> = [
                     ['.site-footer__brand', '.site-footer__main'],
-                    ['.site-footer__nav a', '.site-footer__main'],
                     ['.site-footer__social a', '.site-footer__main'],
                     ['.site-footer__legal nav a', '.site-footer__legal'],
                     ['.site-footer__copyright', '.site-footer__legal']
@@ -195,7 +192,8 @@ test.describe('SiteFooter — deux niveaux', () => {
 
     test('HTML serveur : le pied de page est rendu sans JavaScript', async ({ request }) => {
         const html = await (await request.get('/')).text()
-        for (const cy of ['footer-brand', 'footer-nav', 'footer-social', 'footer-legal', 'footer-copyright']) {
+        expect(html).not.toContain('data-cy="footer-nav"')
+        for (const cy of ['footer-brand', 'footer-social', 'footer-legal', 'footer-copyright']) {
             expect(html, cy).toContain(`data-cy="${ cy }"`)
         }
     })

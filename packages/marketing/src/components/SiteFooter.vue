@@ -19,27 +19,6 @@
           <small class="site-footer__tagline">{{ t('footer.brand_tagline', 'DESIGN SYSTEM') }}</small>
         </nuxt-link>
 
-        <nav
-          class="site-footer__nav"
-          :aria-label="t('footer.nav_label', 'Footer')"
-          data-cy="footer-nav"
-        >
-          <ul class="site-footer__list">
-            <li
-              v-for="link in FOOTER_NAV"
-              :key="link.href"
-            >
-              <nuxt-link
-                :to="navLinkHref(link)"
-                :external="link.external"
-                class="site-footer__link"
-              >
-                {{ t(link.i18nKey, link.i18nFallback) }}
-              </nuxt-link>
-            </li>
-          </ul>
-        </nav>
-
         <ul
           class="site-footer__social"
           data-cy="footer-social"
@@ -130,7 +109,7 @@
           class="site-footer__copyright"
           data-cy="footer-copyright"
         >
-          {{ t('footer.copyright', '© 2026 origam · MIT license · Made with origam, by humans.') }}
+          {{ t('footer.copyright', '© 2026 Elysera · MIT license · Made with origam') }}
         </p>
       </div>
     </div>
@@ -146,7 +125,6 @@ import { NAV_SECTIONS } from '~/consts/nav.const'
 import {
     FOOTER_LEGAL,
     FOOTER_MARK_WIDTH,
-    FOOTER_NAV,
     FOOTER_SOCIAL_GITHUB,
     FOOTER_SOCIAL_X,
     FOOTER_SOCIAL_YOUTUBE
@@ -158,7 +136,7 @@ import { ensoImageSet } from '~/utils/enso.util'
  *
  * @description
  * Pied de page sur deux niveaux (#1596). Niveau 1 : violet profond, une ligne
- * logo | liens | réseaux, sans crête (la scène du CTA fait la transition).
+ * logo | réseaux, sans crête (la scène du CTA fait la transition).
  * Niveau 2 : encre, mentions légales et ligne de copyright, entré par un
  * pinceau sec (`dry-05`) qui mord dans le violet. Identique dans les deux modes :
  * seule l'encre du niveau 2 change (token marketing `brand-deep---ink`).
@@ -231,7 +209,8 @@ defineExpose({})
 
     &__bar {
         display: grid;
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: auto auto;
+        justify-content: space-between;
         align-items: center;
         gap: 16px 32px;
         min-block-size: 90px;
