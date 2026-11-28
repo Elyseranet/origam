@@ -169,6 +169,8 @@ for (const { route, grouped } of PAGES) {
             }
 
             test(`${ mode } : axe, 0 violation WCAG 2 A/AA`, async ({ page }) => {
+                // /interfaces rend 1010 cartes : axe y est lent quand la machine est chargée (15 s à vide).
+                test.slow()
                 await openIndex(page, route, mode)
                 const results = await new AxeBuilder({ page })
                     .include(`[data-cy="page-${ route }"]`)
