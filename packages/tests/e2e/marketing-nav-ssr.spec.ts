@@ -279,10 +279,7 @@ test.describe('Nav & footer sitemap — presence in the HTML served, no JS', () 
     test('the two-level footer is in the HTML served, no JS, with its stable links (#1596)', async ({ request }) => {
         const html = await (await request.get('/')).text()
 
-        const nav = extractTaggedBlocks(html, /<nav\b[^>]*data-cy="footer-nav"[^>]*>/, '</nav>').join('\n')
-        for (const href of ['/components', '/docs/', '/theming', '/#playground']) {
-            expect(nav.includes(`href="${href}"`), `footer nav is missing <a href="${href}"> in the SSR HTML`).toBe(true)
-        }
+        expect(html.includes('data-cy="footer-nav"'), 'the level-1 link row (#1616) must be gone').toBe(false)
 
         const legal = extractTaggedBlocks(html, /<nav\b[^>]*data-cy="footer-legal"[^>]*>/, '</nav>').join('\n')
         for (const href of ['/legal', '/privacy', '/contact', '/support']) {
